@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	
+		<meta charset="utf-8" />
+		
+		<!--basic styles-->
+
+		<link href="asset/css/bootstrap.css" rel="stylesheet" />
+		<link rel="stylesheet" href="asset/css/dexter.min.css" />
+		<link rel="stylesheet" href="asset/css/font-awesome.min.css" />
+		<!--[if IE 7]>
+			<link rel="stylesheet" href="asset/css/font-awesome-ie7.min.css">
+		<![endif]-->
+
+		<link rel="stylesheet" href="asset/css/prettify.css" />
+		
+		<script src="asset/js/jquery-2.0.3.min.js"></script>
+		<!--[if IE]>
+			<script src="asset/js/jquery.min.js"></script>
+		<![endif]-->
+
+		<script src="asset/js/prettify.js"></script>
+		<script type="text/javascript">
+			$(function() {
+			
+				window.prettyPrint && prettyPrint();
+				$('#id-check-horizontal').removeAttr('checked').on('click', function(){
+					$('#dt-list-1').toggleClass('dl-horizontal').prev().html(this.checked ? '&lt;dl class="dl-horizontal"&gt;' : '&lt;dl&gt;');
+				});
+			
+			})
+		</script>
+		
+
+	</head>
+
+	<body>
+
+		<div class="space-12"></div>
+		<div class="table-grid-info table-grid-info-striped">
+			
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Checker Code</div>
+				<div class="table-grid-value"><h5 class="header blue"><i class="fa fa-bug"></i>&nbsp;
+					redundantIfRemove</h5>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Description </div>
+				<div class="table-grid-value-highlight"><i class="fa fa-th"></i>&nbsp;
+Redundant checking of STL container element.
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Severity </div>
+				<div class="table-grid-value">
+					Major
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Detector / Bug Pattern </div>
+				<div class="table-grid-value">
+Redundant checking of STL container element.
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> More Information </div>
+				<div class="table-grid-value">
+Avoid redundant checking of STL container element.
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Bad Code </div>
+				<div class="table-grid-value">
+			<pre class="prettyprint linenums warning">
+if(conditionX)
+{
+    if(condition1)
+    {
+        // code X1
+    }
+    else if(condition2)
+    {
+        // code X2
+    }
+}
+else if(conditionY)
+{
+    if(condition1)
+    {
+        // code Y1
+    }
+    else if(condition2)
+    {
+        // code Y2
+    }
+}	
+</pre>
+			</div>
+			</div>
+       
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Good Code </div>
+				<div class="table-grid-value">
+			<pre class="prettyprint linenums correct">
+/*
+There are four approaches to this problem, none of which is universal:
+
+1. Leave everything as is - There isn't much code duplication here. If computing condition1 and condition2 is tricky, 
+compute them upfront and store them in bool variables 
+2. Make conditionX and conditionY produce a result that lets you unify condition1 and condition2 - 
+This is not always possible, but in some situations you could prepare a variable that unifies the 
+activities taken in the two branches, say, by using a function pointer or a lambda. 
+3. Put the processing logic into subclasses with virtual functions to eliminate conditional logic -
+ This is possible only when your initial design missed an opportunity to subclass. Essentially, this 
+ approach pushes the decision on conditionX/conditionY into a place where a subclass is created, and 
+ then "reuses" that decision later on by calling a proper override of a virtual function in the interface. 
+4. Create a numeric combination representing all three conditions, and convert to switch - 
+This trick unifies the conditionals, reducing the nesting. 
+
+Here is an example of the last approach:
+*/
+int caseNumber = ((conditionX?1:0) << 3)
+               | ((conditionY?1:0) << 2)
+               | ((condition2?1:0) << 1)
+               | ((condition1?1:0) << 0);
+switch (caseNumber) {
+    case 0x09:
+    case 0x0D:
+    case 0x0F: // code X1
+        break;
+    case 0x0A:
+    case 0x0E: // code X2
+        break;
+    case 0x05:
+    case 0x07: // code Y1
+        break;
+    case 0x06: // code Y2
+        break;
+}			
+</pre>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> CWE ID </div>
+				<div class="table-grid-value">
+				<a href="asset/CWE_ID.html" target="_blank">0 </a>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Code Review Asset </div>
+				<div class="table-grid-value">
+				http://168.219.241.216/confluence/display/SW/redundantIfRemove 
+
+				</div>
+			</div>
+			<div class="table-grid-row">
+				<div class="table-grid-label"> URLs </div>
+				<div class="table-grid-value"> <i class="fa fa-link"></i>&nbsp;
+				
+					<a target="_blank" href="http://stackoverflow.com/questions/22479162/nested-redundant-if-conditions">
+					http://stackoverflow.com/questions/22479162/nested-redundant-if-conditions
+					</a> 
+							
+																
+				</div>
+			</div>
+	</div>
+	<div class="space-20"></div>
+</body>
+<html>

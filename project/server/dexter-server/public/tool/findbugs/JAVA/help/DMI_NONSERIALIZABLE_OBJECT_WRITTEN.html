@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	
+		<meta charset="utf-8" />
+		
+		<!--basic styles-->
+
+		<link href="asset/css/bootstrap.css" rel="stylesheet" />
+		<link rel="stylesheet" href="asset/css/dexter.min.css" />
+		<link rel="stylesheet" href="asset/css/font-awesome.min.css" />
+		<!--[if IE 7]>
+			<link rel="stylesheet" href="asset/css/font-awesome-ie7.min.css">
+		<![endif]-->
+
+		<link rel="stylesheet" href="asset/css/prettify.css" />
+		
+		<script src="asset/js/jquery-2.0.3.min.js"></script>
+		<!--[if IE]>
+			<script src="asset/js/jquery.min.js"></script>
+		<![endif]-->
+
+		<script src="asset/js/prettify.js"></script>
+		<script type="text/javascript">
+			$(function() {
+			
+				window.prettyPrint && prettyPrint();
+				$('#id-check-horizontal').removeAttr('checked').on('click', function(){
+					$('#dt-list-1').toggleClass('dl-horizontal').prev().html(this.checked ? '&lt;dl class="dl-horizontal"&gt;' : '&lt;dl&gt;');
+				});
+			
+			})
+		</script>
+		
+
+	</head>
+
+	<body>
+
+		<div class="space-12"></div>
+
+		<div class="table-grid-info table-grid-info-striped">
+			
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Checker Code</div>
+				<div class="table-grid-value"><h5 class="header blue"><i class="fa fa-bug"></i>&nbsp;
+					DMI_NONSERIALIZABLE_OBJECT_WRITTEN </h5>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Description </div>
+				<div class="table-grid-value-highlight"><i class="fa fa-th"></i>&nbsp;
+					Non serializable object written to ObjectOutput
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Severity </div>
+				<div class="table-grid-value">
+					Critical
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Detector / Bug Pattern </div>
+				<div class="table-grid-value">
+					FindUseOfNonSerializableValue / DMI
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> More Information </div>
+				<div class="table-grid-value">
+<p>
+This code seems to be passing a non-serializable object to the ObjectOutput.writeObject method.
+If the object is, indeed, non-serializable, an error will result.
+</p>
+		</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Bad Code </div>
+				<div class="table-grid-value">
+<pre class="prettyprint linenums warning">
+FileOutputStream fos = new FileOutputStream("t.tmp");
+ObjectOutputStream oos = new ObjectOutputStream(fos);
+Person person  = new Person(); // Incorrect: Will throw NotSerializableException, If Class Person is non-serializable
+oos.writeObject(person);
+
+oos.close();
+</pre>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Good Code </div>
+				<div class="table-grid-value">
+<pre class="prettyprint linenums correct">
+
+</pre>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> CWE ID </div>
+				<div class="table-grid-value">
+				<a href="#">CWE-0</a>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Code Review Asset </div>
+				<div class="table-grid-value">
+				N/A
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> URLs </div>
+				<div class="table-grid-value"> <i class="fa fa-link"></i>&nbsp;
+					JAVA SITE  :  <a href= "http://docs.oracle.com/javase/7/docs/api/java/io/ObjectOutputStream.html">
+					http://docs.oracle.com/javase/7/docs/api/java/io/ObjectOutputStream.html </a>
+					
+					
+					<p> <i class="fa fa-link"></i>&nbsp;
+					TUTORIALS POINT SITE  :  <a href ="http://www.tutorialspoint.com/java/io/objectoutputstream_writeobject.htm">
+					http://www.tutorialspoint.com/java/io/objectoutputstream_writeobject.htm </a>
+					
+					
+					
+				</div>
+			</div>
+
+
+
+		</div>
+
+		<div class="space-20"></div>
+
+</body>
+
+
+
+<html>

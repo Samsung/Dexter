@@ -1,0 +1,28 @@
+.jui_alert_message_area {
+    padding: 5px;
+}
+
+.jui_alert_message_body {
+    font-size: 0.9em;
+    overflow: auto;
+}
+
+
+.jui_alert_buttons_p {
+    padding: 3px;
+    margin: 0;
+    overflow: auto;
+}
+
+.jui_alert_btn_close {
+    float: right;
+}
+
+.jui_alert_btn_timer {
+    float: right;
+}
+
+.jui_alert_icon {
+    float: left;
+    margin-right: .3em;
+}

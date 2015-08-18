@@ -1,0 +1,67 @@
+subprojects {
+	apply plugin: 'java'
+	
+	version = '0.9.0'
+	sourceCompatibility = 1.7
+	targetCompatibility = 1.7
+	compileJava.options.encoding = 'UTF-8'
+	compileTestJava.options.encoding = 'UTF-8'
+	buildDir = 'output'
+
+	sourceSets {
+		main {
+			java {
+				srcDir 'src/java'
+			}
+			resources {
+				srcDir 'src/resource'
+			}
+		}
+
+		test {
+			java {
+				srcDir 'src/test'
+			}
+		}
+	}
+
+
+	clean {
+		delete 'lib'
+	}
+
+	processResources {
+		from ('src/java') {
+			include '**/*.properties'
+		}
+	}
+
+	repositories {
+		mavenCentral()
+		flatDir {
+			dirs '../../common-lib'
+		}
+	}
+
+	dependencies {
+		testCompile 'junit:junit:4.12',
+								'org.mockito:mockito-all:1.10.19'
+	}
+	
+	jar {
+		manifest {
+			def manifestFile = "${projectDir}/META-INF/MANIFEST.MF"
+	
+			if(new File(manifestFile).exists()){
+				from (manifestFile)
+			}
+		}
+	
+		from ('lib') {
+				into 'lib'
+		}
+	}
+}
+
+task createCli(dependsOn: subprojects.tasks['build']) {
+}

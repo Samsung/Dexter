@@ -1,0 +1,7 @@
+node_module/
+public/plugin/
+**/*.log
+**/workspace.xml
+.idea/workspace.xml
+log/
+.idea/

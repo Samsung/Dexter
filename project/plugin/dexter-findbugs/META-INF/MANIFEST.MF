@@ -1,0 +1,34 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Dexter Findbugs
+Bundle-SymbolicName: dexter-findbugs;singleton:=true
+Bundle-Version: 0.9.0
+Bundle-Activator: com.samsung.sec.dexter.findbugs.FindBugsActivator
+Bundle-Vendor: Samsung Electronics VD SE Lab
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.jdt.core,
+ dexter-core,
+ dexter-executor
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .,
+ lib/gson-2.2.4.jar,
+ lib/guava-16.0.1.jar,
+ lib/junit-4.10.jar,
+ lib/log4j-1.2.17.jar,
+ lib/jspf/jspf.core-1.0.2.jar,
+ lib/jspf/jspf.remote-1.0.2.jar,
+ lib/jspf/jspf.remote.discovery-1.0.2.jar,
+ lib/jspf/jspf.remote.ermi-1.0.2.jar,
+ lib/jspf/jspf.remote.javascript-1.0.2.jar,
+ lib/jspf/jspf.remote.lipermi-1.0.2.jar,
+ lib/jspf/jspf.remote.xmlrpc-1.0.2.jar,
+ lib/jspf/jspf.remote.xmlrpcdelight-1.0.2.jar,
+ lib/findbugs.jar,
+ lib/jsr305.jar,
+ lib/dom4j-1.6.1.jar,
+ lib/jaxen-1.1.6.jar,
+ lib/bcel-6.0-SNAPSHOT.jar,
+ lib/asm-debug-all-5.0.2.jar,
+ lib/annotations.jar,
+ lib/jFormatString.jar

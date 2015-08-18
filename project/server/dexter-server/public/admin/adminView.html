@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<font face="Tahoma, Lucida Grande, Helvetica, Arial, sans-serif">
+    <div id="accountDiv">
+        <div class="setMSG" id="showAdminAlert" align="center"></div>
+        <div style="float: left; width:600px">
+            &nbsp;
+            <a href="#" class="exportAccountList">
+                <button id="exportAccountBtn"  class="btn btn-xs btn-success">
+                    <span class="glyphicon glyphicon-save"></span> Export List
+                </button>
+            </a>
+            &nbsp;
+            <a href="#"><button class="btn btn-xs btn-warning" ng-click="deleteSelectedItem()" style="font-size: 12px">
+                <span class="glyphicon glyphicon-floppy-remove"></span>&nbsp;&nbsp;<b>Delete All</b>
+            </button></a>
+
+        </div>
+    </div>
+
+    <div class="row" >
+        <div class="col-xs-6">
+            <div class="accountGridList" ng-grid="adminGridOptions" style="font-size: 12px">
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div class="accountDetailTab">
+                <tabset justified="false" type="pills" id="accountTab">
+                    <ul class="nav nav-tabs nav-justified" id="myTab">
+                        <tab heading="Account Info">
+                            <br><br>
+                            <div class="input-group">
+                                <span class="input-group-addon">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;User ID</span>
+                                <input type="text" class="form-control" placeholder="{{currentAccountId}}" name="modifyUser">
+                            </div><br>
+                            <div class="input-group">
+                                <span class="input-group-addon">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Password</span>
+                                <input type="text" class="form-control" placeholder="{{currentAccountPw}}" name="modifyUser">
+                            </div><br>
+
+                            <div class="btn-group " style="width:100%">
+                                <a class="btn btn-default" disabled>&nbsp;&nbsp;&nbsp;&nbsp;Admin Y/N</a>
+                                <!--input type="text" class="form-control" placeholder="Y or N" name="inputUser"-->
+                                <div class="btn-group adminYnBtn"  data-toggle="buttons-radio">
+                                    <button class="btn changeAdminBtn" id = "changeAdminYBtn">Admin</button>
+                                    <button class="btn changeAdminBtn" id = "changeAdminNBtn">User</button>
+                                </div>
+                            </div><br>
+
+                            <div class="input-group">
+                                <span class="input-group-addon">&nbsp;Created Date</span>
+                                <input type="text" class="form-control" placeholder="{{currentAccountCreatedDate | date:'yyyy-MM-dd HH:mm:ss'}}" name="modifyUser" disabled>
+                            </div><br>
+                            <div class="input-group">
+                                <span class="input-group-addon">&nbsp;Modified Date</span>
+                                <input type="text" class="form-control" placeholder="{{currentAccountModifiedDate | date:'yyyy-MM-dd HH:mm:ss'}}" name="modifyUser" disabled>
+                            </div><br>
+                            <div align="right">
+                                <a href="#"><button class="btn btn-xs btn-info" ng-click="modifySelectedItem()" style="font-size: 12px">
+                                    <span class="glyphicon glyphicon-floppy-saved"></span>&nbsp;&nbsp;<b>Modify</b>
+                                </button></a>&nbsp;
+                            </div>
+                            <br>
+                        </tab>
+
+                        <tab heading="Add Account">
+                            <br><br>
+                            <div class="input-group">
+                                <span class="input-group-addon">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;User ID</span>
+                                <input type="text" class="form-control" placeholder="UserID" name="inputUser">
+                            </div><br>
+                            <div class="input-group">
+                                <span class="input-group-addon">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Password</span>
+                                <input type="text" class="form-control" placeholder="Password" name="inputUser">
+                            </div><br>
+                            <div class="input-group">
+                                <span class="input-group-addon">&nbsp;&nbsp;PW Confirm</span>
+                                <input type="text" class="form-control" placeholder="Password again" name="inputUser">
+                            </div><br>
+                            <div class="btn-group" style="width:100%">
+                                <a class="btn btn-default" disabled>&nbsp;&nbsp;&nbsp;&nbsp;Admin Y/N</a>
+                                <div class="btn-group adminYnBtn"  data-toggle="buttons-radio">
+                                    <button class="btn createAdminBtn" name = "btn adminYnBtn">Admin</button>
+                                    <button class="btn createAdminBtn" name = "btn adminYnBtn">User</button>
+                                </div>
+                            </div>
+                            <br>
+                            <div align="right">
+                                <button  class="btn btn-xs btn-info" ng-click="createAccount()" style="font-size: 12px">
+                                    <span class="glyphicon glyphicon-floppy-open"></span>&nbsp;&nbsp;<b>Add</b>
+                                </button>
+                            </div>
+                        </tab>
+                    </ul>
+                </tabset>
+            </div>
+        </div>
+    </div>
+</font>
+
+
+
+

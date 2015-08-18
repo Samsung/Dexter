@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="dexter-daemon" default="build.jars" basedir=".">
+
+	<property name="p2.build.repo" value="file:${buildDirectory}/buildRepo"/>
+	<property name="basews" value="${ws}"/>
+	<property name="baseos" value="${os}"/>
+	<property name="basearch" value="${arch}"/>
+	<property name="basenl" value="${nl}"/>
+	<property name="bundleId" value="dexter-daemon"/>
+	<property name="bundleVersion" value="0.9.0"/>
+	<property name="p2.publishonerror" value="false"/>
+
+	<!-- Compiler settings. -->
+	<property name="javacFailOnError" value="false"/>
+	<property name="javacDebugInfo" value="on"/>
+	<property name="javacVerbose" value="false"/>
+	<property name="logExtension" value=".log"/>
+	<property name="compilerArg" value=""/>
+	<property name="compilation.prereq.log" value="${buildDirectory}/prereqErrors.log"/>
+	<property name="javacSource" value="1.3"/>
+	<property name="javacTarget" value="1.2"/>
+	<condition property="dir_bootclasspath" value="${java.home}/../Classes">
+		<and>
+			<os family="mac"/>
+			<available file="${java.home}/../Classes" type="dir"/>
+		</and>
+	</condition>
+	<property name="dir_bootclasspath" value="${java.home}/lib"/>
+	<path id="path_bootclasspath">
+		<fileset dir="${dir_bootclasspath}">
+			<include name="*.jar"/>
+		</fileset>
+	</path>
+	<property name="bootclasspath" refid="path_bootclasspath"/>
+	<condition property="bundleBootClasspath" value="${JavaSE-1.7}"	>
+		<isset property="JavaSE-1.7"/>
+	</condition>
+	<condition property="bundleJavacSource" value="1.7"	>
+		<isset property="JavaSE-1.7"/>
+	</condition>
+	<condition property="bundleJavacTarget" value="1.7"	>
+		<isset property="JavaSE-1.7"/>
+	</condition>
+	<property name="bundleJavacSource" value="${javacSource}"/>
+	<property name="bundleJavacTarget" value="${javacTarget}"/>
+	<property name="bundleBootClasspath" value="${bootclasspath}"/>
+
+	<target name="init" depends="properties">
+		<condition property="pluginTemp" value="${buildTempFolder}/plugins"		>
+			<isset property="buildTempFolder"/>
+		</condition>
+		<property name="pluginTemp" value="${basedir}"/>
+		<condition property="build.result.folder" value="${pluginTemp}/dexter-daemon_0.9.0"		>
+			<isset property="buildTempFolder"/>
+		</condition>
+		<property name="build.result.folder" value="${basedir}"/>
+		<property name="temp.folder" value="${basedir}/temp.folder"/>
+		<property name="plugin.destination" value="${basedir}"/>
+		<condition property="p2.publish.parts" value="true"		>
+			<istrue value="${p2.gathering}"/>
+		</condition>
+		<property name="compilation.problem.marker" value="${build.result.folder}/compilation.problem"/>
+		<condition property="compilation.problem.marker.exists" value="true"		>
+			<and>
+			<available file="${compilation.problem.marker}"/>
+			<isfalse value="${p2.publishonerror}"/>
+			</and>
+		</condition>
+	</target>
+
+	<target name="properties" if="eclipse.running">
+		<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+
+	</target>
+
+	<target name="build.update.jar" depends="init" description="Build the plug-in: dexter-daemon for an update site.">
+		<delete dir="${temp.folder}"/>
+		<mkdir dir="${temp.folder}"/>
+		<antcall target="build.jars"/>
+		<antcall target="gather.bin.parts">
+			<param name="destination.temp.folder" value="${temp.folder}/"/>
+		</antcall>
+		<jar destfile="${plugin.destination}/dexter-daemon_0.9.0.jar" basedir="${temp.folder}/dexter-daemon_0.9.0" filesetmanifest="merge"/>
+		<delete dir="${temp.folder}"/>
+	</target>
+
+	<target name="@dot.nestedJars">
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.equinox.registry_3.5.200.v20120522-1841"/>
+		<unzip src="../../../../target/target-rcp-juno/plugins/org.eclipse.equinox.registry_3.5.200.v20120522-1841.jar" dest="${buildDirectory}/nestedJars/org.eclipse.equinox.registry_3.5.200.v20120522-1841" overwrite="false">
+			<patternset includes="runtime_registry_compatibility.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.ui.workbench_3.104.0.v20130204-164612"/>
+		<unzip src="../../../../target/target-rcp-juno/plugins/org.eclipse.ui.workbench_3.104.0.v20130204-164612.jar" dest="${buildDirectory}/nestedJars/org.eclipse.ui.workbench_3.104.0.v20130204-164612" overwrite="false">
+			<patternset includes="e4-workbench.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.ui.workbench_3.104.0.v20130204-164612"/>
+		<unzip src="../../../../target/target-rcp-juno/plugins/org.eclipse.ui.workbench_3.104.0.v20130204-164612.jar" dest="${buildDirectory}/nestedJars/org.eclipse.ui.workbench_3.104.0.v20130204-164612" overwrite="false">
+			<patternset includes="compatibility.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/com.ibm.icu_4.4.2.v20110823"/>
+		<unzip src="../../../../target/target-rcp-juno/plugins/com.ibm.icu_4.4.2.v20110823.jar" dest="${buildDirectory}/nestedJars/com.ibm.icu_4.4.2.v20110823" overwrite="false">
+			<patternset includes="icu-data.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.e4.core.services_1.0.0.v20120521-2346"/>
+		<unzip src="../../../../target/target-rcp-juno/plugins/org.eclipse.e4.core.services_1.0.0.v20120521-2346.jar" dest="${buildDirectory}/nestedJars/org.eclipse.e4.core.services_1.0.0.v20120521-2346" overwrite="false">
+			<patternset includes="injection_annotations.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.ui.ide_3.8.2.v20121106-165923"/>
+		<unzip src="../../../../target/target-rcp-juno/plugins/org.eclipse.ui.ide_3.8.2.v20121106-165923.jar" dest="${buildDirectory}/nestedJars/org.eclipse.ui.ide_3.8.2.v20121106-165923" overwrite="false">
+			<patternset includes="e4-ide.jar"/>
+		</unzip>
+		<mkdir dir="${buildDirectory}/nestedJars/org.eclipse.ui.win32_3.2.302.v20130123-162658"/>
+		<unzip src="../../../../target/target-rcp-juno/plugins/org.eclipse.ui.win32_3.2.302.v20130123-162658.jar" dest="${buildDirectory}/nestedJars/org.eclipse.ui.win32_3.2.302.v20130123-162658" overwrite="false">
+			<patternset includes="e4-ide.jar"/>
+		</unzip>
+	</target>
+	<target name="@dot" depends="init,@dot.nestedJars" unless="@dot" description="Create jar: dexter-daemon @dot.">
+		<delete dir="${build.result.folder}/@dot"/>
+		<mkdir dir="${build.result.folder}/@dot"/>
+		<path id="@dot.classpath">
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.core.runtime_3.8.0.v20120912-155025.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.osgi_3.8.2.v20130124-134944.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.equinox.common_3.6.100.v20120522-1841.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.core.jobs_3.5.300.v20120912-155018.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.core.runtime.compatibility.registry_3.5.101.v20130108-163257/runtime_registry_compatibility.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.core.runtime.compatibility.registry_3.5.101.v20130108-163257"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.equinox.registry_3.5.200.v20120522-1841/runtime_registry_compatibility.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.equinox.registry_3.5.200.v20120522-1841.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.equinox.preferences_3.5.1.v20121031-182809.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.core.contenttype_3.4.200.v20120523-2004.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.core.runtime.compatibility.auth_3.2.300.v20120523-2004.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.equinox.app_1.3.100.v20120522-1841.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.osgi.services_3.3.100.v20120522-1822.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/javax.servlet_3.0.0.v201112011016.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.ui_3.104.0.v20121024-145224.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.swt_3.100.1.v4236b.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.swt.win32.win32.x86_64_3.100.1.v4236b.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.jface_3.8.102.v20130123-162658.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.core.commands_3.6.2.v20130123-162658.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.ui.workbench_3.104.0.v20130204-164612/e4-workbench.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.ui.workbench_3.104.0.v20130204-164612/compatibility.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.ui.workbench_3.104.0.v20130204-164612.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/com.ibm.icu_4.4.2.v20110823/icu-data.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/com.ibm.icu_4.4.2.v20110823.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/javax.annotation_1.0.0.v20101115-0725.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/javax.inject_1.0.0.v20091030.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.e4.core.commands_0.10.1.v20120523-1955.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.e4.core.contexts_1.2.0.v20121221-192508.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.e4.core.di_1.2.0.v20121024-173149.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.e4.core.services_1.0.0.v20120521-2346/injection_annotations.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.e4.core.services_1.0.0.v20120521-2346.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.e4.ui.workbench_0.11.0.v20130125-100758.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.e4.ui.model.workbench_0.10.1.v20120523-1955.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.emf.ecore_2.8.3.v20130125-0546.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.emf.common_2.8.0.v20130125-0546.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.core.resources_3.8.1.v20121114-124432.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.ant.core_3.2.401.v20121204-162022.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.core.variables_3.2.600.v20120521-2012.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.core.expressions_3.4.401.v20120912-155018.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.core.filesystem_1.3.200.v20130115-145044.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.core.filesystem.win32.x86_64_1.1.300.v20120522-1137.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.emf.ecore.xmi_2.8.1.v20130125-0546.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.e4.ui.services_0.10.3.v20130123-162658.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/javax.xml_1.3.4.v201005080400.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.e4.ui.di_0.10.1.v20120523-1955.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.e4.core.di.extensions_0.11.100.v20121024-182359.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.emf.ecore.change_2.8.0.v20130125-0546.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.e4.ui.workbench.renderers.swt_0.10.3.v20130124-170312.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.e4.ui.workbench.swt_0.10.3.v20130124-133900.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.apache.batik.css_1.6.0.v201011041432.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.apache.batik.util_1.6.0.v201011041432.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.apache.batik.util.gui_1.6.0.v201011041432.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.w3c.css.sac_1.3.1.v200903091627.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.w3c.dom.svg_1.1.0.v201011041433.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.w3c.dom.smil_1.0.0.v200806040011.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.core.databinding_1.4.1.v20120912-132807.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.core.databinding.observable_1.4.1.v20120521-2329.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.core.databinding.property_1.4.100.v20120523-1955.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.jface.databinding_1.6.0.v20120912-132807.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.e4.ui.css.core_0.10.2.v20120912-132817.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.e4.ui.css.swt_0.10.3.v20130123-162658.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.e4.ui.bindings_0.10.3.v20130123-162658.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.e4.ui.workbench3_0.12.0.v20120521-2329.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.e4.ui.css.swt.theme_0.9.4.v20130123-162658.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.e4.ui.widgets_0.12.3.v20130123-162658.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.equinox.ds_1.4.1.v20120926-201320.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.equinox.util_1.0.400.v20120917-192807.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.equinox.event_1.2.200.v20120522-2049.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.help_3.6.0.v20120912-134126.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.e4.ui.workbench.addons.swt_0.10.3.v20130124-185622.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.equinox.p2.core_2.2.0.v20120430-0525.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.equinox.p2.metadata_2.1.0.v20120430-2001.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.equinox.p2.operations_2.2.0.v20130119-010614.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.equinox.p2.director_2.2.0.v20120524-0542.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.equinox.simpleconfigurator_1.0.301.v20120914-163612.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.equinox.p2.engine_2.2.0.v20130121-021919.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.equinox.p2.metadata.repository_1.2.100.v20120524-1717.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.equinox.p2.repository_2.2.0.v20120524-1945.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.equinox.security_1.1.100.v20120522-1841.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.equinox.security.win32.x86_64_1.0.100.v20120522-2049.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.sat4j.core_2.3.0.v20110329.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.sat4j.pb_2.3.0.v20110329.jar"/>
+			<pathelement path="../../core/dexter-core/bin"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/bin"/>
+			<pathelement path="${build.result.folder}/../../core/dexter-core/@dot"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/@dot"/>
+			<pathelement path="../../core/dexter-core/lib/jspf.core-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/jspf.core-1.0.2.jar"/>
+			<pathelement path="../../core/dexter-core/lib/jspf.remote-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/jspf.remote-1.0.2.jar"/>
+			<pathelement path="../../core/dexter-core/lib/jspf.remote.discovery-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/jspf.remote.discovery-1.0.2.jar"/>
+			<pathelement path="../../core/dexter-core/lib/jspf.remote.ermi-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/jspf.remote.ermi-1.0.2.jar"/>
+			<pathelement path="../../core/dexter-core/lib/jspf.remote.javascript-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/jspf.remote.javascript-1.0.2.jar"/>
+			<pathelement path="../../core/dexter-core/lib/jspf.remote.lipermi-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/jspf.remote.lipermi-1.0.2.jar"/>
+			<pathelement path="../../core/dexter-core/lib/jspf.remote.xmlrpc-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/jspf.remote.xmlrpc-1.0.2.jar"/>
+			<pathelement path="../../core/dexter-core/lib/jspf.remote.xmlrpcdelight-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/jspf.remote.xmlrpcdelight-1.0.2.jar"/>
+			<pathelement path="../../core/dexter-core/lib/guava-16.0.1.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/guava-16.0.1.jar"/>
+			<pathelement path="../../core/dexter-core/lib/junit-4.10.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/junit-4.10.jar"/>
+			<pathelement path="../../core/dexter-core/lib/hamcrest-core-1.3.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/hamcrest-core-1.3.jar"/>
+			<pathelement path="../../core/dexter-core/lib/gson-2.2.4.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/gson-2.2.4.jar"/>
+			<pathelement path="../../core/dexter-core/lib/log4j-1.2.17.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/log4j-1.2.17.jar"/>
+			<pathelement path="../../core/dexter-core/lib/slf4j-api-1.6.6.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/slf4j-api-1.6.6.jar"/>
+			<pathelement path="../../core/dexter-core/lib/slf4j-log4j12-1.6.6.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/slf4j-log4j12-1.6.6.jar"/>
+			<pathelement path="../../core/dexter-core/lib/jackson-core-asl-1.9.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/jackson-core-asl-1.9.2.jar"/>
+			<pathelement path="../../core/dexter-core/lib/jackson-jaxrs-1.9.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/jackson-jaxrs-1.9.2.jar"/>
+			<pathelement path="../../core/dexter-core/lib/jackson-mapper-asl-1.9.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/jackson-mapper-asl-1.9.2.jar"/>
+			<pathelement path="../../core/dexter-core/lib/jackson-xc-1.9.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/jackson-xc-1.9.2.jar"/>
+			<pathelement path="../../core/dexter-core/lib/jersey-client-1.18.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/jersey-client-1.18.jar"/>
+			<pathelement path="../../core/dexter-core/lib/jersey-core-1.18.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/jersey-core-1.18.jar"/>
+			<pathelement path="../../core/dexter-core/lib/jersey-json-1.18.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/jersey-json-1.18.jar"/>
+			<pathelement path="../../core/dexter-core/lib/commons-io-2.4.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/commons-io-2.4.jar"/>
+			<pathelement path="../../core/dexter-core/lib/poi-3.11-20141221.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/poi-3.11-20141221.jar"/>
+			<pathelement path="../../core/dexter-core/lib/poi-ooxml-3.11-20141221.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/poi-ooxml-3.11-20141221.jar"/>
+			<pathelement path="../../core/dexter-core/lib/poi-ooxml-schemas-3.11-20141221.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/poi-ooxml-schemas-3.11-20141221.jar"/>
+			<pathelement path="../../core/dexter-core/lib/org.eclipse.cdt.core_5.9.1.201502131403.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/org.eclipse.cdt.core_5.9.1.201502131403.jar"/>
+			<pathelement path="../../core/dexter-core/lib/com.ibm.icu_4.4.2.v20110823.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/com.ibm.icu_4.4.2.v20110823.jar"/>
+			<pathelement path="../../core/dexter-core/lib/commons-codec-1.9.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/commons-codec-1.9.jar"/>
+			<pathelement path="../../core/dexter-core/lib/commons-logging-1.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/commons-logging-1.2.jar"/>
+			<pathelement path="../../core/dexter-core/lib/org.eclipse.core.resources_3.7.101.v20120125-1505.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-core_0.9.0/lib/org.eclipse.core.resources_3.7.101.v20120125-1505.jar"/>
+			<pathelement path="../dexter-eclipse-ui/bin/"/>
+			<pathelement path="${build.result.folder}/../dexter-eclipse-ui_0.9.0/bin/"/>
+			<pathelement path="${build.result.folder}/../dexter-eclipse-ui/@dot"/>
+			<pathelement path="${build.result.folder}/../dexter-eclipse-ui_0.9.0/@dot"/>
+			<pathelement path="../dexter-eclipse-ui/bin"/>
+			<pathelement path="${build.result.folder}/../dexter-eclipse-ui_0.9.0/bin"/>
+			<pathelement path="../dexter-eclipse-ui/lib/guava-16.0.1.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-eclipse-ui_0.9.0/lib/guava-16.0.1.jar"/>
+			<pathelement path="../dexter-eclipse-ui/lib/gson-2.2.4.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-eclipse-ui_0.9.0/lib/gson-2.2.4.jar"/>
+			<pathelement path="../dexter-eclipse-ui/lib/jersey-client-1.18.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-eclipse-ui_0.9.0/lib/jersey-client-1.18.jar"/>
+			<pathelement path="../dexter-eclipse-ui/lib/jersey-core-1.18.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-eclipse-ui_0.9.0/lib/jersey-core-1.18.jar"/>
+			<pathelement path="../dexter-eclipse-ui/lib/jersey-json-1.18.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-eclipse-ui_0.9.0/lib/jersey-json-1.18.jar"/>
+			<pathelement path="../../core/dexter-executor/bin"/>
+			<pathelement path="${build.result.folder}/../dexter-executor_0.9.0/bin"/>
+			<pathelement path="${build.result.folder}/../../core/dexter-executor/@dot"/>
+			<pathelement path="${build.result.folder}/../dexter-executor_0.9.0/@dot"/>
+			<pathelement path="../../core/dexter-executor/lib/log4j-1.2.17.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-executor_0.9.0/lib/log4j-1.2.17.jar"/>
+			<pathelement path="../../core/dexter-executor/lib/guava-16.0.1.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-executor_0.9.0/lib/guava-16.0.1.jar"/>
+			<pathelement path="../../core/dexter-executor/lib/gson-2.2.4.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-executor_0.9.0/lib/gson-2.2.4.jar"/>
+			<pathelement path="../../core/dexter-executor/lib/commons-cli-1.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-executor_0.9.0/lib/commons-cli-1.2.jar"/>
+			<pathelement path="../../core/dexter-executor/lib/commons-io-2.4.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-executor_0.9.0/lib/commons-io-2.4.jar"/>
+			<pathelement path="../../core/dexter-executor/lib/jspf.core-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-executor_0.9.0/lib/jspf.core-1.0.2.jar"/>
+			<pathelement path="../../core/dexter-executor/lib/jspf.remote-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-executor_0.9.0/lib/jspf.remote-1.0.2.jar"/>
+			<pathelement path="../../core/dexter-executor/lib/jspf.remote.discovery-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-executor_0.9.0/lib/jspf.remote.discovery-1.0.2.jar"/>
+			<pathelement path="../../core/dexter-executor/lib/jspf.remote.ermi-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-executor_0.9.0/lib/jspf.remote.ermi-1.0.2.jar"/>
+			<pathelement path="../../core/dexter-executor/lib/jspf.remote.javascript-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-executor_0.9.0/lib/jspf.remote.javascript-1.0.2.jar"/>
+			<pathelement path="../../core/dexter-executor/lib/jspf.remote.lipermi-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-executor_0.9.0/lib/jspf.remote.lipermi-1.0.2.jar"/>
+			<pathelement path="../../core/dexter-executor/lib/jspf.remote.xmlrpc-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-executor_0.9.0/lib/jspf.remote.xmlrpc-1.0.2.jar"/>
+			<pathelement path="../../core/dexter-executor/lib/jspf.remote.xmlrpcdelight-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-executor_0.9.0/lib/jspf.remote.xmlrpcdelight-1.0.2.jar"/>
+			<pathelement path="../../core/dexter-metrics/bin/"/>
+			<pathelement path="${build.result.folder}/../dexter-metrics_0.9.0/bin/"/>
+			<pathelement path="${build.result.folder}/../../core/dexter-metrics/@dot"/>
+			<pathelement path="${build.result.folder}/../dexter-metrics_0.9.0/@dot"/>
+			<pathelement path="../../core/dexter-metrics/bin"/>
+			<pathelement path="${build.result.folder}/../dexter-metrics_0.9.0/bin"/>
+			<pathelement path="../../core/dexter-metrics/lib/log4j-1.2.17.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-metrics_0.9.0/lib/log4j-1.2.17.jar"/>
+			<pathelement path="../../core/dexter-metrics/lib/gson-2.2.4.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-metrics_0.9.0/lib/gson-2.2.4.jar"/>
+			<pathelement path="../../core/dexter-metrics/lib/checkstyle-5.7-all.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-metrics_0.9.0/lib/checkstyle-5.7-all.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.ui.ide_3.8.2.v20121106-165923/e4-ide.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.ui.ide_3.8.2.v20121106-165923.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.ui.win32_3.2.302.v20130123-162658.jar"/>
+			<pathelement path="${buildDirectory}/nestedJars/org.eclipse.ui.win32_3.2.302.v20130123-162658/e4-ide.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.ui.views_3.6.100.v20120705-114010.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.jface.text_3.8.2.v20121126-164145.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.text_3.5.200.v20120523-1310.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.ui.forms_3.5.200.v20120705-114351.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.jdt.core_3.8.3.v20130121-145325.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.jdt.compiler.apt_1.0.600.v20130116-050536.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.jdt.compiler.tool_1.0.200.v20130116-050536.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.team.core_3.6.100.v20120524-0627.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.ui.workbench.texteditor_3.8.0.v20120523-1310.jar"/>
+			<pathelement path="../../../../target/target-rcp-juno/plugins/org.eclipse.compare.core_3.5.200.v20120522-1148.jar"/>
+			<pathelement path="../../plugin/dexter-cppcheck/bin"/>
+			<pathelement path="${build.result.folder}/../dexter-cppcheck_0.9.0/bin"/>
+			<pathelement path="${build.result.folder}/../../plugin/dexter-cppcheck/@dot"/>
+			<pathelement path="${build.result.folder}/../dexter-cppcheck_0.9.0/@dot"/>
+			<pathelement path="../../plugin/dexter-cppcheck/lib/gson-2.2.4.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-cppcheck_0.9.0/lib/gson-2.2.4.jar"/>
+			<pathelement path="../../plugin/dexter-cppcheck/lib/guava-16.0.1.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-cppcheck_0.9.0/lib/guava-16.0.1.jar"/>
+			<pathelement path="../../plugin/dexter-cppcheck/lib/junit-4.10.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-cppcheck_0.9.0/lib/junit-4.10.jar"/>
+			<pathelement path="../../plugin/dexter-cppcheck/lib/log4j-1.2.17.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-cppcheck_0.9.0/lib/log4j-1.2.17.jar"/>
+			<pathelement path="../../plugin/dexter-cppcheck/lib/jspf/jspf.core-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-cppcheck_0.9.0/lib/jspf/jspf.core-1.0.2.jar"/>
+			<pathelement path="../../plugin/dexter-cppcheck/lib/jspf/jspf.remote-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-cppcheck_0.9.0/lib/jspf/jspf.remote-1.0.2.jar"/>
+			<pathelement path="../../plugin/dexter-cppcheck/lib/jspf/jspf.remote.discovery-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-cppcheck_0.9.0/lib/jspf/jspf.remote.discovery-1.0.2.jar"/>
+			<pathelement path="../../plugin/dexter-cppcheck/lib/jspf/jspf.remote.ermi-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-cppcheck_0.9.0/lib/jspf/jspf.remote.ermi-1.0.2.jar"/>
+			<pathelement path="../../plugin/dexter-cppcheck/lib/jspf/jspf.remote.javascript-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-cppcheck_0.9.0/lib/jspf/jspf.remote.javascript-1.0.2.jar"/>
+			<pathelement path="../../plugin/dexter-cppcheck/lib/jspf/jspf.remote.lipermi-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-cppcheck_0.9.0/lib/jspf/jspf.remote.lipermi-1.0.2.jar"/>
+			<pathelement path="../../plugin/dexter-cppcheck/lib/jspf/jspf.remote.xmlrpc-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-cppcheck_0.9.0/lib/jspf/jspf.remote.xmlrpc-1.0.2.jar"/>
+			<pathelement path="../../plugin/dexter-cppcheck/lib/jspf/jspf.remote.xmlrpcdelight-1.0.2.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-cppcheck_0.9.0/lib/jspf/jspf.remote.xmlrpcdelight-1.0.2.jar"/>
+			<pathelement path="../../plugin/dexter-cppcheck/lib/commons-io-2.4.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-cppcheck_0.9.0/lib/commons-io-2.4.jar"/>
+			<pathelement path="lib/guava-16.0.1.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-daemon_0.9.0/lib/guava-16.0.1.jar"/>
+			<pathelement path="lib/gson-2.2.4.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-daemon_0.9.0/lib/gson-2.2.4.jar"/>
+			<pathelement path="lib/commons-io-2.4.jar"/>
+			<pathelement path="${build.result.folder}/../dexter-daemon_0.9.0/lib/commons-io-2.4.jar"/>
+		</path>
+		<!-- compile the source code -->
+		<javac destdir="${build.result.folder}/@dot" failonerror="${javacFailOnError}" verbose="${javacVerbose}" debug="${javacDebugInfo}" includeAntRuntime="no" bootclasspath="${bundleBootClasspath}" source="${bundleJavacSource}" target="${bundleJavacTarget}"		>
+			<compilerarg line="${compilerArg}" compiler="${build.compiler}"/>
+			<classpath refid="@dot.classpath" />
+			<src path="src/java/"			/>
+			<src path="src/resource/"			/>
+			<compilerarg value="@${basedir}/javaCompiler...args" compiler="org.eclipse.jdt.core.JDTCompilerAdapter"			/>
+			<compilerarg line="-log &apos;${build.result.folder}/@dot${logExtension}&apos;" compiler="org.eclipse.jdt.core.JDTCompilerAdapter"			/>
+		</javac>
+		<antcall target="checkCompilationResults"/>
+		<!-- Copy necessary resources -->
+		<copy todir="${build.result.folder}/@dot" failonerror="true" overwrite="false">
+			<fileset dir="src/java/">
+				<exclude name="**/*.java"/>
+				<exclude name="**/package.htm*"/>
+			</fileset>
+			<fileset dir="src/resource/">
+				<exclude name="**/*.java"/>
+				<exclude name="**/package.htm*"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="src.zip" depends="init" unless="src.zip">
+		<mkdir dir="${build.result.folder}"/>
+		<antcall target="zip.src.zip"/>
+	</target>
+	<target name="zip.src.zip">
+		<zip destfile="${build.result.folder}/src.zip" filesonly="false" whenempty="skip" update="false">
+			<fileset dir="src/java/">
+				<include name="**/*.java"/>
+			</fileset>
+			<fileset dir="src/resource/">
+				<include name="**/*.java"/>
+			</fileset>
+		</zip>
+	</target>
+	<target name="copy.src.zip">
+		<copy todir="${source.destination.folder}/" failonerror="true" overwrite="true">
+			<fileset dir="src/java/">
+				<include name="**/*.java"/>
+			</fileset>
+			<fileset dir="src/resource/">
+				<include name="**/*.java"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="build.jars" depends="init" description="Compile classes and build nested jars for the plug-in: dexter-daemon.">
+		<delete file="${compilation.problem.marker}" quiet="true"/>
+		<available property="@dot" file="${build.result.folder}/@dot"/>
+		<antcall target="@dot"/>
+	</target>
+
+	<target name="checkCompilationResults" if="compilation.error.occured">
+		<echo file="${compilation.problem.marker}" message="dexter-daemon_0.9.0${line.separator}compilation.error.occured=${compilation.error.occured}"/>
+		<eclipse.logCompileError bundle="dexter-daemon_0.9.0" log="${compilation.prereq.log}">
+			<include name="C:/DEV/github/project/core/dexter-core/compilation.problem"/>
+			<include name="${pluginTemp}/dexter-core_0.9.0/compilation.problem"/>
+			<include name="C:/DEV/github/project/plugin/dexter-cppcheck/compilation.problem"/>
+			<include name="${pluginTemp}/dexter-cppcheck_0.9.0/compilation.problem"/>
+			<include name="C:/DEV/github/project/core/dexter-metrics/compilation.problem"/>
+			<include name="${pluginTemp}/dexter-metrics_0.9.0/compilation.problem"/>
+			<include name="C:/DEV/github/project/client/dexter-eclipse-ui/compilation.problem"/>
+			<include name="${pluginTemp}/dexter-eclipse-ui_0.9.0/compilation.problem"/>
+			<include name="C:/DEV/github/project/core/dexter-executor/compilation.problem"/>
+			<include name="${pluginTemp}/dexter-executor_0.9.0/compilation.problem"/>
+		</eclipse.logCompileError>
+	</target>
+
+	<target name="build.sources" depends="init">
+		<available property="src.zip" file="${build.result.folder}/src.zip"/>
+		<antcall target="src.zip"/>
+	</target>
+
+	<target name="publish.bin.parts" depends="init" if="p2.publish.parts" unless="compilation.problem.marker.exists">
+		<mkdir dir="${build.result.folder}/dexter-daemon_0.9.0"/>
+		<copy todir="${build.result.folder}" failonerror="true" overwrite="true">
+			<fileset dir="${basedir}">
+				<include name="META-INF/MANIFEST.MF"/>
+				<include name="plugin.xml"/>
+				<include name="fragment.xml"/>
+			</fileset>
+		</copy>
+		<antcall target="apitools.generation">
+			<param name="target.folder" value="${build.result.folder}"/>
+			<param name="projectLocation" value="${basedir}"/>
+			<param name="binary.folders" value="${build.result.folder}/@dot;C:\DEV\github\project\client\dexter-daemon/lib/gson-2.2.4.jar;C:\DEV\github\project\client\dexter-daemon/lib/commons-io-2.4.jar;C:\DEV\github\project\client\dexter-daemon/lib/guava-16.0.1.jar"/>
+			<param name="projectName" value="${bundleId}_${bundleVersion}"/>
+		</antcall>
+		<eclipse.gatherBundle 
+		   metadataRepository="${p2.build.repo}"
+		   artifactRepository="${p2.build.repo}"
+		   buildResultFolder="${build.result.folder}"
+		   unpack="false"
+		   baseDirectory="${basedir}"
+		/>
+	</target>
+
+	<target name="gather.bin.parts" depends="init" if="destination.temp.folder">
+		<mkdir dir="${destination.temp.folder}/dexter-daemon_0.9.0"/>
+		<copy todir="${destination.temp.folder}/dexter-daemon_0.9.0" failonerror="true" overwrite="false">
+			<fileset dir="${build.result.folder}/@dot">
+				<include name="**"/>
+			</fileset>
+		</copy>
+		<copy todir="${destination.temp.folder}/dexter-daemon_0.9.0" failonerror="true" overwrite="true">
+			<fileset dir="${basedir}">
+				<include name="plugin.xml"/>
+				<include name="META-INF/"/>
+				<include name="icons/"/>
+				<include name="splash.bmp"/>
+				<include name="lib/guava-16.0.1.jar"/>
+				<include name="build.properties"/>
+				<include name="dexter-daemon.product"/>
+				<include name=".project"/>
+				<include name=".classpath"/>
+				<include name="lib/gson-2.2.4.jar"/>
+				<include name="lib/commons-io-2.4.jar"/>
+				<include name="about.properties"/>
+				<include name="about.ini"/>
+			</fileset>
+		</copy>
+		<antcall target="apitools.generation">
+			<param name="target.folder" value="${destination.temp.folder}/dexter-daemon_0.9.0"/>
+			<param name="projectLocation" value="${basedir}"/>
+			<param name="binary.folders" value="${build.result.folder}/@dot;C:\DEV\github\project\client\dexter-daemon/lib/gson-2.2.4.jar;C:\DEV\github\project\client\dexter-daemon/lib/commons-io-2.4.jar;C:\DEV\github\project\client\dexter-daemon/lib/guava-16.0.1.jar"/>
+			<param name="projectName" value="${bundleId}_${bundleVersion}"/>
+		</antcall>
+	</target>
+
+	<target name="build.zips" depends="init">
+	</target>
+
+	<target name="gather.sources" depends="init" if="destination.temp.folder">
+		<mkdir dir="${destination.temp.folder}/dexter-daemon_0.9.0"/>
+		<copy file="${build.result.folder}/src.zip" todir="${destination.temp.folder}/dexter-daemon_0.9.0" failonerror="false" overwrite="false"/>
+		<antcall target="copy.src.includes">
+			<param name="source.destination.folder" value="${destination.temp.folder}/dexter-daemon_0.9.0"/>
+		</antcall>
+	</target>
+
+	<target name="gather.individual.sources" depends="init">
+		<antcall target="copy.src.zip">
+			<param name="source.destination.folder" value="${destination.temp.folder}"/>
+		</antcall>
+		<antcall target="copy.src.includes">
+			<param name="source.destination.folder" value="${destination.temp.folder}"/>
+		</antcall>
+	</target>
+
+	<target name="copy.src.includes" depends="init">
+	</target>
+
+	<target name="gather.logs" depends="init" if="destination.temp.folder">
+		<mkdir dir="${destination.temp.folder}/dexter-daemon_0.9.0"/>
+		<copy todir="${destination.temp.folder}/dexter-daemon_0.9.0" failonerror="false" overwrite="false">
+			<fileset dir="${build.result.folder}">
+				<include name="@dot${logExtension}"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="clean" depends="init" description="Clean the plug-in: dexter-daemon of all the zips, jars and logs created.">
+		<delete dir="${build.result.folder}/@dot"/>
+		<delete file="${build.result.folder}/src.zip"/>
+		<delete file="${plugin.destination}/dexter-daemon_0.9.0.jar"/>
+		<delete file="${plugin.destination}/dexter-daemon_0.9.0.zip"/>
+		<delete dir="${temp.folder}"/>
+		<delete file="${compilation.problem.marker}" quiet="true"/>
+	</target>
+
+	<target name="refresh" depends="init" if="eclipse.running" description="Refresh this folder.">
+		<eclipse.convertPath fileSystemPath="C:/DEV/github/project/client/dexter-daemon" property="resourcePath"/>
+		<eclipse.refreshLocal resource="${resourcePath}" depth="infinite"/>
+	</target>
+
+	<target name="zip.plugin" depends="init" description="Create a zip containing all the elements for the plug-in: dexter-daemon.">
+		<delete dir="${temp.folder}"/>
+		<mkdir dir="${temp.folder}"/>
+		<antcall target="build.jars"/>
+		<antcall target="build.sources"/>
+		<antcall target="gather.bin.parts">
+			<param name="destination.temp.folder" value="${temp.folder}/"/>
+		</antcall>
+		<antcall target="gather.sources">
+			<param name="destination.temp.folder" value="${temp.folder}/"/>
+		</antcall>
+		<delete>
+			<fileset dir="${temp.folder}">
+				<include name="**/*.bin${logExtension}"/>
+			</fileset>
+		</delete>
+		<zip destfile="${plugin.destination}/dexter-daemon_0.9.0.zip" basedir="${temp.folder}" filesonly="true" whenempty="skip" update="false"/>
+		<delete dir="${temp.folder}"/>
+	</target>
+
+	<target name="apitools.generation" if="generateAPIDescription">
+		<apitooling.apigeneration  projectName="${projectName}" project="${projectLocation}" binary="${binary.folders}" target="${target.folder}" extramanifests="${extraManifests}" allownonapiproject="${allowNonApiProject}"		/>
+	</target>
+
+</project>

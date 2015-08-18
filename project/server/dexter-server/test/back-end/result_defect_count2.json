@@ -1,0 +1,77 @@
+{
+    "snapshotId": "2",
+    "modulePath": "tools\/test",
+    "fileName": "test.c",
+    "fullFilePath": "D:\/temp\/test.c",
+    "projectName": "test",
+    "groupId": "1",
+    "toolName": "",
+    "language": "",
+    "defectCount": "2",
+    "codeMetrics": {
+        "minComplexity": 0,
+        "maxComplexity": 0,
+        "classCnt": 0,
+        "methodCnt": 0,
+        "loc": 0,
+        "commentRatio": 0.0,
+        "averageCompexity": 0,
+        "sloc": 0
+    },
+    "defectList": [
+        {
+            "gdid": -1,
+            "occurences": [
+                {
+                    "code": "",
+                    "startLine": 164,
+                    "endLine": 164,
+                    "charStart": -1,
+                    "charEnd": -1,
+                    "variableName": "",
+                    "stringValue": "",
+                    "fieldName": "",
+                    "message": "'dev.buf' is of type 'void *'. When using void pointers in calculations, the behaviour is undefined. Arithmetic operations on 'void *' is a GNU C extension, which defines the 'sizeof(void)' to be 1."
+                }
+            ],
+            "createdDateTime": 1436750892415.0,
+            "message": "[#1@164] 'dev.buf' is of type 'void *'. When using void pointers in calculations, the behaviour is undefined. Arithmetic operations on 'void *' is a GNU C extension, which defines the 'sizeof(void)' to be 1. ",
+            "severityCode": "CRI",
+            "modifiedDateTime": 1436750892415.0,
+            "checkerCode": "arithoperationsonvoidpointer",
+            "className": "",
+            "methodName": "test_dir",
+            "toolName": "cppcheck",
+            "language": "CPP",
+            "fileName": "test.c",
+            "modulePath": "tools\/test"
+        },
+        {
+            "gdid": -1,
+            "occurences": [
+                {
+                    "code": "",
+                    "startLine": 196,
+                    "endLine": 196,
+                    "charStart": 5315,
+                    "charEnd": 5332,
+                    "variableName": "",
+                    "stringValue": "optstring",
+                    "fieldName": "",
+                    "message": "const variable can be Upper Alphabet, underline, or number. your input is optstring"
+                }
+            ],
+            "createdDateTime": 1436750892660.0,
+            "message": "[#1@196] const variable can be Upper Alphabet, underline, or number. your input is optstring ",
+            "severityCode": "MAJ",
+            "modifiedDateTime": 1436750892660.0,
+            "checkerCode": "CONST_NAMING",
+            "className": "",
+            "methodName": "",
+            "toolName": "dexter-vd-cpp",
+            "language": "CPP",
+            "fileName": "test.c",
+            "modulePath": "tools\/test"
+        }
+    ]
+}

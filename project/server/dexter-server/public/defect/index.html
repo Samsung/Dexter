@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html ng-app="defectApp">
+<head>
+    <meta charset="UTF-8">
+    <title id = "indexTitle">Defect</title>
+    <link href="../css/jq/jquery-ui-1.9.2.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../css/ng/angular.treeview.css" />
+    
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ng/ng-table.css" />
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
+
+    <link rel="stylesheet" type="text/css" href="../css/jq/layout-default.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ng/ng-grid.min.css" />
+
+    <link type="text/css" rel="stylesheet" href="../gq/src/prettify.css">
+    <script src="../js/lodash.src.js"></script>
+    <script src="../js/jq/jquery-1.11.1.min.js"></script>
+    <script src="../js/jq/jquery-ui-1.9.2.min.js"></script>
+    <script src="../js/jq/jquery.layout-latest.js"></script>
+    <script src="../js/ng/angular.min.js"></script>
+    <script src="../js/ng/angular-animate.min.js"></script>
+    <script src="../js/ng/angular-route.min.js"></script>
+    <script src="../js/ng/angular-resource.min.js"></script>
+    <script src="../js/ng/angular.treeview.min.js"></script>
+    <script src="../js/ng/angular-sanitize.min.js"></script>
+    <script src="../js/ng/ng-grid-2.0.11.min.js"></script>
+    <script src="../js/ng/ui-bootstrap-tpls-0.11.0.min.js"></script>
+    <script src="../js/util/underscore-min.js"></script>
+    <script src="../js/common.js"></script>
+    <script src="../js/base64.js"></script>
+
+
+   <script>
+        checkBrowser();
+        $(document).ready(function(){
+        });
+
+    </script>
+</head>
+<body>
+
+    <div id="bookmark" class="anchor"></div>
+    <div ng-include="'../header.html'"></div>
+    <div ng-view=""></div>
+    <div class="setMSG" id="showLoading" align="center"><img src="../images/loading_4.gif"></div>
+    <script src="defectApp.js"></script>
+    <script src="defectCtrl.js"></script>
+    <script src="snapshotCtrl.js"></script>
+    <script src="../gq/src/prettify.js"></script>
+    <div ng-include="'../footer.html'"></div>
+</body>
+</html>

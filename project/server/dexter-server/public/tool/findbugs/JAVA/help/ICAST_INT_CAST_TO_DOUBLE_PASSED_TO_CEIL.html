@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	
+		<meta charset="utf-8" />
+		
+		<!--basic styles-->
+
+		<link href="asset/css/bootstrap.css" rel="stylesheet" />
+		<link rel="stylesheet" href="asset/css/dexter.min.css" />
+		<link rel="stylesheet" href="asset/css/font-awesome.min.css" />
+		<!--[if IE 7]>
+			<link rel="stylesheet" href="asset/css/font-awesome-ie7.min.css">
+		<![endif]-->
+
+		<link rel="stylesheet" href="asset/css/prettify.css" />
+		
+		<script src="asset/js/jquery-2.0.3.min.js"></script>
+		<!--[if IE]>
+			<script src="asset/js/jquery.min.js"></script>
+		<![endif]-->
+
+		<script src="asset/js/prettify.js"></script>
+		<script type="text/javascript">
+			$(function() {
+			
+				window.prettyPrint && prettyPrint();
+				$('#id-check-horizontal').removeAttr('checked').on('click', function(){
+					$('#dt-list-1').toggleClass('dl-horizontal').prev().html(this.checked ? '&lt;dl class="dl-horizontal"&gt;' : '&lt;dl&gt;');
+				});
+			
+			})
+		</script>
+		
+
+	</head>
+
+	<body>
+
+		<div class="space-12"></div>
+
+		<div class="table-grid-info table-grid-info-striped">
+			
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Checker Code</div>
+				<div class="table-grid-value"><h5 class="header blue"><i class="fa fa-bug"></i>&nbsp;
+					ICAST_INT_CAST_TO_DOUBLE_PASSED_TO_CEIL </h5>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Description </div>
+				<div class="table-grid-value-highlight"><i class="fa fa-th"></i>&nbsp;
+					Integral value cast to double and then passed to Math.ceil
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Severity </div>
+				<div class="table-grid-value">
+					Critical
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Detector / Bug Pattern </div>
+				<div class="table-grid-value">
+					IDivResultCastToDouble / ICAST
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> More Information </div>
+				<div class="table-grid-value">
+<p>
+This code converts an integral value (e.g., int or long)
+to a double precision
+floating point number and then
+passing the result to the Math.ceil() function, which rounds a double to
+the next higher integer value. This operation should always be a no-op,
+since the converting an integer to a double should give a number with no fractional part.
+It is likely that the operation that generated the value to be passed
+to Math.ceil was intended to be performed using double precision
+floating point arithmetic.
+</p>
+
+		</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Bad Code </div>
+				<div class="table-grid-value">
+<pre class="prettyprint linenums warning">
+int a = 60070;
+int b = 57750;
+double value = Math.ceil(a/b); // Non Complaint
+</pre>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Good Code </div>
+				<div class="table-grid-value">
+<pre class="prettyprint linenums correct">
+int a = 60070;
+int b = 57750;
+double value = Math.ceil(a/((double)b)); //Complaint
+</pre>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> CWE ID </div>
+				<div class="table-grid-value">
+				<a href="http://cwe.mitre.org/data/definitions/1001.html">CWE-586</a>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Code Review Asset </div>
+				<div class="table-grid-value">
+				N/A
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> URLs </div>
+				<div class="table-grid-value"> <i class="fa fa-link"></i>&nbsp;
+					OTHER SITE  :  
+					<a href="https://books.google.co.in/books?id=kSiDAAAAQBAJ&pg=PA193&lpg=PA193&dq=Integral+value+cast+to+double+and+then+passed+to+Math.ceil&source=bl&ots=YnUS7xlDVb&sig=EM2Jmkm7ETZ7RVZkvKi4YbnYwUs&hl=en&sa=X&ei=yzT4VJrIE9CduQSklYLYBQ&ved=0CD0Q6AEwBQ#v=onepage&q&f=false">
+					https://books.google.co.in/books?id=kSiDAAAAQBAJ&pg=PA193&lpg=PA193&dq=Integral+value+cast+to+double+and+then+passed+to+Math.ceil&source=bl&ots=YnUS7xlDVb&sig=EM2Jmkm7ETZ7RVZkvKi4YbnYwUs&hl=en&sa=X&ei=yzT4VJrIE9CduQSklYLYBQ&ved=0CD0Q6AEwBQ#v=onepage&q&f=false </a>
+					
+				</div>
+			</div>
+
+
+
+		</div>
+
+		<div class="space-20"></div>
+
+</body>
+
+
+
+<html>

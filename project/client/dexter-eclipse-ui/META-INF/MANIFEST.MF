@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Dexter Eclipse UI
+Bundle-SymbolicName: dexter-eclipse-ui; singleton:=true
+Bundle-Version: 0.9.0
+Bundle-Activator: com.samsung.sec.dexter.eclipse.ui.DexterUIActivator
+Bundle-Vendor: Samsung Electronics VD SE Lab
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ dexter-core,
+ dexter-executor,
+ org.eclipse.core.resources,
+ org.eclipse.core.filesystem,
+ org.eclipse.ui.ide,
+ org.eclipse.jdt.core,
+ org.eclipse.ui.workbench.texteditor,
+ org.eclipse.jface.text
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .,
+ lib/guava-16.0.1.jar,
+ lib/gson-2.2.4.jar,
+ lib/jersey-client-1.18.jar,
+ lib/jersey-core-1.18.jar,
+ lib/jersey-json-1.18.jar
+Export-Package: com.samsung.sec.dexter.eclipse.ui,
+ com.samsung.sec.dexter.eclipse.ui.login,
+ com.samsung.sec.dexter.eclipse.ui.util,
+ com.samsung.sec.dexter.eclipse.ui.view

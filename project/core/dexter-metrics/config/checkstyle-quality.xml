@@ -1,0 +1,11 @@
+<!DOCTYPE module PUBLIC
+"-//Puppy Crawl//DTD Check Configuration 1.2//EN"
+"http://www.puppycrawl.com/dtds/configuration_1_2.dtd">
+
+<module name="Checker">
+	<module name="TreeWalker">
+		<module name="com.samsung.sec.dexter.metrics.CommentLineCheck" />
+		<module name="com.samsung.sec.dexter.metrics.CyclometicComplexityCheck"/>
+		<module name="com.samsung.sec.dexter.metrics.ClassAndMethodCountCheck"/>
+	</module>
+</module>

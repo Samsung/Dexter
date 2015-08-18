@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/test"/>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry kind="src" path="src/resource"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.core.resources_3.7.101.v20120125-1505.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.eclipse.cdt.core_5.9.1.201502131403.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-3.11.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-3.11.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/poi-ooxml-schemas-3.11.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-io-2.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jackson-core-asl-1.9.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jackson-jaxrs-1.9.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jackson-mapper-asl-1.9.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jackson-xc-1.9.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jersey-client-1.18.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jersey-core-1.18.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jersey-json-1.18.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/slf4j-api-1.6.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/slf4j-log4j12-1.6.6.jar"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/jspf.core-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/jspf.remote-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/jspf.remote.discovery-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/jspf.remote.ermi-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/jspf.remote.javascript-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/jspf.remote.lipermi-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/jspf.remote.xmlrpc-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/jspf.remote.xmlrpcdelight-1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/guava-16.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="lib/hamcrest-core-1.3.jar"/>
+	<classpathentry kind="lib" path="lib/gson-2.2.4.jar"/>
+	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="lib" path="lib/xmlbeans-2.6.0.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

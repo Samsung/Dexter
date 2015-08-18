@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="com.samsung.sec.dexter.daemon.DexterDaemonApplication">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Dexter Daemon Perspective"
+            class="com.samsung.sec.dexter.daemon.Perspective"
+            id="dexter-daemon.perspective">
+      </perspective>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="dexter-daemon.application"
+            name="Dexter Daemon">
+         <property
+               name="windowImages"
+               value="icons/16.png,icons/32.png,icons/48.png,icons/64.png,icons/128.png">
+         </property>
+         <property
+               name="appName"
+               value="Dexter Daemon">
+         </property>
+      </product>
+   </extension>
+
+</plugin>

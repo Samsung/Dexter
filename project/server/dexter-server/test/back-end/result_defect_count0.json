@@ -1,0 +1,22 @@
+{
+    "snapshotId": "2",
+    "modulePath": "tools\/test",
+    "fileName": "virtio_test.c",
+    "fullFilePath": "D:\/temp\/test.c",
+    "projectName": "test",
+    "groupId": "1",
+    "toolName": "",
+    "language": "",
+    "defectCount": "0",
+    "codeMetrics": {
+        "minComplexity": 0,
+        "maxComplexity": 0,
+        "classCnt": 0,
+        "methodCnt": 0,
+        "loc": 0,
+        "commentRatio": 0.0,
+        "averageCompexity": 0,
+        "sloc": 0
+    },
+    "defectList": []
+}

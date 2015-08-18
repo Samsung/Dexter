@@ -1,0 +1,15 @@
+drop table Configure;
+drop table SharedDataVersion;
+drop table DefectGroupMap;
+drop table DefectGroup;
+drop table AccessLog;
+drop table AnalysisLog;
+drop table CodeMetrics;
+drop table SourceCodeMap;
+drop table SnapshotOccurenceMap;
+drop table SnapshotDefectMap;
+drop table Snapshot;
+drop table DefectFilter;
+drop table Occurence;
+drop table Defect;
+drop table Account;

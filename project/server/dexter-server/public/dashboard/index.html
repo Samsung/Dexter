@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html ng-app="dashboardApp">
+<head>
+    <meta charset="UTF-8">
+    <title id = "indexDashboardTitle">Dashboard on Dexter Web</title>
+
+ 	<link href="../css/jq/jquery-ui-1.9.2.min.css" rel="stylesheet" type="text/css" />
+
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../css/d3/dc.css" />
+
+    <link rel="stylesheet" type="text/css" href="../css/jq/layout-default.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ng/ng-grid.min.css" />
+
+    <link rel="stylesheet" type="text/css" href="../css/dashboard.css" />
+
+    <script src="../js/jq/jquery-1.11.1.min.js"></script>
+    <script src="../js/jq/jquery-ui-1.9.2.min.js"></script>
+    <script src="../js/jq/jquery.layout-latest.js"></script>
+
+    <script src="../js/ng/angular.min.js"></script>
+    <script src="../js/ng/angular-animate.min.js"></script>
+    <script src="../js/ng/angular-route.min.js"></script>
+    <script src="../js/ng/angular-resource.min.js"></script>
+    <script src="../js/ng/angular-sanitize.min.js"></script>
+    <script src="../js/ng/ng-grid-2.0.11.min.js"></script>
+    <script src="../js/ng/ui-bootstrap-tpls-0.11.0.min.js"></script>
+    <script src="/js/util/underscore-min.js"></script>
+
+    <script src="../js/d3/d3.min.js"></script>
+    <script src="../js/d3/crossfilter.min.js"></script>
+    <script src="../js/d3/dc.min.js"></script>
+</head>
+
+<body style="background-color: #435A5F;  padding-top: 0px;">
+    <div ng-include="'../header.html'"></div>
+    <div id="backgroundIMG"></div>
+    <div ng-view=""></div><br/>
+    <!--div ng-include="'../footer.html'"></div-->
+
+    <script src="dashboardApp.js"></script>
+    <script src="dashboardCtrl.js"></script>
+</body>
+</html>

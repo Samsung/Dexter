@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	
+		<meta charset="utf-8" />
+		
+		<!--basic styles-->
+
+		<link href="asset/css/bootstrap.css" rel="stylesheet" />
+		<link rel="stylesheet" href="asset/css/dexter.min.css" />
+		<link rel="stylesheet" href="asset/css/font-awesome.min.css" />
+		<!--[if IE 7]>
+			<link rel="stylesheet" href="asset/css/font-awesome-ie7.min.css">
+		<![endif]-->
+
+		<link rel="stylesheet" href="asset/css/prettify.css" />
+		
+		<script src="asset/js/jquery-2.0.3.min.js"></script>
+		<!--[if IE]>
+			<script src="asset/js/jquery.min.js"></script>
+		<![endif]-->
+
+		<script src="asset/js/prettify.js"></script>
+		<script type="text/javascript">
+			$(function() {
+			
+				window.prettyPrint && prettyPrint();
+				$('#id-check-horizontal').removeAttr('checked').on('click', function(){
+					$('#dt-list-1').toggleClass('dl-horizontal').prev().html(this.checked ? '&lt;dl class="dl-horizontal"&gt;' : '&lt;dl&gt;');
+				});
+			
+			})
+		</script>
+		
+
+	</head>
+
+	<body>
+
+		<div class="space-12"></div>
+
+		<div class="table-grid-info table-grid-info-striped">
+			
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Checker Code</div>
+				<div class="table-grid-value"><h5 class="header blue"><i class="fa fa-bug"></i>&nbsp;
+					commaSeparatedReturn</h5>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Description </div>
+				<div class="table-grid-value-highlight"><i class="fa fa-th"></i>&nbsp;
+					Usage of comma in return statements.
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Severity </div>
+				<div class="table-grid-value">
+					Critical
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Detector / Bug Pattern </div>
+				<div class="table-grid-value">
+					Usage of comma in return statements.
+
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> More Information </div>
+				<div class="table-grid-value">
+				Usage of comma in return statements.
+
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Bad Code </div>
+				<div class="table-grid-value">
+			<pre class="prettyprint linenums warning">
+int a=1, b=2, c=3, i=0; 
+// commas act as separators in this line, not as an operator 
+ // ... a=1, b=2, c=3, i=0
+i = (a, b);             
+// stores b into i 
+// ... a=1, b=2, c=3, i=2
+i = a, b;               
+// stores a into i. Equivalent to (i = a), b;
+// ... a=1, b=2, c=3, i=1
+i = (a += 2, a + b);    
+// increases a by 2, then stores a+b = 3+2 into i
+// ... a=3, b=2, c=3, i=5
+i = a += 2, a + b;  
+// increases a by 2, then stores a to i, and discards unused
+// a + b rvalue. Equivalent to (i = (a += 2)), a + b; 
+// ... a=5, b=2, c=3, i=5
+i = a, b, c;         
+// stores a into i, discarding the unused b and c rvalues
+// ... a=5, b=2, c=3, i=5
+i = (a, b, c);          
+// stores c into i, discarding the unused a and b rvalues
+// ... a=5, b=2, c=3, i=3
+return a=4, b=5, c=6;  
+// returns 6, not 4, since comma operator sequence points
+// following the keyword 'return' are considered a single
+// expression evaluating to rvalue of final subexpression c=6
+return 1, 2, 3;         
+// returns 3, not 1, for same reason as previous example
+return(1), 2, 3;        
+// returns 3, not 1, still for same reason as above.  This
+// example works as it does because return is a keyword, not 
+// a function call. Even though most compilers will allow for
+// the construct return(value), the parentheses are syntactic
+// sugar that get stripped out without syntactic analysis
+</pre>
+			</div>
+			</div>
+          
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Good Code </div>
+				<div class="table-grid-value">
+			<pre class="prettyprint linenums correct">
+
+</pre>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> CWE ID </div>
+				<div class="table-grid-value">			
+				<a href="asset/CWE_ID.html" target="_blank">0 </a>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Code Review Asset </div>
+				<div class="table-grid-value">
+				http://168.219.241.216/confluence/display/SW/commaSeparatedReturn 
+
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> URLs </div>
+				<div class="table-grid-value"> <i class="fa fa-link"></i>&nbsp;
+					<a href="http://en.wikipedia.org/wiki/Comma_operator" target="_blank">http://en.wikipedia.org/wiki/Comma_operator</a>
+								
+					
+				</div>
+			</div>
+
+
+
+		</div>
+
+		<div class="space-20"></div>
+
+
+</body>
+
+
+
+<html>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="How to use Dexter" link_to="toc.xml#howtouse"> 
+    <topic label="Creation Account"  href="html/howtouse/creationAccount.html">
+    </topic>
+    <topic label="Defect Manager"  href="html/howtouse/defectManager.html">
+    </topic> 
+</toc>

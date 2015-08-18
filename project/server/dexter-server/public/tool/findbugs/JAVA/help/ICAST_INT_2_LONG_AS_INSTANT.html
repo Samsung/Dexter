@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	
+		<meta charset="utf-8" />
+		
+		<!--basic styles-->
+
+		<link href="asset/css/bootstrap.css" rel="stylesheet" />
+		<link rel="stylesheet" href="asset/css/dexter.min.css" />
+		<link rel="stylesheet" href="asset/css/font-awesome.min.css" />
+		<!--[if IE 7]>
+			<link rel="stylesheet" href="asset/css/font-awesome-ie7.min.css">
+		<![endif]-->
+
+		<link rel="stylesheet" href="asset/css/prettify.css" />
+		
+		<script src="asset/js/jquery-2.0.3.min.js"></script>
+		<!--[if IE]>
+			<script src="asset/js/jquery.min.js"></script>
+		<![endif]-->
+
+		<script src="asset/js/prettify.js"></script>
+		<script type="text/javascript">
+			$(function() {
+			
+				window.prettyPrint && prettyPrint();
+				$('#id-check-horizontal').removeAttr('checked').on('click', function(){
+					$('#dt-list-1').toggleClass('dl-horizontal').prev().html(this.checked ? '&lt;dl class="dl-horizontal"&gt;' : '&lt;dl&gt;');
+				});
+			
+			})
+		</script>
+		
+
+	</head>
+
+	<body>
+
+		<div class="space-12"></div>
+
+		<div class="table-grid-info table-grid-info-striped">
+			
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Checker Code</div>
+				<div class="table-grid-value"><h5 class="header blue"><i class="fa fa-bug"></i>&nbsp;
+					ICAST_INT_2_LONG_AS_INSTANT </h5>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Description </div>
+				<div class="table-grid-value-highlight"><i class="fa fa-th"></i>&nbsp;
+					int value converted to long and used as absolute time
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Severity </div>
+				<div class="table-grid-value">
+					Critical
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Detector / Bug Pattern </div>
+				<div class="table-grid-value">
+					IntCast2LongAsInstant / ICAST
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> More Information </div>
+				<div class="table-grid-value">
+ <p>
+This code converts a 32-bit int value to a 64-bit long value, and then
+passes that value for a method parameter that requires an absolute time value.
+An absolute time value is the number
+of milliseconds since the standard base time known as "the epoch", namely January 1, 1970, 00:00:00 GMT.
+For example, the following method, intended to convert seconds since the epoc into a Date, is badly
+broken:</p>
+<pre>
+Date getDate(int seconds) { return new Date(seconds * 1000); }
+</pre>
+<p>The multiplication is done using 32-bit arithmetic, and then converted to a 64-bit value.
+When a 32-bit value is converted to 64-bits and used to express an absolute time
+value, only dates in December 1969 and January 1970 can be represented.</p>
+
+<p>Correct implementations for the above method are:</p>
+
+
+		</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Bad Code </div>
+				<div class="table-grid-value">
+<pre class="prettyprint linenums warning">
+// Fails for dates after 2037
+Date getDate(int seconds) { return new Date(seconds * 1000L); }
+</pre>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Good Code </div>
+				<div class="table-grid-value">
+<pre class="prettyprint linenums correct">
+// better, works for all dates
+Date getDate(long seconds) { return new Date(seconds * 1000); }
+</pre>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> CWE ID </div>
+				<div class="table-grid-value">
+				<a href="http://cwe.mitre.org/data/definitions/1001.html">CWE-586</a>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Code Review Asset </div>
+				<div class="table-grid-value">
+				N/A
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> URLs </div>
+				<div class="table-grid-value"> <i class="fa fa-link"></i>&nbsp;
+					FINDBUGS SITE  :  
+					<a href="http://findbugs.sourceforge.net/bugDescriptions.html#ICAST_INT_2_LONG_AS_INSTANT">
+					http://findbugs.sourceforge.net/bugDescriptions.html#ICAST_INT_2_LONG_AS_INSTANT</a>
+					
+					
+				</div>
+			</div>
+
+
+
+		</div>
+
+		<div class="space-20"></div>
+
+</body>
+
+
+
+<html>

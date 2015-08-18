@@ -1,0 +1,50 @@
+{
+    "snapshotId": "2",
+    "modulePath": "tools\/test",
+    "fileName": "test.c",
+    "fullFilePath": "D:\/temp\/test.c",
+    "projectName": "test",
+    "groupId": "1",
+    "toolName": "",
+    "language": "",
+    "defectCount": "1",
+    "codeMetrics": {
+        "minComplexity": 0,
+        "maxComplexity": 0,
+        "classCnt": 0,
+        "methodCnt": 0,
+        "loc": 0,
+        "commentRatio": 0.0,
+        "averageCompexity": 0,
+        "sloc": 0
+    },
+    "defectList": [
+        {
+            "gdid": -1,
+            "occurences": [
+                {
+                    "code": "",
+                    "startLine": 196,
+                    "endLine": 196,
+                    "charStart": 5315,
+                    "charEnd": 5332,
+                    "variableName": "",
+                    "stringValue": "optstring",
+                    "fieldName": "",
+                    "message": "const variable can be Upper Alphabet, underline, or number. your input is optstring"
+                }
+            ],
+            "createdDateTime": 1436750892660.0,
+            "message": "[#1@196] const variable can be Upper Alphabet, underline, or number. your input is optstring ",
+            "severityCode": "MAJ",
+            "modifiedDateTime": 1436750892660.0,
+            "checkerCode": "CONST_NAMING",
+            "className": "",
+            "methodName": "",
+            "toolName": "dexter-vd-cpp",
+            "language": "CPP",
+            "fileName": "test.c",
+            "modulePath": "tools\/test"
+        }
+    ]
+}

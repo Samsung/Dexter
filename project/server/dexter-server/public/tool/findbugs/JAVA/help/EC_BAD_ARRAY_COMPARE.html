@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	
+		<meta charset="utf-8" />
+		
+		<!--basic styles-->
+
+		<link href="asset/css/bootstrap.css" rel="stylesheet" />
+		<link rel="stylesheet" href="asset/css/dexter.min.css" />
+		<link rel="stylesheet" href="asset/css/font-awesome.min.css" />
+		<!--[if IE 7]>
+			<link rel="stylesheet" href="asset/css/font-awesome-ie7.min.css">
+		<![endif]-->
+
+		<link rel="stylesheet" href="asset/css/prettify.css" />
+		
+		<script src="asset/js/jquery-2.0.3.min.js"></script>
+		<!--[if IE]>
+			<script src="asset/js/jquery.min.js"></script>
+		<![endif]-->
+
+		<script src="asset/js/prettify.js"></script>
+		<script type="text/javascript">
+			$(function() {
+			
+				window.prettyPrint && prettyPrint();
+				$('#id-check-horizontal').removeAttr('checked').on('click', function(){
+					$('#dt-list-1').toggleClass('dl-horizontal').prev().html(this.checked ? '&lt;dl class="dl-horizontal"&gt;' : '&lt;dl&gt;');
+				});
+			
+			})
+		</script>
+		
+
+	</head>
+
+	<body>
+
+		<div class="space-12"></div>
+
+		<div class="table-grid-info table-grid-info-striped">
+			
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Checker Code</div>
+				<div class="table-grid-value"><h5 class="header blue"><i class="fa fa-bug"></i>&nbsp;
+					EC_BAD_ARRAY_COMPARE </h5>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Description </div>
+				<div class="table-grid-value-highlight"><i class="fa fa-th"></i>&nbsp;
+					Invocation of equals() on an array, which is equivalent to ==
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Severity </div>
+				<div class="table-grid-value">
+					Critical
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Detector / Bug Pattern </div>
+				<div class="table-grid-value">
+					FindRefComparison / EC
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> More Information </div>
+				<div class="table-grid-value">
+<p>
+This method invokes the .equals(Object o) method on an array. Since arrays do not override the equals
+method of Object, calling equals on an array is the same as comparing their addresses. To compare the
+contents of the arrays, use <code>java.util.Arrays.equals(Object[], Object[])</code>.
+To compare the addresses of the arrays, it would be
+less confusing to explicitly check pointer equality using <code>==</code>.
+</p>
+		</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Bad Code </div>
+				<div class="table-grid-value">
+<pre class="prettyprint linenums warning">
+personArray1.equals(personArray2) // Doubtful - Compares whether both reference denotes same object
+</pre>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Good Code </div>
+				<div class="table-grid-value">
+<pre class="prettyprint linenums correct">
+if(personArray1 == personArray2) //  Correct - Compares whether both reference denotes same object
+java.util.Arrays.equals(personArray1, personArray2) //  Correct - compare the contents of the arrays
+</pre>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> CWE ID </div>
+				<div class="table-grid-value">
+				<a href="http://cwe.mitre.org/data/definitions/1001.html">CWE-1001</a>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Code Review Asset </div>
+				<div class="table-grid-value">
+				N/A
+				</div>
+			</div>
+
+			<div class="table-grid-value"> <i class="fa fa-link"></i>&nbsp;
+					FINDBUGS SITE  :  
+					<a href="http://javarevisited.blogspot.in/2012/12/how-to-compare-arrays-in-java-equals-deepequals-primitive-object.html">
+					http://javarevisited.blogspot.in/2012/12/how-to-compare-arrays-in-java-equals-deepequals-primitive-object.html</a>
+					
+					<p> <i class="fa fa-link"></i>&nbsp;
+					STACKOVERFLOW SITE  :  
+					<a href="http://stackoverflow.com/questions/5588460/comparing-arrays-in-java">
+					http://stackoverflow.com/questions/5588460/comparing-arrays-in-java</a>
+					
+					
+				</div>
+
+
+
+		</div>
+
+		<div class="space-20"></div>
+
+</body>
+
+
+
+<html>

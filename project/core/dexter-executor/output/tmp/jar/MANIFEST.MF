@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+BUndle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Name: Dexter Executor
+Bundle-SymbolicName: dexter-executor;singleton:=true
+Bundle-Version: 0.9.0
+Bundle-ClassPath: .,lib/log4j-1.2.17.jar,lib/guava-16.0.1.jar,lib/gson
+ -2.2.4.jar,lib/commons-cli-1.2.jar,lib/commons-io-2.4.jar,lib/jspf.co
+ re-1.0.2.jar,lib/jspf.remote-1.0.2.jar,lib/jspf.remote.discovery-1.0.
+ 2.jar,lib/jspf.remote.ermi-1.0.2.jar,lib/jspf.remote.javascript-1.0.2
+ .jar,lib/jspf.remote.lipermi-1.0.2.jar,lib/jspf.remote.xmlrpc-1.0.2.j
+ ar,lib/jspf.remote.xmlrpcdelight-1.0.2.jar
+Export-Package: com.samsung.sec.dexter.executor
+Require-Bundle: org.eclipse.core.runtime,dexter-core,dexter-metrics
+Bundle-Activator: com.samsung.sec.dexter.executor.DexterExecutorActiva
+ tor
+Bundle-Vendor: Samsung Electronics VD SE Lab
+Bundle-ActivationPolicy: lazy
+

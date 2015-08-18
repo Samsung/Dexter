@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/test"/>
+	<classpathentry kind="src" path="src/java"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-io-2.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-cli-1.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/junit-4.12.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gson-2.2.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jspf.core-1.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jspf.remote-1.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jspf.remote.discovery-1.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jspf.remote.ermi-1.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jspf.remote.javascript-1.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jspf.remote.lipermi-1.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jspf.remote.xmlrpc-1.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jspf.remote.xmlrpcdelight-1.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/guava-16.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.17.jar"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="lib" path="lib/mockito-all-1.10.19.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

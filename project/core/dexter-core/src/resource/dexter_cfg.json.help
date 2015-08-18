@@ -1,0 +1,134 @@
+// The templates for dexter_cfg.json
+// C/C++ ////////////////////////////////////////////////////////////////////////////////
+
+// single file in a directory
+{
+	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_1.1.0_64",
+	"dexterServerIp":"dexter_server_ip",
+	"dexterServerPort":"dexter_server_port",
+	"projectName":"your_project_name",
+	"projectFullPath":"D:/prjs/your_project_name",
+	"sourceDir":["D:/prjs/your_project_name/your_source_dir"],
+	"headerDir":["D:/prjs/your_project_name/your_include_dir"],
+	"sourceEncoding":"UTF-8",
+	"libDir":[],
+	"binDir":"",
+	"modulePath":"",
+	"fileName":["your_file"],
+	"type":"FILE"
+}
+
+// single file in a directory and module
+{
+	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_1.1.0_64",
+	"dexterServerIp":"dexter_server_ip",
+	"dexterServerPort":"dexter_server_port",
+	"projectName":"your_project_name",
+	"projectFullPath":"D:/prjs/your_project_name",
+	"sourceDir":["D:/prjs/your_project_name/your_source_dir"],
+    "headerDir":["D:/prjs/your_project_name/your_include_dir"],
+	"sourceEncoding":"UTF-8",
+	"libDir":[],
+	"binDir":"",
+	"modulePath":"your_module",
+	"fileName":["your_file"],
+	"type":"FILE"
+}
+
+// Project
+{
+	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_1.1.0_64",
+	"dexterServerIp":"dexter_server_ip",
+	"dexterServerPort":"dexter_server_port",
+	"projectName":"your_project_name",
+	"projectFullPath":"D:/prjs/your_project_name",
+	"sourceDir":["D:/prjs/your_project_name/your_source_dir"],
+    "headerDir":["D:/prjs/your_project_name/your_include_dir"],
+	"sourceEncoding":"UTF-8",
+	"libDir":[],
+	"binDir":"",
+	"type":"PROJECT"
+}
+
+// Snapshot : If you want to collect snapshot data, you can put type of "SNAPSHOT". 
+{
+	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_1.1.0_64",
+	"dexterServerIp":"dexter_server_ip",
+	"dexterServerPort":"dexter_server_port",
+	"projectName":"your_project_name",
+	"projectFullPath":"D:/prjs/your_project_name",
+	"sourceDir":["D:/prjs/your_project_name/your_source_dir"],
+    "headerDir":["D:/prjs/your_project_name/your_include_dir"],
+	"sourceEncoding":"UTF-8",
+	"libDir":[],
+	"binDir":"",
+	"type":"SNAPSHOT"
+}
+
+
+// JAVA ////////////////////////////////////////////////////////////////////////////////
+
+// 1 file unit
+{
+	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_1.1.0_64",
+	"dexterServerIp":"dexter_server_ip",
+	"dexterServerPort":"dexter_server_port",
+	"projectName":"your_project_name",
+	"projectFullPath":"D:/prjs/your_project_name",
+	"sourceDir":["D:/prjs/your_project_name/your_source_dir"],
+	"sourceEncoding":"UTF-8",
+	"libDir":["D:/prjs/your_project_name/your_library_dir1","D:/prjs/your_project_name/your_library_dir2"],
+	"binDir":"D:/prjs/your_project_name/your_binary_dir",
+	"language":"JAVA",
+	"type":"FILE",
+	"modulePath":"your_module",
+	"fileName":["your_file"]
+}
+
+// n files unit
+{
+	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_1.1.0_64",
+	"dexterServerIp":"dexter_server_ip",
+	"dexterServerPort":"dexter_server_port",
+	"projectName":"your_project_name",
+	"projectFullPath":"D:/prjs/your_project_name",
+	"sourceDir":["D:/prjs/your_project_name/your_source_dir"],
+	"sourceEncoding":"UTF-8",
+	"libDir":["D:/prjs/your_project_name/your_library_dir1","D:/prjs/your_project_name/your_library_dir2"],
+	"binDir":"D:/prjs/your_project_name/your_binary_dir",
+	"language":"JAVA",
+	"type":"FILE",
+	"modulePath":"your_module",
+	"fileName":["your_file1","your_file2"]
+}
+
+
+// project unit
+{
+	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_1.1.0_64",
+	"dexterServerIp":"dexter_server_ip",
+	"dexterServerPort":"dexter_server_port",
+	"projectName":"your_project_name",
+	"projectFullPath":"D:/prjs/your_project_name",
+	"sourceDir":["D:/prjs/your_project_name/your_source_dir1","D:/prjs/your_project_name/your_source_dir2"],
+	"sourceEncoding":"UTF-8",
+	"libDir":["D:/prjs/your_project_name/your_library_dir1","D:/prjs/your_project_name/your_library_dir2"],
+	"binDir":"D:/prjs/your_project_name/your_binary_dir",
+	"language":"JAVA",
+	"type":"PROJECT"
+}
+
+// snapshot for project
+{
+	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_1.1.0_64",
+	"dexterServerIp":"dexter_server_ip",
+	"dexterServerPort":"dexter_server_port",
+	"projectName":"your_project_name",
+	"projectFullPath":"D:/prjs/your_project_name",
+	"sourceDir":["D:/prjs/your_project_name/your_source_dir1","D:/prjs/your_project_name/your_source_dir2"],
+	"sourceEncoding":"UTF-8",
+	"libDir":["D:/prjs/your_project_name/your_library_dir1","D:/prjs/your_project_name/your_library_dir2"],
+	"binDir":"D:/prjs/your_project_name/your_binary_dir",
+	"language":"JAVA",
+	"type":"SNAPSHOT"
+}

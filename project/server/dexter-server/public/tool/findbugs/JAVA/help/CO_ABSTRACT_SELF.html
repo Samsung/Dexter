@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	
+		<meta charset="utf-8" />
+		
+		<!--basic styles-->
+
+		<link href="asset/css/bootstrap.css" rel="stylesheet" />
+		<link rel="stylesheet" href="asset/css/dexter.min.css" />
+		<link rel="stylesheet" href="asset/css/font-awesome.min.css" />
+		<!--[if IE 7]>
+			<link rel="stylesheet" href="asset/css/font-awesome-ie7.min.css">
+		<![endif]-->
+
+		<link rel="stylesheet" href="asset/css/prettify.css" />
+		
+		<script src="asset/js/jquery-2.0.3.min.js"></script>
+		<!--[if IE]>
+			<script src="asset/js/jquery.min.js"></script>
+		<![endif]-->
+
+		<script src="asset/js/prettify.js"></script>
+		<script type="text/javascript">
+			$(function() {
+			
+				window.prettyPrint && prettyPrint();
+				$('#id-check-horizontal').removeAttr('checked').on('click', function(){
+					$('#dt-list-1').toggleClass('dl-horizontal').prev().html(this.checked ? '&lt;dl class="dl-horizontal"&gt;' : '&lt;dl&gt;');
+				});
+			
+			})
+		</script>
+		
+
+	</head>
+
+	<body>
+
+		<div class="space-12"></div>
+
+		<div class="table-grid-info table-grid-info-striped">
+			
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Checker Code</div>
+				<div class="table-grid-value"><h5 class="header blue"><i class="fa fa-bug"></i>&nbsp;
+					CO_ABSTRACT_SELF </h5>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Description </div>
+				<div class="table-grid-value-highlight"><i class="fa fa-th"></i>&nbsp;
+					Abstract class defines covariant compareTo() method
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Severity </div>
+				<div class="table-grid-value">
+					Critical
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Detector / Bug Pattern </div>
+				<div class="table-grid-value">
+					FindHEmismatch / Co
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> More Information </div>
+				<div class="table-grid-value">
+		 <p> This class defines a covariant version of <code>compareTo()</code>.&nbsp;
+  To correctly override the <code>compareTo()</code> method in the
+  <code>Comparable</code> interface, the parameter of <code>compareTo()</code>
+  must have type <code>java.lang.Object</code>.</p>
+		</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Bad Code </div>
+				<div class="table-grid-value">
+<pre class="prettyprint linenums warning">
+// Baseclass:
+abstract class AbstractBase implements Comparable<AbstractBase> {
+    private int a;
+    private int b;
+
+    public int compareTo(AbstractBase other) {
+        // compare using a and b
+    }
+}
+
+// Implementation:
+class Impl extends AbstractBase {
+private int c;
+
+public int compareTo(Impl other) {
+    // compare using a, b and c with c having higher impact than b in AbstractBase
+}
+</pre>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Good Code </div>
+				<div class="table-grid-value">
+<pre class="prettyprint linenums correct">
+abstract class AbstractBase<T extends AbstractBase<?>> implements Comparable<T> {
+//...
+    public int compareTo(T other) {
+      //... 
+    }
+}
+class Impl extends AbstractBase {
+   //...
+        @Override
+        public int compareTo(AbstractBase other) {
+
+            if (other instanceof Impl) {
+
+                int compC = Integer.compare(c, ((Impl) other).c);
+
+                if (compC == 0) {
+                    return super.compareTo(other);
+                }
+                return compC;
+            }
+
+            return super.compareTo(other);
+        }
+}
+</pre>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> CWE ID </div>
+				<div class="table-grid-value">
+				<a href="http://cwe.mitre.org/data/definitions/1001.html">CWE-1001</a>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Code Review Asset </div>
+				<div class="table-grid-value">
+				N/A
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> URLs </div>
+				<div class="table-grid-value"> <i class="fa fa-link"></i>&nbsp;
+					FINDBUGS SITE  :  <a href="http://findbugs.sourceforge.net/bugDescriptions.html#CO_ABSTRACT_SELF">
+					http://findbugs.sourceforge.net/bugDescriptions.html#CO_ABSTRACT_SELF </a>
+					
+					<p> <i class="fa fa-link"></i>&nbsp;
+					STACKOVERFLOW SITE  :  <a href="http://stackoverflow.com/questions/24279691/why-is-it-considered-bad-practice-to-define-a-covariant-compareto-method">
+					http://stackoverflow.com/questions/24279691/why-is-it-considered-bad-practice-to-define-a-covariant-compareto-method</a>
+					
+					
+					
+				</div>
+			</div>
+
+
+
+		</div>
+
+		<div class="space-20"></div>
+
+</body>
+
+
+
+<html>

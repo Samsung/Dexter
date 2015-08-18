@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Getting Started" link_to="toc.xml#gettingstarted"> 
+	<topic label="Dexter Installation"> 
+		<topic label="Dexter Download" href="html/gettingstarted/download.html"> 
+		</topic>
+		<topic label="Dexter Execution" href="html/gettingstarted/execute.html">
+		</topic> 
+	</topic>
+	<topic label="How to use Dexter" >
+	    <topic label="Account Creation"  href="html/howtouse/accountCreation.html">
+	    </topic>
+	    <topic label="Advanced work for Dexter"  href="html/howtouse/advancedWork.html">
+	    </topic> 
+	</topic>
+	<topic label="Defect Manager" >
+	    <topic label="Defect Description"  href="html/defectmanager/defectDescription.html">
+	    </topic> 
+	    <topic label="Mark (False) Defect"  href="html/defectmanager/markDefect.html">
+	    </topic> 
+	</topic>
+</toc>

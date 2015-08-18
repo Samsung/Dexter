@@ -1,0 +1,19 @@
+#include "myheader"
+using std::cout;
+using std::endl;
+
+
+#define ucmMax 120
+
+
+int main()
+{
+	test();
+     
+   return 0;
+}
+
+void test()
+{
+    HPEN pen = CreatePen(PS_SOLID, 1, RGB(255,0,0));
+}

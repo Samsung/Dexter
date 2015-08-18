@@ -1,0 +1,100 @@
+<div>
+    <div id="developer-div" class="chartBox chartFirstRow" style="min-width:300px">
+        <span><b>Developers:</b></span><br/>
+    </div>
+
+    <div id="overview-div" class="chartBox chartFirstRow" style="height:300px; width:300px; min-width:300px">
+        <span><b>Overview:</b></span><br/>
+        <div id="defect-status-div" style="padding:5px; display : inline-block; " ></div>
+        <div id='overview-table' style="padding:0px; display : inline-block; font-size: 15px; line-height: 22px;  min-width:100px">
+            <table>
+                <tr>
+                    <td class="summaryLabel"><span tooltip-placement="right" tooltip="{{totalCntTooltip}}"><b>Total</b></span></td>
+                    <td class="summaryValue"><span id="tncTitle" class="keyword" /> of <span id="totalCntTitle"/></td>
+                </tr>
+                <tr>
+                    <td class="summaryLabel"><span tooltip-placement="right" tooltip="{{cncTooltip}}"><b>Critical</b></span></td>
+                    <td class="summaryValue"><span id="cncTitle" class="keyword" /> of <span id="criticalCntTitle"/> (<span id="criticalPpmTitle" /> ppm)</td>
+                </tr>
+                <tr>
+                    <td class="summaryLabel"><span tooltip-placement="right" tooltip="{{mncTooltip}}"><b>Major</b></span></td>
+                    <td class="summaryValue"><span id="mncTitle" class="keyword" /> of <span id="majorCntTitle" /> (<span id="majorPpmTitle" /> ppm)</td>
+                </tr>
+                <tr>
+                    <td class="summaryLabel"><span tooltip-placement="right" tooltip="{{nncTooltip}}"><b>Minor</b></span></td>
+                    <td class="summaryValue"><span id="nncTitle" class="keyword" /> of <span id="minorCntTitle" /></td>
+                </tr>
+                <tr>
+                    <td class="summaryLabel"><span tooltip-placement="right" tooltip="{{rncTooltip}}"><b>CRC</b></span></td>
+                    <td class="summaryValue"><span id="rncTitle" class="keyword" /> of <span id="crcCntTitle" /></td>
+                </tr>
+                <tr>
+                    <td class="summaryLabel"><span tooltip-placement="right" tooltip="{{encTooltip}}"><b>Etc</b></span></td>
+                    <td class="summaryValue"><span id="encTitle" class="keyword" /> of <span id="etcCntTitle" /></td>
+                </tr>
+                <tr>
+                    <td class="summaryLabel"><span><b>LOC</b></span></td>
+                    <td class="summaryValue"><span id="locTitle" class="keyword"></span><br/></td>
+                </tr>
+                <tr>
+                    <td class="summaryLabel"><span><b>Class</b></span></td>
+                    <td class="summaryValue"><span id="classCntTitle" class="keyword"></span></td>
+                </tr>
+                <tr>
+                    <td class="summaryLabel"><span><b> Method </b></span></td>
+                    <td class="summaryValue"><span id="methodCntTitle" class="keyword"></span></td>
+                </tr>
+                <tr>
+                    <td class="summaryLabel"><span><b>File</b></span></td>
+                    <td class="summaryValue"><span id="fileCntTitle" class="keyword"></span></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <!--div id="defect-status-div" class="chartBox chartFirstRow" style="width:20.5%; min-width: 140px" ><b>Defect Status:</b></div><br/-->
+
+    <div id="checker-status-div" class="chartBox chartSecondRow"><b>Checker Status (fixed defects / total defects):</b></div>
+    <div id="module-row-div" class="chartBox chartSecondRow" style="color: darkslategray"><b>Defects of All Modules (total defect counts):</b></div>
+
+    <div id="module-defect-div" class="chartBox chartThirdRow"><b>Defects of Selected Modules: X(class), Y(loc), Radius(defect)</b></div>
+    <div id="file-defect-div" class="chartBox chartThirdRow"><b>Defects of Selected Files: X(max complexity), Y(loc), Radius(defect)</b></div>
+
+    <div id="file-detail-div" class="chartBox chartLastRow" style="min-width: 300px; text-align: left">
+        <table id="file-detail-table" class='table table-hover dc-data-table'>
+            <thead>
+                <tr class="header" style="text-align: left">
+                    <th>File (group by Module, top 100)</th>
+                    <th>Class<br/>Count</th>
+                    <th>Defects<br/>(New/Total)</th>
+                    <th>Dismissed</th>
+                    <th>Severity<br/>(Critical | Major)</th>
+                    <th>Max<br/>Complexity</th>
+                    <th>Line of<br/>Code</th>
+                    <th>Comment<br/> Ratio</th>
+                    <th>Last<br/> Modifier</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
+    <div style='height: 400px; margin:4px; margin-right: 15px'>
+        <div>
+            <button style="width : 200px" class="btn btn-xs btn-default" ng-click="toggleShowFileList()">
+                <span class="glyphicon glyphicon-th-list"></span> {{toggleShowFileListTitle}}
+            </button>
+            <a href="#" class="exportFileList">
+                <button style="width : 200px" id="exportFileListBtn"  class="btn btn-xs btn-success">
+                    <span class="glyphicon glyphicon-save"></span> Export File List
+                </button>
+            </a>
+
+
+        </div>
+        <div id="fileListGrid" ng-hide="isHideFileList" ng-grid="gridOptions" style="height:400px; widht:100%"></div>
+    </div>
+
+
+    <div id="defect-change-div"> </div>
+</div>
+<br/>

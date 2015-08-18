@@ -1,0 +1,12 @@
+bin
+bin/
+log
+log/
+dist
+dist/
+temp
+temp/
+install
+install/
+lib
+lib/

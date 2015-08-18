@@ -1,0 +1,306 @@
+body {
+  padding: 10px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #5bc0de;
+}
+
+.setMSG {
+    margin-top: -38px;
+    height: 20px;
+    position: absolute;
+    width: 100%;
+    opacity: 0.9;
+}
+
+.setDefectMSG {
+    margin-top: -46px;
+    height: 20px;
+    position: absolute;
+    width: 100%;
+    opacity: 0.9;
+}
+
+.backgroundIMG {
+  background-repeat : no-repeat;
+}
+
+.loading_screen {
+    width: 100%;
+    height: 100%;
+    background: #bfbfbf;
+}
+
+.login {
+    padding: 5px;
+    border: 1px solid transparent;
+    margin-top: -2px;
+    margin-left: -20px;
+    border-radius: 4px;
+    height: 30px;
+}
+
+.animationTab {
+    right : -598px;
+}
+
+.fileTree {
+    position: absolute;
+    min-height: 10px;
+    left : 70%;
+    width: 588px;
+    height: 430px;
+    resize: vertical; /* none|both|horizontal|vertical|initial|inherit */
+    border : 1px solid #aaa;
+    overflow: auto;
+    z-index: 100;
+}
+
+.defectList {
+    padding : 5px;
+    margin-top: 10px;
+    min-height: 200px;
+    /*min-width: 300px;*/
+    height: 430px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border : 1px solid #aaa;
+    background: #ffffff;
+}
+
+.snapshotList, .defectInSnapshot {
+    padding : 5px;
+    margin-top: 10px;
+    font-size :12px;
+    min-width: 400px;
+    min-height: 700px;
+    height: 100%;
+    resize: vertical;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border : 1px solid #aaa;
+    background: #ffffff;
+}
+
+.adminYnBtn{
+    width: 50%;
+}
+.changeAdminBtn{
+    width: inherit;
+    height: 34px;
+    border-radius: 3px;
+}
+.createAdminBtn
+{
+    width: inherit;
+    height: 34px;
+    border-radius: 3px;
+}
+
+.accountGridList {
+    padding : 5px;
+    margin-top: 10px;
+    height: 430px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border : 1px solid #aaa;
+    background: #ffffff;
+}
+
+.detailTab {
+    width: 100%;
+    padding: 15px;
+    margin-top: 10px;
+    border : 1px solid #aaa;
+    background: white;
+}
+
+.accountDetailTab {
+    padding: 5px;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background: white;
+}
+
+.sourceInfo {
+    padding: 15px;
+    margin-top: 10px;
+    min-height: 150px;
+    border : 1px solid #aaa;
+    background: white;
+}
+
+.defectInfo {
+    padding: 5px;
+}
+
+.defectInfoTr {
+    margin: 2px;
+    border : 1px solid #aaa;
+}
+
+.defectInfoName {
+    padding: 2px;
+    text-align: right;
+    border : 1px solid #aaa;
+}
+
+.defectInfoTh {
+    padding: 2px;
+    text-align: center;
+    border : 1px solid #aaa;
+}
+
+.defectInfoValue {
+    margin-left: 5px;
+    padding: 2px;
+    border : 1px solid #aaa;
+}
+
+.occurrenceInfoValue {
+    padding: 2px;
+    text-align: center;
+    border : 1px solid #aaa;
+}
+
+.defectDescription {
+}
+
+h1 {
+    font: 20px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+h2 {
+    font: 18px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+h3 {
+    font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+h4 {
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+h5 {
+    font: 12px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+.animate-hide {
+    -webkit-transition:all linear 0.5s;
+    transition:all linear 0.5s;
+    line-height:20px;
+    padding:10px;
+    border:1px solid #aaa;
+    background: rgba(185, 218, 222, 0.9);
+}
+
+.animate-hide.ng-hide-add,
+.animate-hide.ng-hide-remove {
+    display:block!important;
+}
+
+.animate-hide.ng-hide {
+    line-height:0;
+    opacity:0.6;
+    padding:0 10px;
+}
+
+.check-element {
+    padding:10px;
+    border:1px solid black;
+    background:white;
+}
+
+.redBG {
+    background-color: #fbb450;
+    color: white;
+}
+
+.greenBG {
+    background-color: #62c2bc;
+    color: white;
+}
+
+.darkredBG {
+    background-color: darkred;
+    color: white;
+}
+
+.redFG {
+    color: red;
+}
+
+.textAlignCenter {
+    text-align: center;
+}
+.ng-table{
+	border : 1px solide #000;
+}
+
+span.nocode { background: #f8f8f8 }
+
+span.annot {
+    width: 100%;
+    height :100%;
+    margin:2px 2px 2px;
+    width:100%;
+    border:1px dotted #000;
+    background: #cccccc;
+    padding: 0 2px 0 2px;
+}
+span.annotCheck {
+    width: 100%;
+    height :100%;
+    margin:2px 2px 2px;
+    width:100%;
+    border:1px dotted #000;
+    background: #fbc37d;
+    padding: 0 2px 0 2px;
+
+}
+
+span.mismatch { background: #fee; font-weight: bold }
+
+.animate-show, .animate-hide {
+    -webkit-transition:all linear 1s;
+    -moz-transition:all linear 1s;
+    -ms-transition:all linear 1s;
+    -o-transition:all linear 1s;
+    transition:all linear 1s;
+
+}
+
+.animate-show {
+    opacity:0;
+}
+
+.animate-show.animate-show-active {
+    opacity:1;
+}
+
+.animate-hide {
+    opacity:1;
+}
+
+.animate-hide.animate-hide-active {
+    opacity:0;
+}
+.container{
+    position: relative;
+    /* you have to add a height here if your container isn't otherwise set
+       becuse the absolutely positioned image divs won't calculate the height
+       for you */
+    height: 100px;
+}
+.image-repeat{
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.fix{
+    position:fixed;
+    _position:absolute;
+    width:100%;
+    top:0;
+    z-index:100;
+}

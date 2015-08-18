@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	
+		<meta charset="utf-8" />		
+		<!--basic styles-->
+		<link href="asset/css/bootstrap.css" rel="stylesheet" />
+		<link rel="stylesheet" href="asset/css/dexter.min.css" />
+		<link rel="stylesheet" href="asset/css/font-awesome.min.css" />
+		<!--[if IE 7]>
+			<link rel="stylesheet" href="asset/css/font-awesome-ie7.min.css">
+		<![endif]-->
+
+		<link rel="stylesheet" href="asset/css/prettify.css" />
+		
+		<script src="asset/js/jquery-2.0.3.min.js"></script>
+		<!--[if IE]>
+			<script src="asset/js/jquery.min.js"></script>
+		<![endif]-->
+
+		<script src="asset/js/prettify.js"></script>
+		<script type="text/javascript">
+			$(function() {
+			
+				window.prettyPrint && prettyPrint();
+				$('#id-check-horizontal').removeAttr('checked').on('click', function(){
+					$('#dt-list-1').toggleClass('dl-horizontal').prev().html(this.checked ? '&lt;dl class="dl-horizontal"&gt;' : '&lt;dl&gt;');
+				});
+			
+			})
+		</script>		
+
+	</head>
+
+	<body>
+
+		<div class="space-12"></div>
+		<div class="table-grid-info table-grid-info-striped">
+			
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Checker Code</div>
+				<div class="table-grid-value"><h5 class="header blue"><i class="fa fa-bug"></i>&nbsp;
+					AssignmentAddressToInteger</h5>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Description </div>
+				<div class="table-grid-value-highlight"><i class="fa fa-th"></i>&nbsp;
+Assigning an address value to an integer (int/long/etc.) type is not portable.
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Severity </div>
+				<div class="table-grid-value">
+					Minor
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Detector / Bug Pattern </div>
+				<div class="table-grid-value">
+Assigning an address value to an integer (int/long/etc.) type is not portable.
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> More Information </div>
+				<div class="table-grid-value">
+Assigning an address value to an integer (int/long/etc.) type is not portable.
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Bad Code </div>
+				<div class="table-grid-value">
+			<pre class="prettyprint linenums warning">
+void my_func(void)
+{
+ //How come you can assign an address to an integer variable like this,the complier will not give an error.
+ //i always though you can only assign integer values to a integer variable
+int a=0x28ff1c		
+//You can do the same for a char variable, the complier will not give a error
+char b=0x28ff1c
+}
+</pre>
+			</div>
+			</div>
+       
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Good Code </div>
+				<div class="table-grid-value">
+			<pre class="prettyprint linenums correct">
+/*The number 0x28ff1c is just the hexadecimal (base-16) representation of the decimal (base-10) number 2686748.
+As cout defaults to printing decimal values for integers, that is probably the number you got printed.
+The case with char b = 0x28ff1c is slightly different, because 
+char is not large enough to hold that value. The practical result is that it gets truncated to 0x1c. 
+cout treats char specially, because it is normally used to hold textual data, so cout prints the character 
+that has the code 0x1c, which is some kind of control character. You could try it with 0x41 for example
+(which represents 'A' in ASCII and UTF-8).
+*/ 
+</pre>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> CWE ID </div>
+				<div class="table-grid-value">
+				<a href="asset/CWE_ID.html" target="_blank">0 </a>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Code Review Asset </div>
+				<div class="table-grid-value">
+				http://168.219.241.216/confluence/display/SW/AssignmentAddressToInteger 
+
+				</div>
+			</div>
+			<div class="table-grid-row">
+				<div class="table-grid-label"> URLs </div>
+				<div class="table-grid-value"> <i class="fa fa-link"></i>&nbsp;
+				
+					<a  target="_blank" href="http://stackoverflow.com/questions/14091203/assignment-of-address-to-integer-variable">
+					http://stackoverflow.com/questions/14091203/assignment-of-address-to-integer-variable
+					</a> 						
+					
+																
+				</div>
+			</div>
+	</div>
+	<div class="space-20"></div>
+</body>
+<html>
