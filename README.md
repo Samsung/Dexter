@@ -23,7 +23,7 @@ Dexter is a static analysis platform to find and remove defects efficiently and 
 - Download Eclipse RCP/RAP Juno + (http://www.eclipse.org/downloads/packages/release/juno/sr2)
 - Download Dexter Source Codes (https://github.com/Samsung/Dexter)
 
-### In Eclipse 
+### Import Dexter Projects into Eclipse 
 - run with suffice memory (in eclipse.ini) : -Xmx1024m --launcher.XXMaxPermSize256m
 - make sure your text file encoding setting is 'UTF-9' : eclipse > Preferences > General > Workspace
 - import Dexter Projects that you already downloaded except dexter-server project
