@@ -58,5 +58,22 @@ Dexter is a static analysis platform to find and remove defects efficiently and 
 - you can make a update site or just copy plugin folder into your new eclipse
 - then, you can use Dexter
 
+## Future Plan
+### support more languages
+- JavaScript
+
+### support more IDEs
+- Tizen SDK
+- WebStorm
+- Android Studio
+- Enhance Source Insight
+
+### support more Static Analysis Open Source
+- Java: PMD, Checkstyle, etc.
+- JavaScript: Flow, JSHint
+- Custom Checkers
+
+### Dexter Web Monitor for organiztion(SE)
+
 ## License
 Dexter is BSD-licensed.
