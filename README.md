@@ -17,7 +17,7 @@ Dexter is a static analysis platform to find and remove defects efficiently and 
 - NodeJs 0.12.x
 
 ## How to build
-![document](https://github.com/Samsung/Dexter/blob/master/doc/Dexter_Build_Guide.pdf)
+(refer to detailed document : https://github.com/Samsung/Dexter/blob/master/doc/Dexter_Build_Guide.pdf)
 ### Prerequisite
 - Install JDK 7 update 40+
 - Install Gradle (http://gradle.org)
