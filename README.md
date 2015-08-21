@@ -7,9 +7,6 @@ Dexter is a static analysis platform to find and remove defects efficiently and 
 
 [Dexter Introduction Video](https://youtu.be/86exIHcwi6c)
 
-
-[![Dexter Introduction](http://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](https://youtu.be/86exIHcwi6c)
-
 ## Requirements
 
 ### Dexter Clients
