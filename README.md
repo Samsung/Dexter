@@ -10,6 +10,7 @@ Dexter is a static analysis platform to find and remove defects efficiently and 
 ### Dexter Clients
 - Eclipse Juno(4.2)+ for Java Development
 - Source Insight 3.50.0072+ for C/C++ Development
+- Dexter CLI for Comand Line Console or CI tool(Jenkins)
 
 ### Dexter Server (optional)
 - MySql 5.x
