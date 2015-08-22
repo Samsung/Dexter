@@ -36,8 +36,6 @@ import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 import com.samsung.sec.dexter.core.plugin.PluginDescription;
 import com.samsung.sec.dexter.core.plugin.PluginVersion;
 
-import edu.umd.cs.findbugs.DetectorFactoryCollection;
-
 @PluginImplementation
 public class FindbugsDexterPlugin implements IDexterPlugin {
 	private FindBugsWrapper findbug = new FindBugsWrapper();
