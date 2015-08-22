@@ -50,9 +50,6 @@ public class FindbugsDexterPlugin implements IDexterPlugin {
     @Override
     public void init(){
     	findbug.initCheckerConfig();
-    	
-    	
-    	new FindBugsUtil().createHelpHtmlEx(DetectorFactoryCollection.instance());
     }
     
     @Override
