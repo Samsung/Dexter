@@ -39,7 +39,7 @@ subprojects {
 	repositories {
 		mavenCentral()
 		flatDir {
-			dirs '../../common-lib'
+			dirs '../common-lib'
 		}
 	}
 

@@ -1,1 +1,1 @@
-include "core:dexter-core", "core:dexter-metrics", "core:dexter-executor"
+include "dexter-core", "dexter-metrics", "dexter-executor"

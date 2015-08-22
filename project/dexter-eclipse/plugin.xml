@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         id="dexterBuilder"
+         name="Dexter Project Builder"
+         point="org.eclipse.core.resources.builders">
+      <builder
+            hasNature="true">
+         <run
+               class="com.samsung.sec.dexter.eclipse.builder.DexterBuilder">
+         </run>
+      </builder>
+   </extension>
+   <extension
+         id="dexterNature"
+         name="Dexter Project Nature(VD Static Analysis)"
+         point="org.eclipse.core.resources.natures">
+      <runtime>
+         <run
+               class="com.samsung.sec.dexter.eclipse.builder.DexterNature">
+         </run>
+      </runtime>
+      <builder
+            id="dexter-eclipse.dexterBuilder">
+      </builder>
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.projectNatureImages">
+         <image
+         	icon="icons/dexterNature.png"
+         	natureId="dexter-eclipse.dexterNature"
+         	id="dexter.nature.natureImage"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            objectClass="org.eclipse.core.resources.IProject"
+            nameFilter="*"
+            id="dexter-eclipse.contribution1">
+         <action
+               class="com.samsung.sec.dexter.eclipse.builder.ToggleNatureAction"
+               enablesFor="+"
+               icon="icons/addNature.gif"
+               id="dexter-eclipse.addRemoveNatureAction"
+               label="%ADD_DEXTER_NATURE"
+               menubarPath="additions"
+               style="toggle">
+         </action>
+      </objectContribution>
+   </extension>
+   <extension
+         id="defectProblem"
+         name="Static Analysis Problem(Dexter)"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+      <persistent
+            value="true">
+      </persistent>
+      <attribute
+            name="checkerCode">
+      </attribute>
+   </extension>
+   
+    <extension
+   		 id="defectDismissedProblem"
+   		 name="Static Analysis Dismissed Defect(Dexter)"
+         point="org.eclipse.core.resources.markers">
+      <super type="org.eclipse.core.resources.textmarker" />
+      <super type="org.eclipse.core.resources.problemmarker" />
+      <persistent value="true" />
+   </extension>
+   
+   <extension
+   		point="org.eclipse.ui.editors.annotationTypes">
+   		<type
+   			markerType="dexter-eclipse.defectDismissedProblem"
+   			name="defectDismissedProblem" />
+   </extension>
+   
+   <extension
+   		point="org.eclipse.ui.editors.markerAnnotationSpecification">
+   		<specification
+           annotationType="defectDismissedProblem"
+           colorPreferenceKey="dexter.color"
+           colorPreferenceValue="93,93,93"
+           contributesToHeader="false"
+           highlightPreferenceKey="dexter.highlight"
+           highlightPreferenceValue="true"
+           icon="icons/dismissed.gif"
+           includeOnPreferencePage="true"
+           label="Dexter Dismissed Marker"
+           overviewRulerPreferenceKey="dexter.overview"
+           overviewRulerPreferenceValue="true"
+           presentationLayer="100"
+           quickFixIcon="icons/dismissedQuickFix.gif"
+           showInNextPrevDropdownToolbarAction="false"
+           showInNextPrevDropdownToolbarActionKey="dexter.showInNext"
+           textPreferenceKey="dexter.text"
+           textPreferenceValue="true"
+           textStylePreferenceKey="dexter.textstyle"
+           textStylePreferenceValue="NONE"
+           verticalRulerPreferenceKey="dexter.ruler"
+           verticalRulerPreferenceValue="true">
+   		</specification>
+   </extension>
+  
+   <extension
+         point="org.eclipse.ui.startup">
+         <startup class="com.samsung.sec.dexter.eclipse.DexterStartup" />
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.markerResolution">
+         <markerResolutionGenerator markerType="dexter-eclipse.defectProblem"
+         	class="com.samsung.sec.dexter.eclipse.builder.DismissedResolutionGenerator">
+         </markerResolutionGenerator>
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.markerResolution">
+         <markerResolutionGenerator markerType="dexter-eclipse.defectDismissedProblem"
+         	class="com.samsung.sec.dexter.eclipse.builder.UndismissedResolutionGenerator">
+         </markerResolutionGenerator>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="dexter-eclipse.objectContribution.runAnalysis"
+            nameFilter="*"
+            objectClass="org.eclipse.core.resources.IResource">
+         <action
+               class="com.samsung.sec.dexter.eclipse.action.RunAnalysisActionDelegate"
+               enablesFor="+"
+               icon="icons/analysis.gif"
+               id="dexter-eclipse.action.runAnalysis"
+               label="%RUN_ANALYSIS"
+               menubarPath="additions"
+               tooltip="%RUN_ANALYSIS_TOOLTIP">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="true"
+            id="dexter-eclipse.objectContribution.createSnapshot"
+            nameFilter="*"
+            objectClass="org.eclipse.core.resources.IProject">
+         <filter
+         	name="projectNature"
+         	value="org.eclipse.jdt.core.javanature">
+         </filter>
+         <action
+               class="com.samsung.sec.dexter.eclipse.action.CreateSnapshotActionDelegate"
+               enablesFor="+"
+               icon="icons/snapshot.gif"
+               id="dexter-eclipse.action.createSnapshot"
+               label="%CREATE_SNAPSHOT"
+               menubarPath="additions"
+               tooltip="%CREATE_SNAPSHOT_TOOLTIP">
+               <!--filter name="projectNature" value="org.eclipse.jdt.core.javanature" /-->
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>
