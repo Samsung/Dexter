@@ -1,4 +1,4 @@
-adminApp.controller('AdminCtrl', function($scope, $http){
+adminApp.controller('AdminCtrl', function($scope, $http, $log){
 
     var init = function(){
         $http.get('/api/v1/projectName', {
@@ -10,20 +10,25 @@ adminApp.controller('AdminCtrl', function($scope, $http){
         }, function (results) {
             $log.error(results);
         });
+
+        $scope.isHidedDetailTab = true;
+        $scope.totalAdminServerItems = 0;
+
+        window.localStorage['adminPageSize'] = (window.localStorage['adminPageSize']) || 10;
+        window.localStorage['adminCurrentPage'] = parseInt(window.localStorage['adminCurrentPage']) || 1;
     };
 
     init();
 
-    $scope.isHidedDetailTab = true;
-    $scope.totalAdminServerItems = 0;
 
     $scope.checkIDReg = function (userId){
         var checkId = userId;
-        var idReg = /^[A-za-z0-9]{5,15}/g;
+        var idReg = /^[A-Za-z0-9_.-]{4,101}$/;
         if( idReg.test(checkId) ){
-            return 'success';
+            return true;
         }else{
-            alert('Input information is too short or length 5~15 with alphabet ');
+            alert('It is not valid for This ID. It is too short or length 5~100 with alphabet and _,.,-.');
+            return false;
         }
     };
 
@@ -32,43 +37,46 @@ adminApp.controller('AdminCtrl', function($scope, $http){
         $scope.createAdminYn = document.getElementsByClassName('btn createAdminBtn active')[0];
 
         $scope.addUserId = $scope.accountObj[0].value;
+        var RegID = $scope.checkIDReg($scope.addUserId);
+
+
+
         var addPW = $scope.accountObj[1].value;
         var addPWConfirm = $scope.accountObj[2].value;
 
-        var RegID = $scope.checkIDReg($scope.addUserId) || 0;
+        if(!(RegID)){
+            alert('Please check the Id : ');
+            console.log('RegId : ' + RegID);
+            return ;
+        }
 
         if( addPW !== addPWConfirm){
             var errorMessage = 'Password is different from PW Confirm';
             alert(errorMessage);
             return ;
         }
-        if(RegID === 'success') { //success
-            var addAdminYn = ($scope.createAdminYn.textContent === 'Admin') ? 'Y' : 'N';
-            $http.post("/api/v1/accounts/webAdd", {
-                params: {
-                    userId: $scope.addUserId,
-                    userId2: addPW,
-                    isAdmin: addAdminYn
-                }
-            }).then(function (results, err) {
-                if(results.data.result === 'ok'){
-                    $scope.showAccount();
-                    var str = 'Success to Apply for Add Account';
-                    angular.element('#showAdminAlert').html(showAlertSuccessMSG(str));
-                    setTimeout(hideAlertMSG, 5000);
-                }else{
-                    alert(results.data.errorMessage);
-                    console.log('Error: ' + results.data.errorMessage);
-                }
-            }, function (results) {
-                console.log('Error: ' + results + ';' );
-            });
-        }
-    };
 
-    /**
-     *  Modify Selected Item
-     **/
+        var addAdminYn = ($scope.createAdminYn.textContent === 'Admin') ? 'Y' : 'N';
+        $http.post("/api/v1/accounts/webAdd", {
+            params: {
+                userId: $scope.addUserId,
+                userId2: addPW,
+                isAdmin: addAdminYn
+            }
+        }).then(function (results) {
+            if(results.data.result === 'ok'){
+                $scope.showAccount();
+                var str = 'Success to Apply for Add Account';
+                angular.element('#showAdminAlert').html(showAlertSuccessMSG(str));
+                setTimeout(hideAlertMSG, 5000);
+            }else{
+                alert(results.data.errorMessage);
+                $log.error(results.data);
+            }
+        }, function (results) {
+            $log.error(results);
+        });
+    };
 
     $scope.modifySelectedItem = function() {
         $scope.accountObj = document.getElementsByName('modifyUser');
@@ -77,44 +85,39 @@ adminApp.controller('AdminCtrl', function($scope, $http){
         $scope.changePW = ($scope.accountObj[1].value == "") ? $scope.currentAccountPw : $scope.accountObj[1].value;
 
 
-        var RegID = $scope.checkIDReg($scope.changeUserId) || 0;
-        if(RegID === 'success' ) { //success
-            var changeAdminYn = ($scope.changeAdminBtn.textContent === 'Admin') ? 'Y' : 'N';
-            $http.post('/api/v1/accounts/webUpdate/' + $scope.currentAccountId , {
-                params: {
-                    userId: $scope.changeUserId,
-                    userId2: $scope.changePW,
-                    isAdmin: changeAdminYn
-                }
-            }).then(function (results, err) {
-                console.log(results);
-                if (results) {
-                    $scope.showAccount();
-                    var str='Success to Apply for changed';
-                    angular.element('#showAdminAlert').html(showAlertSuccessMSG(str));
-                    setTimeout(hideAlertMSG, 5000);
-                }
-                else {
-                    str="Error: " + results  ;
-                    angular.element('#showAdminAlert').html(showAlertErrorMSG(str));
-                    setTimeout(hideAlertMSG, 5000);
-                }
+        var RegID = $scope.checkIDReg($scope.changeUserId);
 
-                // 에러 처리 로직 추가 필요
-                if(err){
-                    //....
-                }
-            })
+        if(!(RegID)){
+            alert('Please check the Id : ');
+            console.log('RegId : ' + RegID);
+            return ;
         }
+
+        var changeAdminYn = ($scope.changeAdminBtn.textContent === 'Admin') ? 'Y' : 'N';
+        $http.post('/api/v1/accounts/webUpdate/' + $scope.currentAccountId , {
+            params: {
+                userId: $scope.changeUserId,
+                userId2: $scope.changePW,
+                isAdmin: changeAdminYn
+            }
+        }).then(function (results, err) {
+            if (results) {
+                $scope.showAccount();
+                var str='Success to Apply for changed';
+                angular.element('#showAdminAlert').html(showAlertSuccessMSG(str));
+                setTimeout(hideAlertMSG, 5000);
+            }
+            else {
+                str="Error: " + results  ;
+                angular.element('#showAdminAlert').html(showAlertErrorMSG(str));
+                setTimeout(hideAlertMSG, 5000);
+            }
+        })
     };
 
-    $scope.deleteSelectedItem = function() {
-        $scope.deleteSelectedItems= [];
-        for (var i = 0; i < $scope.accountSelections.length; i++) {
-            $scope.deleteSelectedItems[i] = $scope.accountSelections[i].userId;
-        }
-        if( $scope.deleteSelectedItems.length == 1){
-            $http.delete('/api/v1/accounts/remove/' + $scope.deleteSelectedItems[0]).then(function(results) {
+    var removeAccount = function(Id){
+        $http.delete('/api/v1/accounts/remove/' + $scope.deleteSelectedItems[0])
+            .then(function(results) {
                 if (results) {
                     var str = 'Success to Apply for Delete';
                     angular.element('#showAdminAlert').html(showAlertSuccessMSG(str));
@@ -126,23 +129,37 @@ adminApp.controller('AdminCtrl', function($scope, $http){
                     setTimeout(hideAlertMSG, 5000);
                 }
             });
+    };
+
+    var removeAccountList = function(){
+        $http.delete('/api/v1/accounts/removeAll', {
+            params: {
+                deleteSelectedItems: $scope.deleteSelectedItems
+            }
+        }).then(function (results) {
+            if (results) {
+                var str = 'Success to Apply for Delete.';
+                angular.element('#showAdminAlert').html(showAlertSuccessMSG(str));
+                setTimeout(hideAlertMSG, 5000);
+            } else {
+                str = 'Error: ' + results.data;
+                angular.element('#showAdminAlert').html(showAlertErrorMSG(str));
+                setTimeout(hideAlertMSG, 5000);
+            }
+        })
+    };
+
+    $scope.deleteSelectedItem = function() {
+        $scope.deleteSelectedItems= [];
+        for (var i = 0; i < $scope.accountSelections.length; i++) {
+            $scope.deleteSelectedItems[i] = $scope.accountSelections[i].userId;
+        }
+
+        if( $scope.deleteSelectedItems.length == 1){
+            removeAccount($scope.deleteSelectedItems[0]);
         }
         else {
-            $http.delete('/api/v1/accounts/removeAll', {
-                params: {
-                    deleteSelectedItems: $scope.deleteSelectedItems
-                }
-            }).then(function (results) {
-                if (results) {
-                var str = 'Success to Apply for Delete.';
-                    angular.element('#showAdminAlert').html(showAlertSuccessMSG(str));
-                    setTimeout(hideAlertMSG, 5000);
-                } else {
-                    str = 'Error: ' + results.data;
-                    angular.element('#showAdminAlert').html(showAlertErrorMSG(str));
-                    setTimeout(hideAlertMSG, 5000);
-                }
-            })
+            removeAccountList();
         }
     };
 
@@ -154,10 +171,10 @@ adminApp.controller('AdminCtrl', function($scope, $http){
                 $scope.totalAdminServerItems = results.data.accounts.length;
             }
             else {
-                console.log('fail');
+                $log.error('fail');
             }
         }, function (results) {
-            console.log('Load Error');
+            $log.error('Load Error');
         });
     };
 
@@ -185,10 +202,6 @@ adminApp.controller('AdminCtrl', function($scope, $http){
     };
 
 
-
-    window.localStorage['adminPageSize'] = (window.localStorage['adminPageSize']) || 10;
-    window.localStorage['adminCurrentPage'] = parseInt(window.localStorage['adminCurrentPage']) || 1;
-
     $scope.adminPagingOptions = {
         pageSizes: [10, 25, 100, 250],
         pageSize: window.localStorage['adminPageSize'],
@@ -198,12 +211,11 @@ adminApp.controller('AdminCtrl', function($scope, $http){
     $scope.$watch('adminPagingOptions', function(newVal, oldVal){
         if(newVal !== oldVal) {
             $scope.newAdminCurrentPage = parseInt( $scope.totalAdminServerItems / parseInt($scope.adminPagingOptions.pageSize) ) +1;
-            console.log($scope.totalAdminServerItems, $scope.adminPagingOptions.pageSize, $scope.newAdminCurrentPage);
             if($scope.adminPagingOptions.currentPage > $scope.newAdminCurrentPage){
                 $scope.adminPagingOptions.currentPage = $scope.newAdminCurrentPage;
             }
             $scope.showAccount();
-            window.localStorage['adminPageSize'] = $scope.adminPagingOptions.pageSize;
+            window.localStorage['adminPageSize'] = parseInt($scope.adminPagingOptions.pageSize);
             window.localStorage['adminCurrentPage'] = $scope.adminPagingOptions.currentPage;
         }
     }, true);
@@ -252,7 +264,6 @@ adminApp.controller('AdminCtrl', function($scope, $http){
     $scope.setAdminCurrentDetail = function(){
         var currentIndex = $scope.accountSelections.length-1;
         if($scope.accountSelections.length != 0 ) {
-            //console.log($scope.accountSelections[currentIndex]);
             $scope.currentAccountId = $scope.accountSelections[currentIndex].userId;
             $scope.currentAccountPw = $scope.accountSelections[currentIndex].userPwd;
             $scope.currentAccountAdminYn = $scope.accountSelections[currentIndex].adminYn;
@@ -276,7 +287,6 @@ adminApp.controller('AdminCtrl', function($scope, $http){
     // This must be a hyperlink
     $(".exportAccountList").on('click', function (event) {
         // Data URI
-        console.log('exportAccountList');
         $scope.csvContent = "data:text/csv;charset=utf-8,";
         setExportFileFormat($scope.adminAccountList);
         exportExcelFile.apply(this, [$scope.csvContent, 'export.csv']);
@@ -284,11 +294,9 @@ adminApp.controller('AdminCtrl', function($scope, $http){
 
     var setExportFileFormat = function(results){
         for(var i =0 ; i < results.length ; i++){
-
             if(i == 0){
                 $scope.csvContent = $scope.csvContent + 'No,Id,Admin,CreateDate' + '\n' ;
             }
-            console.log(results);
             $scope.currentAccountList[i] = results[i].userNo + ',' +results[i].userId +','+results[i].adminYn+','+results[i].createdDateTime;
             $scope.csvContent = $scope.csvContent + $scope.currentAccountList[i] + '\n' ;
         }
@@ -302,9 +310,6 @@ adminApp.controller('AdminCtrl', function($scope, $http){
                 'href': encodedUri,
                 'target': '_blank'
             });
-
     };
-
-
 });
 
