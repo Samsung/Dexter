@@ -453,8 +453,6 @@ public class LoginDialog extends TitleAreaDialog {
 			homePath.mkdir();
 		}
 
-		System.setProperty(DexterConfig.DEXTER_HOME_KEY, dexterHomeText.getText());
-		config.setDexterHome(dexterHomeText.getText());
 
 		// plugin store
 		setMessage(Messages.LoginDialog_INIT_ENV_MSG);
@@ -465,6 +463,9 @@ public class LoginDialog extends TitleAreaDialog {
 		store.setValue("isStandalone", isStandalone);
 		store.setValue(DexterConfig.DEXTER_HOME_KEY, dexterHomeText.getText());
 	
+		System.setProperty(DexterConfig.DEXTER_HOME_KEY, dexterHomeText.getText());
+		config.setDexterHome(dexterHomeText.getText());
+		
 		super.okPressed();
 	}
 

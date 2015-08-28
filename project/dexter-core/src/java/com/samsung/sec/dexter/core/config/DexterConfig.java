@@ -228,7 +228,8 @@ public class DexterConfig {
 	}
 	
 	public void stopSchedule(){
-		scheduler.shutdown();
+		if(scheduler != null)
+			scheduler.shutdown();
 	}
 	
 	public void stopJobSchedulForServer() {

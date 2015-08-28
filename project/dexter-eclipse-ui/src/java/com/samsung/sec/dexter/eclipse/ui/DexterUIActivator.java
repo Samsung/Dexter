@@ -35,7 +35,6 @@ import org.osgi.framework.BundleContext;
 
 import com.samsung.sec.dexter.core.analyzer.IDexterPluginInitializer;
 import com.samsung.sec.dexter.core.config.DexterConfig;
-import com.samsung.sec.dexter.core.config.IDexterHomeListener;
 import com.samsung.sec.dexter.core.config.IDexterStandaloneListener;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.plugin.DexterPluginManager;
@@ -52,7 +51,7 @@ import com.samsung.sec.dexter.executor.DexterExecutorActivator;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class DexterUIActivator extends AbstractUIPlugin implements IDexterPluginInitializer, IDexterHomeListener, IDexterStandaloneListener {
+public class DexterUIActivator extends AbstractUIPlugin implements IDexterPluginInitializer, IDexterStandaloneListener {
 	public static final String PLUGIN_ID = "dexter-eclipse-ui"; //$NON-NLS-1$
 	private static DexterUIActivator plugin;
 	public final static EclipseLog LOG = new EclipseLog(PLUGIN_ID);
@@ -75,7 +74,6 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 		final DexterConfig config = DexterConfig.getInstance();
 		DexterAnalyzer.getInstance();
 		
-		config.addDexterHomeListener(this);
 		config.addDexterStandaloneListener(this);
 		DexterPluginManager.getInstance().setDexterPluginInitializer(this);
 		
@@ -100,19 +98,9 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 			} catch (DexterRuntimeException e){
 				LOG.error(e.getMessage());
 			}
-			
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see com.samsung.sec.dexter.core.config.IDexterHomeListener#handleDexterHomeChanged()
-	 */
-    @Override
-    public void handleDexterHomeChanged() {
-	    //init();
-    	setDexterHomeForWindows();
-    }
-    
     @Override
     public void handleDexterStandaloneChanged() {
     	final DexterConfig config = DexterConfig.getInstance();
@@ -127,28 +115,11 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
     	}
     }
 	
-    /*
-	public void init(){
-		new Thread() {
-			@Override
-			public void run() {
-				DexterPluginManager.getInstance().init(DexterUIActivator.getDefault());
-			}
-		}.start();
-		
-		setDexterHomeForWindows();
-	}*/
-	
-	private void setDexterHomeForWindows(){
-		
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
-		DexterConfig.getInstance().removeDexterHomeListener(this);
 		plugin = null;
 		
 		DexterConfig.getInstance().stopSchedule();
