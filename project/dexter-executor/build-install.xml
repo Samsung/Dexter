@@ -130,7 +130,9 @@
 	</target>
 
 	<!-- plugins -->
-	<ant inheritAll="false" antfile="../dexter-findbugs/build-jar-without-lib.xml"></ant>
+	<ant inheritAll="false" antfile="../dexter-findbugs/build-jar-without-lib.xml">
+		<property name="version" value="${version}"/>
+	</ant>
 	
 	<target name="copy_dexter_findbugs_jar">
 		<copy toDir="${dist-plugin}" overwrite="true" failonerror="true">
@@ -138,7 +140,9 @@
 		</copy>
 	</target>
 
-	<ant inheritAll="false" antfile="../dexter-cppcheck/build-jar-without-lib.xml"></ant>
+	<ant inheritAll="false" antfile="../dexter-cppcheck/build-jar-without-lib.xml">
+		<property name="version" value="${version}"/>
+	</ant>
 	
 	<target name="copy_dexter_cppcheck_jar">
 		<copy toDir="${dist-plugin}" overwrite="true" failonerror="true">

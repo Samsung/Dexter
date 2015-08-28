@@ -27,6 +27,8 @@ package com.samsung.sec.dexter.findbugs.plugin;
 
 import net.xeoh.plugins.base.annotations.PluginImplementation;
 
+import org.osgi.framework.Version;
+
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
@@ -35,6 +37,7 @@ import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 import com.samsung.sec.dexter.core.plugin.PluginDescription;
 import com.samsung.sec.dexter.core.plugin.PluginVersion;
+import com.samsung.sec.dexter.findbugs.FindBugsActivator;
 
 @PluginImplementation
 public class FindbugsDexterPlugin implements IDexterPlugin {
@@ -58,7 +61,8 @@ public class FindbugsDexterPlugin implements IDexterPlugin {
     @Override
     public PluginDescription getDexterPluginDescription() {
     	if(this.pluginDescription == null){
-    		this.pluginDescription = new PluginDescription(PLUGIN_NAME, PLUGIN_NAME, new PluginVersion(2,8,4), 
+    		this.pluginDescription = new PluginDescription(PLUGIN_NAME, PLUGIN_NAME, 
+    				new PluginVersion(0,9,0), 
     				DexterConfig.LANGUAGE.JAVA, "Dexter plug-in for FindBugs");
     	}
 	    return this.pluginDescription;
