@@ -40,4 +40,5 @@ test {
 	systemProperties '': ''	
 
 	exclude '**/PersistencePropertyTest.class'
+	exclude '**/DexterConfigFileTest.class'
 }
