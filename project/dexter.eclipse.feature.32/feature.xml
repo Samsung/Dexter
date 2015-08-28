@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="dexter.eclipse.feature.64"
-      label="Dexter Eclipse Feature 64bit"
+      id="dexter.eclipse.feature.32"
+      label="Dexter Eclipse Feature 32bit"
       version="0.9.0"
       provider-name="Samsung Electronics VD SE Lab">
 
@@ -14,7 +14,7 @@
    </copyright>
 
    <license url="http://www.example.com/license">
-     /**
+      /**
  * Copyright (c) 2014 Samsung Electronics, Inc.,
  * All rights reserved.
  * 

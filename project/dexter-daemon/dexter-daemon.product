@@ -36,7 +36,6 @@
       <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7</windows>
    </vm>
 
-
    <plugins>
       <plugin id="com.ibm.icu"/>
       <plugin id="dexter-core"/>
@@ -142,7 +141,7 @@
    </plugins>
 
    <features>
-      <feature id="dexter.daemon.feature.64" version="0.9.0"/>
+      <feature id="dexter.daemon.feature.32" version="0.9.0"/>
    </features>
 
    <configurations>
