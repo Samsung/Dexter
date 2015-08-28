@@ -66,6 +66,7 @@ import com.samsung.sec.dexter.executor.DexterAnalyzer;
 
 public class Main {
 	private enum ExitCode {
+		SUCCESS,
 		BY_USER, 
 		ERROR_INVALID_PROGRAM_PARAMETER,
 		ERROR_NO_DEXTER_CONF_FILE,
@@ -171,8 +172,10 @@ public class Main {
 		options.addOption("c", false, "Create an account. use this option with -u your_id -p your_password. eg) -c -u myid -p mypwd");
 		options.addOption("e", true, "Enable only specified checker(s), checkercode1;checkercode2:language:toolname;... eg) -e nullpointer;initializerlist:CPP:cppcheck");
 		options.addOption("f", true, "Analysis Configuration File. eg) -f C:/dexter/" + DexterConfig.DEXTER_CFG_FILENAME);
+		options.addOption("h", true, "Dexter Server IP address. eg) 123.123.123.123");
 		options.addOption("j", false, "Create Json result file - dexter-result.json. eg) -j");
 		options.addOption("n", true, "File name for result file without an extension(.xml) - myreport.xml eg) -n myreport");
+		options.addOption("o", true, "Dexter Server Port address. eg) -p 4982");
 		options.addOption("p", true, "User Password. eg) -p password");
 		options.addOption("s", false, "Standalone. Run Dexter Analysis without DexterServer. you don't need LOG in(id & password) eg) -s");
 		options.addOption("t", true, "Target source code file names and paths. eg) -t C:/myproject/src/main.cpp;C:/myproject/src/util.cpp");
@@ -196,8 +199,18 @@ public class Main {
 	
 	protected void handleAccount(CommandLine cmd) {
 		if (cmd.hasOption("c")){
+			if(cmd.hasOption("h") == false || cmd.hasOption("o") == false){
+				LOG.errorln("absense/invalid -h for host or -o for port options for connecting Dexter Server");
+				exit(ExitCode.ERROR_FAIL_TO_CREATE_ACCOUNT);
+			}
+			
 			try {
+				final String serverHost = cmd.getOptionValue("h").toString();
+				final int serverPort = Integer.parseInt(cmd.getOptionValue("o").toString());
+				
+				client.setDexterServer(serverHost, serverPort);
 				account.createAccount(userId, password);
+				exitSuccess();
 			} catch(DexterRuntimeException e){
 				LOG.errorln(e.getMessage(), e);
 				exit(ExitCode.ERROR_FAIL_TO_CREATE_ACCOUNT);
@@ -689,6 +702,10 @@ public class Main {
 	private void exit(ExitCode code){
 		LOG.error("system exit code : " + code.ordinal());
 		System.exit(code.ordinal());
+	}
+	
+	private void exitSuccess(){
+		System.exit(ExitCode.SUCCESS.ordinal());
 	}
 
 	public static void setLog(CliLogger cliLogger) {

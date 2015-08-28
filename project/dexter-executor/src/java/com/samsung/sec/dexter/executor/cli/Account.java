@@ -37,7 +37,7 @@ public class Account implements IAccount{
 	private IDexterClient client = DexterClient.getInstance();
 	private InputStream in = System.in;
 	private PrintStream out = System.out;
-	private static int MAX_TRY_COUNT = 3;
+	private static int MAX_TRY_COUNT = 5;
 	
 	
 	@Override
@@ -52,6 +52,7 @@ public class Account implements IAccount{
 			}
 			
 	    	client.createAccount(userId, password, false);
+	    	out.println("Your account is created: " + userId);
 	    	client.login(userId, password);
 	    } catch (DexterRuntimeException e1){
 	    	throw new RuntimeException("Can't make new account. try it again. " + e1.getMessage(), e1);
