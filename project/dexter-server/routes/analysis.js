@@ -1720,8 +1720,8 @@ function addSnapshotOccurenceMap(defect, index, createdDateTime, userNo, snapsho
         + ", " + database.toSqlValue(occurence.stringValue)
         + ", " + database.toSqlValue(occurence.fieldName)
         + ", " + database.toSqlValue(occurence.message)
-        + ", FROM_UNIXTIME(" + database.getDateTime(createdDateTime) + "/1000)"
-        + ", FROM_UNIXTIME(" + database.getDateTime(createdDateTime) + "/1000)"
+        + ", now()"
+        + ", now()"
         + ", " + userNo
         + ")";
 
@@ -1805,8 +1805,8 @@ function insertDefect(defect, userNo, snapshotId){
         + ", " + database.toSqlValue(defect.severityCode)
         + ", " + database.toSqlValue('NEW')
         + ", " + database.toSqlValue(defect.message)
-        + ", FROM_UNIXTIME(" + database.getDateTime(defect.createdDateTime) + "/1000)"
-        + ", FROM_UNIXTIME(" + database.getDateTime(defect.createdDateTime) + "/1000)"
+        + ", now()"
+        + ", now()"
         + ", " + userNo
         + ", " + userNo
         + ")";
@@ -1853,8 +1853,8 @@ function insertOccurence(defect, index, createdDateTime, userNo){
         + ", " + database.toSqlValue(occurence.stringValue)
         + ", " + database.toSqlValue(occurence.fieldName)
         + ", " + database.toSqlValue(occurence.message)
-        + ", FROM_UNIXTIME(" + database.getDateTime(createdDateTime) + "/1000)"
-        + ", FROM_UNIXTIME(" + database.getDateTime(createdDateTime) + "/1000)"
+        + ", now()"
+        + ", now()"
         + ", " + userNo
         + ")";
 
@@ -1954,7 +1954,7 @@ function fixDefect(defect, userNo, snapshotId){
 
     var sql = "UPDATE Defect SET"
         + " statusCode = 'FIX'"
-        + " , modifiedDateTime = FROM_UNIXTIME(" + database.getDateTime(defect.createdDateTime) + "/1000)"
+        + " , modifiedDateTime = now()"
         + " , modifierNo = " + userNo
         + " WHERE "
         + "         toolName = " + database.toSqlValue(defect.toolName)
