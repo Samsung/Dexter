@@ -107,7 +107,7 @@ public class DexterEclipseActivator extends AbstractUIPlugin implements IDexterS
 				}
 			};
 			
-			loginFuture = getDefault().scheduler.scheduleAtFixedRate(checkLoginJob, 60, DexterConfig.SLEEP_FOR_LOGIN, TimeUnit.SECONDS);
+			loginFuture = getDefault().scheduler.scheduleAtFixedRate(checkLoginJob, 5, DexterConfig.SLEEP_FOR_LOGIN, TimeUnit.SECONDS);
 		}
 	}
 	

@@ -96,12 +96,12 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 			
 			try{
 				client.login(id, pwd);
+				config.startSchedule();
 			} catch (DexterRuntimeException e){
 				LOG.error(e.getMessage());
 			}
+			
 		}
-		
-		config.startSchedule();
 	}
 	
 	/* (non-Javadoc)

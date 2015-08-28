@@ -221,16 +221,10 @@ public class DexterConfig {
 	}
 	
 	public void startSchedule() {
-		if(scheduler == null || scheduler.isShutdown() || scheduler.isTerminated()){
-			scheduler = Executors.newScheduledThreadPool(1);
-			
-			scheduler.scheduleAtFixedRate(new DeleteResultLogJob(), 0, getIntervalDeleteResultLog(), TimeUnit.SECONDS);
-			
-			if (isStandalone == false) {
-				sendResultFuture = scheduler.scheduleAtFixedRate(new SendResultJob(), 10, getIntervalSendingAnalysisResult(), TimeUnit.SECONDS);
-				mergeFilterFuture = scheduler.scheduleAtFixedRate(new MergeFilterJob(), 15, getIntervalMergingFilter(), TimeUnit.SECONDS);
-			}
-		}
+		scheduler = Executors.newScheduledThreadPool(1);
+		scheduler.scheduleAtFixedRate(new DeleteResultLogJob(), 0, getIntervalDeleteResultLog(), TimeUnit.SECONDS);
+		sendResultFuture = scheduler.scheduleAtFixedRate(new SendResultJob(), 10, getIntervalSendingAnalysisResult(), TimeUnit.SECONDS);
+		mergeFilterFuture = scheduler.scheduleAtFixedRate(new MergeFilterJob(), 15, getIntervalMergingFilter(), TimeUnit.SECONDS);
 	}
 	
 	public void stopSchedule(){
@@ -238,22 +232,52 @@ public class DexterConfig {
 	}
 	
 	public void stopJobSchedulForServer() {
-		if (sendResultFuture != null)
-			sendResultFuture.cancel(false);
+		assert sendResultFuture == null;
+		assert mergeFilterFuture == null;
 		
-		if (mergeFilterFuture != null)
-			mergeFilterFuture.cancel(false);
+		sendResultFuture.cancel(false);
+		mergeFilterFuture.cancel(false);
 	}
 	
-	public void resumeJobSchedulForServer() {	
-		if (scheduler == null)
-			return;
-		
-		if (sendResultFuture == null || sendResultFuture.isDone())
-			sendResultFuture = scheduler.scheduleAtFixedRate(new SendResultJob(), 10, getIntervalSendingAnalysisResult(), TimeUnit.SECONDS);
-		
-		if (mergeFilterFuture == null || mergeFilterFuture.isDone())
-			mergeFilterFuture = scheduler.scheduleAtFixedRate(new MergeFilterJob(), 15, getIntervalMergingFilter(), TimeUnit.SECONDS);
+	public void resumeJobSchedulForServer() {
+		new Thread(){
+			public void run() {
+				resumeSendResultFuture();
+				resumeMergeFilterFuture();
+			}
+
+			private void resumeSendResultFuture() {
+				while(true){
+					if(sendResultFuture.isDone()){
+						sendResultFuture = scheduler.scheduleAtFixedRate(new SendResultJob(), 10, 
+								getIntervalSendingAnalysisResult(), TimeUnit.SECONDS);
+						break;
+					}
+					
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// Do nothing
+					}
+				}
+			};
+			
+			private void resumeMergeFilterFuture() {
+				while(true){
+					if(mergeFilterFuture.isDone()){
+						mergeFilterFuture = scheduler.scheduleAtFixedRate(new MergeFilterJob(), 15, 
+								getIntervalMergingFilter(), TimeUnit.SECONDS);
+						break;
+					}
+					
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						// Do nothing
+					}
+				}
+			};
+		}.start();
 	}
 	
 	public void createInitialFolderAndFiles() {
