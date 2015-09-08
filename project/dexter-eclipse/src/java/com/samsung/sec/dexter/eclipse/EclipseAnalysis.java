@@ -36,7 +36,7 @@ import org.eclipse.jdt.core.JavaCore;
 import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
-import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityAbstractFactory;
+import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.exception.DexterException;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
@@ -70,7 +70,7 @@ public class EclipseAnalysis {
 		try {
         	return DexterEclipseActivator.getDefault().getConfigCache().get(key);
 		} catch (InvalidCacheLoadException e){
-			IAnalysisEntityAbstractFactory analysisFactory = new AnalysisEntityFactory();
+			IAnalysisEntityFactory analysisFactory = new AnalysisEntityFactory();
 			
 			final AnalysisConfig config = createAnalysisConfig(file, analysisFactory);
 			DexterEclipseActivator.getDefault().getConfigCache().put(key, config);
@@ -82,7 +82,7 @@ public class EclipseAnalysis {
 		return null;
 	}
 
-	private static AnalysisConfig createAnalysisConfig(final IFile file, final IAnalysisEntityAbstractFactory configFactory){
+	private static AnalysisConfig createAnalysisConfig(final IFile file, final IAnalysisEntityFactory configFactory){
 		final AnalysisConfig config = configFactory.createAnalysisConfig();
 		config.setProjectName(file.getProject().getName());
 

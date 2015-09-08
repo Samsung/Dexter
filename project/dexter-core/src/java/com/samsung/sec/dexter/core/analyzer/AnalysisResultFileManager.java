@@ -62,7 +62,7 @@ public class AnalysisResultFileManager {
 	public void writeJson(final List<AnalysisResult> resultList) {
 		String resultFolderStr = DexterConfig.getInstance().getDexterHome() + "/" + DexterConfig.RESULT_FOLDER_NAME;
 		
-		IAnalysisEntityAbstractFactory factory = new AnalysisEntityFactory();
+		IAnalysisEntityFactory factory = new AnalysisEntityFactory();
 		AnalysisResult baseResult = factory.createAnalysisResult(resultList);
 		writeJsonResult(baseResult, resultFolderStr);
 	}

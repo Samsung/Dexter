@@ -39,7 +39,7 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.EndOfAnalysisHandler;
-import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityAbstractFactory;
+import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.exception.DexterException;
@@ -96,7 +96,7 @@ public class DexterAnalyzerTest {
 
             public void execute(){
         		// 1. set static analysis objects : source file, class file path, classpath
-            	IAnalysisEntityAbstractFactory analysisFactory = new AnalysisEntityFactory();
+            	IAnalysisEntityFactory analysisFactory = new AnalysisEntityFactory();
         		AnalysisConfig ac = analysisFactory.createAnalysisConfig();
         		ac.setProjectName("DefectTest");
         		ac.setProjectFullPath("C:\\DEV\\workspace\\dexter\\DefectTest");
@@ -165,7 +165,7 @@ public class DexterAnalyzerTest {
 
         		
         		// 2. set static analysis objects : source file, class file path, classpath
-        		IAnalysisEntityAbstractFactory analysisFactory = new AnalysisEntityFactory();
+        		IAnalysisEntityFactory analysisFactory = new AnalysisEntityFactory();
         		AnalysisConfig ac = analysisFactory.createAnalysisConfig();
         		ac.setProjectName("DefectTest");
         		ac.setProjectFullPath("C:\\DEV\\workspace\\dexter\\DefectTest");

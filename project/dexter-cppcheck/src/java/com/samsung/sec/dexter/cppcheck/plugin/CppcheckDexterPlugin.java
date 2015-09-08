@@ -39,7 +39,7 @@ import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
-import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityAbstractFactory;
+import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
@@ -164,7 +164,7 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
 			copyCppcheckRunModule();
 		}
 
-		IAnalysisEntityAbstractFactory factory = new AnalysisEntityFactory();
+		IAnalysisEntityFactory factory = new AnalysisEntityFactory();
 		AnalysisResult result = factory.createAnalysisResult(config);
 		cppcheck.analyze(result);
 		

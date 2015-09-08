@@ -38,7 +38,7 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.EndOfAnalysisHandler;
-import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityAbstractFactory;
+import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.defect.Occurence;
@@ -72,7 +72,7 @@ public class ProjectOrFolderAnalyzer {
     }
 
 	private AnalysisConfig createAnalysisConfig() {
-        IAnalysisEntityAbstractFactory configFactory = new AnalysisEntityFactory();
+        IAnalysisEntityFactory configFactory = new AnalysisEntityFactory();
     	final AnalysisConfig config = configFactory.createAnalysisConfig();
     	
 		config.setProjectName(projectCfg.getProjectName());
@@ -141,7 +141,7 @@ public class ProjectOrFolderAnalyzer {
 			return;
 		}
 		
-		IAnalysisEntityAbstractFactory factory = new AnalysisEntityFactory();
+		IAnalysisEntityFactory factory = new AnalysisEntityFactory();
 		AnalysisConfig config = factory.copyAnalysisConfigWithoutSourcecode(baseConfig);
 		
 		setShouldSendSourceCode(config);

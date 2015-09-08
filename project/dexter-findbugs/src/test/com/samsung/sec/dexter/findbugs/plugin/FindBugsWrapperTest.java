@@ -36,7 +36,7 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResultChangeHandlerForUT;
-import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityAbstractFactory;
+import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
 import com.samsung.sec.dexter.core.checker.Checker;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.util.DexterUtil;
@@ -63,7 +63,7 @@ public class FindBugsWrapperTest {
 		FindBugsWrapper findbugs = new FindBugsWrapper();
 		findbugs.initCheckerConfig();
 		
-		final IAnalysisEntityAbstractFactory factory = new AnalysisEntityFactory();
+		final IAnalysisEntityFactory factory = new AnalysisEntityFactory();
 		final AnalysisConfig config = factory.createAnalysisConfig();
 		
 		// setup

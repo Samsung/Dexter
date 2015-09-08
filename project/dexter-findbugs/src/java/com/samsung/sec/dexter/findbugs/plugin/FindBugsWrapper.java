@@ -38,7 +38,7 @@ import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
-import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityAbstractFactory;
+import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
 import com.samsung.sec.dexter.core.checker.Checker;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
@@ -71,7 +71,7 @@ public class FindBugsWrapper {
 		assert config != null;
 		
 		
-		IAnalysisEntityAbstractFactory factory = new AnalysisEntityFactory();
+		IAnalysisEntityFactory factory = new AnalysisEntityFactory();
 		AnalysisResult result = factory.createAnalysisResult(config);
 		
 		LOG.debug(result.getFileName() + "is being analyzed");

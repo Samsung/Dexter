@@ -25,41 +25,13 @@
 */
 package com.samsung.sec.dexter.core.analyzer;
 
-import com.samsung.sec.dexter.core.defect.Defect;
-import com.samsung.sec.dexter.core.defect.Occurence;
+import java.io.File;
+import java.util.List;
 
-public class AnalysisEntityTestUtil {
-	public static AnalysisResult createSampleAnalysisResult(){
-		IAnalysisEntityFactory factory = new AnalysisEntityFactory();
-		AnalysisResult result = factory.createAnalysisResult(factory.createAnalysisConfig());
-		
-		Defect defect = createSampleDefect();
-		result.addDefect(defect);
-		result.setSourceFileFullPath("C:/test-project/src/test-module/test-filename");
-		
-		return result;
-	}
-	
-	public static Defect createSampleDefect() {
-	    Defect defect = new Defect();
-		defect.setCheckerCode("test-checker-code");
-		defect.setClassName("test-class");
-		defect.setCreatedDateTime(System.currentTimeMillis());
-		defect.setFileName("test-filename");
-		defect.setLanguage("JAVA");
-		defect.setMessage("test-message");
-		defect.setMethodName("test-method");
-		defect.setModulePath("test-module");
-		defect.setSeverityCode("CRI");
-		defect.setToolName("test-tool");
-		
-		Occurence occ = new Occurence();
-		occ.setStartLine(10);
-		occ.setEndLine(11);
-		occ.setMessage("test-occurence-message");
-		
-		defect.addOccurence(occ);
-		
-		return defect;
-    }
+public interface IAnalysisEntityFactory {
+	public AnalysisConfig createAnalysisConfig();
+	public AnalysisConfig copyAnalysisConfigWithoutSourcecode(final AnalysisConfig baseAnalysisConfig);
+	public abstract AnalysisConfig createAnalsysiConfigFromDexterConfigFile(final File dexterConfigFilePath);
+	public abstract AnalysisResult createAnalysisResult(final AnalysisConfig config);
+	public AnalysisResult createAnalysisResult(List<AnalysisResult> resultList);
 }

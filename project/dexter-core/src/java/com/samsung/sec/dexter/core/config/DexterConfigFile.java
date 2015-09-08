@@ -37,7 +37,7 @@ import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
-import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityAbstractFactory;
+import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.core.util.DexterUtil;
@@ -138,7 +138,7 @@ public class DexterConfigFile {
     }
 
 	public AnalysisConfig toAnalysisConfig() {
-		IAnalysisEntityAbstractFactory configFactory = new AnalysisEntityFactory();
+		IAnalysisEntityFactory configFactory = new AnalysisEntityFactory();
 		final AnalysisConfig analysisConfig = configFactory.createAnalysisConfig();
 		
 		analysisConfig.setProjectName(getProjectName());

@@ -44,7 +44,7 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.EndOfAnalysisHandler;
-import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityAbstractFactory;
+import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
 import com.samsung.sec.dexter.core.checker.Checker;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.RunMode;
@@ -79,7 +79,7 @@ public class Main {
 	
 	private static ICliLog LOG = new CliLogger(System.out);
 	
-	private IAnalysisEntityAbstractFactory analysisEntityFactory = new AnalysisEntityFactory();
+	private IAnalysisEntityFactory analysisEntityFactory = new AnalysisEntityFactory();
 
 	private String userId;
 	private String password;

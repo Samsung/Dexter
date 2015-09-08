@@ -30,7 +30,7 @@ import java.util.List;
 
 import com.samsung.sec.dexter.core.config.DexterConfigFile;
 
-public class AnalysisEntityFactory implements IAnalysisEntityAbstractFactory {
+public class AnalysisEntityFactory implements IAnalysisEntityFactory {
 	@Override
 	public AnalysisConfig createAnalysisConfig() {
 		return new AnalysisConfig();

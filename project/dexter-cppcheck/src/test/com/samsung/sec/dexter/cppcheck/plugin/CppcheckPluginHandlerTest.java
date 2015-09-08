@@ -37,7 +37,7 @@ import org.junit.Test;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResultChangeHandlerForUT;
-import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityAbstractFactory;
+import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.RunMode;
 import com.samsung.sec.dexter.core.defect.Defect;
@@ -80,7 +80,7 @@ public class CppcheckPluginHandlerTest {
 		String fileName = "main.cpp";
 		
 		// 2. Parameter for Static Analysis
-		IAnalysisEntityAbstractFactory analysisFactory = new AnalysisEntityFactory();
+		IAnalysisEntityFactory analysisFactory = new AnalysisEntityFactory();
 		AnalysisConfig config = analysisFactory.createAnalysisConfig();
 
 		// 2.1 Initialize AnalysisResult : add testing data
