@@ -12,11 +12,7 @@ Dexter helps you to improve coding skills. Whenever you save a source file, Dext
 - [Dexter Wiki (How to install/Use)](https://dexter.atlassian.net)
 
 ## Downloads
-- Eclipse Plug-ins: [zip](https://dexter.atlassian.net/wiki/download/attachments/524291/eclipse_plugins_32.zip?version=1&modificationDate=1441088359861&api=v2) (* We will provide public eclipse update site soon)
-- Eclipse Update Site: [zip](https://dexter.atlassian.net/wiki/download/attachments/524291/eclipse_update_site_32.zip?version=1&modificationDate=1441087824112&api=v2)
-- Eclipse Daemon for Source Insight: [32bit](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-daemon_0.9.0_32.zip?version=1&modificationDate=1440775125180&api=v2), [64bit](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-daemon_0.9.0_64.zip?version=1&modificationDate=1441089654533&api=v2)
-- Dexter CLI: [32bit](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-cli_0.9.0_32.zip?version=2&modificationDate=1441087074302&api=v2), [64bit](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-cli_0.9.0_64.zip?version=1&modificationDate=1440774359720&api=v2)
-- Dexter Server: [zip](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-server_0.9.0.zip?version=1&modificationDate=1441087361438&api=v2)
+support soon
  
 ## Supports
 - Eclipse IDE for Java language (Juno 4.2+)
