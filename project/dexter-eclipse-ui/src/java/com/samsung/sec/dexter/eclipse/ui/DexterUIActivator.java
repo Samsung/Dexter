@@ -35,23 +35,20 @@ import org.osgi.framework.BundleContext;
 
 import com.samsung.sec.dexter.core.analyzer.IDexterPluginInitializer;
 import com.samsung.sec.dexter.core.config.DexterConfig;
-import com.samsung.sec.dexter.core.config.IDexterStandaloneListener;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.job.DexterJobFacade;
 import com.samsung.sec.dexter.core.plugin.DexterPluginManager;
 import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 import com.samsung.sec.dexter.core.util.DexterClient;
-import com.samsung.sec.dexter.core.util.DummyDexterWebResource;
 import com.samsung.sec.dexter.core.util.IDexterClient;
-import com.samsung.sec.dexter.core.util.JerseyDexterWebResource;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseLog;
-import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 import com.samsung.sec.dexter.executor.DexterAnalyzer;
 import com.samsung.sec.dexter.executor.DexterExecutorActivator;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class DexterUIActivator extends AbstractUIPlugin implements IDexterPluginInitializer, IDexterStandaloneListener {
+public class DexterUIActivator extends AbstractUIPlugin implements IDexterPluginInitializer {
 	public static final String PLUGIN_ID = "dexter-eclipse-ui"; //$NON-NLS-1$
 	private static DexterUIActivator plugin;
 	public final static EclipseLog LOG = new EclipseLog(PLUGIN_ID);
@@ -71,49 +68,42 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 		plugin = this;
 		LOG.setPlugin(this);
 		
-		final DexterConfig config = DexterConfig.getInstance();
-		DexterAnalyzer.getInstance();
-		
-		config.addDexterStandaloneListener(this);
+		DexterAnalyzer.getInstance();		
 		DexterPluginManager.getInstance().setDexterPluginInitializer(this);
+		
+		final boolean isStandalone = getPreferenceStore().getBoolean("isStandalone");
+		DexterConfig.getInstance().setStandalone(isStandalone);
+		
+		DexterJobFacade.getInstance().startGeneralJobs();
+		DexterConfig.getInstance().addDexterStandaloneListener(DexterJobFacade.getInstance());
+		DexterConfig.getInstance().addDexterStandaloneListener(DexterClient.getInstance());
+		
+		initDexterClient();
+	}
+	
+	void initDexterClient(){
+		final DexterConfig config = DexterConfig.getInstance();
+		if(config.isStandalone()) return;
 		
 		final String id = getPreferenceStore().getString("userId");
 		final String pwd = getPreferenceStore().getString("userPwd");
-		final boolean isStandalone = getPreferenceStore().getBoolean("isStandalone");
-		config.setStandalone(isStandalone);
+		final String serverAddress = getPreferenceStore().getString("serverAddress");
 		
-		if(isStandalone) {
-			config.setDexterHome(EclipseUtil.getDefaultDexterHomePath());
-		} else {
-			final IDexterClient client = DexterClient.getInstance();
-			
-			client.setCurrentUserId(id);
-			client.setCurrentUserPwd(pwd);
-			client.setDexterServer(getPreferenceStore().getString("serverAddress"));
-			config.setDexterHome(getPreferenceStore().getString(DexterConfig.DEXTER_HOME_KEY));
-			
-			try{
-				client.login(id, pwd);
-				config.startSchedule();
-			} catch (DexterRuntimeException e){
-				LOG.error(e.getMessage());
-			}
+		final IDexterClient client = DexterClient.getInstance();
+		client.setCurrentUserId(id);
+		client.setCurrentUserPwd(pwd);
+		client.setDexterServer(serverAddress);
+		
+		final String dexterHome = getPreferenceStore().getString(DexterConfig.DEXTER_HOME_KEY);
+		config.setDexterHome(dexterHome);
+		
+		try{
+			client.login(id, pwd);
+			DexterJobFacade.getInstance().startDexterServerJobs();
+		} catch (DexterRuntimeException e){
+			LOG.error(e.getMessage(), e);
 		}
 	}
-	
-    @Override
-    public void handleDexterStandaloneChanged() {
-    	final DexterConfig config = DexterConfig.getInstance();
-    	final IDexterClient client = DexterClient.getInstance();
-    	
-    	if (config.isStandalone()) {
-    		config.stopJobSchedulForServer();
-    		client.setWebResource(new DummyDexterWebResource());
-    	} else {
-    		client.setWebResource(new JerseyDexterWebResource());
-    		config.resumeJobSchedulForServer();
-    	}
-    }
 	
 	/*
 	 * (non-Javadoc)
@@ -121,8 +111,9 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
-		
-		DexterConfig.getInstance().stopSchedule();
+		DexterConfig.getInstance().removeDexterStandaloneListener(DexterClient.getInstance());
+		DexterConfig.getInstance().removeDexterStandaloneListener(DexterJobFacade.getInstance());
+		DexterJobFacade.getInstance().shutdownScheduleService();
 		super.stop(context);
 	}
 	
@@ -187,4 +178,6 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 	public static DexterUIActivator getDefault() {
 		return plugin;
 	}
+	
+	
 }

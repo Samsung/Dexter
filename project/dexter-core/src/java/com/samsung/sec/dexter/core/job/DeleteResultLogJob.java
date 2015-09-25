@@ -37,7 +37,7 @@ import com.samsung.sec.dexter.core.config.DexterConfig;
 
 public class DeleteResultLogJob implements Runnable {
 	private final static Logger logger = Logger.getLogger(DeleteResultLogJob.class);
-	private static int COUNT = DexterConfig.MAX_JOB_DELAY_COUNT;
+	private static int COUNT = DexterJobFacade.MAX_JOB_DELAY_COUNT;
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Runnable#run()
@@ -46,7 +46,7 @@ public class DeleteResultLogJob implements Runnable {
     public void run() {
     	long freeMemSize = Runtime.getRuntime().freeMemory();
     	
-    	if(freeMemSize > DexterConfig.ALLOWED_FREE_MEMORY_SIZE_FOR_JOBS || COUNT > DexterConfig.MAX_JOB_DELAY_COUNT){
+    	if(freeMemSize > DexterJobFacade.ALLOWED_FREE_MEMORY_SIZE_FOR_JOBS || COUNT > DexterJobFacade.MAX_JOB_DELAY_COUNT){
     		COUNT = 0;
     		DeleteResultLogJob.deleteOldLog();
     		

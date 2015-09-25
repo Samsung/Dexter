@@ -63,7 +63,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 import com.google.common.base.Strings;
-import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.job.DexterJobFacade;
 import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.core.util.IDexterClient;
 import com.samsung.sec.dexter.daemon.p2.P2Util;
@@ -299,7 +299,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
 		final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
-		scheduler.scheduleAtFixedRate(checkLoginJob, 1, DexterConfig.SLEEP_FOR_LOGIN, TimeUnit.SECONDS);
+		scheduler.scheduleAtFixedRate(checkLoginJob, 1, DexterJobFacade.SLEEP_FOR_LOGIN, TimeUnit.SECONDS);
 	}
 
 	private void minimizeBehavior() {

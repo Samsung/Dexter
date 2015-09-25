@@ -95,7 +95,7 @@ public class EclipseUtil {
 		String curDir = EclipseUtil.getRcpHomePath();
 		String defaultDexterHome;
 		if(Strings.isNullOrEmpty(curDir)){
-			defaultDexterHome = System.getProperty("user.home") + "/" + DexterConfig.DEXTER_DEFAULT_FOLDER_NAME; //$NON-NLS-1$ //$NON-NLS-2$
+			defaultDexterHome = DexterConfig.getInstance().getDefaultDexterHome();
 		} else {
 			defaultDexterHome = curDir + DexterConfig.DEXTER_DEFAULT_FOLDER_NAME;
 		}

@@ -174,7 +174,7 @@ public class ResultFileHandler extends DefaultHandler {
 	    	if (currentOccurence.getStartLine() != -1) {
 	    		result.addDefectWithPreOccurence(currentOccurence);
 			} else {
-				logger.warn("Not added defect : " + currentOccurence.toJson());
+				logger.warn("Not added defect(start line is -1) : " + currentOccurence.toJson());
 			}
 	    } 
 	}

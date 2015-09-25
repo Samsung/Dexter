@@ -25,20 +25,19 @@
 */
 package com.samsung.sec.dexter.core.job;
 
-import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.filter.AnalysisFilterHandler;
 import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.core.util.IDexterClient;
 
 public class MergeFilterJob implements Runnable {
 	private final AnalysisFilterHandler filter = AnalysisFilterHandler.getInstance();
-	private static int COUNT = DexterConfig.MAX_JOB_DELAY_COUNT;
+	private static int COUNT = DexterJobFacade.MAX_JOB_DELAY_COUNT;
 	
     @Override
     public void run() {
     	long freeMemSize = Runtime.getRuntime().freeMemory();
     	
-    	if(freeMemSize > DexterConfig.ALLOWED_FREE_MEMORY_SIZE_FOR_JOBS || COUNT > DexterConfig.MAX_JOB_DELAY_COUNT){
+    	if(freeMemSize > DexterJobFacade.ALLOWED_FREE_MEMORY_SIZE_FOR_JOBS || COUNT > DexterJobFacade.MAX_JOB_DELAY_COUNT){
     		COUNT = 0;
 
     		IDexterClient client = DexterClient.getInstance();

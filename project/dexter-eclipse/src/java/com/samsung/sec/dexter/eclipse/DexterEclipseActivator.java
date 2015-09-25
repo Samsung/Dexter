@@ -40,6 +40,7 @@ import com.google.common.cache.LoadingCache;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.IDexterStandaloneListener;
+import com.samsung.sec.dexter.core.job.DexterJobFacade;
 import com.samsung.sec.dexter.eclipse.ui.login.LoginDialog;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseLog;
 
@@ -107,7 +108,7 @@ public class DexterEclipseActivator extends AbstractUIPlugin implements IDexterS
 				}
 			};
 			
-			loginFuture = getDefault().scheduler.scheduleAtFixedRate(checkLoginJob, 5, DexterConfig.SLEEP_FOR_LOGIN, TimeUnit.SECONDS);
+			loginFuture = getDefault().scheduler.scheduleAtFixedRate(checkLoginJob, 5, DexterJobFacade.SLEEP_FOR_LOGIN, TimeUnit.SECONDS);
 		}
 	}
 	

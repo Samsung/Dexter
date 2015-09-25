@@ -33,10 +33,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
@@ -45,9 +41,6 @@ import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResultFileManager;
 import com.samsung.sec.dexter.core.exception.DexterException;
-import com.samsung.sec.dexter.core.job.DeleteResultLogJob;
-import com.samsung.sec.dexter.core.job.MergeFilterJob;
-import com.samsung.sec.dexter.core.job.SendResultJob;
 import com.samsung.sec.dexter.core.plugin.DexterPluginManager;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 
@@ -104,14 +97,6 @@ public class DexterConfig {
 	private boolean doesSendResult = true;
 	private boolean isStandalone = false;
 	
-	/** seconds */
-	private int intervalSendingAnalysisResult = 5;
-	private int intervalMergingFilter = 3;
-	private int intervalDeleteResultLog = 60 * 60; // seconds => 1 hours
-	public static final long SLEEP_FOR_LOGIN = 60*60; // seconds => 1 hour
-	public static final long ALLOWED_FREE_MEMORY_SIZE_FOR_JOBS = 30 * 1024 * 1024; // 50 MB
-	public static final int MAX_JOB_DELAY_COUNT = 100;
-	
 	private int serverConnectionTimeOut = 15000;	// ms
 	
 	public int getServerConnectionTimeOut() {
@@ -159,8 +144,8 @@ public class DexterConfig {
 	
 	private boolean isReviewMode = false;
 	
-	private ScheduledFuture<?> sendResultFuture = null;
-	private ScheduledFuture<?> mergeFilterFuture = null;
+	//private ScheduledFuture<?> sendResultFuture = null;
+	//private ScheduledFuture<?> mergeFilterFuture = null;
 	
 	
 	////////////////////////////////////////////////////////////////////////////////////////////
@@ -174,7 +159,7 @@ public class DexterConfig {
 	
 	private Set<String> supportingFileExtensions = new HashSet<String>(5);
 	
-	private ScheduledExecutorService scheduler;
+	//private ScheduledExecutorService scheduler;
 
 	
 	private DexterConfig(){
@@ -220,66 +205,66 @@ public class DexterConfig {
         }
 	}
 	
-	public void startSchedule() {
-		scheduler = Executors.newScheduledThreadPool(1);
-		scheduler.scheduleAtFixedRate(new DeleteResultLogJob(), 0, getIntervalDeleteResultLog(), TimeUnit.SECONDS);
-		sendResultFuture = scheduler.scheduleAtFixedRate(new SendResultJob(), 10, getIntervalSendingAnalysisResult(), TimeUnit.SECONDS);
-		mergeFilterFuture = scheduler.scheduleAtFixedRate(new MergeFilterJob(), 15, getIntervalMergingFilter(), TimeUnit.SECONDS);
-	}
-	
-	public void stopSchedule(){
-		if(scheduler != null)
-			scheduler.shutdown();
-	}
-	
-	public void stopJobSchedulForServer() {
-		assert sendResultFuture == null;
-		assert mergeFilterFuture == null;
-		
-		sendResultFuture.cancel(false);
-		mergeFilterFuture.cancel(false);
-	}
-	
-	public void resumeJobSchedulForServer() {
-		new Thread(){
-			public void run() {
-				resumeSendResultFuture();
-				resumeMergeFilterFuture();
-			}
-
-			private void resumeSendResultFuture() {
-				while(true){
-					if(sendResultFuture.isDone()){
-						sendResultFuture = scheduler.scheduleAtFixedRate(new SendResultJob(), 10, 
-								getIntervalSendingAnalysisResult(), TimeUnit.SECONDS);
-						break;
-					}
-					
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						// Do nothing
-					}
-				}
-			};
-			
-			private void resumeMergeFilterFuture() {
-				while(true){
-					if(mergeFilterFuture.isDone()){
-						mergeFilterFuture = scheduler.scheduleAtFixedRate(new MergeFilterJob(), 15, 
-								getIntervalMergingFilter(), TimeUnit.SECONDS);
-						break;
-					}
-					
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						// Do nothing
-					}
-				}
-			};
-		}.start();
-	}
+//	public void startSchedule() {
+//		scheduler = Executors.newScheduledThreadPool(1);
+//		scheduler.scheduleAtFixedRate(new DeleteResultLogJob(), 0, getIntervalDeleteResultLog(), TimeUnit.SECONDS);
+//		sendResultFuture = scheduler.scheduleAtFixedRate(new SendResultJob(), 10, getIntervalSendingAnalysisResult(), TimeUnit.SECONDS);
+//		mergeFilterFuture = scheduler.scheduleAtFixedRate(new MergeFilterJob(), 15, getIntervalMergingFilter(), TimeUnit.SECONDS);
+//	}
+//	
+//	public void stopSchedule(){
+//		if(scheduler != null)
+//			scheduler.shutdown();
+//	}
+//	
+//	public void stopJobSchedulForServer() {
+//		assert sendResultFuture == null;
+//		assert mergeFilterFuture == null;
+//		
+//		sendResultFuture.cancel(false);
+//		mergeFilterFuture.cancel(false);
+//	}
+//	
+//	public void resumeJobSchedulForServer() {
+//		new Thread(){
+//			public void run() {
+//				resumeSendResultFuture();
+//				resumeMergeFilterFuture();
+//			}
+//
+//			private void resumeSendResultFuture() {
+//				while(true){
+//					if(sendResultFuture.isDone()){
+//						sendResultFuture = scheduler.scheduleAtFixedRate(new SendResultJob(), 10, 
+//								getIntervalSendingAnalysisResult(), TimeUnit.SECONDS);
+//						break;
+//					}
+//					
+//					try {
+//						Thread.sleep(1000);
+//					} catch (InterruptedException e) {
+//						// Do nothing
+//					}
+//				}
+//			};
+//			
+//			private void resumeMergeFilterFuture() {
+//				while(true){
+//					if(mergeFilterFuture.isDone()){
+//						mergeFilterFuture = scheduler.scheduleAtFixedRate(new MergeFilterJob(), 15, 
+//								getIntervalMergingFilter(), TimeUnit.SECONDS);
+//						break;
+//					}
+//					
+//					try {
+//						Thread.sleep(1000);
+//					} catch (InterruptedException e) {
+//						// Do nothing
+//					}
+//				}
+//			};
+//		}.start();
+//	}
 	
 	public void createInitialFolderAndFiles() {
 		if (Strings.isNullOrEmpty(this.dexterHome)) {
@@ -399,26 +384,6 @@ public class DexterConfig {
 
 
 	/**
-	 * @return the iNTERVAL_SEND_ANALYSIS_RESULT
-	 */
-	public int getIntervalSendingAnalysisResult() {
-		return intervalSendingAnalysisResult;
-	}
-
-
-	/**
-	 * @return the iNTERVAL_MERGE_FILTER
-	 */
-	public int getIntervalMergingFilter() {
-		return intervalMergingFilter;
-	}
-	
-	public long getIntervalDeleteResultLog() {
-		return intervalDeleteResultLog;
-	}
-
-
-	/**
 	 * @param dEXTER_MODE the dEXTER_MODE to set
 	 */
 	public void setRunMode(final RunMode dEXTER_MODE) {
@@ -455,22 +420,6 @@ public class DexterConfig {
 	 */
 	public void setDoesSendResult(final boolean isSend) {
 		doesSendResult = isSend;
-	}
-
-
-	/**
-	 * @param interval the iNTERVAL_SEND_ANALYSIS_RESULT to set
-	 */
-	public void setIntervalSendingAnalysisResult(final int interval) {
-		intervalSendingAnalysisResult = interval;
-	}
-
-
-	/**
-	 * @param interval the iNTERVAL_MERGE_FILTER to set
-	 */
-	public void setIntervalMergingFilter(final int interval) {
-		intervalMergingFilter = interval;
 	}
 
 	/**
@@ -554,6 +503,9 @@ public class DexterConfig {
 
 		LOG.info("Standalone mode: " + isStandalone);
 		this.isStandalone = isStandalone;
+		if(this.isStandalone)
+			setDexterHome(getDefaultDexterHome());
+		
 		runDexterStandaloneListener();
 	}
 	
@@ -577,5 +529,9 @@ public class DexterConfig {
 	
 	public synchronized void removeDexterStandaloneListener(final IDexterStandaloneListener listener){
 		dexterStandaloneListenerList.remove(listener);
+	}
+
+	public String getDefaultDexterHome() {
+		return System.getProperty("user.home") + "/" + DexterConfig.DEXTER_DEFAULT_FOLDER_NAME;
 	}
 }

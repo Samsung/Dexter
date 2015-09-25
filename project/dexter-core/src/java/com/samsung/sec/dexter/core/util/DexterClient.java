@@ -41,6 +41,7 @@ import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.config.DefectGroup;
 import com.samsung.sec.dexter.core.config.DexterCode;
 import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.config.IDexterStandaloneListener;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.exception.DexterException;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
@@ -54,7 +55,7 @@ import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.core.impl.provider.entity.StringProvider;
 
-public class DexterClient implements IDexterClient {
+public class DexterClient implements IDexterClient, IDexterStandaloneListener {
 	private final static Logger LOG = Logger.getLogger(DexterClient.class);
 
 	private IDexterWebResource webResource;
@@ -421,6 +422,7 @@ public class DexterClient implements IDexterClient {
 					this.currentUserId, this.currentUserPwd);
 			return "ok".equals(text);
 		} catch (Exception e) {
+			LOG.debug(e.getMessage(), e);
 			return false;
 		}
 	}
@@ -1026,5 +1028,14 @@ public class DexterClient implements IDexterClient {
 				loginInfoListenerList.remove(i--);
 			}
 		}
+	}
+
+	@Override
+	public void handleDexterStandaloneChanged() {
+		if (DexterConfig.getInstance().isStandalone()) {
+    		setWebResource(new DummyDexterWebResource());
+    	} else {
+    		setWebResource(new JerseyDexterWebResource());
+    	}
 	}
 }
