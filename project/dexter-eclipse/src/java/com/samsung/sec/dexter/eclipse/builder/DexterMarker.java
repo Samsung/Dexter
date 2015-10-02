@@ -41,6 +41,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 
 import com.google.common.base.Strings;
+import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.defect.Occurence;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
@@ -93,26 +94,26 @@ public class DexterMarker {
 			}
 			
 			if(occurence.getEndLine() <= 0) {
-				marker.setAttribute("endLine", 1);
+				marker.setAttribute(ResultFileConstant.END_LINE, 1);
 			} else {
-				marker.setAttribute("endLine", occurence.getEndLine());
+				marker.setAttribute(ResultFileConstant.END_LINE, occurence.getEndLine());
 			}
 			
 			// Defect Info
-			marker.setAttribute("toolName", defect.getToolName());
-			marker.setAttribute("language", defect.getLanguage());
-			marker.setAttribute("checkerCode", defect.getCheckerCode());
-			marker.setAttribute("methodName", defect.getMethodName());
-			marker.setAttribute("className", defect.getClassName());
-			marker.setAttribute("fileName", defect.getFileName());
-			marker.setAttribute("modulePath", defect.getModulePath());
-			marker.setAttribute("severityCode", defect.getSeverityCode());
-			marker.setAttribute("localDid", defect.getLocalDid());
+			marker.setAttribute(ResultFileConstant.TOOL_NAME, defect.getToolName());
+			marker.setAttribute(ResultFileConstant.LANGUAGE, defect.getLanguage());
+			marker.setAttribute(ResultFileConstant.CHECKER_CODE, defect.getCheckerCode());
+			marker.setAttribute(ResultFileConstant.METHOD_NAME, defect.getMethodName());
+			marker.setAttribute(ResultFileConstant.CLASS_NAME, defect.getClassName());
+			marker.setAttribute(ResultFileConstant.FILE_NAME, defect.getFileName());
+			marker.setAttribute(ResultFileConstant.MODULE_PATH, defect.getModulePath());
+			marker.setAttribute(ResultFileConstant.SEVERITY_CODE, defect.getSeverityCode());
+			marker.setAttribute(ResultFileConstant.LOCAL_DID, defect.getLocalDid());
 			
-			marker.setAttribute("charStart", Integer.toString(occurence.getCharStart()));
-			marker.setAttribute("charEnd", Integer.toString(occurence.getCharEnd()));
-			marker.setAttribute("defectMessage", defect.getMessage());
-			marker.setAttribute("occurenceCode", occurence.getCode());
+			marker.setAttribute(ResultFileConstant.CHAR_START, Integer.toString(occurence.getCharStart()));
+			marker.setAttribute(ResultFileConstant.CHAR_END, Integer.toString(occurence.getCharEnd()));
+			marker.setAttribute(ResultFileConstant.DEFECT_MESSAGE, defect.getMessage());
+			marker.setAttribute(ResultFileConstant.OCCURENCE_CODE, occurence.getCode());
 			
 			int startLine = occurence.getStartLine();
 			if (startLine <= 0) {
@@ -140,7 +141,7 @@ public class DexterMarker {
     public static void toggleMarkerDismissed(final IFile file, final String markerType, final String localDid) {
     	try {
 	        for(final IMarker marker : file.findMarkers(markerType, true, IResource.DEPTH_INFINITE)){
-	        	if(marker.getAttribute("localDid", "").equals(localDid)){
+	        	if(marker.getAttribute(ResultFileConstant.LOCAL_DID, "").equals(localDid)){
 	        		toggleMarkerDismissed(marker);
 	        	}
 	        }
@@ -159,12 +160,12 @@ public class DexterMarker {
 				newMarker = file.createMarker(DEFECT_MARKER_TYPE);
 				newMarker.setAttribute(IMarker.MESSAGE, msg.toString().replace("Status: Dismissed", "Status: New"));
 				newMarker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
-				newMarker.setAttribute(IMarker.SEVERITY, toEclipseMarkerSeverity(oldMarker.getAttribute("severityCode", "")));
+				newMarker.setAttribute(IMarker.SEVERITY, toEclipseMarkerSeverity(oldMarker.getAttribute(ResultFileConstant.SOURCE_CODE, "")));
 				newMarker.setAttribute(IMarker.SEVERITY, oldMarker.getAttribute(IMarker.SEVERITY, 0));
 			} else if(DEFECT_MARKER_TYPE.equals(oldMarker.getType())){
 				newMarker = file.createMarker(DEFECT_DISMISSED_MARKER_TYPE);
 				newMarker.setAttribute(IMarker.MESSAGE, msg.toString().replace("Status: New", "Status: Dismissed"));
-				newMarker.setAttribute(IMarker.SEVERITY, toEclipseMarkerSeverity(oldMarker.getAttribute("severityCode", "")));
+				newMarker.setAttribute(IMarker.SEVERITY, toEclipseMarkerSeverity(oldMarker.getAttribute(ResultFileConstant.SOURCE_CODE, "")));
 				newMarker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_LOW);
 			} else {
 				DexterEclipseActivator.LOG.error("Cannot change marker type for " + oldMarker.getType());
@@ -173,20 +174,20 @@ public class DexterMarker {
 			
 			newMarker.setAttribute(IMarker.TRANSIENT, false); // persistence
 			newMarker.setAttribute(IMarker.LINE_NUMBER, oldMarker.getAttribute(IMarker.LINE_NUMBER, 1));
-			newMarker.setAttribute("endLine", oldMarker.getAttribute("endLine", 1));
+			newMarker.setAttribute(ResultFileConstant.END_LINE, oldMarker.getAttribute(ResultFileConstant.END_LINE, 1));
 			
 			// Defect Info
-			newMarker.setAttribute("toolName", oldMarker.getAttribute("toolName", ""));
-			newMarker.setAttribute("language", oldMarker.getAttribute("language", ""));
-			newMarker.setAttribute("checkerCode", oldMarker.getAttribute("checkerCode", ""));
-			newMarker.setAttribute("methodName", oldMarker.getAttribute("methodName", ""));
-			newMarker.setAttribute("className", oldMarker.getAttribute("className", ""));
-			newMarker.setAttribute("fileName", oldMarker.getAttribute("fileName", ""));
-			newMarker.setAttribute("modulePath", oldMarker.getAttribute("modulePath", ""));
-			newMarker.setAttribute("charStart", oldMarker.getAttribute("charStart", ""));
-			newMarker.setAttribute("charEnd", oldMarker.getAttribute("charEnd", ""));
-			newMarker.setAttribute("defectMessage", oldMarker.getAttribute("defectMessage", ""));
-			newMarker.setAttribute("occurenceCode", oldMarker.getAttribute("occurenceCode", ""));
+			newMarker.setAttribute(ResultFileConstant.TOOL_NAME, oldMarker.getAttribute(ResultFileConstant.TOOL_NAME, ""));
+			newMarker.setAttribute(ResultFileConstant.LANGUAGE, oldMarker.getAttribute(ResultFileConstant.LANGUAGE, ""));
+			newMarker.setAttribute(ResultFileConstant.CHECKER_CODE, oldMarker.getAttribute(ResultFileConstant.CHECKER_CODE, ""));
+			newMarker.setAttribute(ResultFileConstant.METHOD_NAME, oldMarker.getAttribute(ResultFileConstant.METHOD_NAME, ""));
+			newMarker.setAttribute(ResultFileConstant.CLASS_NAME, oldMarker.getAttribute(ResultFileConstant.CLASS_NAME, ""));
+			newMarker.setAttribute(ResultFileConstant.FILE_NAME, oldMarker.getAttribute(ResultFileConstant.FILE_NAME, ""));
+			newMarker.setAttribute(ResultFileConstant.MODULE_PATH, oldMarker.getAttribute(ResultFileConstant.MODULE_PATH, ""));
+			newMarker.setAttribute(ResultFileConstant.CHAR_START, oldMarker.getAttribute(ResultFileConstant.CHAR_START, ""));
+			newMarker.setAttribute(ResultFileConstant.CHAR_END, oldMarker.getAttribute(ResultFileConstant.CHAR_END, ""));
+			newMarker.setAttribute(ResultFileConstant.DEFECT_MESSAGE, oldMarker.getAttribute(ResultFileConstant.DEFECT_MESSAGE, ""));
+			newMarker.setAttribute(ResultFileConstant.OCCURENCE_CODE, oldMarker.getAttribute(ResultFileConstant.OCCURENCE_CODE, ""));
 			newMarker.setAttribute(IMarker.CHAR_START, oldMarker.getAttribute(IMarker.CHAR_START, ""));
 			newMarker.setAttribute(IMarker.CHAR_END, oldMarker.getAttribute(IMarker.CHAR_END, ""));
 			
@@ -339,19 +340,19 @@ public class DexterMarker {
 		
         try {
 	        defect = new Defect();
-	        defect.setToolName(marker.getAttribute("toolName") == null ? "" : (String) marker.getAttribute("toolName"));
-	        defect.setLanguage(marker.getAttribute("language") == null ? "" : (String) marker.getAttribute("language"));
-	        defect.setCheckerCode(marker.getAttribute("checkerCode") == null ? "" : (String) marker.getAttribute("checkerCode"));
-	        defect.setMethodName(marker.getAttribute("methodName") == null ? "" : (String) marker.getAttribute("methodName"));
-	        defect.setClassName(marker.getAttribute("className") == null ? "" : (String) marker.getAttribute("className"));
-	        defect.setFileName(marker.getAttribute("fileName") == null ? "" : (String) marker.getAttribute("fileName"));
-	        defect.setModulePath(marker.getAttribute("modulePath") == null ? "" : (String) marker.getAttribute("modulePath"));
-	        defect.setMessage(marker.getAttribute("defectMessage") == null ? "" : (String) marker.getAttribute("defectMessage"));
+	        defect.setToolName(marker.getAttribute(ResultFileConstant.TOOL_NAME) == null ? "" : (String) marker.getAttribute(ResultFileConstant.TOOL_NAME));
+	        defect.setLanguage(marker.getAttribute(ResultFileConstant.LANGUAGE) == null ? "" : (String) marker.getAttribute(ResultFileConstant.LANGUAGE));
+	        defect.setCheckerCode(marker.getAttribute(ResultFileConstant.CHECKER_CODE) == null ? "" : (String) marker.getAttribute(ResultFileConstant.CHECKER_CODE));
+	        defect.setMethodName(marker.getAttribute(ResultFileConstant.METHOD_NAME) == null ? "" : (String) marker.getAttribute(ResultFileConstant.METHOD_NAME));
+	        defect.setClassName(marker.getAttribute(ResultFileConstant.CLASS_NAME) == null ? "" : (String) marker.getAttribute(ResultFileConstant.CLASS_NAME));
+	        defect.setFileName(marker.getAttribute(ResultFileConstant.FILE_NAME) == null ? "" : (String) marker.getAttribute(ResultFileConstant.FILE_NAME));
+	        defect.setModulePath(marker.getAttribute(ResultFileConstant.MODULE_PATH) == null ? "" : (String) marker.getAttribute(ResultFileConstant.MODULE_PATH));
+	        defect.setMessage(marker.getAttribute(ResultFileConstant.DEFECT_MESSAGE) == null ? "" : (String) marker.getAttribute(ResultFileConstant.DEFECT_MESSAGE));
 	        
 	        final Occurence o = new Occurence();
-	        o.setCode(marker.getAttribute("occurenceCode") == null ? "" : (String) marker.getAttribute("occurenceCode"));
+	        o.setCode(marker.getAttribute(ResultFileConstant.OCCURENCE_CODE) == null ? "" : (String) marker.getAttribute(ResultFileConstant.OCCURENCE_CODE));
 	        o.setStartLine(marker.getAttribute(IMarker.LINE_NUMBER) == null ? 1 : (Integer) marker.getAttribute(IMarker.LINE_NUMBER));
-	        o.setEndLine(marker.getAttribute("endLine") == null ? 1 : (Integer) marker.getAttribute("endLine"));
+	        o.setEndLine(marker.getAttribute(ResultFileConstant.END_LINE) == null ? 1 : (Integer) marker.getAttribute(ResultFileConstant.END_LINE));
 	        
 	        defect.addOccurence(o);
         } catch (NumberFormatException e) {

@@ -53,6 +53,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTryBlockStatement;
 
 import com.google.common.io.Files;
+import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 
 
 class DexterUtilHelper 
@@ -69,8 +70,8 @@ class DexterUtilHelper
 	{
 		if(mapModuleName.isEmpty())
 		{
-			mapModuleName.put("className", "");
-			mapModuleName.put("methodName", "");
+			mapModuleName.put(ResultFileConstant.CLASS_NAME, "");
+			mapModuleName.put(ResultFileConstant.METHOD_NAME, "");
 		}
 		return mapModuleName;
 	}
@@ -238,8 +239,8 @@ class DexterUtilHelper
 	{
 
 		mapModuleName.clear();		
-		mapModuleName.put("className", className);
-		mapModuleName.put("methodName", MethodName);
+		mapModuleName.put(ResultFileConstant.CLASS_NAME, className);
+		mapModuleName.put(ResultFileConstant.METHOD_NAME, MethodName);
 	}
 
 	

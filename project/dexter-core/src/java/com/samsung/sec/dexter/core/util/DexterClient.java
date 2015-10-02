@@ -38,6 +38,7 @@ import org.apache.log4j.Logger;
 import com.google.common.base.Strings;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 import com.samsung.sec.dexter.core.config.DefectGroup;
 import com.samsung.sec.dexter.core.config.DexterCode;
 import com.samsung.sec.dexter.core.config.DexterConfig;
@@ -281,11 +282,11 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
 		}
 		
 		final Map<String, Object> body = new HashMap<String, Object>();
-		body.put("snapshotId", snapshotId);
-		body.put("groupId", defectGroupId);
-		body.put("modulePath", modulePath);
-		body.put("fileName", fileName);
-		body.put("sourceCode", DexterUtil.getBase64String(sourceCode));
+		body.put(ResultFileConstant.SNAPSHOT_ID, snapshotId);
+		body.put(ResultFileConstant.GROUP_ID, defectGroupId);
+		body.put(ResultFileConstant.MODULE_PATH, modulePath);
+		body.put(ResultFileConstant.FILE_NAME, fileName);
+		body.put(ResultFileConstant.SOURCE_CODE, DexterUtil.getBase64String(sourceCode));
 		
 		String resultText = webResource.postWithBody(getServiceUrl(DexterConfig.POST_SNAPSHOT_SOURCECODE), 
 				this.currentUserId, this.currentUserPwd, body);
@@ -615,13 +616,13 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
 		for(Map<String, String> map : result){
 			final DefectFilter filter = new DefectFilter();
 			//filter.setFid(map.get(""));
-			filter.setToolName(map.get("toolName"));
-			filter.setLanguage(map.get("language"));
-			filter.setFileName(map.get("fileName"));
-			filter.setModulePath(map.get("modulePath"));
-			filter.setClassName(map.get("className"));
-			filter.setMethodName(map.get("methodName"));
-			filter.setCheckerCode(map.get("checkerCode"));
+			filter.setToolName(map.get(ResultFileConstant.TOOL_NAME));
+			filter.setLanguage(map.get(ResultFileConstant.LANGUAGE));
+			filter.setFileName(map.get(ResultFileConstant.FILE_NAME));
+			filter.setModulePath(map.get(ResultFileConstant.MODULE_PATH));
+			filter.setClassName(map.get(ResultFileConstant.CLASS_NAME));
+			filter.setMethodName(map.get(ResultFileConstant.METHOD_NAME));
+			filter.setCheckerCode(map.get(ResultFileConstant.CHECKER_CODE));
 			filter.setActive(true);
 			
 			tree.addFalseAlarm(filter);
@@ -688,8 +689,8 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
 		assert Strings.isNullOrEmpty(fileName) == false;
 		
 		final Map<String, Object> body = new HashMap<String, Object>();
-		body.put("modulePath", modulePath);
-		body.put("fileName", fileName); 
+		body.put(ResultFileConstant.MODULE_PATH, modulePath);
+		body.put(ResultFileConstant.FILE_NAME, fileName); 
 
 		final String text = webResource.deleteWithBody(getServiceUrl(DexterConfig.DEFECT_DELETE), 
 				this.currentUserId, this.currentUserPwd, body);
@@ -750,7 +751,7 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
 		assert defectGroup != null;
 
 		final Map<String, Object> body = new HashMap<String, Object>();
-		body.put("groupId", defectGroup.getId());
+		body.put(ResultFileConstant.GROUP_ID, defectGroup.getId());
 		body.put("groupName", defectGroup.getGroupName());
 		body.put("groupType", defectGroup.getGroupType());
 		body.put("description", defectGroup.getDescription());

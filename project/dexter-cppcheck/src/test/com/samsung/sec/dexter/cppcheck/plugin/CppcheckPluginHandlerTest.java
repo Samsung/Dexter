@@ -26,7 +26,8 @@
 
 package com.samsung.sec.dexter.cppcheck.plugin;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -110,8 +111,6 @@ public class CppcheckPluginHandlerTest {
 	    // SET the testing data (expected value)
 		resultHandler.setExpectedDefectCount(4);
 		resultHandler.setExpectedProjectName(projectName);
-		resultHandler.setExpectedToolName(toolName);
-		resultHandler.setExpectedLanguage(language);
 		resultHandler.setExpectedFileName(fileName);
 
 		Defect d = new Defect();

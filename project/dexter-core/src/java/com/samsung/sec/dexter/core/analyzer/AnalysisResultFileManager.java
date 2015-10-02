@@ -26,15 +26,11 @@
 package com.samsung.sec.dexter.core.analyzer;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
-import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.defect.Defect;
@@ -60,87 +56,87 @@ public class AnalysisResultFileManager {
 	 *            void
 	 */
 	public void writeJson(final List<AnalysisResult> resultList) {
-		String resultFolderStr = DexterConfig.getInstance().getDexterHome() + "/" + DexterConfig.RESULT_FOLDER_NAME;
+		if(resultList.size() == 0) return;
 		
-		IAnalysisEntityFactory factory = new AnalysisEntityFactory();
+		final String resultFolderStr = DexterConfig.getInstance().getDexterHome() + "/" + DexterConfig.RESULT_FOLDER_NAME;
+		
+		final IAnalysisEntityFactory factory = new AnalysisEntityFactory();
 		AnalysisResult baseResult = factory.createAnalysisResult(resultList);
 		writeJsonResult(baseResult, resultFolderStr);
 	}
 
 	private void writeJsonResult(final AnalysisResult result, final String resultFolderStr) {
-	    File resultFolder = new File(resultFolderStr);
-		if (resultFolder.exists() == false) {
-			resultFolder.mkdirs();
-		}
+		DexterUtil.createDirectoryIfNotExist(resultFolderStr);
 
-		String resultFilePath = resultFolderStr + "/" + "result_" + result.getFileName()
-		        + "_" + DexterUtil.currentDateTimeMillis() + ".json";
-		File resultFile = new File(resultFilePath);
-
-		if (resultFile.exists() == false) {
-			try {
-				resultFile.createNewFile();
-			} catch (IOException e) {
-				LOG.error(e.getMessage() + " : " + resultFilePath, e);
-				return;
-			}
-		}
-
-		StringBuilder contents = createJson(result);
-
-		try {
-			Files.write(contents.toString() + DexterUtil.LINE_SEPARATOR, resultFile, Charsets.UTF_8);
-		} catch (IOException e1) {
-			LOG.error(e1.getMessage(), e1);
-		}
-    } 
-
+		final StringBuilder contents = createJson(result);
+		final File resultFile = getResultFilePath(result, resultFolderStr);
+		DexterUtil.writeFileContents(contents.toString(), resultFile);
+    }
+	
 	private StringBuilder createJson(final AnalysisResult result) {
 		final Gson gson = new Gson();
 	    final StringBuilder contents = new StringBuilder(200);
 		
-		contents.append("{\"snapshotId\":\"").append(result.getSnapshotId()).append("\"");
+		addGeneralContent(result, contents);
+		addMetricsContent(result, gson, contents);
+		addDefectContent(result, gson, contents);
 		
-		if(Strings.isNullOrEmpty(result.getModulePath()) == false){
-			contents.append(",\"modulePath\":\"").append(result.getModulePath()).append("\"");
-		}
-		
-		if(Strings.isNullOrEmpty(result.getFileName()) == false){
-			contents.append(",\"fileName\":\"").append(result.getFileName()).append("\"");
-		}
-		
-		if(Strings.isNullOrEmpty(result.getSourceFileFullPath()) == false){
-			contents.append(",\"fullFilePath\":\"").append(result.getSourceFileFullPath()).append("\"");
-		}
-		
-		if(Strings.isNullOrEmpty(result.getProjectName()) == false){
-			contents.append(",\"projectName\":\"").append(result.getProjectName()).append("\"");
-		}
-		
-		contents.append(",\"groupId\":\"").append(result.getDefectGroupId()).append("\"")
-				.append(",\"toolName\":\"").append(result.getToolName()).append("\"")
-				.append(",\"language\":\"").append(result.getLanguage()).append("\"")
-		        .append(",\"defectCount\":\"").append(result.getDefectList().size()).append("\"");
-		
-		contents.append(",\"codeMetrics\":").append(gson.toJson(result.getCodeMetrics().getMetrics()));
-
-		contents.append(",\"defectList\":[");
-
-		final Iterator<Defect> iter = result.getDefectList().iterator();
-
-		int index = 0;
-		while (iter.hasNext()) {
-			final Defect defect = iter.next();
-			if (index++ == 0) {
-				contents.append(gson.toJson(defect));
-			} else {
-				contents.append(",").append(gson.toJson(defect));
-			}
-		}
-
-		contents.append("]}");
-	    return contents;
+		return contents.append(DexterUtil.LINE_SEPARATOR);
     }
+
+	private void addMetricsContent(final AnalysisResult result,
+			final Gson gson, final StringBuilder contents) {
+		contents.append(",\"").append(ResultFileConstant.CODE_METRICS).append("\":")
+			.append(gson.toJson(result.getCodeMetrics().getMetrics()));
+	}
+
+	private void addGeneralContent(final AnalysisResult result,
+			final StringBuilder contents) {
+		contents.append("{\"").append(ResultFileConstant.SNAPSHOT_ID).append("\":\"")
+			.append(result.getSnapshotId()).append("\"");
+		
+		addOptionalContent(contents, ResultFileConstant.MODULE_PATH, result.getModulePath());
+		addOptionalContent(contents, ResultFileConstant.FILE_NAME, result.getFileName());
+		addOptionalContent(contents, ResultFileConstant.FULL_FILE_PATH, result.getSourceFileFullPath());
+		addOptionalContent(contents, ResultFileConstant.PROJECT_NAME, result.getProjectName());
+		
+		contents.append(",\"").append(ResultFileConstant.GROUP_ID)
+				.append("\":\"").append(result.getDefectGroupId()).append("\"")
+		        .append(",\"").append(ResultFileConstant.DEFECT_COUNT)
+		        .append("\":\"").append(result.getDefectList().size()).append("\"");
+	}
+
+	private void addDefectContent(final AnalysisResult result, final Gson gson,
+			final StringBuilder contents) {
+		contents.append(",\"").append(ResultFileConstant.DEFECT_LIST).append("\":[");
+		
+		int defectSize = result.getDefectList().size();
+		for(int i=0; i<defectSize; i++){
+			final Defect defect = result.getDefectList().get(i);
+			
+			if(i != 0) contents.append(",");
+			
+			contents.append(gson.toJson(defect));
+		}
+		
+		contents.append("]}");
+	}
+
+	private void addOptionalContent(final StringBuilder contents, final String key, final String value) {
+		if(Strings.isNullOrEmpty(value)) return;
+		contents.append(",\"").append(key).append("\":\"").append(value).append("\"");
+	}
+
+	private File getResultFilePath(final AnalysisResult result,
+			final String resultFolderStr) {
+		
+		final String path =  resultFolderStr + "/" + ResultFileConstant.RESULF_FILE_PREFIX + result.getFileName()
+		        + "_" + DexterUtil.currentDateTimeMillis() + ResultFileConstant.RESULT_FILE_EXTENSION;
+		
+		final File resultFile = DexterUtil.createEmptyFileIfNotExist(path);
+		
+		return resultFile;
+	} 
 
 	public String getJson(final AnalysisResult result) {
 		StringBuilder contents = createJson(result);

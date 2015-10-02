@@ -27,6 +27,7 @@ package com.samsung.sec.dexter.core.defect;
 
 import com.google.common.base.Objects;
 import com.google.common.base.Strings;
+import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 
 public class Occurence {
 	/** if occurence is different with Defect's checker code, you can use this field(option) */
@@ -151,9 +152,11 @@ public class Occurence {
 	 */
 	@Override
 	public String toString() {
-	    return Objects.toStringHelper(this).add("startLine", this.startLine)
-	    		.add("endLine", endLine).add("variableName", this.variableName)
-	    		.add("stringValue", this.stringValue).toString();
+	    return Objects.toStringHelper(this)
+	    		.add(ResultFileConstant.START_LINE, this.startLine)
+	    		.add(ResultFileConstant.END_LINE, endLine)
+	    		.add(ResultFileConstant.VARIABLE_NAME, this.variableName)
+	    		.add(ResultFileConstant.STRING_VALUE, this.stringValue).toString();
 	}
 	
 	/**

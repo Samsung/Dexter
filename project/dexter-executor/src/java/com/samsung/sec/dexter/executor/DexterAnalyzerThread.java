@@ -35,6 +35,7 @@ import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
+import com.samsung.sec.dexter.core.analyzer.AnalysisResultFileManager;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.RunMode;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
@@ -86,6 +87,7 @@ public class DexterAnalyzerThread extends Thread{
 			// 4. call plugin's analyzer (static analysis)
 			analyzer.preRunStaticAnalysis(config);
 			List<AnalysisResult> resultList = DexterPluginManager.getInstance().analyze(config);
+			AnalysisResultFileManager.getInstance().writeJson(resultList);
 			logger.info("analyzed " + config.getSourceFileFullPath());
 			config.getResultHandler().handleAnalysisResult(resultList);
 			analyzer.postRunStaticAnalysis(config, resultList);

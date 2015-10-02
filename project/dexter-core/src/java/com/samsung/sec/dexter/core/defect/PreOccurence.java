@@ -29,6 +29,7 @@ import com.google.common.base.Objects;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.BaseDefect;
+import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 
 public class PreOccurence extends BaseDefect {
 	private String occurenceCode = "";
@@ -107,14 +108,19 @@ public class PreOccurence extends BaseDefect {
 	 */
 	@Override
 	public String toString() {
-	    return Objects.toStringHelper(this).add("toolName", toolName).add("language", language)
-	    		.add("checkerCode", checkerCode)
-	    		.add("fileName", getFileName())
-	    		.add("startLine", this.startLine).add("endLine", endLine)
-	    		.add("charStart", this.charStart).add("charEnd", charEnd)
-	    		.add("modulePath", getModulePath()).add("className", this.className)
-	    		.add("variableName", this.variableName)
-	    		.add("stringValue", this.stringValue).toString();
+	    return Objects.toStringHelper(this)
+	    		.add(ResultFileConstant.TOOL_NAME, toolName)
+	    		.add(ResultFileConstant.LANGUAGE, language)
+	    		.add(ResultFileConstant.CHECKER_CODE, checkerCode)
+	    		.add(ResultFileConstant.FILE_NAME, getFileName())
+	    		.add(ResultFileConstant.START_LINE, this.startLine)
+	    		.add(ResultFileConstant.END_LINE, endLine)
+	    		.add(ResultFileConstant.CHAR_START, this.charStart)
+	    		.add(ResultFileConstant.CHAR_END, charEnd)
+	    		.add(ResultFileConstant.MODULE_PATH, getModulePath())
+	    		.add(ResultFileConstant.CLASS_NAME, this.className)
+	    		.add(ResultFileConstant.VARIABLE_NAME, this.variableName)
+	    		.add(ResultFileConstant.STRING_VALUE, this.stringValue).toString();
 	}
 	
 	public Occurence toOccurence(){

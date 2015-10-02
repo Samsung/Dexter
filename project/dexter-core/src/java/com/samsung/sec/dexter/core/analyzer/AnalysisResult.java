@@ -37,12 +37,6 @@ import com.samsung.sec.dexter.core.defect.Occurence;
 import com.samsung.sec.dexter.core.defect.PreOccurence;
 
 public class AnalysisResult extends BaseAnalysisEntity {
-	/** Dexter Static Analaysis plug-in name : findbugs, cppcheck */
-	private String toolName = "";
-	
-	/** refer to DexterConfig.LANGUAGE enum : JAVA, C, CPP */
-	private String language = "";
-	
 	/** list of defects */
 	private List<Defect> defectList = new ArrayList<Defect>();
 	
@@ -111,33 +105,6 @@ public class AnalysisResult extends BaseAnalysisEntity {
 		this.defectList = defectList;
 	}
 
-	/**
-	 * @return the toolName
-	 */
-	public String getToolName() {
-		return toolName;
-	}
-
-	/**
-	 * @return the language
-	 */
-	public String getLanguage() {
-		return language;
-	}
-
-	/**
-	 * @param toolName the toolName to set
-	 */
-	public void setToolName(final String toolName) {
-		this.toolName = toolName;
-	}
-
-	/**
-	 * @param language the language to set
-	 */
-	public void setLanguage(final String language) {
-		this.language = language;
-	}
 
 	/**
 	 * @return 

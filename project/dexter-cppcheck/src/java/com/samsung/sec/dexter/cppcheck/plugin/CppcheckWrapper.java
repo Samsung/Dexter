@@ -44,7 +44,6 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
-import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 
@@ -186,8 +185,6 @@ public class CppcheckWrapper {
 		}
     	
     	result.setSnapshotId(config.getSnapshotId());
-		result.setToolName(CppcheckDexterPlugin.PLUGIN_NAME);
-		result.setLanguage(LANGUAGE.CPP.toString());
 		result.setProjectName(config.getProjectName());
     }
 

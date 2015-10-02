@@ -57,9 +57,11 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.io.BaseEncoding;
 import com.google.common.io.Files;
+import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.analyzer.EndOfAnalysisHandler;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.metrics.CodeMetrics;
 
 public class DexterUtil {
 	public final static String LINE_SEPARATOR = System.getProperty("line.separator");
@@ -185,18 +187,36 @@ public class DexterUtil {
 		}
 	}
 
-	public static String getContentsFromFile(final String filePath, final Charset charset) {
-		if(Strings.isNullOrEmpty(filePath)){
-			logger.error("Invalid Parameter : filePath is null or empty");
-			return "";
-		}
+	public static StringBuilder readFile(final String filePath){
+		assert Strings.isNullOrEmpty(filePath) == false;
 
 		final File file = new File(filePath);
 
-		if (file.exists() == false || file.isDirectory()) {
-			logger.error("There is no file : " + filePath);
-			return null;
+		checkFileExistence(filePath, file);
+
+		final StringBuilder contents = new StringBuilder(10000);
+		try {
+			for (String content : Files.readLines(file, Charsets.UTF_8)) {
+				contents.append(content).append(DexterUtil.LINE_SEPARATOR);
+			}
+
+			return contents;
+		} catch (IOException e) {
+			throw new DexterRuntimeException(e.getMessage(), e);
 		}
+	}
+
+	private static void checkFileExistence(final String filePath,
+			final File file) {
+		if (file.exists() == false || file.isDirectory()) 
+			throw new DexterRuntimeException("There is no file to read : " + filePath);
+	}
+	
+	public static String getContentsFromFile(final String filePath, final Charset charset) {
+		assert Strings.isNullOrEmpty(filePath) == false;
+
+		final File file = new File(filePath);
+		checkFileExistence(filePath, file);
 
 		final StringBuilder contents = new StringBuilder(10000);
 		try {
@@ -206,8 +226,7 @@ public class DexterUtil {
 
 			return contents.toString();
 		} catch (IOException e) {
-			logger.error(e.getMessage(), e);
-			return null;
+			throw new DexterRuntimeException(e.getMessage(), e);
 		}
 	}
 
@@ -530,23 +549,20 @@ public class DexterUtil {
 		}
 	}
 
-	public static boolean createEmptyFileIfNotExist(final String filePath) {
-		if(Strings.isNullOrEmpty(filePath)){
-			logger.error("Invalid Parameter : filePath is null or empty");
-			return false;
-		}
+	public static File createEmptyFileIfNotExist(final String filePath) {
+		assert Strings.isNullOrEmpty(filePath) == false;
 
 		final File file = new File(filePath);
+		
 		if (file.exists() == false) {
 			try {
-				return file.createNewFile();
+				file.createNewFile();
 			} catch (IOException e) {
-				logger.error(e.getMessage() + " : " + filePath, e);
-				return false;
+				throw new DexterRuntimeException(e.getMessage() + " : " + filePath, e);
 			}
-		} else {
-			return true;
 		}
+		
+		return file;
 	}
 
 	/**
@@ -941,4 +957,41 @@ public class DexterUtil {
 			String filepath) {
 		return clazz.getClassLoader().getResourceAsStream(filepath);
     }
+
+	public static void createDirectoryIfNotExist(String directoryString) {
+		final File directory = new File(directoryString);
+		if (directory.exists() == false) {
+			directory.mkdirs();
+		}
+	}
+
+	public static void writeFileContents(final String contents, final File file) {
+		try {
+			Files.write(contents, file, Charsets.UTF_8);
+		} catch (IOException e) {
+			throw new DexterRuntimeException(e.getMessage() + " : " + file.getAbsolutePath(), e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Map<String, Object> getMapFromJsonString(StringBuilder contents) {
+		assert contents != null && contents.length() > 0;
+		
+		Gson gson = new Gson();
+		return gson.fromJson(contents.toString(), Map.class);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static Map<String, Object> getMapFromJsonString(String contents) {
+		assert Strings.isNullOrEmpty(contents) == false;
+		
+		Gson gson = new Gson();
+		return gson.fromJson(contents.toString(), Map.class);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Object getObjectFromJsonString(String jsonString, Class clazz) {
+		Gson gson = new Gson();
+		return gson.fromJson(jsonString, clazz);
+	}
 }

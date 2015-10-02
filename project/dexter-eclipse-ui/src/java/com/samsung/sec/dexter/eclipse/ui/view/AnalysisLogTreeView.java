@@ -79,6 +79,7 @@ import org.osgi.service.prefs.Preferences;
 import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
+import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.IDexterHomeListener;
 import com.samsung.sec.dexter.core.defect.Defect;
@@ -170,7 +171,7 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
 		fColumn2.setWidth(fMemento.getInteger(P_COLUMN_2));
 		
 		fColumn3 = new TreeColumn(tree, SWT.CENTER);
-		fColumn3.setText("Severity");
+		fColumn3.setText(ResultFileConstant.SEVERITY);
 		fColumn3.setAlignment(SWT.CENTER);
 		fColumn3.setWidth(fMemento.getInteger(P_COLUMN_3));
 		

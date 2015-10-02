@@ -42,6 +42,7 @@ import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.parser.ParserLanguage;
 
 import com.google.common.base.Charsets;
+import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 
 public class CppUtil {
 
@@ -278,19 +279,19 @@ public class CppUtil {
 			Map<String, String> tempMap =new HashMap<String, String>();
 						
 			tempMap.put("ID", strArray[0]);
-			tempMap.put("FileName", strArray[1]);
+			tempMap.put(ResultFileConstant.FILE_NAME, strArray[1]);
 			tempMap.put("LineNo", strArray[2]);									
-			tempMap.put("Severity", strArray[3]);
-			tempMap.put("ToolName", strArray[4]);
-			tempMap.put("Language", strArray[5]);
-			tempMap.put("Message", strArray[6]);
+			tempMap.put(ResultFileConstant.SEVERITY, strArray[3]);
+			tempMap.put(ResultFileConstant.TOOL_NAME, strArray[4]);
+			tempMap.put(ResultFileConstant.LANGUAGE, strArray[5]);
+			tempMap.put(ResultFileConstant.MESSAGE, strArray[6]);
 			tempMap.put("VerboseMessage", strArray[7]);
 			if(!(strArray[1].isEmpty() ||strArray[2].isEmpty()))
 			{
 				int LineNo =Integer.parseInt(strArray[2]);
 				Map<String, String> moduleInfo = extractModuleName(strArray[1], LineNo);
-				tempMap.put("className", moduleInfo.get("className"));
-				tempMap.put("methodName", moduleInfo.get("methodName"));				
+				tempMap.put(ResultFileConstant.CLASS_NAME, moduleInfo.get(ResultFileConstant.CLASS_NAME));
+				tempMap.put(ResultFileConstant.METHOD_NAME, moduleInfo.get(ResultFileConstant.METHOD_NAME));				
 			}			
 			lstmapData.add(tempMap);	
 		}

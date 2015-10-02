@@ -79,10 +79,6 @@ public class FindBugsWrapper {
 		FindBugs2 engine = new FindBugs2();
 		engine.setDetectorFactoryCollection(DETECTOR_FACTORY_COLLECTION);
 		
-		// TODO: 아래 3개 로직 처리 필요 여부 확인 ==> Thread에서 공통 처리 필요
-		result.setToolName(FindbugsDexterPlugin.PLUGIN_NAME);
-		result.setLanguage(DexterConfig.LANGUAGE.JAVA.toString());
-		
 //		Project project = new Project();
 		engine.setProject(project);
 		engine.setNoClassOk(true);

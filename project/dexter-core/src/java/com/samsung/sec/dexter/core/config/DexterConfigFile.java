@@ -38,6 +38,7 @@ import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
+import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.core.util.DexterUtil;
@@ -165,7 +166,7 @@ public class DexterConfigFile {
 			// do nothing
 		}
 		
-		setProjectName((String) params.get("projectName"));
+		setProjectName((String) params.get(ResultFileConstant.PROJECT_NAME));
 		setProjectFullPath((String) params.get("projectFullPath") + "/");
 		setSourceDirList(getStringListFromMap(params, "sourceDir"));
 		setHeaderDirList(getStringListFromMap(params, "headerDir"));
@@ -173,10 +174,10 @@ public class DexterConfigFile {
 		setLibDirList(getStringListFromMap(params, "libDir"));
 		setBinDir((String) params.get("binDir"));
 		setType((String) params.get("type"));
-		setModulePath((String) params.get("modulePath"));
-		setFileNameList(getStringListFromMap(params, "fileName"));
+		setModulePath((String) params.get(ResultFileConstant.MODULE_PATH));
+		setFileNameList(getStringListFromMap(params, ResultFileConstant.FILE_NAME));
 		setResultFileFullPath((String) params.get("resultFileFullPath"));
-		setSnapshotId((String) params.get("snapshotId"));
+		setSnapshotId((String) params.get(ResultFileConstant.SNAPSHOT_ID));
 	}
 
 	private void setType(String value) {
@@ -220,7 +221,7 @@ public class DexterConfigFile {
 	}
 
 	private void checkFieldExistence(final Map<String, Object> map) {
-		checkFieldEmptyInDexterConfigurationMap(map, "projectName");
+		checkFieldEmptyInDexterConfigurationMap(map, ResultFileConstant.PROJECT_NAME);
 		checkFieldEmptyInDexterConfigurationMap(map, "projectFullPath");
 		checkFieldEmptyInDexterConfigurationMap(map, "sourceEncoding");
 		checkFieldEmptyInDexterConfigurationMap(map, "type");
@@ -239,7 +240,7 @@ public class DexterConfigFile {
 		}
 
 		if ("FILE".equalsIgnoreCase(type)) {
-			checkFieldEmptyInDexterConfigurationMap(map, "fileName");
+			checkFieldEmptyInDexterConfigurationMap(map, ResultFileConstant.FILE_NAME);
 		}
 	}
 

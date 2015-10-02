@@ -36,6 +36,7 @@ import org.xml.sax.helpers.DefaultHandler;
 import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
+import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 import com.samsung.sec.dexter.core.checker.Checker;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
@@ -128,11 +129,11 @@ public class ResultFileHandler extends DefaultHandler {
 	    	}
 	    	
             Map<String, String> nameMap = CppUtil.extractModuleName(config.getSourceFileFullPath(), currentOccurence.getStartLine());
-            if(Strings.isNullOrEmpty(nameMap.get("className")) == false){
-            	currentOccurence.setClassName(nameMap.get("className"));
+            if(Strings.isNullOrEmpty(nameMap.get(ResultFileConstant.CLASS_NAME)) == false){
+            	currentOccurence.setClassName(nameMap.get(ResultFileConstant.CLASS_NAME));
             }
-            if(Strings.isNullOrEmpty(nameMap.get("methodName")) == false){
-            	currentOccurence.setMethodName(nameMap.get("methodName"));
+            if(Strings.isNullOrEmpty(nameMap.get(ResultFileConstant.METHOD_NAME)) == false){
+            	currentOccurence.setMethodName(nameMap.get(ResultFileConstant.METHOD_NAME));
             }
 	    }
 	}

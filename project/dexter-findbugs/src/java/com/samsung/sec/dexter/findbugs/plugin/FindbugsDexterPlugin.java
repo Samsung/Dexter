@@ -69,7 +69,7 @@ public class FindbugsDexterPlugin implements IDexterPlugin {
     }
 
     @Override
-    public AnalysisResult analyze(AnalysisConfig config){
+    public AnalysisResult analyze(final AnalysisConfig config){
     	return findbug.execute(config);
     }
 

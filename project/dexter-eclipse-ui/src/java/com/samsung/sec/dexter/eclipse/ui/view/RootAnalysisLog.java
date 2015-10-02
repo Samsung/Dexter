@@ -37,6 +37,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
+import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
@@ -83,27 +84,27 @@ public class RootAnalysisLog {
     @SuppressWarnings("unchecked")
     private void addAnalysisLogFromFile(File file) {
     	final String ext = Files.getFileExtension(file.toString()).toLowerCase();
-    	if(!"json".equals(ext) || file.length() <=0 ){
+    	if(!ResultFileConstant.RESULT_FILE_EXTENSION.equals(ext) || file.length() <=0 ){
     		return;
     	}
     	
     	final Gson gson = new Gson();
     	try {
 	        for(final String content : Files.readLines(file, Charsets.UTF_8)){
-	        	if(!content.startsWith("{") || content.indexOf("defectCount") == -1){
+	        	if(!content.startsWith("{") || content.indexOf(ResultFileConstant.DEFECT_COUNT) == -1){
 	        		continue;
 	        	}
 	        	
 	        	@SuppressWarnings("rawtypes")
 	        	final Map map = gson.fromJson(content, Map.class);
 	        	@SuppressWarnings("rawtypes")
-	        	final List<LinkedTreeMap> defectList = (List<LinkedTreeMap>) map.get("defectList");
+	        	final List<LinkedTreeMap> defectList = (List<LinkedTreeMap>) map.get(ResultFileConstant.DEFECT_LIST);
 	        	
 	        	long datetime = -1;
 	        	final AnalysisLog log = new AnalysisLog();
-	        	log.setFileName((String) map.get("fileName"));
-	        	log.setFileFullPath((String) map.get("fullFilePath"));
-	        	log.setDefectCount(Integer.parseInt((String)map.get("defectCount")));
+	        	log.setFileName((String) map.get(ResultFileConstant.FILE_NAME));
+	        	log.setFileFullPath((String) map.get(ResultFileConstant.FULL_FILE_PATH));
+	        	log.setDefectCount(Integer.parseInt((String)map.get(ResultFileConstant.DEFECT_COUNT)));
 	        	
 	        	final String fileStr = file.toString();
 	        	final int sp = fileStr.lastIndexOf("_") + 1;

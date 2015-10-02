@@ -32,6 +32,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IMarkerResolution2;
 
+import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.eclipse.DexterEclipseActivator;
@@ -66,13 +67,13 @@ public class GetGlobalIdResolution implements IMarkerResolution2 {
 	        if(markers != null && markers.length > 0){
 	        	for(final IMarker marker : markers){
 	        		Defect defect = new Defect();
-	        		defect.setToolName((String) marker.getAttribute("toolName", "")); //$NON-NLS-1$ //$NON-NLS-2$
-	        		defect.setLanguage((String) marker.getAttribute("language", "")); //$NON-NLS-1$ //$NON-NLS-2$
-	        		defect.setCheckerCode((String) marker.getAttribute("checkerCode", "")); //$NON-NLS-1$ //$NON-NLS-2$
-	        		defect.setClassName((String) marker.getAttribute("className", "")); //$NON-NLS-1$ //$NON-NLS-2$
-	        		defect.setFileName((String) marker.getAttribute("fileName", "")); //$NON-NLS-1$ //$NON-NLS-2$
-	        		defect.setMethodName((String) marker.getAttribute("methodName", "")); //$NON-NLS-1$ //$NON-NLS-2$
-	        		defect.setModulePath((String) marker.getAttribute("modulePath", "")); //$NON-NLS-1$ //$NON-NLS-2$
+	        		defect.setToolName((String) marker.getAttribute(ResultFileConstant.TOOL_NAME, "")); //$NON-NLS-1$
+	        		defect.setLanguage((String) marker.getAttribute("language", "")); //$NON-NLS-1$
+	        		defect.setCheckerCode((String) marker.getAttribute(ResultFileConstant.CHECKER_CODE, "")); //$NON-NLS-1$
+	        		defect.setClassName((String) marker.getAttribute(ResultFileConstant.CLASS_NAME, "")); //$NON-NLS-1$
+	        		defect.setFileName((String) marker.getAttribute(ResultFileConstant.FILE_NAME, "")); //$NON-NLS-1$
+	        		defect.setMethodName((String) marker.getAttribute(ResultFileConstant.METHOD_NAME, "")); //$NON-NLS-1$
+	        		defect.setModulePath((String) marker.getAttribute(ResultFileConstant.MODULE_PATH, "")); //$NON-NLS-1$
 	        		
 	        		final long gdid = DexterClient.getInstance().getGlobalDid(defect);
 	        		

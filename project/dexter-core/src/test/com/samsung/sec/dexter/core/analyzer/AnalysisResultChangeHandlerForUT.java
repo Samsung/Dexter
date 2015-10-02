@@ -51,10 +51,6 @@ public class AnalysisResultChangeHandlerForUT implements EndOfAnalysisHandler {
 
 	private String projectName;
 
-	private String toolName;
-
-	private String language;
-	
 	private String fileName;
 	
 	private ITestHandlerAtTheEndOfHandleAnalysisResult testHandler;
@@ -82,7 +78,7 @@ public class AnalysisResultChangeHandlerForUT implements EndOfAnalysisHandler {
 	
 	private void handleResult(AnalysisResult result) {
 		System.out.println("=================================================================================");
-		System.out.println("### START TEST for the result of static analysis of " + result.getToolName());
+		System.out.println("### START TEST for the result of static analysis");
 		
 		System.out.println("\t# Json of the AnalysisResult Object : " + AnalysisResultFileManager.getInstance().getJson(result));
 
@@ -118,24 +114,6 @@ public class AnalysisResultChangeHandlerForUT implements EndOfAnalysisHandler {
 			} else {
 				isPassed = false;
 				System.out.println("\t# Check ProjectName : Fail - expected:" + this.projectName + " real:" + result.getProjectName());
-			}
-		}
-		
-		if(!Strings.isNullOrEmpty(this.toolName)){
-			if(this.toolName.equals(result.getToolName())){
-				System.out.println("\t# Check ToolName : OK");
-			} else {
-				isPassed = false;
-				System.out.println("\t# Check ToolName : Fail - expected:" + this.toolName + " real:" + result.getToolName());
-			}
-		}
-		
-		if(!Strings.isNullOrEmpty(this.language)){
-			if(this.language.equals(result.getLanguage())){
-				System.out.println("\t# Check Language : OK");
-			} else {
-				isPassed = false;
-				System.out.println("\t# Check Language : Fail - expected:" + this.language + " real:" + result.getLanguage());
 			}
 		}
 		
@@ -221,7 +199,7 @@ public class AnalysisResultChangeHandlerForUT implements EndOfAnalysisHandler {
 		}
 		
 		
-		System.out.println("### END TEST for the result of static analysis of " + result.getToolName());
+		System.out.println("### END TEST for the result of static analysis");
 		System.out.println("=================================================================================");
 		
 		if(isPassed == false){
@@ -296,20 +274,6 @@ public class AnalysisResultChangeHandlerForUT implements EndOfAnalysisHandler {
     	this.projectName = projectName;
     }
 
-	/**
-	 * @param toolName 
-	 */
-    public void setExpectedToolName(final String toolName) {
-    	this.toolName = toolName;
-    }
-
-	/**
-	 * @param language 
-	 */
-    public void setExpectedLanguage(final String language) {
-    	this.language = language;
-    }
-    
     public void setExpectedFileName(final String fileName) {
     	this.fileName = fileName;
     }

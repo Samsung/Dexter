@@ -33,7 +33,6 @@ import org.apache.log4j.Logger;
 import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
-import com.samsung.sec.dexter.core.analyzer.AnalysisResultFileManager;
 import com.samsung.sec.dexter.core.analyzer.IDexterPluginInitializer;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
@@ -108,52 +107,37 @@ public class DexterPluginManager implements IDexterHomeListener{
 		}
 	}
 	
-	public List<AnalysisResult> analyze(AnalysisConfig config){
+	public List<AnalysisResult> analyze(final AnalysisConfig config){
 		List<AnalysisResult> resultList = new ArrayList<AnalysisResult>();
 		
 	    for (final IDexterPlugin plugin : DexterPluginManager.getInstance().getPluginList()) {
 			if (plugin.supportLanguage(config.getLanguageEnum())) {
 				try {
 					resultList.add(plugin.analyze(config));
-				} catch (IllegalStateException ie) {
-					LOG.error("Exception on analyzing: " + config.getSourceFileFullPath(), ie);
-				} catch (NullPointerException ne) {
-					LOG.error("Exception on analyzing: " + config.getSourceFileFullPath(), ne);
+				} catch (IllegalStateException | NullPointerException e) {
+					LOG.error("Analysis Exception: " + config.getSourceFileFullPath() 
+							+ "\n" + e.getMessage(), e);
 				}
 			}
 		}
-	    
-	    AnalysisResultFileManager.getInstance().writeJson(resultList);
 	    
 	    return resultList;
     }
 	
 	public CheckerConfig getCheckerConfig(final String pluginName){
-		if(Strings.isNullOrEmpty(pluginName)){
-			LOG.error("Invalid Parameter : pluginName is null or empty");
-			return null;
-		}
-		
-		if(isInitialized == false){
-			LOG.error("Invalid status : isInitialized is false");
-			return null;
-		}
+		assert Strings.isNullOrEmpty(pluginName) == false;
+		assert isInitialized != false;
 		
 		for (final IDexterPlugin plugin : pluginList) {
 			if (pluginName.equals(plugin.getDexterPluginDescription().getPluginName())) {
-				final CheckerConfig cc = plugin.getCheckerConfig();
-				return cc;
+				final CheckerConfig config = plugin.getCheckerConfig();
+				return config;
 			}
 		}
 
 		throw new DexterRuntimeException("there is no proper Checker Config info for " + pluginName);
 	}
 
-	/**
-	 * @param pluginName
-	 * @param config
-	 *            void
-	 */
 	public void setCheckerConfig(final String pluginName, final CheckerConfig config) {
 		assert !Strings.isNullOrEmpty(pluginName);
 		assert config != null;
@@ -169,48 +153,28 @@ public class DexterPluginManager implements IDexterHomeListener{
 		}
 	}
 
-	public List<PluginDescription> getPluginDescriptionList() {
-		if(isInitialized == false){
-			LOG.error("Invalid status : isInitialized is false");
-			return new ArrayList<PluginDescription>(0);
-		}
-		
-		final List<PluginDescription> pdList = new ArrayList<PluginDescription>(pluginList.size());
-
-		for (final IDexterPlugin plugin : pluginList) {
-			if (plugin == null) {
-				LOG.error("IDexterPlugin object is null.");
-				continue;
-			}
-
-			final PluginDescription realPd = plugin.getDexterPluginDescription();
-			if (realPd != null && realPd.isActive()) {
-				pdList.add(realPd);
-			}
-		}
-
-		return pdList;
-	}
-
 	/**
 	 * @return List<IDexterPlugin>
 	 */
 	public List<IDexterPlugin> getPluginList() {
 		if(isInitialized == false){
-			LOG.warn("There is no static analysis plug-ins to execute. check your plug-ins or login status");
+			LOG.warn("Plugin initiation is not finished or not started yet." 
+					 + " There is no static analysis plug-ins to execute."
+					 + " check your plug-ins or login status");
 			return new ArrayList<IDexterPlugin>(0);
 		}
 		
 		return pluginList;
 	}
 
-	public void runDexterHomeChangeHandler(String oldPath, String newPath) throws DexterException {
+	public void runDexterHomeChangeHandler(final String oldPath, final String newPath) 
+			throws DexterException {
 		for(IDexterPlugin plugin : this.pluginList){
 			plugin.handleDexterHomeChanged(oldPath, newPath);
 		}
     }
 
-	public void setDexterPluginInitializer(IDexterPluginInitializer initializer) {
+	public void setDexterPluginInitializer(final IDexterPluginInitializer initializer) {
 		this.initializer = initializer;
     }
 

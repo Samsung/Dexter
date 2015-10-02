@@ -33,6 +33,7 @@ import java.util.Map;
 import com.google.common.base.Objects;
 import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.BaseDefect;
+import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 import com.samsung.sec.dexter.core.exception.DexterException;
 import com.samsung.sec.dexter.core.filter.DefectFilter;
 import com.samsung.sec.dexter.core.util.DexterUtil;
@@ -58,10 +59,14 @@ public class Defect extends BaseDefect {
 	@Override
 	public String toString() {
 	    return Objects.toStringHelper(this).add("did", this.gdid)
-	    		.add(checkerCode, checkerCode).add("toolName", toolName).add("language", language)
-	    		.add("className", className).add("fileName", getFileName())
-	    		.add("modulePath", getModulePath())
-	    		.add("occ size", occurences.size()).add("occurences", occurences).toString();
+	    		.add(checkerCode, checkerCode)
+	    		.add(ResultFileConstant.TOOL_NAME, toolName)
+	    		.add(ResultFileConstant.LANGUAGE, language)
+	    		.add(ResultFileConstant.CLASS_NAME, className)
+	    		.add(ResultFileConstant.FILE_NAME, getFileName())
+	    		.add(ResultFileConstant.MODULE_PATH, getModulePath())
+	    		.add("occ size", occurences.size())
+	    		.add(ResultFileConstant.OCCURENCES, occurences).toString();
 	}
 	
 	/* (non-Javadoc)
@@ -251,31 +256,31 @@ public class Defect extends BaseDefect {
     	final Defect defect = new Defect();
     	defect.setCreatedDateTime(Double.doubleToLongBits((Double)map.get("createdDateTime")) / 1000);
     	//defect.setMessage((String) map.get("message"));
-    	defect.setSeverityCode((String) map.get("severityCode"));
+    	defect.setSeverityCode((String) map.get(ResultFileConstant.SEVERITY_CODE));
     	defect.setModifiedDateTime(Double.doubleToLongBits((Double) map.get("modifiedDateTime")) / 1000);
-    	defect.setCheckerCode((String) map.get("checkerCode"));
-    	defect.setMethodName((String) map.get("methodName"));
-    	defect.setToolName((String) map.get("toolName"));
-    	defect.setLanguage((String) map.get("language"));
-    	defect.setFileName((String) map.get("fileName"));
-    	defect.setModulePath((String) map.get("modulePath"));
-    	defect.setClassName((String) map.get("className"));
+    	defect.setCheckerCode((String) map.get(ResultFileConstant.CHECKER_CODE));
+    	defect.setMethodName((String) map.get(ResultFileConstant.METHOD_NAME));
+    	defect.setToolName((String) map.get(ResultFileConstant.TOOL_NAME));
+    	defect.setLanguage((String) map.get(ResultFileConstant.LANGUAGE));
+    	defect.setFileName((String) map.get(ResultFileConstant.FILE_NAME));
+    	defect.setModulePath((String) map.get(ResultFileConstant.MODULE_PATH));
+    	defect.setClassName((String) map.get(ResultFileConstant.CLASS_NAME));
     	
     	
     	@SuppressWarnings("unchecked")
-    	final List<Map<String, Object>> occMap = (List<Map<String, Object>>) map.get("occurences"); 
+    	final List<Map<String, Object>> occMap = (List<Map<String, Object>>) map.get(ResultFileConstant.OCCURENCES); 
     	for(final Map<String, Object> om : occMap){
     		Occurence o = new Occurence();
     		
     		o.setCode((String) om.get("code"));
-    		o.setStartLine(DexterUtil.toInt((Double) om.get("startLine")));
-    		o.setEndLine(DexterUtil.toInt((Double) om.get("endLine")));
-    		o.setCharStart(DexterUtil.toInt((Double) om.get("charStart")));
-    		o.setCharEnd(DexterUtil.toInt((Double) om.get("charEnd")));
-    		o.setVariableName((String) om.get("variableName"));
-    		o.setStringValue((String) om.get("stringValue"));
-    		o.setFieldName((String) om.get("fieldName"));
-    		o.setMessage((String) om.get("message"));
+    		o.setStartLine(DexterUtil.toInt((Double) om.get(ResultFileConstant.START_LINE)));
+    		o.setEndLine(DexterUtil.toInt((Double) om.get(ResultFileConstant.END_LINE)));
+    		o.setCharStart(DexterUtil.toInt((Double) om.get(ResultFileConstant.CHAR_START)));
+    		o.setCharEnd(DexterUtil.toInt((Double) om.get(ResultFileConstant.CHAR_END)));
+    		o.setVariableName((String) om.get(ResultFileConstant.VARIABLE_NAME));
+    		o.setStringValue((String) om.get(ResultFileConstant.STRING_VALUE));
+    		o.setFieldName((String) om.get(ResultFileConstant.FIELD_NAME));
+    		o.setMessage((String) om.get(ResultFileConstant.MESSAGE));
     		
     		defect.addOccurence(o);
     	}
