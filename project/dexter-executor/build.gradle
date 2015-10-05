@@ -26,4 +26,5 @@ test {
 
 	exclude '**/SaConfigureTest.class'
 	exclude '**/MainTest.class'
+	exclude '**/DexterAnalyzerTest.class'
 }
