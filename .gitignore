@@ -33,3 +33,4 @@ project/dexter-server/**/*.log
 project/dexter-server/**/workspace.xml
 project/dexter-server/.idea/workspace.xml
 project/dexter-server/log/
+project/.gradle/

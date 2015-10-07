@@ -41,4 +41,5 @@ test {
 
 	exclude '**/PersistencePropertyTest.class'
 	exclude '**/DexterConfigFileTest.class'
+	exclude '**/AnalysisResultFileManagerTest.class'
 }
