@@ -271,3 +271,18 @@ exports.addAccessLog = function(param) {
         }
     });
 };
+
+
+exports.getCheckerConfigJsonFile = function(req, res){
+    var pluginName = req.params.pluginName;
+    var fileName = "../config/plugin/checker-config_"+ pluginName +".json";
+
+    try{
+        var configJson = require(fileName);
+        logging.info( "Update" + pluginName + " checker config");
+        res.send(configJson);
+    }catch(e){
+        res.send("failed");
+    }
+
+};

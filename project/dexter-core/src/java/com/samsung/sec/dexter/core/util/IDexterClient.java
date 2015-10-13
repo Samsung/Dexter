@@ -209,6 +209,7 @@ public interface IDexterClient {
 	void setLogin(boolean b);
 
 	public String getDexterPluginUpdateUrl();
+	public String getDexterPluginCheckerJsonFile(String string);
 	
 	public void addLoginInfoListener(final IDexterLoginInfoListener listener);
 	public void removeLoginInfoListener(final IDexterLoginInfoListener listener);

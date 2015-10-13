@@ -49,6 +49,8 @@ import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.filter.DefectFilter;
 import com.samsung.sec.dexter.core.filter.FalseAlarmConfigurationTree;
 import com.samsung.sec.dexter.core.filter.IFalseAlarmConfiguration;
+import com.samsung.sec.dexter.core.plugin.DexterPluginManager;
+import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
@@ -74,6 +76,7 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
 	private String currentUserPwd = "";
 	private int currentUserNo;
 	private boolean isCurrentUserAdmin = false;
+	//private String text;
 	
 	private final  List<IDexterLoginInfoListener> loginInfoListenerList = new ArrayList<IDexterLoginInfoListener>();
 	
@@ -1039,4 +1042,16 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
     		setWebResource(new JerseyDexterWebResource());
     	}
 	}
+	
+	public String getDexterPluginCheckerJsonFile(String pluginName) {
+		try {
+			final String text = webResource.postText(getServiceUrl(DexterConfig.GET_DEXTER_PLUGIN_CHECKER_JSON_FILE + "/" + pluginName), this.currentUserId, this.currentUserPwd);
+			return text;
+	
+		} catch (DexterRuntimeException e) {
+			LOG.error(e.getMessage(), e);
+			return "failed";
+		}
+	}
+	
 }

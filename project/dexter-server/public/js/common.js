@@ -2,8 +2,7 @@ function checkBrowser(){
 	var browser = get_browser();
 	var browser_version = get_browser_version();
 	//alert(navigator.userAgent);
-	//console.log("checkBrowser");
-	
+
 	if ("MSIE" == browser) {
 		window.location = "/error/NotSupportedBrowser.html";
 	}
