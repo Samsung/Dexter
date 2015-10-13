@@ -258,4 +258,9 @@ public class DexterClientMock implements IDexterClient {
 	@Override
 	public void runLoginInfoHandler(String oldServerHost, int oldServerPort, String oldUserId) {
 	}
+	
+	@Override
+	public String getDexterPluginCheckerJsonFile(String pluginName) {
+		return null;
+	}
 }

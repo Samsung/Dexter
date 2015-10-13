@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dexter Eclipse UI
 Bundle-SymbolicName: dexter-eclipse-ui; singleton:=true
-Bundle-Version: 0.9.0
+Bundle-Version: 0.9.1
 Bundle-Activator: com.samsung.sec.dexter.eclipse.ui.DexterUIActivator
 Bundle-Vendor: Samsung Electronics VD SE Lab
 Require-Bundle: org.eclipse.ui,
@@ -22,7 +22,8 @@ Bundle-ClassPath: .,
  lib/gson-2.2.4.jar,
  lib/jersey-client-1.18.jar,
  lib/jersey-core-1.18.jar,
- lib/jersey-json-1.18.jar
+ lib/jersey-json-1.18.jar,
+ lib/log4j-1.2.17.jar
 Export-Package: com.samsung.sec.dexter.eclipse.ui,
  com.samsung.sec.dexter.eclipse.ui.login,
  com.samsung.sec.dexter.eclipse.ui.util,

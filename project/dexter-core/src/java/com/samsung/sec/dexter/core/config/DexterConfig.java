@@ -59,28 +59,29 @@ public class DexterConfig {
 	public static final String FILTER_FALSE_ALARM_LIST_FILENAME = "false-alarm-list.json";
 
 	/** Service Address List */
-	public static final String GET_ACCOUNT = "/api/accounts/findById";
-	public static final String CHECK_ACCOUNT = "/api/accounts/checkLogin";
-	public static final String CHECK_HAS_ACCOUNT = "/api/accounts/hasAccount";
-	public static final String ADD_ACCOUNT = "/api/accounts/add";
-	public static final String FIND_ACCOUNT = "/api/accounts/findById";
+	public static final String GET_ACCOUNT = "/api/v1/accounts/findById";
+	public static final String CHECK_ACCOUNT = "/api/v1/accounts/checkLogin";
+	public static final String CHECK_HAS_ACCOUNT = "/api/v1/accounts/hasAccount";
+	public static final String ADD_ACCOUNT = "/api/v1/accounts/add";
+	public static final String FIND_ACCOUNT = "/api/v1/accounts/findById";
 	
-	public static final String STOP_SERVER = "/api/server";
-	public static final String CHECK_SERVER_ADDRESS = "/api/isServerAlive";
-	public static final String PUT_ANALYSIS_RESULT = "/api/analysis/result";
-	public static final String DISMISS_DEFECT = "/api/defect/dismiss";
-	public static final String FILTER_FALSE_ALARM = "/api/filter/false-alarm";
-	public static final String FILTER_FALSE_ALARM_LIST = "/api/filter/false-alarm-list";
-	public static final String FILTER_DELETE_FALSE_ALARM = "/api/filter/delete-false-alarm";
-	public static final String GET_FALSE_ALARM_VERSION = "/api/version/false-alarm";
-	public static final String POST_GLOBAL_DID = "/api/defect/gid";
-	public static final String DEFECT_DELETE = "/api/defect/deleteAll";
-	public static final String DEFECT_GROUP = "/api/config/defect-group";
-	public static final String CODE = "/api/config/code";
-	public static final String POST_SNAPSHOT_SOURCECODE = "/api/analysis/snapshot/source";
-	public static final String SOURCE_CODE = "/api/analysis/snapshot/source";
+	public static final String STOP_SERVER = "/api/v1/server";
+	public static final String CHECK_SERVER_ADDRESS = "/api/v1/isServerAlive";
+	public static final String PUT_ANALYSIS_RESULT = "/api/v1/analysis/result";
+	public static final String DISMISS_DEFECT = "/api/v1/defect/dismiss";
+	public static final String FILTER_FALSE_ALARM = "/api/v1/filter/false-alarm";
+	public static final String FILTER_FALSE_ALARM_LIST = "/api/v1/filter/false-alarm-list";
+	public static final String FILTER_DELETE_FALSE_ALARM = "/api/v1/filter/delete-false-alarm";
+	public static final String GET_FALSE_ALARM_VERSION = "/api/v1/version/false-alarm";
+	public static final String POST_GLOBAL_DID = "/api/v1/defect/gid";
+	public static final String DEFECT_DELETE = "/api/v1/defect/deleteAll";
+	public static final String DEFECT_GROUP = "/api/v1/config/defect-group";
+	public static final String CODE = "/api/v1/config/code";
+	public static final String POST_SNAPSHOT_SOURCECODE = "/api/v1/analysis/snapshot/source";
+	public static final String SOURCE_CODE = "/api/v1/analysis/snapshot/source";
 	
-	public static final String GET_DEXTER_PLUGIN_UPDATE_URL = "/api/config/update-url";
+	public static final String GET_DEXTER_PLUGIN_UPDATE_URL = "/api/v1/config/update-url";
+	public static final String GET_DEXTER_PLUGIN_CHECKER_JSON_FILE = "/api/v1/config";
 	
 	    
 	public static final Object DEFECT_HELP_BASE = "/tool";

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dexter Eclipse
 Bundle-SymbolicName: dexter-eclipse;singleton:=true
-Bundle-Version: 0.9.0
+Bundle-Version: 0.9.1
 Bundle-Activator: com.samsung.sec.dexter.eclipse.DexterEclipseActivator
 Bundle-Vendor: Samsung Electronics VD SE Lab
 Require-Bundle: org.eclipse.core.runtime,

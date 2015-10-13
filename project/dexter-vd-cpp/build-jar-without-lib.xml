@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project dexter-vd-cpp">
+	<property name="dist" location="dist"/>
+	
+	<target name="clean">
+			<delete failonerror="false">
+				<fileset dir="${dist}" />
+			</delete>
+			
+			<mkdir dir="${dist}" />
+		</target>
+
+	<target name="create_run_jar" depends="clean">
+		<jar destfile="${dist}/dexter-vd-cpp_${version}.jar" filesetmanifest="mergewithoutmain">
+			<manifest>
+				<!--attribute name="Main-Class" value="com.samsung.sec.dexter.findbugs.plugin.FindBugsWrapper"/-->
+				<attribute name="Class-Path" value="."/>
+			</manifest>
+			
+			<fileset dir="bin"/>
+			<zipfileset excludes="META-INF/*.SF" src="lib/gson-2.2.4.jar"/>
+			<zipfileset excludes="META-INF/*.SF" src="lib/guava-16.0.1.jar"/>
+			<zipfileset excludes="META-INF/*.SF" src="lib/cdt/org.eclipse.cdt.core_5.9.1.201502131403.jar"/>
+			<zipfileset excludes="META-INF/*.SF" src="lib/cdt/org.eclipse.equinox.common_3.6.200.v20130402-1505.jar"/>
+		</jar>
+	</target>
+</project>

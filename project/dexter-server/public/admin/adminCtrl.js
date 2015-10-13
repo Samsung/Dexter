@@ -1,21 +1,23 @@
 adminApp.controller('AdminCtrl', function($scope, $http, $log){
 
     var init = function(){
-        $http.get('/api/v1/projectName', {
-        }).then(function (result) {
-            if( result && result.data){
-                var html = 'Configuration on Dexter Web: ' +result.data.result;
-                $('#indexAdminTitle').html(html);
-            }
-        }, function (results) {
-            $log.error(results);
-        });
-
         $scope.isHidedDetailTab = true;
         $scope.totalAdminServerItems = 0;
 
         window.localStorage['adminPageSize'] = (window.localStorage['adminPageSize']) || 10;
         window.localStorage['adminCurrentPage'] = parseInt(window.localStorage['adminCurrentPage']) || 1;
+        $scope.projectName = 'dexter-project';
+	
+	 $http.get('/api/v1/projectName', {
+        }).then(function (result) {
+            if( result && result.data){
+                var html = 'Configuration on Dexter Web: ' +result.data.result;
+                $scope.projectName = result.data.result;
+                $('#indexAdminTitle').html(html);
+            }
+        }, function (results) {
+            $log.error(results);
+        });
     };
 
     init();
@@ -45,8 +47,7 @@ adminApp.controller('AdminCtrl', function($scope, $http, $log){
         var addPWConfirm = $scope.accountObj[2].value;
 
         if(!(RegID)){
-            alert('Please check the Id : ');
-            console.log('RegId : ' + RegID);
+            alert('Please check the Id : ' + RegId);
             return ;
         }
 
@@ -88,8 +89,7 @@ adminApp.controller('AdminCtrl', function($scope, $http, $log){
         var RegID = $scope.checkIDReg($scope.changeUserId);
 
         if(!(RegID)){
-            alert('Please check the Id : ');
-            console.log('RegId : ' + RegID);
+            alert('Please check the Id : '+RegID);
             return ;
         }
 
@@ -306,7 +306,7 @@ adminApp.controller('AdminCtrl', function($scope, $http, $log){
         var encodedUri = encodeURI($scope.csvContent);
         $(this)
             .attr({
-                'download': 'Dexter-Account-List.csv',
+                'download': $scope.projectName +'_account.csv',
                 'href': encodedUri,
                 'target': '_blank'
             });

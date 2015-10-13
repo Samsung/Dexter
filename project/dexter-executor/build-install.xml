@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project default="deploy" name="Create Runnable Jar for Dexter CLI">
-	<property name="version" value="0.9.0" />
+	<property name="version" value="0.9.1" />
 	<property name="install" location="install" />
 	<property name="dist" location="dist" />
 	<property name="dist-bin" location="dist/bin" />
@@ -26,11 +26,14 @@
 	<!-- ######################### plugins LIST ############################# -->
 	<property name="fb-dist-path" location="../dexter-findbugs/dist" />
 	<property name="cppcheck-dist-path" location="../dexter-cppcheck/dist" />
+	<property name="opensource-dist-path" location="../dexter-opensource/dist" />
+	<property name="vd-cpp-dist-path" location="../dexter-vd-cpp/dist" />
+	
 	<!-- ######################### plugins LIST ############################# -->
 	
 	<target name="deploy" 
 		depends="clean, create_dexter_core_jar, create_dexter_metrics_jar, create_dexter_executor_jar, 
-				copy_dexter_findbugs_jar, copy_dexter_cppcheck_jar">
+				copy_dexter_findbugs_jar, copy_dexter_cppcheck_jar, copy_dexter_opensource_jar, copy_dexter_vd_cpp_jar">
 		
 		<echo file="${dist-bin}/dexter.bat" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar -u %1 -p %2</echo>
 		<echo file="${dist-bin}/dexter.sh" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar -u $1 -p $2</echo>
@@ -38,9 +41,9 @@
 		<echo file="${dist-bin}/create-user.bat" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar -c -u %1 -p %2 -h %3 -o %4</echo>
 		<echo file="${dist-bin}/create-user.sh" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar -c -u $1 -p $2 -h $3 -o $4</echo>
 		
-		<echo file="${dist-bin}/dexter2.bat" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar %1 %2 %3 %4 %5 %6 %7 %8 %9 %10 %11 %12 %13 %14 %15</echo>
-		<echo file="${dist-bin}/dexter2.sh" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar $1 $2 $3 $4 $5 $6 $7 $8 $9 $10 $11 $12 $13 $14 $15</echo>
-
+		<echo file="${dist-bin}/dexter2.bat" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar %*</echo>
+		<echo file="${dist-bin}/dexter2.sh" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar $@</echo>
+				
 		<copy file="${core-prj-path}/src/resource/dexter_cfg.json" todir="${dist-bin}" />
 		<copy file="${core-prj-path}/src/resource/dexter_cfg.json.help" todir="${dist-bin}" />
 		<copy file="${core-prj-path}/src/resource/dexter.em" todir="${dist-bin}/daemon" />
@@ -153,4 +156,26 @@
 			<fileset dir="${cppcheck-dist-path}" />
 		</copy>
 	</target>	
+	
+	<ant inheritAll="false" antfile="../dexter-opensource/build-jar-without-lib.xml">
+		<property name="version" value="${version}"/>
+	</ant>
+	
+	<target name="copy_dexter_opensource_jar">
+		<copy toDir="${dist-plugin}" overwrite="true" failonerror="true">
+			<fileset dir="${opensource-dist-path}" />
+		</copy>
+	</target>	
+	
+	<ant inheritAll="false" antfile="../dexter-vd-cpp/build-jar-without-lib.xml">
+		<property name="version" value="${version}"/>
+	</ant>
+	
+	<target name="copy_dexter_vd_cpp_jar">
+		<copy toDir="${dist-plugin}" overwrite="true" failonerror="true">
+			<fileset dir="${vd-cpp-dist-path}" />
+		</copy>
+	</target>	
+	
+	
 </project>
