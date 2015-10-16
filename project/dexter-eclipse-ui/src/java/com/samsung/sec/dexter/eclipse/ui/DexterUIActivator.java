@@ -73,8 +73,9 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 		
 		final boolean isStandalone = getPreferenceStore().getBoolean("isStandalone");
 		DexterConfig.getInstance().setStandalone(isStandalone);
-		
+
 		DexterJobFacade.getInstance().startGeneralJobs();
+		
 		DexterConfig.getInstance().addDexterStandaloneListener(DexterJobFacade.getInstance());
 		DexterConfig.getInstance().addDexterStandaloneListener(DexterClient.getInstance());
 		
@@ -83,19 +84,25 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 	
 	void initDexterClient(){
 		final DexterConfig config = DexterConfig.getInstance();
-		if(config.isStandalone()) return;
+		
+		
+		if(config.isStandalone() )  {
+			return;
+		}
 		
 		final String id = getPreferenceStore().getString("userId");
 		final String pwd = getPreferenceStore().getString("userPwd");
 		final String serverAddress = getPreferenceStore().getString("serverAddress");
 		
 		final IDexterClient client = DexterClient.getInstance();
+		
 		client.setCurrentUserId(id);
 		client.setCurrentUserPwd(pwd);
 		client.setDexterServer(serverAddress);
 		
 		final String dexterHome = getPreferenceStore().getString(DexterConfig.DEXTER_HOME_KEY);
 		config.setDexterHome(dexterHome);
+		
 		
 		try{
 			client.login(id, pwd);

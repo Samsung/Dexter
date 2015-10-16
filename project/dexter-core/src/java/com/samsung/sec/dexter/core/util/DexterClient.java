@@ -40,10 +40,12 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 import com.samsung.sec.dexter.core.config.DefectGroup;
+import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterCode;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.IDexterStandaloneListener;
 import com.samsung.sec.dexter.core.defect.Defect;
+import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 import com.samsung.sec.dexter.core.exception.DexterException;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.filter.DefectFilter;
@@ -74,6 +76,7 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
 	private String currentUserPwd = "";
 	private int currentUserNo;
 	private boolean isCurrentUserAdmin = false;
+	//private String text;
 	
 	private final  List<IDexterLoginInfoListener> loginInfoListenerList = new ArrayList<IDexterLoginInfoListener>();
 	
@@ -1039,4 +1042,20 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
     		setWebResource(new JerseyDexterWebResource());
     	}
 	}
+	
+	public void getDexterPluginCheckerJsonFile(IDexterPlugin plugin, String pluginName) {
+		try {
+			String text = webResource.postText(getServiceUrl(DexterConfig.GET_DEXTER_PLUGIN_CHECKER_JSON_FILE + "/" + pluginName), this.currentUserId, this.currentUserPwd);
+			if(!(text.equals(DexterConfig.NO_UPDATE_CHECKER_CONFIG)))
+			{
+				Gson gson = new Gson();
+				CheckerConfig cc = gson.fromJson(text, CheckerConfig.class);
+				plugin.setCheckerConfig(cc);
+			}
+		} catch (DexterRuntimeException e) {
+			LOG.error(e.getMessage(), e);
+			throw new DexterRuntimeException(e.getMessage(), e);
+		}
+	}
+	
 }

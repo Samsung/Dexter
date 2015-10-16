@@ -5,7 +5,7 @@
 	"projectName":"your_project_name",
 	"projectFullPath":"D:/prjs/your_project_name",
 	"sourceDir":["D:/prjs/your_project_name/your_source_dir"],
-  "headerDir":["D:/prjs/your_project_name/your_include_dir"],
+	"headerDir":["D:/prjs/your_project_name/your_include_dir"],
 	"sourceEncoding":"UTF-8",
 	"libDir":[],
 	"binDir":"",

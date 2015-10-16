@@ -37,7 +37,6 @@ import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 import com.samsung.sec.dexter.core.plugin.PluginDescription;
 import com.samsung.sec.dexter.core.plugin.PluginVersion;
-import com.samsung.sec.dexter.findbugs.FindBugsActivator;
 
 @PluginImplementation
 public class FindbugsDexterPlugin implements IDexterPlugin {
@@ -60,9 +59,10 @@ public class FindbugsDexterPlugin implements IDexterPlugin {
     
     @Override
     public PluginDescription getDexterPluginDescription() {
-    	if(this.pluginDescription == null){
+    	if(this.pluginDescription == null)
+    	{
     		this.pluginDescription = new PluginDescription(PLUGIN_NAME, PLUGIN_NAME, 
-    				new PluginVersion(0,9,0), 
+    				new PluginVersion(0,9,1), 
     				DexterConfig.LANGUAGE.JAVA, "Dexter plug-in for FindBugs");
     	}
 	    return this.pluginDescription;

@@ -30,7 +30,9 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+//import com.google.gson.Gson;
 import com.google.common.base.Strings;
+import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.IDexterPluginInitializer;
@@ -75,6 +77,7 @@ public class DexterPluginManager implements IDexterHomeListener{
 		
 		initializer.init(pluginList);
 		initSupportingFileExetensions();
+		updateCheckerConfig();
 		this.isInitialized = true;
 		LOG.info("Dexter plug-ins initialized successfully");
 	}
@@ -86,6 +89,26 @@ public class DexterPluginManager implements IDexterHomeListener{
 		}
     }
 
+	private void updateCheckerConfig() {
+		Thread updateCheckerThread = new Thread(){
+			@Override
+			public void run() {
+				for (int i=0; i< pluginList.size(); i++) {
+					IDexterPlugin plugin = pluginList.get(i);
+					String pluginName = plugin.getDexterPluginDescription().getPluginName();
+					DexterClient.getInstance().getDexterPluginCheckerJsonFile(plugin, pluginName);
+				}
+			}
+		};
+		
+		if(DexterConfig.getInstance().getRunMode() == DexterConfig.RunMode.CLI){
+			updateCheckerThread.run();
+		}
+		else {
+			updateCheckerThread.start();
+		}
+	}
+	
 	public void destroy() throws DexterException {
 		DexterConfig.getInstance().removeDexterHomeListener(this);
 		for(IDexterPlugin plugin : this.pluginList){

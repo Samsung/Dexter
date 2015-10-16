@@ -237,6 +237,7 @@ function initRestAPI(){
     /* SnapshotDefectMap / SnapshotSourcecodeMap*/
     app.get('/api/snapshot/snapshotList', analysis.getAllSnapshot);
     app.get('/api/snapshot/showSnapshotDefectPage',analysis.getDefectListInSnapshot);
+    app.get('/api/snapshot/occurenceInFile', analysis.getOccurencesByFileNameInSnapshot);
 
     /* code metrics */
     app.get('/api/metrics', analysis.getCodeMetrics);
@@ -324,6 +325,7 @@ function initRestAPI(){
     /* SnapshotDefectMap / SnapshotSourcecodeMap*/
     app.get('/api/v1/snapshot/snapshotList', analysis.getAllSnapshot);
     app.get('/api/v1/snapshot/showSnapshotDefectPage',analysis.getDefectListInSnapshot);
+    app.get('/api/v1/snapshot/occurenceInFile', analysis.getOccurencesByFileNameInSnapshot);
 
     /* code metrics */
     app.get('/api/v1/metrics', analysis.getCodeMetrics);
@@ -352,6 +354,8 @@ function initRestAPI(){
         });
     });
 
+    /* Get Latest Checekr Config Json File */
+    app.post('/api/v1/config/:pluginName', config.getCheckerConfigJsonFile);
 
 
 }

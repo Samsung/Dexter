@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.17.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jersey-client-1.18.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jersey-core-1.18.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jersey-json-1.18.jar"/>

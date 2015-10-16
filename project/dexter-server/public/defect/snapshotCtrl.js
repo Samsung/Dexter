@@ -151,9 +151,9 @@ defectApp.controller('snapshotCtrl', function ($scope, $http, $location){
                 console.error("error: " + results);
             }
         }, function(results){ // error
-            console.log('Error Code: ' + results.status + ';');
+            $log.info('Error Code: ' + results.status + ';');
         });
-    };
+    }
 
 
     $scope.$on('ngGridEventRowSeleted',function(event,row){

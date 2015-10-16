@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 BUndle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Name: Dexter Executor
 Bundle-SymbolicName: dexter-executor;singleton:=true
-Bundle-Version: 0.9.0
+Bundle-Version: 0.9.1
 Bundle-ClassPath: .,
  lib/log4j-1.2.17.jar,
  lib/guava-16.0.1.jar,
@@ -17,7 +17,8 @@ Bundle-ClassPath: .,
  lib/jspf.remote.javascript-1.0.2.jar,
  lib/jspf.remote.lipermi-1.0.2.jar,
  lib/jspf.remote.xmlrpc-1.0.2.jar,
- lib/jspf.remote.xmlrpcdelight-1.0.2.jar
+ lib/jspf.remote.xmlrpcdelight-1.0.2.jar,
+ lib/mockito-all-1.10.19.jar
 Export-Package: com.samsung.sec.dexter.executor
 Require-Bundle: org.eclipse.core.runtime,
  dexter-core,

@@ -1,0 +1,29 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Dexter VD C & CPP
+Bundle-SymbolicName: dexter-vd-cpp;singleton:=true
+Bundle-Version: 0.9.1
+Bundle-Activator: com.samsung.sec.dexter.vdcpp.DexterVdCppActivator
+Require-Bundle: org.eclipse.core.runtime,
+ dexter-core,
+ dexter-executor
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-Vendor: Samsung Electronics VD SE Lab
+Bundle-ClassPath: .,
+ lib/gson-2.2.4.jar,
+ lib/guava-16.0.1.jar,
+ lib/junit-4.10.jar,
+ lib/log4j-1.2.17.jar,
+ lib/poi-3.11-20141221.jar,
+ lib/poi-ooxml-3.11-20141221.jar,
+ lib/poi-ooxml-schemas-3.11-20141221.jar,
+ lib/jspf/jspf.core-1.0.2.jar,
+ lib/jspf/jspf.remote-1.0.2.jar,
+ lib/jspf/jspf.remote.discovery-1.0.2.jar,
+ lib/jspf/jspf.remote.ermi-1.0.2.jar,
+ lib/jspf/jspf.remote.javascript-1.0.2.jar,
+ lib/jspf/jspf.remote.lipermi-1.0.2.jar,
+ lib/jspf/jspf.remote.xmlrpc-1.0.2.jar,
+ lib/jspf/jspf.remote.xmlrpcdelight-1.0.2.jar,
+ lib/cdt/org.eclipse.cdt.core_5.9.1.201502131403.jar
