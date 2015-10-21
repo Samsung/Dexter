@@ -25,6 +25,8 @@
 */
 package com.samsung.sec.dexter.daemon;
 
+import org.apache.log4j.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -63,16 +65,18 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-import org.apache.commons.io.FileUtils;
 import com.google.common.base.Strings;
+import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.job.DexterJobFacade;
 import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.core.util.IDexterClient;
+import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.daemon.p2.P2Util;
 import com.samsung.sec.dexter.eclipse.ui.login.LoginDialog;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
+	private final static Logger LOG = Logger.getLogger(ApplicationWorkbenchWindowAdvisor.class);
 	private IWorkbenchWindow window;
 	private TrayItem trayItem;
 	private Image trayImage;
@@ -169,42 +173,42 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	}
 	
 	
-	private void deleteDexterFeatureIfHasOldOne(
-			final Map<String, File> tempFeatureList, File featureFile,
-			final String featureFileName) {
+	private void deleteDexterFeatureIfHasOldOne( final Map<String, File> tempFeatureList, File featureFile, final String featureFileName){
 		String pluginPrefixName = getPluginPrefixName(featureFileName);
-		File tempPluginFile = tempFeatureList.get(pluginPrefixName);
-
-		if (tempPluginFile == null)
-		{
-			tempFeatureList.put(pluginPrefixName, featureFile);
+		if( pluginPrefixName == DexterConfig.NOT_FOUND_FOLDER_NAME ){
+			return ;
 		}
-		else {
-			if (featureFile.lastModified() >= tempPluginFile.lastModified())
-			{
+		
+		File tempPluginFile = tempFeatureList.get(pluginPrefixName);
+		if (tempPluginFile == null){
+			tempFeatureList.put(pluginPrefixName, featureFile);
+		} else {
+			if (featureFile.lastModified() >= tempPluginFile.lastModified()){
 				tempFeatureList.remove(pluginPrefixName);
 				try {
-					FileUtils.deleteDirectory(tempPluginFile);
+					DexterUtil.deleteDirectory(tempPluginFile);
+				} catch (IOException e) {
+					LOG.error(e.getMessage(), e);
 				}
-				catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			else {
+			} else {
 				try {
-					FileUtils.deleteDirectory(featureFile);
+					DexterUtil.deleteDirectory(featureFile);
+				} catch (IOException e) {
+					LOG.error(e.getMessage(), e);
 				}
-				catch (IOException e) {
-					e.printStackTrace();
-				}
+				
 			}
 		}
 	}
 	
 	private String getPluginPrefixName(final String fileName) {
 	    int index = fileName.indexOf("_");
-	    String fileNamePrefix = fileName.substring(0, index);
-	    return fileNamePrefix;
+	    if(index == -1){
+	    	return DexterConfig.NOT_FOUND_FOLDER_NAME;
+	    } else {
+	    	String fileNamePrefix = fileName.substring(0, index);
+	    	return fileNamePrefix;
+	    }
     }
 
 	/*

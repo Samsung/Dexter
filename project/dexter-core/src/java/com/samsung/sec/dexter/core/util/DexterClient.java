@@ -1043,19 +1043,21 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
     	}
 	}
 	
-	public void getDexterPluginCheckerJsonFile(IDexterPlugin plugin, String pluginName) {
+	public CheckerConfig getDexterPluginChecker(IDexterPlugin plugin, String pluginName) {
 		try {
 			String text = webResource.postText(getServiceUrl(DexterConfig.GET_DEXTER_PLUGIN_CHECKER_JSON_FILE + "/" + pluginName), this.currentUserId, this.currentUserPwd);
 			if(!(text.equals(DexterConfig.NO_UPDATE_CHECKER_CONFIG)))
 			{
 				Gson gson = new Gson();
 				CheckerConfig cc = gson.fromJson(text, CheckerConfig.class);
-				plugin.setCheckerConfig(cc);
+				return cc;
+			} else {
+				CheckerConfig cc = plugin.getCheckerConfig();
+				return cc;
 			}
 		} catch (DexterRuntimeException e) {
 			LOG.error(e.getMessage(), e);
 			throw new DexterRuntimeException(e.getMessage(), e);
 		}
 	}
-	
 }

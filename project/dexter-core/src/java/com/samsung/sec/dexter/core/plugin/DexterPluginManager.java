@@ -77,7 +77,9 @@ public class DexterPluginManager implements IDexterHomeListener{
 		
 		initializer.init(pluginList);
 		initSupportingFileExetensions();
-		updateCheckerConfig();
+		if(!DexterConfig.getInstance().isStandalone()){
+			updateCheckerConfig();
+		}
 		this.isInitialized = true;
 		LOG.info("Dexter plug-ins initialized successfully");
 	}
@@ -96,7 +98,8 @@ public class DexterPluginManager implements IDexterHomeListener{
 				for (int i=0; i< pluginList.size(); i++) {
 					IDexterPlugin plugin = pluginList.get(i);
 					String pluginName = plugin.getDexterPluginDescription().getPluginName();
-					DexterClient.getInstance().getDexterPluginCheckerJsonFile(plugin, pluginName);
+					CheckerConfig cc = DexterClient.getInstance().getDexterPluginChecker(plugin, pluginName);
+					plugin.setCheckerConfig(cc);
 				}
 			}
 		};

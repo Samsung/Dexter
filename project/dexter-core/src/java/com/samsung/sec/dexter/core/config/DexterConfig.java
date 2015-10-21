@@ -55,6 +55,7 @@ public class DexterConfig {
 	public static final String TEMP_FOLDER_NAME = "temp";
 	public static final String LOG_FOLDER_NAME = "log";
 	public static final String NO_UPDATE_CHECKER_CONFIG = "noUpdate";
+	public static final String NOT_FOUND_FOLDER_NAME = "notFound";
 	
 	public static final String FILTER_DEFECT_FILENAME = "defect-filter.json";
 	public static final String FILTER_FALSE_ALARM_LIST_FILENAME = "false-alarm-list.json";

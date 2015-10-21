@@ -45,7 +45,8 @@ function setRunOptionsImmutable(){
 
 exports.getProjectName = function(req, res){
     res.send({
-        result: _runOptions.databaseName
+        status : "ok",
+        projectName :  _runOptions.databaseName
     });
 };
 
@@ -56,7 +57,7 @@ exports.deleteDexterDatabase = function(){
 
     util.getLocalhostIp(function(localhostIp){
         var scripts = [
-                "DROP DATABASE " + _runOptions.databaseName,
+                "DROP DATABASE " + _runOptions.databaseName
         ];
 
         runMysqlScript(scripts, 0);

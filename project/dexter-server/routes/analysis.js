@@ -1025,7 +1025,7 @@ function addSourceCodeMap(res, snapshotId, fileName, modulePath, sourceCode, use
 
 exports.getSnapshotSourceCode = function(req, res) {
     if(req == undefined || req.query == undefined || req.query.fileName == undefined || req.currentUserId == undefined){
-        res.send({status:"fail", errorMessage: "No Data or No currentUserId"})
+        res.send({status:"fail", errorMessage: "No Data or No currentUserId"});
 		return;
     }
 

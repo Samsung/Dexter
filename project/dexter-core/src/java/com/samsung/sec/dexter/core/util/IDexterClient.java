@@ -27,6 +27,7 @@ package com.samsung.sec.dexter.core.util;
 
 import java.util.List;
 
+import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.config.DefectGroup;
 import com.samsung.sec.dexter.core.config.DexterCode;
 import com.samsung.sec.dexter.core.defect.Defect;
@@ -210,7 +211,7 @@ public interface IDexterClient {
 	void setLogin(boolean b);
 
 	public String getDexterPluginUpdateUrl();
-	public void getDexterPluginCheckerJsonFile(IDexterPlugin plugin, String pluginName);
+	public CheckerConfig getDexterPluginChecker(IDexterPlugin plugin, String pluginName);
 	
 	public void addLoginInfoListener(final IDexterLoginInfoListener listener);
 	public void removeLoginInfoListener(final IDexterLoginInfoListener listener);

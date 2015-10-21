@@ -409,14 +409,6 @@ public class LoginDialog extends TitleAreaDialog {
 		boolean isStandalone = standaloneModeButton.getSelection();
 		config.setStandalone(isStandalone);
 		
-		// client store
-		client.setCurrentUserId(idText.getText());
-		client.setCurrentUserPwd(pwdText.getText());
-		client.setDexterServer(serverText.getText());
-		
-		// config store
-		config.setDexterHome(dexterHomeText.getText());
-		
 		if (isStandalone == false) {
 			String oldServerHost;
 			
@@ -449,20 +441,18 @@ public class LoginDialog extends TitleAreaDialog {
 			
 			try {
 				client.login(id, pwd);
+				DexterJobFacade.getInstance().startDexterServerJobs();
 	        } catch (DexterRuntimeException e) {
 	        	setMessage(Messages.LoginDialog_LOGIN_ERROR_MSG, IMessageProvider.ERROR);
 	        	return;
 	        }
-			
 			client.runLoginInfoHandler(oldServerHost, oldServerPort, oldUserId);
-			DexterJobFacade.getInstance().startDexterServerJobs();
 		}
 
 		final File homePath = new File(dexterHomeText.getText());
 		if (homePath.exists() == false) {
 			homePath.mkdir();
 		}
-
 
 		// plugin store
 		setMessage(Messages.LoginDialog_INIT_ENV_MSG);
@@ -476,6 +466,11 @@ public class LoginDialog extends TitleAreaDialog {
 		System.setProperty(DexterConfig.DEXTER_HOME_KEY, dexterHomeText.getText());
 		config.setDexterHome(dexterHomeText.getText());
 		
+		// client store
+		client.setCurrentUserId(idText.getText());
+		client.setCurrentUserPwd(pwdText.getText());
+		client.setDexterServer(serverText.getText());
+
 		super.okPressed();
 	}
 

@@ -148,7 +148,7 @@ defectApp.controller('snapshotCtrl', function ($scope, $http, $location){
                 $scope.allSnapshotCount = results.data.snapshotInfo.length;
                 $scope.snapshotList = results.data.snapshotInfo;
             }else {
-                console.error("error: " + results);
+                $log.error("error: " + results);
             }
         }, function(results){ // error
             $log.info('Error Code: ' + results.status + ';');

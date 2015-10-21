@@ -29,6 +29,7 @@ import java.security.cert.CertificateException;
 import java.util.List;
 
 import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
+import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.config.DefectGroup;
 import com.samsung.sec.dexter.core.config.DexterCode;
 import com.samsung.sec.dexter.core.defect.Defect;
@@ -261,6 +262,7 @@ public class DexterClientMock implements IDexterClient {
 	}
 	
 	@Override
-	public void getDexterPluginCheckerJsonFile(IDexterPlugin plugin, String pluginName) {
+	public CheckerConfig getDexterPluginChecker(IDexterPlugin plugin, String pluginName) {
+		return null ;
 	}
 }
