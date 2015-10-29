@@ -148,12 +148,12 @@ defectApp.controller('snapshotCtrl', function ($scope, $http, $location){
                 $scope.allSnapshotCount = results.data.snapshotInfo.length;
                 $scope.snapshotList = results.data.snapshotInfo;
             }else {
-                console.error("error: " + results);
+                $log.error("error: " + results);
             }
         }, function(results){ // error
-            console.log('Error Code: ' + results.status + ';');
+            $log.info('Error Code: ' + results.status + ';');
         });
-    };
+    }
 
 
     $scope.$on('ngGridEventRowSeleted',function(event,row){

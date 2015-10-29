@@ -994,4 +994,61 @@ public class DexterUtil {
 		Gson gson = new Gson();
 		return gson.fromJson(jsonString, clazz);
 	}
+	
+	public static void deleteDirectory(File directory) throws IOException {
+			if (!directory.exists()) {
+				return;
+			}
+			cleanDirectory(directory);
+			if (!directory.delete()) {
+				String message = "Unable to delete directory " + directory + ".";
+				throw new DexterRuntimeException(message);
+			}
+		}
+
+	public static void cleanDirectory(File directory) throws IOException {
+		if (!directory.exists()) {
+			String message = directory + " does not exist";
+			throw new DexterRuntimeException(message);
+		}
+
+		if (!directory.isDirectory()) {
+			String message = directory + " is not a directory";
+			throw new DexterRuntimeException(message);
+		}
+
+		File[] files = directory.listFiles();
+		if (files == null) {  // null if security restricted
+			throw new DexterRuntimeException("Failed to list contents of " + directory);
+		}
+
+		IOException exception = null;
+		for (int i = 0; i < files.length; i++) {
+			File file = files[i];
+			try {
+				forceDelete(file);
+			} catch (IOException ioe) {
+				exception = ioe;
+			}
+		}
+
+		if (null != exception) {
+			throw new DexterRuntimeException("Faile to remove directory");
+		}
+	}
+	
+	public static void forceDelete(File file) throws IOException {
+		if (file.isDirectory()) {
+			deleteDirectory(file);
+		} else {
+			if (!file.exists()) {
+			throw new FileNotFoundException("File does not exist: " + file);
+			}
+			if (!file.delete()) {
+				String message = "Unable to delete file: " + file;
+				throw new DexterRuntimeException(message);
+			}
+		}
+	}
+	
 }

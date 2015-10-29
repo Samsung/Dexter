@@ -5,6 +5,7 @@ dashboardApp.controller("DashboardCtrl", function($scope, $http, $log){
     }).then(function (result) {
         if( result && result.data){
             var html = 'Dashboard : ' +result.data.result;
+            $scope.projectName = result.data.result;
             $('#indexDashboardTitle').html(html);
         }
     }, function (results) {
@@ -1364,7 +1365,7 @@ dashboardApp.controller("DashboardCtrl", function($scope, $http, $log){
         var encodedUri = encodeURI($scope.csvContent);
         $(this)
             .attr({
-                'download': 'Dexter-File-List.csv',
+                'download': $scope.projectName + '_fileList.csv',
                 'href': encodedUri,
                 'target': '_blank'
             });

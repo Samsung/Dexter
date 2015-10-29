@@ -40,7 +40,7 @@
             </button-->
 
             <button  id="treeBtn"  class="btn btn-xs btn-info" ng-click="loadCurrentFileTree('showFileTreeBtn')">
-                <span class="glyphicon glyphicon-align-left"></span>&nbsp;{{isHideFileTreeBtnTitle}}
+                <span class="glyphicon glyphicon-align-left"></span>&nbsp;{{isFileTreeBtnTitleHidden}}
             </button>&nbsp;
 
             <a href="#" class="exportDefect">
@@ -52,7 +52,7 @@
         </div>
         </p>
 
-        <div class="animate-hide fileTree" ng-hide="isHideFileTree" id="animationTab">
+        <div class="animate-hide fileTree" ng-hide="isFileTreeHidden" id="animationTab">
             <div
                     data-angular-treeview="true"
                     data-tree-id="fileTreeId"
@@ -71,7 +71,7 @@
     <div class="row" >
         <!--div class="col-lg-4">
             <tabset justified="false" vertical="true" type="pills" >
-                <div  align="right" ng-hide="isHidedToButton">
+                <div  align="right" ng-hide="isButtonHidden">
                 </div>
                 <tab ng-repeat="defectSelection in defectSelections"
                      ng-click="setCurrentDetail(defectSelection.checkerCode, defectSelection.modulePath, defectSelection.fileName, defectSelection.did)"
@@ -82,7 +82,7 @@
         </div>
 
         <div class="col-lg-8" ng-hide="isHidedDetailTab"-->
-        <div ng-hide="isHidedDetailTab">
+        <div ng-hide="isDetailTabHidden">
             <tabset justified="false" type="pills" >
                 <ul class="nav nav-tabs nav-justified">
                     <tab id='SourceTab'heading="Source Code">

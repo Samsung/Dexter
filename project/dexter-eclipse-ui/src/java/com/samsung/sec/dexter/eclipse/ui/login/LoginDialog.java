@@ -33,11 +33,11 @@ import org.eclipse.swt.widgets.Text;
 import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.job.DexterJobFacade;
 import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.core.util.IDexterClient;
 import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
-
 /**
  * 
  * Copyright 2014 by Samsung Electronics, Inc.,
@@ -411,6 +411,7 @@ public class LoginDialog extends TitleAreaDialog {
 		
 		if (isStandalone == false) {
 			String oldServerHost;
+			
 			int oldServerPort = client.getServerPort();
 			String oldUserId = client.getCurrentUserId();
 			
@@ -439,12 +440,12 @@ public class LoginDialog extends TitleAreaDialog {
 			}
 			
 			try {
-	            client.login(id, pwd);
+				client.login(id, pwd);
+				DexterJobFacade.getInstance().startDexterServerJobs();
 	        } catch (DexterRuntimeException e) {
 	        	setMessage(Messages.LoginDialog_LOGIN_ERROR_MSG, IMessageProvider.ERROR);
 	        	return;
 	        }
-			
 			client.runLoginInfoHandler(oldServerHost, oldServerPort, oldUserId);
 		}
 
@@ -452,7 +453,6 @@ public class LoginDialog extends TitleAreaDialog {
 		if (homePath.exists() == false) {
 			homePath.mkdir();
 		}
-
 
 		// plugin store
 		setMessage(Messages.LoginDialog_INIT_ENV_MSG);
@@ -462,10 +462,15 @@ public class LoginDialog extends TitleAreaDialog {
 		store.setValue("serverAddress", serverText.getText()); //$NON-NLS-1$
 		store.setValue("isStandalone", isStandalone);
 		store.setValue(DexterConfig.DEXTER_HOME_KEY, dexterHomeText.getText());
-	
+		
 		System.setProperty(DexterConfig.DEXTER_HOME_KEY, dexterHomeText.getText());
 		config.setDexterHome(dexterHomeText.getText());
 		
+		// client store
+		client.setCurrentUserId(idText.getText());
+		client.setCurrentUserPwd(pwdText.getText());
+		client.setDexterServer(serverText.getText());
+
 		super.okPressed();
 	}
 

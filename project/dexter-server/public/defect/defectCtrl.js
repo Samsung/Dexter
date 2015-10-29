@@ -2,14 +2,14 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
     "use strict";
 
     var init = function() {
-        $scope.isHideFileTree = true;
-        $scope.isHideLoginBtn = true;
-        $scope.isHidedDetailTab = false;
-        $scope.isHidedToButton = true;
+        $scope.isFileTreeHidden = true;
+        $scope.isLoginBtnHidden = true;
+        $scope.isDetailTabHidden = false;
+        $scope.isButtonHidden = true;
         $scope.isAdminUser = false;
         $scope.isCurrentLoginId = false;
 
-        $scope.isHideFileTreeBtnTitle = 'Show File Tree';
+        $scope.isFileTreeBtnTitleHidden = 'Show File Tree';
 
         $('#animatiroonTab').css('display', 'none');
         $('#animationTab').css('left', document.body.clientWidth);
@@ -43,9 +43,10 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
         $scope.currentFileList = [];
 
         $scope.totalServerItems = 0;
+        $scope.projectName = "";
 
         initLocalStorage();
-        getProjectNameForDefect();
+        getProjectName();
         checkLogin();
     };
 
@@ -70,11 +71,12 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
         window.localStorage['currentPage'] = parseInt(window.localStorage['currentPage']) || 1;
     };
 
-    function getProjectNameForDefect() {
+    function getProjectName() {
         $http.get('/api/v1/projectName', {
         }).then(function (result) {
             if (result && result.data) {
-                var html = 'Defect : ' + result.data.result;
+                var html = 'Defect : ' + result.data.projectName;
+                $scope.projectName = result.data.projectName;
                 $('#indexTitle').html(html);
             }
         }, function (results) {
@@ -139,7 +141,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
                 }
             }
         }, function (results) {
-            console.log('Error: ' + results.data + '; ' + results.status);
+            $log.error('Error: ' + results.data + '; ' + results.status);
         });
     };
 
@@ -149,12 +151,12 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
         loadTreeItemFromDB('fileName','file');
     };
 
-    $scope.isHideFileTree = true;
-    $scope.isHideLoginBtn = true;
+    $scope.isFileTreeHidden = true;
+    $scope.isLoginBtnHidden = true;
     $('#animatiroonTab').css('display','none');
     $('#animationTab').css('left', document.body.clientWidth);
 
-    $scope.isHideFileTreeBtnTitle = 'Show File Tree';
+    $scope.isFileTreeBtnTitleHidden = 'Show File Tree';
     $scope.isHideLoginBtnTitle = 'Login';
 
 
@@ -185,7 +187,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
             $('#adminBtn').css({display : 'none'});
         }
         $scope.isCurrentLoginId = true;
-        $scope.isHideLoginBtn = true;
+        $scope.isLoginBtnHidden = true;
         $scope.currentLoginId = results.userId;
         $scope.isHideLoginBtnTitle = $scope.currentLoginId + "/ logout";
 
@@ -216,7 +218,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
             });
         }
         else {
-            $scope.isHideLoginBtn = true;
+            $scope.isLoginBtnHidden = true;
             alert("Do you really want to logout on Dexter Web?");
             $scope.isHideLoginBtnTitle = 'Login';
             logout();
@@ -246,7 +248,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
 
     $scope.$watch( 'currentUserId', function(newVal, oldVal){
         if(oldVal == 'undefined'){
-            $scope.isHideLoginBtn = false;
+            $scope.isLoginBtnHidden = false;
         }
         if(newVal !== oldVal) {
             $scope.isCurrentLoginId = true;
@@ -294,23 +296,23 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
     }
 
     function toggleShowFileTreeBtn(isShowState){
-        $scope.isHideFileTree = isShowState;
-        $scope.isHideFileTreeBtnTitle = ((isShowState === true) ? 'Show File Tree' : 'Hide File Tree');
+        $scope.isFileTreeHidden = isShowState;
+        $scope.isFileTreeBtnTitleHidden = ((isShowState === true) ? 'Show File Tree' : 'Hide File Tree');
     }
 
     $scope.loadCurrentFileTree = function(btnID) {
         if (btnID !== 'showFileTreeBtn'){
             return ;
         }
-        if ($scope.isHideFileTree === true) {
+        if ($scope.isFileTreeHidden === true) {
             loadTreeItem();
         }
-        toggleFileTreeAnimation(!($scope.isHideFileTree));
-        toggleShowFileTreeBtn(!($scope.isHideFileTree));
+        toggleFileTreeAnimation(!$scope.isFileTreeHidden);
+        toggleShowFileTreeBtn(!$scope.isFileTreeHidden);
     };
 
-    $scope.isHidedDetailTab = false;
-    $scope.isHidedToButton = true;
+    $scope.isDetailTabHidden = false;
+    $scope.isButtonHidden = true;
     $scope.didList = [];
 
     //only administrator
@@ -341,7 +343,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
             showDefects();
         }, function (results) {
             // error
-            console.log('Error: ' + results.data + ';'  + results.status);
+            $log.error('Error: ' + results.data + ';'  + results.status);
             var str = 'An unexpected error has occurred, It is not changed status of defects. ';
             angular.element('#showDefectAlert').html(showDefectAlertMSG(str,'error'));
             setTimeout(hideDefectAlertMSG, 5000);
@@ -366,14 +368,14 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
             showDefects();
         }, function (results) {
             // error
-            console.log("Error: " + results.data + "; " + results.status);
+            $log.error("Error: " + results.data + "; " + results.status);
             var str = "An unexpected error has occurred, It isn't changed status of defects. ";
             angular.element('#showDefectAlert').html(showDefectAlertMSG(str,'error'));
             setTimeout(hideDefectAlertMSG, 5000);
         });
     };
 
-    $scope.markDefectStatusByjQuery = function(state){
+    var markDefectStatusByjQuery = function(state){
         $scope.didList = [];
         $scope.didList[0] = $scope.currentDetailDid ;
         $scope.changeDefectStatus(state);
@@ -382,7 +384,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
 
     $scope.markDefectStatusByAngular = function(state) {
         if($scope.defectSelections.length == 0){
-            console.log("need to select items");
+            $log.info("need to select items");
             return ;
         }
         $scope.didList = [];
@@ -402,7 +404,6 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
         $scope.fileList = [];
         if(window.localStorage['fileName'] != '') {
             if (confirm("Did you remove [" + window.localStorage['modulePath'] + "/" + window.localStorage['fileName'] + " ] file in workspace?")){
-                //console.log(window.localStorage['modulePath'], window.localStorage['fileName']);
                 $scope.fileList = window.localStorage['fileName'].split(' ');
                 $http.post("/api/v1/filter/delete-file-tree", {
                     params: {
@@ -410,7 +411,6 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
                         fileList : $scope.fileList
                     }
                 }).then(function(results){
-                    //console.log(results);
                     $scope.loadCurrentFileTree('removeFileTreeBtn');
                     removeLocalStorageOfResources();
 
@@ -569,7 +569,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
         else {
 			showDefectPage();
         }
-    };
+    }
 
 	function showDefectPage() {
 		var defectParams = {
@@ -583,7 +583,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
                 'currentPage': $scope.pagingOptions.currentPage,
                 'pageSize': $scope.pagingOptions.pageSize
             };
-		
+
 		$http.get('/api/v1/defect/count', {
             params: defectParams
         }).then(function (results) { // success
@@ -690,7 +690,6 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
         if($scope.totalServerItems === 0){
             return ;
         }
-        //setTimeout(hideAlertLoading, 20);
         $scope.selectDefectRow();
     });
 
@@ -720,7 +719,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
         if($scope.defectSelections.length === 0){
             window.localStorage['defectSelections'] = '';
             $scope.selectedDidListInGrid = [];
-            $scope.isHidedDetailTab = true;
+            $scope.isDetailTabHidden = true;
             initCurrentState();
             return ;
         }
@@ -751,8 +750,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
         $scope.defectDescriptions = [];
     }
 
-    $scope.storeCurrentDefectInfo = function(did){
-        // select did from defectList
+    var storeCurrentDefectInfo = function(did){
         for(var q=0; q<$scope.defectList.length; q++) {
             if ($scope.defectList[q].did == did) {
                 var currentDefect = $scope.defectList[q];
@@ -772,13 +770,13 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
         }
     };
 
-    $scope.hideDetailTab =  function(){
-        ($scope.isHidedDetailTab == true) && ($scope.isHidedDetailTab = false);
-        ($scope.isHidedToButton == true) && ($scope.isHidedToButton = false) ;
+    var hideDetailTab =  function(){
+        ($scope.isDetailTabHidden == true) && ($scope.isDetailTabHidden = false);
+        ($scope.isButtonHidden == true) && ($scope.isButtonHidden = false) ;
     };
 
 
-    $scope.createHelpHtmlURL = function(selectedDefect){
+    var createHelpHtmlURL = function(selectedDefect){
         if (selectedDefect.hasOwnProperty('checkerCode')) {
             $scope.checkerCodeSet[selectedDefect.checkerCode] = '/tool/'
                 + selectedDefect.toolName + "/"
@@ -787,9 +785,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
         }
     };
 
-
-
-    $scope.getHelpDescription = function(selectedDefect, checkerCode){
+    var getHelpDescription = function(selectedDefect, checkerCode){
         if ($scope.selectedDefect.checkerCode == checkerCode) {
             $http.get($scope.checkerCodeSet[checkerCode], {"checkerCode": checkerCode})
                 .then(function (results) {
@@ -815,63 +811,91 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
         $scope.currentDetailDescription = $scope.defectDescriptions[0].description;
     };
 
-
-    $scope.getDefectOccurrenceInFile= function(selectedDefect, did) {
-    //check did in selectedList
+    var getDefectOccurrenceInFile= function(selectedDefect, did) {
         if (selectedDefect.did == did) {
             $scope.selectedDefectModulePath = (selectedDefect.modulePath) || "undefined";
-            $http.get("/api/v1/occurenceInFile", {
-                params: {
-                    'modulePath': base64.encode($scope.selectedDefectModulePath),
-                    'fileName': selectedDefect.fileName
-                }
-            }).then(function (results) {
-                $scope.defectOccurrences[results.config.params.fileName] = (results.data) || 'undefined';
-            });
+
             var snapshotId = 'undefined';
             if ($routeParams.snapshotId !== undefined) {
                 snapshotId = $routeParams.snapshotId;
+                getSnapshotOccurenceInFile(selectedDefect, snapshotId);
             }
-                $http.get("/api/v1/analysis/snapshot/checkSourceCode", {
-                    params: {
-                        'modulePath': base64.encode($scope.selectedDefectModulePath),
-                        'fileName': selectedDefect.fileName,
-                    }
-                }).then(function (results) {
-                    if (results) {
-                        var getCodeMsg = " : Please wait until loading source code";
-                        var msg = "<pre class='prettyprint linenums'>" + getCodeMsg + "</pre>";
-                        angular.element('#SourceCodeTab').html(msg);
+            else {
+                getOccurenceInFile(selectedDefect);
 
-                        if (results.data[0].count > 0) {
-                            $http.get("/api/v1/analysis/snapshot/source", {
-                                    params: {
-                                        'modulePath': base64.encode($scope.selectedDefectModulePath),
-                                        'fileName': selectedDefect.fileName,
-                                        'snapshotId': snapshotId
-                                    }
-                                }
-                            ).then(function (results) {
-                                    if (results) {
-                                        $scope.defectSourceCodes.splice($scope.defectSourceCodes.length, 0, {
-                                            'source': results.data,
-                                            'fileName': results.config.params.fileName,
-                                            'modulePath': base64.decode(results.config.params.modulePath)
-                                        });
-                                        $scope.getSourceCode();
-                                    }
-                                }, function () {
-                                });
-                        }
-                        else if (results.data[0].count == 0) {
-                            var noCodeMsg = "There is no content for source codes. When you use snapshot or CLI, you can see the source codes.";
-                            var ht = "<pre class='prettyprint linenums'>" + noCodeMsg + "</pre>";
-                            angular.element('#SourceCodeTab').html(ht);
-                        }
-                    }
-                });
             }
-        //}
+            checkSourceCode(selectedDefect, snapshotId);
+        }
+    };
+
+    var getSnapshotOccurenceInFile = function(selectedDefect, snapshotId){
+        $http.get("/api/v1/snapshot/occurenceInFile", {
+            params: {
+                'modulePath': base64.encode($scope.selectedDefectModulePath),
+                'fileName': selectedDefect.fileName,
+                'snapshotId' : snapshotId
+            }
+        }).then(function (results) {
+            $scope.defectOccurrences[results.config.params.fileName] = (results.data) || 'undefined';
+        });
+    };
+
+    var getOccurenceInFile = function(selectedDefect){
+        $http.get("/api/v1/occurenceInFile", {
+            params: {
+                'modulePath': base64.encode($scope.selectedDefectModulePath),
+                'fileName': selectedDefect.fileName
+            }
+        }).then(function (results) {
+            $scope.defectOccurrences[results.config.params.fileName] = (results.data) || 'undefined';
+        });
+    };
+
+    var checkSourceCode = function(selectedDefect, snapshotId){
+        $http.get("/api/v1/analysis/snapshot/checkSourceCode", {
+            params: {
+                'modulePath': base64.encode($scope.selectedDefectModulePath),
+                'fileName': selectedDefect.fileName
+            }
+        }).then(function (results) {
+            if (results) {
+                var getCodeMsg = " : Please wait until loading source code";
+                var msg = "<pre class='prettyprint linenums'>" + getCodeMsg + "</pre>";
+                angular.element('#SourceCodeTab').html(msg);
+
+                if (results.data[0].count > 0) {
+                    loadSnapshotSourceCode(selectedDefect, snapshotId);
+                } else if (results.data[0].count == 0) {
+                    setDefaultMsg();
+                }
+            }
+        });
+    };
+
+    var loadSnapshotSourceCode = function(selectedDefect, snapshotId){
+        $http.get("/api/v1/analysis/snapshot/source", {
+                params: {
+                    'modulePath': base64.encode($scope.selectedDefectModulePath),
+                    'fileName': selectedDefect.fileName,
+                    'snapshotId': snapshotId
+                }
+            }
+        ).then(function (results) {
+                if (results) {
+                    $scope.defectSourceCodes.splice($scope.defectSourceCodes.length, 0, {
+                        'source': results.data,
+                        'fileName': results.config.params.fileName,
+                        'modulePath': base64.decode(results.config.params.modulePath)
+                    });
+                    displaySourceCode();
+                }
+            });
+    };
+
+    var setDefaultMsg = function(){
+        var noCodeMsg = "There is no content for source codes. When you use snapshot or CLI, you can see the source codes.";
+        var ht = "<pre class='prettyprint linenums'>" + noCodeMsg + "</pre>";
+        angular.element('#SourceCodeTab').html(ht);
     };
 
 
@@ -879,28 +903,29 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
         $("#bookmark").remove();
         // for defect Description
         $scope.checkerCodeSet = {};
-        $scope.hideDetailTab();
-        $scope.storeCurrentDefectInfo(did);
-        //for (var index in $scope.defectSelections) {
+        hideDetailTab();
+        storeCurrentDefectInfo(did);
         var len = $scope.defectSelections.length;
         $scope.selectedDefect = $scope.defectSelections[len-1];
-        $scope.createHelpHtmlURL($scope.selectedDefect);
-        $scope.getHelpDescription($scope.selectedDefect, checkerCode);
-        $scope.getDefectOccurrenceInFile($scope.selectedDefect, did);
-        //}
+        createHelpHtmlURL($scope.selectedDefect);
+        getHelpDescription($scope.selectedDefect, checkerCode);
+        getDefectOccurrenceInFile($scope.selectedDefect, did);
     };
 
     $(document).on('click','#markFalseDefectSelectedItem', function(){
-        $scope.markDefectStatusByjQuery('markFalseDefect');
+        markDefectStatusByjQuery('markFalseDefect');
     });
     $(document).on('click','#markDefectSelectedItem', function(){
-        $scope.markDefectStatusByjQuery('markDefect');
+        markDefectStatusByjQuery('markDefect');
     });
     $(document).on('click','#SourceTab', function(){
         moveTopOfPage();
     });
 
     var checkOccurrenceLine = function(currentStartLine, k){
+        $scope.commentIndex1 = [];
+        $scope.commentIndex2 = [];
+
         $scope.commentIndex1[k] = (currentStartLine) / 10;
         $scope.commentIndex2[k] = ((currentStartLine) % 10) -1;
 
@@ -911,14 +936,12 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
         }
     };
 
-    $scope.addDefectComment = function(){
+    var addDefectComment = function(){
         var comment = {};
-        $scope.commentIndex1 = [];
-        $scope.commentIndex2 = [];
         $scope.cntK = [];
 
         for(var k=0 ; k<$scope.defectOccurrences[$scope.currentDetailFileName].length; k++) {
-            var curDefectOccurrenceInFile=$scope.defectOccurrences[$scope.currentDetailFileName][k];
+            var curDefectOccurrenceInFile = $scope.defectOccurrences[$scope.currentDetailFileName][k];
             $scope.cntK[k] = k + 1;
             var currentStartLine= curDefectOccurrenceInFile.startLine;
             var currentSourceMSG = curDefectOccurrenceInFile.message;
@@ -943,19 +966,12 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
                 var falseBtn = $('.falseDefectDummy').clone(true);
                 falseBtn.removeClass('falseDefectDummy').attr('id','markFalseDefectSelectedItem');
 
-                comment[k] = "<div id='bookmark' class='anchor'>" + moveTopOfPageBtn[0].outerHTML + ' / ' + defectBtn[0].outerHTML + ' / ' + falseBtn[0].outerHTML ;
-                comment[k] = comment[k] +  "<span class='nocode annotCheck' style='display:inline-block' width:100%><span class='glyphicon glyphicon-star'></span>" +
-                    "&nbsp;DID: <strong>" + curDefectOccurrenceInFile.did+"</strong>&nbsp;(" +
-                    $scope.cntK[k] + " of " + $scope.defectOccurrences[$scope.currentDetailFileName].length +
-                    ")&nbsp;" + "<strong>[" + curDefectOccurrenceInFile.severityCode +" /</strong> Checker: <strong>" +
-                    curDefectOccurrenceInFile.checkerCode + "]</strong><br>: &nbsp;" + currentSourceMSG + "&nbsp;</span></div>";
+                comment[k] = "<div id='bookmark' class='anchor'>" + moveTopOfPageBtn[0].outerHTML ;
+                comment[k] += " / " + defectBtn[0].outerHTML + " / " + falseBtn[0].outerHTML ;
+                comment[k] +=  setCurrentDefectComment(k, curDefectOccurrenceInFile, currentSourceMSG);
             }
             else{
-                comment[k] = "<div><span class='nocode annot' style='display:inline-block' width:100%>"
-                    + "<span class='glyphicon glyphicon-star-empty'></span>&nbsp;DID: <strong>" + curDefectOccurrenceInFile.did+"</strong>&nbsp;("
-                    + $scope.cntK[k] + " of " + $scope.defectOccurrences[$scope.currentDetailFileName].length
-                    + ")&nbsp;" + "<strong>[" + curDefectOccurrenceInFile.severityCode +" /</strong> Checker: <strong>"
-                    + curDefectOccurrenceInFile.checkerCode + "]</strong><br>: &nbsp;" + currentSourceMSG + "&nbsp;</span></div>";
+                comment[k] = setReferenceDefectComment(k, curDefectOccurrenceInFile, currentSourceMSG);
             }
             checkOccurrenceLine(currentStartLine, k);
             $("#SourceCodeTab .L" + $scope.commentIndex2[k]).each(function (index) {
@@ -967,37 +983,50 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
         }
     };
 
-    $scope.getSourceCode = function(){
+    var setCurrentDefectComment = function(index, curDefectOccurrenceInFile, currentSourceMSG){
+        var comment = "<span class='nocode annotCheck' style='display:inline-block' width:100%><span class='glyphicon glyphicon-star'></span>" +
+            "&nbsp;DID: <strong>" + curDefectOccurrenceInFile.did+"</strong>&nbsp;(" +
+            $scope.cntK[index] + " of " + $scope.defectOccurrences[$scope.currentDetailFileName].length +
+            ")&nbsp;" + "<strong>[" + curDefectOccurrenceInFile.severityCode +" /</strong> Checker: <strong>" +
+            curDefectOccurrenceInFile.checkerCode + "]</strong><br>: &nbsp;" + currentSourceMSG + "&nbsp;</span></div>";
+        return comment;
+    };
+
+    var setReferenceDefectComment = function (index, curDefectOccurrenceInFile, currentSourceMSG){
+        var comment = "<div><span class='nocode annot' style='display:inline-block' width:100%>"
+            + "<span class='glyphicon glyphicon-star-empty'></span>&nbsp;DID: <strong>" + curDefectOccurrenceInFile.did+"</strong>&nbsp;("
+            + $scope.cntK[index] + " of " + $scope.defectOccurrences[$scope.currentDetailFileName].length
+            + ")&nbsp;" + "<strong>[" + curDefectOccurrenceInFile.severityCode +" /</strong> Checker: <strong>"
+            + curDefectOccurrenceInFile.checkerCode + "]</strong><br>: &nbsp;" + currentSourceMSG + "&nbsp;</span></div>";
+
+        return comment;
+    };
+
+    var displaySourceCode = function(){
         var ht = {};
 
         for(var j = 0; j < $scope.defectSourceCodes.length; j++) {
             var sourceCode = $scope.defectSourceCodes[j];
-            if (sourceCode.modulePath == $scope.currentDetailModulePath && sourceCode.fileName == $scope.currentDetailFileName)  {
+            if (sourceCode.modulePath == $scope.currentDetailModulePath &&
+                sourceCode.fileName == $scope.currentDetailFileName)  {
                 $scope.src = sourceCode.source.replace(/</g, "&lt;").replace(/>/g, "&gt;");
                 ht = "<pre class='prettyprint linenums'>" + $scope.src + "</pre>";
                 angular.element('#SourceCodeTab').html(ht);
                 prettyPrint();
             }
         }
-        $scope.addDefectComment();
+        addDefectComment();
     };
 
     $scope.currentDefectList = [];
-
-    function uncomma(str) {
-        str = String(str);
-        return "" + str.replace(/,/g, '. ');
-    }
 
     var setExportFileFormat = function(format, results){
         switch(format){
             case 'defect':
                 for(var i =0 ; i < results.length ; i++){
-
                     if(i == 0){
                         $scope.csvContent = $scope.csvContent + 'Did,Checker,Count,Line No,Severity,Status, Module,File,Class,Method/Function,Language,Tool,Author,Date' + '\n' ;
                     }
-                    results[i].className = uncomma(results[i].className);
                     $scope.currentDefectList[i] = results[i].did + ',' +  results[i].checkerCode + ',' + results[i].occurenceCount + ','+ results[i].occurenceLine + ','
                         + results[i].severityCode + ',' + results[i].statusCode + ',' + results[i].modulePath + ',' + results[i].fileName + ',' + results[i].className + ','
                         + results[i].methodName + ','+ results[i].language + ','+ results[i].toolName +','+results[i].creatorId + ','+ results[i].modifiedDateTime ;
@@ -1009,7 +1038,6 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
                     if(i == 0){
                         $scope.csvContent = $scope.csvContent + 'Did,Checker,Count,Line No,Severity,Snapshot Status,Current Status,Module,File,Class,Method/Function,Language,Tool,Author,Date' + '\n' ;
                     }
-                    results[i].className = uncomma(results[i].className);
                     $scope.currentDefectList[i] = results[i].did + ',' +  results[i].checkerCode + ',' + results[i].occurenceCount + ','+ results[i].occurenceLine + ','
                         + results[i].severityCode + ',' + results[i].statusCode + ',' + results[i].currentStatusCode + ','+ results[i].modulePath + ',' + results[i].fileName + ',' + results[i].className + ','
                         + results[i].methodName + ','+ results[i].language + ','+ results[i].toolName +','+ results[i].creatorId + ','+ results[i].createdDateTime ;
@@ -1017,40 +1045,23 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
                 }
                 break;
         }
-
     };
 
-    // This must be a hyperlink
-    $(".exportDefect").on('click', function (event) {
-        // Data URI
+    $(".exportDefect").on('click', function () {
         $scope.csvContent = "data:text/csv;charset=utf-8,";
         var format = 'defect';
         if ($routeParams.snapshotId !== undefined) {
-            var format = 'snapshot';
-
+            format = 'snapshot';
         }
         setExportFileFormat(format, $scope.defectList);
         exportExcelFile.apply(this, [$scope.csvContent, 'export.csv']);
     });
 
-    $scope.exportFileTreeToCSV = function(){
-
-        // Data URI
-        $scope.csvContent = "data:text/csv;charset=utf-8,";
-        var format = 'defect';
-        if ($routeParams.snapshotId !== undefined) {
-            var format = 'snapshot';
-
-        }
-        setExportFileFormat(format, $scope.defectList);
-        exportExcelFile();
-    };
-
     var exportExcelFile = function (){
         var encodedUri = encodeURI($scope.csvContent);
         $(this)
             .attr({
-                'download': 'Dexter-data.csv',
+                'download': $scope.projectName +'_defectList.csv',
                 'href': encodedUri,
                 'target': '_blank'
             });

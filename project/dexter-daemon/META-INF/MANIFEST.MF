@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dexter-daemon
 Bundle-SymbolicName: dexter-daemon;singleton:=true
-Bundle-Version: 0.9.0
+Bundle-Version: 0.9.1
 Bundle-Activator: com.samsung.sec.dexter.daemon.DexterDaemonActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
@@ -14,11 +14,14 @@ Require-Bundle: org.eclipse.core.runtime,
  dexter-eclipse-ui,
  dexter-executor,
  dexter-metrics,
- dexter-cppcheck
+ dexter-cppcheck,
+ dexter-opensource,
+ dexter-vd-cpp
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .,
  lib/guava-16.0.1.jar,
  lib/gson-2.2.4.jar,
- lib/commons-io-2.4.jar
+ lib/commons-io-2.4.jar,
+ lib/log4j-1.2.17.jar
 Bundle-Vendor: Samsung Electronics VD SE Lab

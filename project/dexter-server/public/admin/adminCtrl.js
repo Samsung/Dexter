@@ -1,21 +1,23 @@
 adminApp.controller('AdminCtrl', function($scope, $http, $log){
 
     var init = function(){
+        $scope.isDetailTabHidden = true;
+        $scope.totalAccountNumber = 0;
+
+        window.localStorage['adminPageSize'] = (window.localStorage['adminPageSize']) || 10;
+        window.localStorage['adminCurrentPage'] = parseInt(window.localStorage['adminCurrentPage']) || 1;
+        $scope.projectName = "";
+
         $http.get('/api/v1/projectName', {
         }).then(function (result) {
-            if( result && result.data){
-                var html = 'Configuration on Dexter Web: ' +result.data.result;
+            if( result && result.daa){
+                var html = 'Configuration on Dexter Web: ' +result.data.projectName;
+                $scope.projectName = result.data.projectName;
                 $('#indexAdminTitle').html(html);
             }
         }, function (results) {
             $log.error(results);
         });
-
-        $scope.isHidedDetailTab = true;
-        $scope.totalAdminServerItems = 0;
-
-        window.localStorage['adminPageSize'] = (window.localStorage['adminPageSize']) || 10;
-        window.localStorage['adminCurrentPage'] = parseInt(window.localStorage['adminCurrentPage']) || 1;
     };
 
     init();
@@ -37,16 +39,15 @@ adminApp.controller('AdminCtrl', function($scope, $http, $log){
         $scope.createAdminYn = document.getElementsByClassName('btn createAdminBtn active')[0];
 
         $scope.addUserId = $scope.accountObj[0].value;
-        var RegID = $scope.checkIDReg($scope.addUserId);
+        var userId = $scope.checkIDReg($scope.addUserId);
 
 
 
         var addPW = $scope.accountObj[1].value;
         var addPWConfirm = $scope.accountObj[2].value;
 
-        if(!(RegID)){
-            alert('Please check the Id : ');
-            console.log('RegId : ' + RegID);
+        if(!userId){
+            alert('Please check the Id : ' + userId);
             return ;
         }
 
@@ -85,11 +86,10 @@ adminApp.controller('AdminCtrl', function($scope, $http, $log){
         $scope.changePW = ($scope.accountObj[1].value == "") ? $scope.currentAccountPw : $scope.accountObj[1].value;
 
 
-        var RegID = $scope.checkIDReg($scope.changeUserId);
+        var userId = $scope.checkIDReg($scope.changeUserId);
 
-        if(!(RegID)){
-            alert('Please check the Id : ');
-            console.log('RegId : ' + RegID);
+        if(!userId){
+            alert('Please check the Id : '+ userId);
             return ;
         }
 
@@ -168,7 +168,7 @@ adminApp.controller('AdminCtrl', function($scope, $http, $log){
         }).then(function (results) {
             if (results && results.data) {
                 $scope.adminAccountList = results.data.accounts;
-                $scope.totalAdminServerItems = results.data.accounts.length;
+                $scope.totalAccountNumber = results.data.accounts.length;
             }
             else {
                 $log.error('fail');
@@ -210,7 +210,7 @@ adminApp.controller('AdminCtrl', function($scope, $http, $log){
 
     $scope.$watch('adminPagingOptions', function(newVal, oldVal){
         if(newVal !== oldVal) {
-            $scope.newAdminCurrentPage = parseInt( $scope.totalAdminServerItems / parseInt($scope.adminPagingOptions.pageSize) ) +1;
+            $scope.newAdminCurrentPage = parseInt( $scope.totalAccountNumber / parseInt($scope.adminPagingOptions.pageSize) ) +1;
             if($scope.adminPagingOptions.currentPage > $scope.newAdminCurrentPage){
                 $scope.adminPagingOptions.currentPage = $scope.newAdminCurrentPage;
             }
@@ -233,7 +233,7 @@ adminApp.controller('AdminCtrl', function($scope, $http, $log){
         enableColumnResize: true,
         enableColumnReordering: true,
         enableRowReordering: true,
-        totalAdminServerItems: 'totalAdminServerItems',
+        totalServerItems: 'totalAccountNumber',
         pagingOptions: $scope.adminPagingOptions,
         filterOptions: $scope.adminFilterOptions,
         headerRowHeight: 28,
@@ -306,7 +306,7 @@ adminApp.controller('AdminCtrl', function($scope, $http, $log){
         var encodedUri = encodeURI($scope.csvContent);
         $(this)
             .attr({
-                'download': 'Dexter-Account-List.csv',
+                'download': $scope.projectName +'_account.csv',
                 'href': encodedUri,
                 'target': '_blank'
             });

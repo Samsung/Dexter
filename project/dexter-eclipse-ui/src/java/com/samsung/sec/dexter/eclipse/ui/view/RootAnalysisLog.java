@@ -37,6 +37,7 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
+import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.defect.Defect;
@@ -53,6 +54,8 @@ public class RootAnalysisLog {
     	final String resultPath = dexterHome + "/" + DexterConfig.RESULT_FOLDER_NAME;
     	
     	final File resultDir = new File(resultPath);
+    	resultDir.setReadable(true);
+    	resultDir.setWritable(true);
     	
     	if(resultDir.isDirectory() == false || resultDir.exists() == false){
     		return;
@@ -66,14 +69,16 @@ public class RootAnalysisLog {
     	
     	final String resultOldPath = dexterHome + "/" + DexterConfig.RESULT_FOLDER_NAME + "/" + DexterConfig.OLD_FOLDER_NAME;
     	final File resultOldDir = new File(resultOldPath);
+    	resultOldDir.setReadable(true);
+    	resultOldDir.setWritable(true);
     	
     	if(resultOldDir.isDirectory() == false || resultOldDir.exists() == false){
     		return;
     	}
     	
-    	for(final File sub : resultOldDir.listFiles()){
-    		if(sub.isFile()){
-    			addAnalysisLogFromFile(sub);
+    	for(final File subFile : resultOldDir.listFiles()){
+    		if(subFile.isFile()){
+    			addAnalysisLogFromFile(subFile);
     		}
     	}
     }
@@ -83,8 +88,9 @@ public class RootAnalysisLog {
 	 */
     @SuppressWarnings("unchecked")
     private void addAnalysisLogFromFile(File file) {
-    	final String ext = Files.getFileExtension(file.toString()).toLowerCase();
-    	if(!ResultFileConstant.RESULT_FILE_EXTENSION.equals(ext) || file.length() <=0 ){
+    	final String ext = "." + Files.getFileExtension(file.toString()).toLowerCase();
+    	
+    	if(!(ResultFileConstant.RESULT_FILE_EXTENSION.equals(ext)) || file.length() <=0 ){
     		return;
     	}
     	
@@ -101,15 +107,15 @@ public class RootAnalysisLog {
 	        	final List<LinkedTreeMap> defectList = (List<LinkedTreeMap>) map.get(ResultFileConstant.DEFECT_LIST);
 	        	
 	        	long datetime = -1;
-	        	final AnalysisLog log = new AnalysisLog();
-	        	log.setFileName((String) map.get(ResultFileConstant.FILE_NAME));
-	        	log.setFileFullPath((String) map.get(ResultFileConstant.FULL_FILE_PATH));
-	        	log.setDefectCount(Integer.parseInt((String)map.get(ResultFileConstant.DEFECT_COUNT)));
+	        	final AnalysisLog resultLog = new AnalysisLog();
+	        	resultLog.setFileName((String) map.get(ResultFileConstant.FILE_NAME));
+	        	resultLog.setFileFullPath((String) map.get(ResultFileConstant.FULL_FILE_PATH));
+	        	resultLog.setDefectCount(Integer.parseInt((String)map.get(ResultFileConstant.DEFECT_COUNT)));
 	        	
 	        	final String fileStr = file.toString();
 	        	final int sp = fileStr.lastIndexOf("_") + 1;
 	        	final int ep = fileStr.lastIndexOf(".");
-	        	log.setCreatedTimeStr(fileStr.substring(sp, ep));
+	        	resultLog.setCreatedTimeStr(fileStr.substring(sp, ep));
 	        	
 	        	for(final LinkedTreeMap<String, Object> defectMap : defectList){
 	        		final Defect defect = Defect.fromMap(defectMap);
@@ -118,13 +124,13 @@ public class RootAnalysisLog {
 	        		if(datetime <= 0){
 	        			datetime = defect.getCreatedDateTime();
 	        		}
-	        		
-	        		log.addDefectLog(defect);
+	        		resultLog.addDefectLog(defect);
 	        		
 	        	}
 	        	
-	        	log.setCreatedTime(new Date(datetime));
-	        	addChild(log);
+	        	resultLog.setCreatedTime(new Date(datetime));
+	        	
+	        	addChild(resultLog);
 	        }
         } catch (IOException e) {
 	        DexterUIActivator.LOG.error(e.getMessage(), e);

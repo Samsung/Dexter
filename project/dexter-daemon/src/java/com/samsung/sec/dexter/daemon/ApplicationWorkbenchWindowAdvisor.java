@@ -25,7 +25,10 @@
 */
 package com.samsung.sec.dexter.daemon;
 
+import org.apache.log4j.Logger;
+
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executors;
@@ -63,14 +66,17 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
 import com.google.common.base.Strings;
+import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.job.DexterJobFacade;
 import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.core.util.IDexterClient;
+import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.daemon.p2.P2Util;
 import com.samsung.sec.dexter.eclipse.ui.login.LoginDialog;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
+	private final static Logger LOG = Logger.getLogger(ApplicationWorkbenchWindowAdvisor.class);
 	private IWorkbenchWindow window;
 	private TrayItem trayItem;
 	private Image trayImage;
@@ -90,6 +96,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		// after updating, previous dexter plug-ins should be deleted
 		// but it dosen't work, so we have to delete manually despite of performance issue of starting
 		deletePreviousDexterPlugins();
+		deletePreviousDexterFeatures();
 		
 		setWinConfigure(getWindowConfigurer());
 
@@ -153,10 +160,55 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	    }
     }
 
+	private void deletePreviousDexterFeatures() {
+		final File featureDir = new File("features");
+		final Map<String, File> tempFeatureList = new HashMap<String, File>();
+
+		for (File featureFile : featureDir.listFiles()) {
+			final String featureFileName = featureFile.getName();
+			if (featureFileName.startsWith("dexter")) {
+				deleteDexterFeatureIfHasOldOne(tempFeatureList, featureFile, featureFileName);
+			}
+		}
+	}
+	
+	
+	private void deleteDexterFeatureIfHasOldOne( final Map<String, File> tempFeatureList, File featureFile, final String featureFileName){
+		String pluginPrefixName = getPluginPrefixName(featureFileName);
+		if( pluginPrefixName == DexterConfig.NOT_FOUND_FOLDER_NAME ){
+			return ;
+		}
+		
+		File tempPluginFile = tempFeatureList.get(pluginPrefixName);
+		if (tempPluginFile == null){
+			tempFeatureList.put(pluginPrefixName, featureFile);
+		} else {
+			if (featureFile.lastModified() >= tempPluginFile.lastModified()){
+				tempFeatureList.remove(pluginPrefixName);
+				try {
+					DexterUtil.deleteDirectory(tempPluginFile);
+				} catch (IOException e) {
+					LOG.error(e.getMessage(), e);
+				}
+			} else {
+				try {
+					DexterUtil.deleteDirectory(featureFile);
+				} catch (IOException e) {
+					LOG.error(e.getMessage(), e);
+				}
+				
+			}
+		}
+	}
+	
 	private String getPluginPrefixName(final String fileName) {
 	    int index = fileName.indexOf("_");
-	    String fileNamePrefix = fileName.substring(0, index);
-	    return fileNamePrefix;
+	    if(index == -1){
+	    	return DexterConfig.NOT_FOUND_FOLDER_NAME;
+	    } else {
+	    	String fileNamePrefix = fileName.substring(0, index);
+	    	return fileNamePrefix;
+	    }
     }
 
 	/*
@@ -227,7 +279,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		//SubMonitor sub = SubMonitor.convert(monitor, "Checking for Dexter Daemon updates...", 200);
 		
         if(checkUpdateExistence(operation, monitor)){
-        	EclipseUtil.infoMessageBox("Dexter Daemon Update", "There is a new version of Dexter Daemon. It will be updated now");
+        	EclipseUtil.infoMessageBox("Dexter Daemon Update", "There is a new version of Dexter Daemon.\nIt will be updated now");
         	updateDexterPluginAndRestart(operation, monitor);
         	monitor.done();
         }
@@ -267,7 +319,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 			return;
 		}
 		
-		EclipseUtil.infoMessageBox("Dexter Daemon Update", "Update is successfully finished! Dexter Daemon will be terminated and executed again.");
+		EclipseUtil.infoMessageBox("Dexter Daemon Update", "Update is successfully finished!\nDexter Daemon will be terminated and executed again.");
 		//sub.done();
 		monitor.done();
 		PlatformUI.getWorkbench().restart();
