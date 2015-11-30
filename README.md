@@ -11,23 +11,22 @@ Dexter helps you to improve coding skills. Whenever you save a source file, Dext
 - [Dexter Introduction Video(4min)](https://youtu.be/86exIHcwi6c)
 - [Dexter Wiki (How to install/Use)](https://dexter.atlassian.net)
 
-## Downloads (ver. 0.9.0)
+## Downloads (ver. 0.9.1, 30. Nov. 2015)
 
 #### Eclipse Update Site
-- Win 32bit: http://dl.bintray.com/minho/dexter/32
-- Win 64bit: http://dl.bintray.com/minho/dexter/64
-- Max OS X version will be released soon
+- Win 32bit: https://dl.bintray.com/minho/dexter-eclipse-32/
+- Win 64bit: https://dl.bintray.com/minho/dexter-eclipse-64/
 
 #### Dexter Daemon for Source Insight
-- [Win 32bit](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-daemon_0.9.0_32.zip?version=1&modificationDate=1440775125180&api=v2)
-- [Win 64bit](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-daemon_0.9.0_64.zip?version=1&modificationDate=1441089654533&api=v2)
+- [Win 32bit](https://dexter.atlassian.net/wiki/download/attachments/6258722/dexter-daemon_0.9.1_32.zip?version=1&modificationDate=1447926835568&api=v2)
+- [Win 64bit](https://dexter.atlassian.net/wiki/download/attachments/6258722/dexter-daemon_0.9.1_64.zip?version=1&modificationDate=1447926835562&api=v2)
  
 #### Dexter CLI
-- [Win/Linux/Mac 32bit](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-cli_0.9.0_32.zip?version=2&modificationDate=1441087074302&api=v2)
-- [Win/Linux/Mac 64bit](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-cli_0.9.0_64.zip?version=1&modificationDate=1440774359720&api=v2)
+- [Win/Linux/Mac 32bit](https://dexter.atlassian.net/wiki/download/attachments/6258722/dexter-cli_0.9.1_32.zip?version=1&modificationDate=1447926835583&api=v2)
+- [Win/Linux/Mac 64bit](https://dexter.atlassian.net/wiki/download/attachments/6258722/dexter-cli_0.9.1_64.zip?version=1&modificationDate=1447926835575&api=v2)
 
 #### Dexter Server
-- [Win/Linux/Mac](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-server_0.9.0.zip?version=1&modificationDate=1441087361438&api=v2)
+- [Win/Linux/Mac](https://dexter.atlassian.net/wiki/download/attachments/6258722/dexter-server_v0.9.1.zip?version=1&modificationDate=1447927756340&api=v2)
  
 ## Supports
 - Eclipse IDE for Java language (Juno 4.2+)
