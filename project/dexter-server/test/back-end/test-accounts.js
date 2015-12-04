@@ -23,7 +23,6 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 var assert = require("assert");
 var should = require('should');
 var sinon = require('sinon');
@@ -193,7 +192,7 @@ describe('Test account.js', function() {
 		});
 	});
 
-	describe('For findById()', function() {
+	describe('search user info BY ID', function(){
 		it('Should success when DB result exists', function (done) {
 			databaseStub.restore();
 			databaseStub = sinon.stub(database, 'exec', function (sql, callback) {

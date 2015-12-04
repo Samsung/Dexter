@@ -23,7 +23,6 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 var assert = require("assert");
 var should = require('should');
 var sinon = require('sinon');
@@ -601,24 +600,22 @@ describe('Test analysis.js', function() {
 
 	describe('For deleteDefect()', function() {
 		// TODO check below test
-		/*
-		it('Should success in normal case', function (done) {
-			sinon.stub(logging, 'error');
-			sinon.stub(database, 'exec', function (sql, callback) {
-				callback(null, ['test']);
-			});
-			
-			req = {body:{modulePath:'testPath', fileName:'testFile'},
-				  currentUserId:'testId'};
-
-			analysis.deleteDefect(req, res);
-
-			assert.equal(result.status, 'ok');
-			res.send.calledOnce.should.be.true;
-			logging.error.called.should.be.false;
-			done();	
-		});
-		*/
+		//it('Should success in normal case', function (done) {
+		//	sinon.stub(logging, 'error');
+		//	sinon.stub(database, 'exec', function (sql, callback) {
+		//		callback(null, ['test']);
+		//	});
+		//
+		//	req = {body:{modulePath:'testPath', fileName:'testFile'},
+		//		  currentUserId:'testId'};
+        //
+		//	analysis.deleteDefect(req, res);
+        //
+		//	assert.equal(result.status, 'ok');
+		//	res.send.calledOnce.should.be.true;
+		//	logging.error.called.should.be.false;
+		//	done();
+		//});
 
 		it('Should fail when request parameters are invalid', function (done) {
 			sinon.stub(logging, 'error');
@@ -707,24 +704,22 @@ describe('Test analysis.js', function() {
 
 	describe('For changeDefectToDismiss()', function() {
 		// TODO check below test
-		/*
-		it('Should success in normal case', function (done) {
-			sinon.stub(logging, 'error');
-			var testResult = ['test'];
-			sinon.stub(database, 'exec', function (sql, callback) {
-				callback(null, testResult);
-			});
-			
-			req = {body:{params:{didList:[1,2,3]}}, currentUserId:'testId'};
-
-			analysis.changeDefectToDismiss(req, res);
-
-			assert.equal(result, testResult);
-			res.send.calledOnce.should.be.true;
-			logging.error.called.should.be.false;
-			done();
-		});
-		*/
+		//it('Should success in normal case', function (done) {
+		//	sinon.stub(logging, 'error');
+		//	var testResult = ['test'];
+		//	sinon.stub(database, 'exec', function (sql, callback) {
+		//		callback(null, testResult);
+		//	});
+		//
+		//	req = {body:{params:{didList:[1,2,3]}}, currentUserId:'testId'};
+        //
+		//	analysis.changeDefectToDismiss(req, res);
+        //
+		//	assert.equal(result, testResult);
+		//	res.send.calledOnce.should.be.true;
+		//	logging.error.called.should.be.false;
+		//	done();
+		//});
 
 		it('Should fail when request parameters are invalid', function (done) {
 			sinon.stub(logging, 'error');
@@ -742,65 +737,59 @@ describe('Test analysis.js', function() {
 			done();
 		});
 	});
-
 // TODO check below test
-/*
-	describe('For changeDefectToNew()', function() {
-		it('Should success in normal case', function (done) {
-			sinon.stub(logging, 'error');
-			var testResult = ['test'];
-			sinon.stub(database, 'exec', function (sql, callback) {
-				callback(null, testResult);
-			});
-			
-			req = {body:{params:{didList:[1,2,3]}}, currentUserId:'testId'};
-
-			analysis.changeDefectToNew(req, res);
-
-			assert.equal(result, testResult);
-			res.send.calledOnce.should.be.true;
-			logging.error.called.should.be.false;
-			done();
-		});
-
-		it('Should fail when request parameters are invalid', function (done) {
-			sinon.stub(logging, 'error');
-			var testResult = ['test'];
-			sinon.stub(database, 'exec', function (sql, callback) {
-				callback(null, testResult);
-			});
-			
-			req = {body:{}, currentUserId:'testId'};
-
-			analysis.changeDefectToNew(req, res);
-
-			assert.equal(result.status, 'fail');
-			res.send.calledOnce.should.be.true;
-			done();
-		});
-
-	});
-*/
-
+	//describe('For changeDefectToNew()', function() {
+	//	it('Should success in normal case', function (done) {
+	//		sinon.stub(logging, 'error');
+	//		var testResult = ['test'];
+	//		sinon.stub(database, 'exec', function (sql, callback) {
+	//			callback(null, testResult);
+	//		});
+	//
+	//		req = {body:{params:{didList:[1,2,3]}}, currentUserId:'testId'};
+    //
+	//		analysis.changeDefectToNew(req, res);
+    //
+	//		assert.equal(result, testResult);
+	//		res.send.calledOnce.should.be.true;
+	//		logging.error.called.should.be.false;
+	//		done();
+	//	});
+    //
+	//	it('Should fail when request parameters are invalid', function (done) {
+	//		sinon.stub(logging, 'error');
+	//		var testResult = ['test'];
+	//		sinon.stub(database, 'exec', function (sql, callback) {
+	//			callback(null, testResult);
+	//		});
+	//
+	//		req = {body:{}, currentUserId:'testId'};
+    //
+	//		analysis.changeDefectToNew(req, res);
+    //
+	//		assert.equal(result.status, 'fail');
+	//		res.send.calledOnce.should.be.true;
+	//		done();
+	//	});
+    //
+	//});
 	describe('For changeDefectToFix()', function() {
-		/*
-		it('Should success in normal case', function (done) {
-			sinon.stub(logging, 'error');
-			var testResult = ['test'];
-			sinon.stub(database, 'exec', function (sql, callback) {
-				callback(null, testResult);
-			});
-			
-			req = {body:{params:{didList:[1,2,3]}}, currentUserId:'testId'};
-
-			analysis.changeDefectToFix(req, res);
-
-			assert.equal(result, testResult);
-			res.send.calledOnce.should.be.true;
-			logging.error.called.should.be.false;
-			done();
-		});
-		*/
+		//it('Should success in normal case', function (done) {
+		//	sinon.stub(logging, 'error');
+		//	var testResult = ['test'];
+		//	sinon.stub(database, 'exec', function (sql, callback) {
+		//		callback(null, testResult);
+		//	});
+		//
+		//	req = {body:{params:{didList:[1,2,3]}}, currentUserId:'testId'};
+        //
+		//	analysis.changeDefectToFix(req, res);
+        //
+		//	assert.equal(result, testResult);
+		//	res.send.calledOnce.should.be.true;
+		//	logging.error.called.should.be.false;
+		//	done();
+		//});
 		it('Should fail when request parameters are invalid', function (done) {
 			sinon.stub(logging, 'error');
 			var testResult = ['test'];

@@ -31,6 +31,7 @@ var http = require('http');
 var database = require("./util/database");
 var util = require('./util/dexter-util');
 var log = require('./util/logging');
+var authUtil = require('./util/auth-util');
 
 var account = require("./routes/account");
 var analysis = require("./routes/analysis");
@@ -53,10 +54,7 @@ var _runOptions = {
     }
 };
 
-var auth = express.basicAuth(function(user, pass){
-    return account.checkAccount(user, pass);
-});
-
+var auth = authUtil.getBasicAuth;
 
 var noNeedAccessLogUriList = [
     '/api/isServerAlive',
@@ -181,7 +179,7 @@ function initRestAPI(){
     /***** URL to Handler Mapping *****/
     app.get('/api/v1/projectName', database.getProjectName);
     /* Managing Accounts */
-    app.get('/api/accounts/userId', auth,account.userId);
+    app.get('/api/accounts/userId', auth, account.userId);
     app.get('/api/accounts/checkWebLogin', auth, account.checkWebLogin);
     app.get('/api/accounts/logout',auth, account.logout);
     app.get('/api/accounts/accountCount', account.getAccountCount);

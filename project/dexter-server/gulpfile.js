@@ -27,19 +27,7 @@
 
 var gulp = require('gulp');
 var karma = require('karma').server;
-var concat = require('gulp-concat');
-var stripDebug = require('gulp-strip-debug');
-var uglify = require('gulp-uglify');
-var dUtil = require('./util/dexter-util.js');
 var mocha = require('gulp-mocha');
-
-gulp.task('combine-js', function(){
-   return gulp.src('public/**/*.js')
-       .pipe(stripDebug())
-       .pipe(uglify())
-//       .pipe(concat('all.js'))
-       .pipe(gulp.dest('dist'));
-});
 
 gulp.task('test-front-end', function(done){
     karma.start({
@@ -59,12 +47,22 @@ gulp.task('test-back-end', function(){
 gulp.task('test', ['test-back-end', 'test-front-end'], function(){
 });
 
-gulp.task('deploy', function(){
-    console.log('deploy...');
-});
-
 gulp.task('watch-test', function(){
     gulp.watch(['public/**/*.js', 'test/**'], ['test']);
+});
+
+
+var concat = require('gulp-concat');
+var stripDebug = require('gulp-strip-debug');
+var uglify = require('gulp-uglify');
+var dUtil = require('./util/dexter-util.js');
+
+gulp.task('combine-js', function(){
+    return gulp.src('public/**/*.js')
+        .pipe(stripDebug())
+        .pipe(uglify())
+//       .pipe(concat('all.js'))
+        .pipe(gulp.dest('dist'));
 });
 
 gulp.task('run', ['combine-js', 'test'], function(){
@@ -76,6 +74,10 @@ gulp.task('run', ['combine-js', 'test'], function(){
     ];
 
     dUtil.runNode(options, ".");
+});
+
+gulp.task('deploy', function(){
+    console.log('deploy...');
 });
 
 gulp.task('default', ['test', 'deploy'], function(){

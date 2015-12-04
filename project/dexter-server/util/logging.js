@@ -68,7 +68,8 @@ exports.init = function (serverName, port){
 
 log = function(message, type) {
     if(!logger){
-        console.log(">> logger is not ready : " + message);
+        console.log(">> logger is not ready !");
+        console.log(message);
         return;
     }
 

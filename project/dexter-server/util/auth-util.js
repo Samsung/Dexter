@@ -23,63 +23,9 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-var assert = require("assert");
-var should = require('should');
+var express = require('express');
+var account = require("../routes/account");
 
-var database = require('../../util/database');
-var logging = require('../../util/logging');
-/*
-describe('Check Rest', function() {
-	describe('#indexOf()', function() {
-		it('should return -1 when the value is not present', function() {
-			assert.equal(-1, [1,2,3].indexOf(5));
-			assert.equal(-1, [1,2,3].indexOf(0));
-		});
-	});
+exports.getBasicAuth = express.basicAuth(function(user, pass){
+    return account.checkAccount(user, pass);
 });
-
-describe('Check Util', function() {
-    var server;
-
-    before(function(){
-        logging.init(false);
-        database.init();
-    });
-
-    after(function(done){
-        done();
-    });
-
-    after(function(){
-
-    });
-
-    beforeEach(function(){
-
-    });
-
-    afterEach(function(){
-
-    });
-
-    describe('database test', function() {
-        it('Account table should be existed', function(done) {
-            var sql = 'select * from Account';
-            database.exec(sql, function (err, result){
-                should.not.exist(err);
-                should.exist(result);
-                done();
-            })
-        });
-
-        it('AccountTemp table should not be existed', function(done) {
-            var sql = 'select * from AccountTemp';
-            database.exec(sql, function (err, result){
-                should.not.exist(result);
-                should.exist(err);
-                done();
-            })
-        });
-    });
-});
-*/

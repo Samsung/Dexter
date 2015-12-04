@@ -7,18 +7,18 @@
   },
   "dependencies": {
     "express": "3.5.1",
-    "lodash": "^3.8.0",
-    "moment": "^2.5.1",
     "json-bigint": "^0.1.4",
     "line-reader": "^0.2.4",
+    "lodash": "^3.8.0",
+    "moment": "^2.5.1",
     "mysql": "^2.5.4",
-    "request": "^2.51.0",
-    "winston": "^0.8.3",
-    "underscore": "^1.8.3"
+    "request": "^2.67.0",
+    "underscore": "^1.8.3",
+    "winston": "^0.8.3"
   },
   "devDependencies": {
-    "chai": "^2.3.0",
-    "gulp":"*",
+    "chai": "^3.4.1",
+    "gulp": "*",
     "gulp-concat": "^2.5.2",
     "gulp-mocha": "^2.0.1",
     "gulp-strip-debug": "^1.0.2",
@@ -26,10 +26,13 @@
     "jade": "^1.8.2",
     "karma": "^0.12.31",
     "karma-chai": "^0.1.0",
-    "karma-chrome-launcher": "^0.1.2",
+    "karma-chrome-launcher": "^0.2.1",
+    "karma-firefox-launcher": "^0.1.7",
     "karma-jasmine": "^0.1.5",
     "karma-mocha": "^0.1.10",
     "mocha": "^2.1.0",
+    "proxyquire": "^1.7.3",
+    "request": "^2.67.0",
     "should": "^3.2.0",
     "sinon": "^1.14.1"
   }

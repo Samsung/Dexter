@@ -23,132 +23,164 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
+var chai = require('Chai');
 var assert = require("assert");
-var should = require('should');
+var should = chai.should;
+
 var request = require('request');
 var http = require('http');
 var sinon = require('sinon');
+
+var proxyquire = require('proxyquire');
 var server;
 
 describe('RESTful API Test Suite', function() {
-
     before(function(){
+        createAndRunDexterServer();
     });
+
+    function createAndRunDexterServer(){
+        process.env.PORT = 4982;
+
+        var databaseStub = createDatabaseStub();
+        var accountStub = createAccountStub();
+        var configStub = createConfigStub();
+        var logStub = createLogStub();
+        var authUtilStub = createAuthUtilStub();
+        var analysisStub = createAnalysisStub();
+
+        server = proxyquire('../../server', {
+            './util/database': databaseStub,
+            './routes/account': accountStub,
+            './routes/analysis': analysisStub,
+            './routes/config': configStub,
+            './util/logging': logStub,
+            './util/auth-util': authUtilStub
+        });
+    }
+
+    function createDatabaseStub(){
+        var databaseStub = sinon.stub();
+        databaseStub.init = function() { };
+        databaseStub.getConnection = function() { };
+
+        return databaseStub;
+    }
+
+    function createAccountStub(){
+        var accountStub = sinon.stub();
+        accountStub.init = function() { };
+        accountStub.getAccountCount = function(req, res){ res.send(200); };
+        accountStub.userId = function(req, res){ res.send(200); };
+        accountStub.checkWebLogin = function(req, res){ res.send(200); };
+        accountStub.logout = function(req, res){ res.send(200); };
+        accountStub.findAll = function(req, res){ res.send(200); };
+        accountStub.findById = function(req, res){ res.send(200); };
+        accountStub.hasAccount = function(req, res){ res.send(200); };
+        accountStub.checkLogin = function(req, res){ res.send(200); };
+        accountStub.checkAdmin = function(req, res){ res.send(200); };
+
+        accountStub.add = function(req, res){ res.send(200); };
+        accountStub.webAdd = function(req, res){ res.send(200); };
+        accountStub.update = function(req, res){ res.send(200); };
+        accountStub.webUpdate = function(req, res){ res.send(200); };
+
+        accountStub.remove = function(req, res){ res.send(200); };
+        accountStub.removeAll = function(req, res){ res.send(200); };
+
+        return accountStub;
+    }
+
+    function createConfigStub(){
+        var configStub = sinon.stub();
+        configStub.addAccessLog = function(req, res) { };
+
+        return configStub;
+    }
+
+    function createLogStub(){
+        var logStub = sinon.stub();
+        logStub.info = function(message){};
+        logStub.warn = function(message){};
+        logStub.error = function(message){};
+        logStub.debug = function(message){};
+
+        return logStub;
+    }
+
+    function createAuthUtilStub(){
+        var authUtilStub = sinon.stub();
+        var express = require('express');
+        authUtilStub.getBasicAuth = express.basicAuth(function(user, pass){
+            return true;
+        });
+
+        return authUtilStub;
+    }
+
+    function createAnalysisStub(){
+        var analysisStub = sinon.stub();
+        analysisStub.getProjectDefectStatus = function(req, res){ res.send(200); };
+        analysisStub.getFileDefectStatus = function(req, res){ res.send(200); };
+
+        return analysisStub;
+    }
 
     after(function(){
-    });
-
-    beforeEach(function(){
-        process.env.PORT = 4989;
-        server = require('../../server');
-    });
-
-    afterEach(function(){
-        var req = sinon.stub();
-        req.currentUserId = 'admin';
         server.forceStopServer();
     });
 
+    function checkGetMethodReturnValue(apiUrl, statusCode, done){
+        var url = 'http://userid:password@localhost:4982/' + apiUrl;
 
-    describe('For Accounts', function() {
-        it('GET / getProjectDefectStatus', function (done) {
-            request('http://localhost:4989/api/defect/status/project', function (err, res, body) {
-                var req = { query: { statusCode: 'FIX'} };
-                analysis = require('../../routes/analysis');
-                analysis.getProjectDefectStatus(req);
-                assert.equal(res.statusCode, 200);
-            });
-            done();
-        });
-
-        it('GET / getFileDefectStatus', function (done) {
-            request('http://localhost:4989/api/defect/status/fileName', function (err, res, body) {
-                var req = { query: { statusCode: 'FIX'} };
-                analysis = require('../../routes/analysis');
-                analysis.getFileDefectStatus(req);
-                assert.equal(res.statusCode, 200);
-            });
-            done();
-        });
-    });
-
-    describe('For Defect Count', function() {
-
-        it('GET / getDefectCountByModuleAndFile', function (done) {
-            request('http://localhost:4989/api/defect/count', function (err, res, body) {
-                var req = { body: { didList: '13' } };
-                analysis = require('../../routes/analysis');
-                analysis.getDefectCountByModuleAndFile(req);
-                assert.equal(res, 200);
-            });
-            done();
-        });
-    });
-
-    describe('For Auth Account', function() {
-        it('GET / Auth for findById', function (done) {
-            var options = {
-                url: 'http://localhost:4989/api/accounts/findById/:userId',
-                headers: {
-                    'Authorization': 'Basic bWluaG86MTIzNA=='
-                }
-            };
-            request(options, function (err, res, body) {
-                var req = { body: { userId: 'minjung.baek' } };
-                analysis = require('../../routes/analysis');
-                analysis.findById(req);
-                assert.equal(res.statusCode, 200);
-            });
-            done();
-        });
-    });
-
-
-    describe('For Change Defect Status as Auth Account', function() {
-        it('POST / changeDefectToDismiss', function (done) {
-            var options = {
-                url: 'http://localhost:4989/api/defect/changeDismiss',
-                headers: {
-                    'Authorization': 'Basic bWluaG86MTIzNA=='
-                }
-            };
-            request(options, function (err, res, body) {
-                var req = { body: { didList: '13' } };
-                analysis = require('../../routes/analysis');
-                analysis.findById(req);
-                assert.equal(res.statusCode, 200);
-            });
-            done();
-        });
-    });
-
-    /*it('GET / All Accounts List with wrong address', function(done) {
-        request('http://localhost:4989/api/account', function(err, res, body){
-            assert.equal(res.statusCode, 404);
-        });
-        done();
-    });
-
-    it('GET / All Accounts List without Authorization', function(done) {
-        request('http://localhost:4989/api/accounts', function(err, res, body){
-            assert.equal(res.statusCode, 401);
-        });
-        done();
-    });
-
-    it('GET / All Accounts List with Authorization', function(done) {
         var options = {
-            url: 'http://localhost:4989/api/accounts',
-            headers: {
-                'Authorization': 'Basic bWluaG86MTIzNA=='
-            }
+            url: url,
+            method: 'GET'
         };
-        request(options, function(err, res, body){
-            assert.equal(res.statusCode, 200);
-        });
-        done();
-    });
-    */
 
+        request(options, function (err, res) {
+            assert.ok(!err);
+            assert.ok(res);
+            assert.equal(res.statusCode, statusCode);
+            done();
+        });
+    }
+
+    describe('For Accounts Service', function() {
+        var testData = [
+            // get
+            {apiUrl:'api/defect/status/project', statusCode:200},
+            {apiUrl:'api/defect/status/fileName', statusCode:200},
+
+            {apiUrl:'api/v1/accounts/userId', statusCode:200},
+            {apiUrl:'api/v1/accounts/checkWebLogin', statusCode:200},
+            {apiUrl:'api/v1/accounts/logout', statusCode:200},
+            {apiUrl:'api/v1/accounts/accountCount', statusCode:200},
+            {apiUrl:'api/v1/accounts/findAll', statusCode:200},
+            {apiUrl:'api/v1/accounts/findById/' + 'myUserId', statusCode:200},
+            {apiUrl:'api/v1/accounts/hasAccount/' + 'myUserId', statusCode:200},
+            {apiUrl:'api/v1/accounts/checkLogin', statusCode:200},
+            {apiUrl:'api/v1/accounts/checkAdmin', statusCode:200}
+
+            /*
+            // post
+            {apiUrl:'api/v1/accounts/add', statusCode:200},
+            {apiUrl:'api/v1/accounts/webAdd', statusCode:200},
+            {apiUrl:'api/v1/accounts/update/:userId', statusCode:200},
+            {apiUrl:'api/v1/accounts/webUpdate/:userId', statusCode:200},
+
+            // delete
+            {apiUrl:'api/v1/accounts/remove/:userId', statusCode:200},
+            {apiUrl:'api/v1/accounts/removeAll', statusCode:200}
+            */
+        ];
+
+        testData.forEach(function(data, index){
+            it('API Test for ' + data.apiUrl, function(done){
+                checkGetMethodReturnValue(data.apiUrl, data.statusCode, done);
+            })
+        });
+
+        // TODO: test for analysis, filter, defect, snapshot, code metrics, config, etc.
+    });
 });
