@@ -94,6 +94,11 @@ describe('RESTful API Test Suite', function() {
     function createConfigStub(){
         var configStub = sinon.stub();
         configStub.addAccessLog = function(req, res) { };
+        configStub.getDefectGroup = function(req, res) {res.send(200); };
+        configStub.getDefectGroupId = function(req, res) {res.send(200); };
+        configStub.getCodes = function(req, res) {res.send(200); };
+        configStub.getCheckerConfigJsonFile = function(req, res) {res.send(200); };
+        configStub.deleteDefectGroup = function(req, res) { res.send(200);};
 
         return configStub;
     }
@@ -122,6 +127,28 @@ describe('RESTful API Test Suite', function() {
         var analysisStub = sinon.stub();
         analysisStub.getProjectDefectStatus = function(req, res){ res.send(200); };
         analysisStub.getFileDefectStatus = function(req, res){ res.send(200); };
+        analysisStub.getAllFalseAlarm = function(req, res){ res.send(200); };
+        analysisStub.getAllFalseAlarmList = function(req, res){ res.send(200); };
+        analysisStub.getModuleAndFileName = function(req, res){ res.send(200); };
+        analysisStub.getModuleDefectStatus = function(req, res){ res.send(200); };
+        analysisStub.getDefectsByModuleAndFile = function(req, res){ res.send(200); };
+        analysisStub.getDefectCountByModuleAndFile = function(req, res){ res.send(200); };
+        analysisStub.getDefectCount = function(req, res){ res.send(200); };
+        analysisStub.getOccurencesByDid = function(req, res){ res.send(200); };
+        analysisStub.getAllSnapshot = function(req, res){ res.send(200); };
+        analysisStub.getCodeMetrics = function(req, res){ res.send(200); };
+        analysisStub.getCodeMetricsAndDefects = function(req, res){ res.send(200); };
+        analysisStub.getCodeMetricsAndDefectsLimit = function(req, res){ res.send(200); };
+        analysisStub.getCheckerAndDefects = function(req, res){ res.send(200); };
+        analysisStub.getDevelopers = function(req, res){ res.send(200); };
+
+        /*
+
+         analysisStub. = function(req, res){ res.send(200); };
+
+         */
+
+
 
         return analysisStub;
     }
@@ -130,12 +157,12 @@ describe('RESTful API Test Suite', function() {
         server.forceStopServer();
     });
 
-    function checkGetMethodReturnValue(apiUrl, statusCode, done){
+    function checkGetMethodReturnValue(apiUrl, statusCode, methodType, done){
         var url = 'http://userid:password@localhost:4982/' + apiUrl;
 
         var options = {
             url: url,
-            method: 'GET'
+            method: methodType
         };
 
         request(options, function (err, res) {
@@ -146,7 +173,19 @@ describe('RESTful API Test Suite', function() {
         });
     }
 
-    describe('For Accounts Service', function() {
+    function itWithTestData(testData){
+        testData.forEach(function(data){
+            if(!data.methodType){
+                data.methodType = 'GET';
+            }
+
+            it('API Exisitng Test for [' + data.apiUrl + '] on ' + data.methodType + ' method', function(done){
+                checkGetMethodReturnValue(data.apiUrl, data.statusCode, data.methodType, done);
+            })
+        });
+    }
+
+    describe('For Accounts API', function() {
         var testData = [
             // get
             {apiUrl:'api/defect/status/project', statusCode:200},
@@ -160,27 +199,132 @@ describe('RESTful API Test Suite', function() {
             {apiUrl:'api/v1/accounts/findById/' + 'myUserId', statusCode:200},
             {apiUrl:'api/v1/accounts/hasAccount/' + 'myUserId', statusCode:200},
             {apiUrl:'api/v1/accounts/checkLogin', statusCode:200},
-            {apiUrl:'api/v1/accounts/checkAdmin', statusCode:200}
+            {apiUrl:'api/v1/accounts/checkAdmin', statusCode:200},
 
-            /*
             // post
-            {apiUrl:'api/v1/accounts/add', statusCode:200},
-            {apiUrl:'api/v1/accounts/webAdd', statusCode:200},
-            {apiUrl:'api/v1/accounts/update/:userId', statusCode:200},
-            {apiUrl:'api/v1/accounts/webUpdate/:userId', statusCode:200},
+            {apiUrl:'api/v1/accounts/add', statusCode:200, methodType:'POST'},
+            {apiUrl:'api/v1/accounts/webAdd', statusCode:200, methodType:'POST'},
+            {apiUrl:'api/v1/accounts/update/' + 'myUserId', statusCode:200, methodType:'POST'},
+            {apiUrl:'api/v1/accounts/webUpdate/' + 'myUserId', statusCode:200, methodType:'POST'},
 
             // delete
-            {apiUrl:'api/v1/accounts/remove/:userId', statusCode:200},
-            {apiUrl:'api/v1/accounts/removeAll', statusCode:200}
-            */
+            {apiUrl:'api/v1/accounts/remove/' + 'myUserId', statusCode:200, methodType: 'DELETE'},
+            {apiUrl:'api/v1/accounts/removeAll', statusCode:200, methodType: 'DELETE'}
         ];
 
-        testData.forEach(function(data, index){
-            it('API Test for ' + data.apiUrl, function(done){
-                checkGetMethodReturnValue(data.apiUrl, data.statusCode, done);
-            })
-        });
+        itWithTestData(testData);
+    });
 
-        // TODO: test for analysis, filter, defect, snapshot, code metrics, config, etc.
+    describe('For Server Managing API', function() {
+        var testData = [
+            // get
+            {apiUrl:'api/v1/isServerAlive', statusCode:200},
+            {apiUrl:'api/v1/isServerAlive2', statusCode:200}
+        ];
+
+        itWithTestData(testData);
+    });
+
+    describe('For Analysis API', function() {
+        var testData = [
+            // get
+            {apiUrl:'api/v1/analysis/snapshot/source', statusCode:200},
+            {apiUrl:'api/v1/analysis/snapshot/checkSourceCode', statusCode:200},
+
+            // post
+            {apiUrl:'api/v1/analysis/result', statusCode:200, methodType: 'POST'},
+            {apiUrl:'api/v1/analysis/snapshot/source', statusCode:200, methodType: 'POST'}
+        ];
+
+        itWithTestData(testData);
+    });
+
+    describe('For Defect Filter API', function() {
+        var testData = [
+            // get
+            {apiUrl:'api/v1/filter/false-alarm', statusCode:200},
+            {apiUrl:'api/v1/filter/false-alarm-list', statusCode:200},
+
+            // post
+            {apiUrl:'api/v1/filter/false-alarm', statusCode:200, methodType: 'POST'},
+            {apiUrl:'api/v1/filter/delete-false-alarm', statusCode:200, methodType: 'POST'},
+            {apiUrl:'api/v1/filter/delete-file-tree', statusCode:200, methodType: 'POST'}
+        ];
+
+        itWithTestData(testData);
+    });
+
+    describe('For Defect API', function() {
+        var testData = [
+            // get
+            {apiUrl:'api/v1/defect/moduleAndFile', statusCode:200},
+            {apiUrl:'api/v1/defect/status/project', statusCode:200},
+            {apiUrl:'api/v1/defect/status/modulePath', statusCode:200},
+            {apiUrl:'api/v1/defect/status/fileName', statusCode:200},
+            {apiUrl:'api/v1/defect', statusCode:200},
+            {apiUrl:'api/v1/defect/count', statusCode:200},
+            {apiUrl:'api/v1/webDefectCount', statusCode:200},
+            {apiUrl:'api/v1/occurence/' + '123', statusCode:200},
+            {apiUrl:'api/v1/occurenceInFile', statusCode:200},
+
+            // post
+            {apiUrl:'api/v1/defect/gid', statusCode:200, methodType: 'POST'},
+            {apiUrl:'api/v1/defect/dismiss', statusCode:200, methodType: 'POST'},
+            {apiUrl:'api/v1/defect/markFalseDefect', statusCode:200, methodType: 'POST'},
+            {apiUrl:'api/v1/defect/markDefect', statusCode:200, methodType: 'POST'},
+            {apiUrl:'api/v1/defect/changeFix', statusCode:200, methodType: 'POST'},
+
+            // delete
+            {apiUrl:'api/v1/defect/deleteAll', statusCode:200, methodType: 'DELETE'}
+        ];
+
+        itWithTestData(testData);
+    });
+
+    describe('For Snapshot API', function() {
+        var testData = [
+            // get
+            {apiUrl:'api/v1/snapshot/snapshotList', statusCode:200},
+            {apiUrl:'api/v1/snapshot/showSnapshotDefectPage', statusCode:200},
+            {apiUrl:'api/v1/snapshot/occurenceInFile', statusCode:200}
+        ];
+
+        itWithTestData(testData);
+    });
+
+    describe('For Code Metrics API', function() {
+        var testData = [
+            // get
+            {apiUrl:'api/v1/metrics', statusCode:200},
+            {apiUrl:'api/v1/metrics-and-defect', statusCode:200},
+            {apiUrl:'api/v1/metrics-and-defect-limit', statusCode:200},
+            {apiUrl:'api/v1/checker-and-defect', statusCode:200},
+            {apiUrl:'api/v1/developer-and-file', statusCode:200}
+        ];
+
+        itWithTestData(testData);
+    });
+
+    describe('For Configuration API', function() {
+        var testData = [
+            // get
+            {apiUrl:'api/v1/config/defect-group/' + 'mygroupName', statusCode:200},
+            {apiUrl:'api/v1/config/defect-group', statusCode:200},
+            {apiUrl:'api/v1/config/defect-group-id/' + 'myGroupName', statusCode:200},
+            {apiUrl:'api/v1/config/code/:codeKey', statusCode:200},
+            {apiUrl:'api/v1/version/false-alarm', statusCode:200},
+
+            // post
+            {apiUrl:'api/v1/config/defect-group', statusCode:200, methodType: 'POST'},
+            {apiUrl:'api/v1/config/' + 'dexter-cppcheck', statusCode:200, methodType: 'POST'},
+
+            // put
+            {apiUrl:'api/v1/config/defect-group', statusCode:200, methodType: 'PUT'},
+
+            // delete
+            {apiUrl:'api/v1/config/defect-group/' + 'myGroupId', statusCode:200, methodType: 'DELETE'}
+        ];
+
+        itWithTestData(testData);
     });
 });
