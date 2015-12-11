@@ -3,8 +3,6 @@ project/dexter-daemon/src/resource/dexter-cli.zip
 project/dexter-eclipse/bin/
 project/dexter-eclipse-help/bin/
 project/dexter-eclipse-ui/bin/
-project/dexter-eclipse-ui/screenshots/
-project/dexter-eclipse-ui/log/
 project/client/
 project/log/
 project/output/
