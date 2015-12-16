@@ -93,8 +93,10 @@ public class DexterJobFacade implements IDexterStandaloneListener{
 	}
 	
 	public void cancelDexterServerJobs() {
-		sendingResultScheduledFuture.cancel(false);
-		mergingFilterScheduledFuture.cancel(false);
+		if(sendingResultScheduledFuture != null)
+			sendingResultScheduledFuture.cancel(false);
+		if(mergingFilterScheduledFuture != null)
+			mergingFilterScheduledFuture.cancel(false);
 	}
 	
 	public void resumeDexterServerJobs() {

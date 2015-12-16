@@ -31,5 +31,4 @@ public class UIActivatorTest {
 		bot.button("OK").click();
 		bot.button("Cancel").click();
 	}
-
 }

@@ -30,6 +30,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.swtbot.swt.finder.utils.StringUtils;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -92,6 +93,12 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 		final String id = getPreferenceStore().getString("userId");
 		final String pwd = getPreferenceStore().getString("userPwd");
 		final String serverAddress = getPreferenceStore().getString("serverAddress");
+		
+		if(StringUtils.isEmptyOrNull(id) || StringUtils.isEmptyOrNull(pwd) 
+				|| StringUtils.isEmptyOrNull(serverAddress)){
+			LOG.info("Initialize failure for Connection of Dexter Server because no id, pwd, serverAddress");
+			return;
+		}
 		
 		final IDexterClient client = DexterClient.getInstance();
 		
