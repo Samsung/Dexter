@@ -40,14 +40,14 @@
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Checker Code</div>
 				<div class="table-grid-value"><h5 class="header blue"><i class="fa fa-bug"></i>&nbsp;
-					duplinheritedmember</h5>
+					invalidfunctionargbool</h5>
 				</div>
 			</div>
 
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Description </div>
 				<div class="table-grid-value-highlight"><i class="fa fa-th"></i>&nbsp;
-Duplicate inherited member.
+Invalid function argument bool.
 				</div>
 			</div>
 
@@ -61,14 +61,14 @@ Duplicate inherited member.
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Detector / Bug Pattern </div>
 				<div class="table-grid-value">
-Duplicate inherited member.
+Invalid function argument bool.
 				</div>
 			</div>
 
 			<div class="table-grid-row">
 				<div class="table-grid-label"> More Information </div>
 				<div class="table-grid-value">
-Duplicate inherited member.
+Invalid strncmp() argument nr 3. A non-boolean value is required. 
 				</div>
 			</div>
 
@@ -76,22 +76,15 @@ Duplicate inherited member.
 				<div class="table-grid-label"> Bad Code </div>
 				<div class="table-grid-value">
 			<pre class="prettyprint linenums warning">
-class A
+//strncmp()'s third argument is non-boolean value. Is ')' omitted before comparing with 0?
+void fn(char* compared_str)
 {
-public:
-  int x;
-};
-
-
-class B : public A
-{
-public:
-  int x;
-  B() 
-  { 
-    x = 1;   
-  }
-};
+	char str[]="test";
+	if (NULL != compared_str && strncmp(compared_str, str, strlen(compared_str) == 0)) 
+	{
+		//do something
+	}
+}
 </pre>
 			</div>
 			</div>
@@ -100,23 +93,14 @@ public:
 				<div class="table-grid-label"> Good Code </div>
 				<div class="table-grid-value">
 			<pre class="prettyprint linenums correct">
-class A
+void fn(char* compared_str)
 {
-public:
-  int x;
-};
-
-
-class B : public A
-{
-public:
-  int x;
-  B() 
-  { 
-    x = 0;
-    A::x = 1;
-  }
-};
+	char str[]="test";
+	if (NULL != compared_str && strncmp(compared_str, str, strlen(compared_str)) == 0)) 
+	{
+		//do something
+	}
+}
 </pre>
 				</div>
 			</div>
@@ -131,7 +115,7 @@ public:
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Code Review Asset </div>
 				<div class="table-grid-value">
-				N/A
+					N/A
 
 				</div>
 			</div>

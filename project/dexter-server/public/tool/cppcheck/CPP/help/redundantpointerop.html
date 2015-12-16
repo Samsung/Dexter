@@ -40,14 +40,14 @@
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Checker Code</div>
 				<div class="table-grid-value"><h5 class="header blue"><i class="fa fa-bug"></i>&nbsp;
-					duplinheritedmember</h5>
+					redundantpointerop</h5>
 				</div>
 			</div>
 
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Description </div>
 				<div class="table-grid-value-highlight"><i class="fa fa-th"></i>&nbsp;
-Duplicate inherited member.
+Redundant pointer operation.
 				</div>
 			</div>
 
@@ -61,14 +61,14 @@ Duplicate inherited member.
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Detector / Bug Pattern </div>
 				<div class="table-grid-value">
-Duplicate inherited member.
+Redundant pointer operation.
 				</div>
 			</div>
 
 			<div class="table-grid-row">
 				<div class="table-grid-label"> More Information </div>
 				<div class="table-grid-value">
-Duplicate inherited member.
+Redundant pointer operation.
 				</div>
 			</div>
 
@@ -76,22 +76,14 @@ Duplicate inherited member.
 				<div class="table-grid-label"> Bad Code </div>
 				<div class="table-grid-value">
 			<pre class="prettyprint linenums warning">
-class A
+static int my_func(char **strp, const char *fmt, va_list ap)
 {
-public:
-  int x;
-};
-
-
-class B : public A
-{
-public:
-  int x;
-  B() 
-  { 
-    x = 1;   
-  }
-};
+	//Redundant pointer operation on strp - it's already a pointer.
+	int ret = vasprintf(&(*strp), fmt, ap);
+	if (ret < 0)
+		err(XALLOC_EXIT_CODE, "cannot allocate string");
+	return ret;
+}
 </pre>
 			</div>
 			</div>
@@ -100,23 +92,13 @@ public:
 				<div class="table-grid-label"> Good Code </div>
 				<div class="table-grid-value">
 			<pre class="prettyprint linenums correct">
-class A
+static int my_func(char **strp, const char *fmt, va_list ap)
 {
-public:
-  int x;
-};
-
-
-class B : public A
-{
-public:
-  int x;
-  B() 
-  { 
-    x = 0;
-    A::x = 1;
-  }
-};
+	int ret = vasprintf(strp, fmt, ap);
+	if (ret < 0)
+		err(XALLOC_EXIT_CODE, "cannot allocate string");
+	return ret;
+}
 </pre>
 				</div>
 			</div>
@@ -131,7 +113,7 @@ public:
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Code Review Asset </div>
 				<div class="table-grid-value">
-				N/A
+			N/A
 
 				</div>
 			</div>

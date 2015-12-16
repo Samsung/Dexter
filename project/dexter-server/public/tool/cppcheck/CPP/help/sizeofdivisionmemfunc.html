@@ -40,14 +40,14 @@
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Checker Code</div>
 				<div class="table-grid-value"><h5 class="header blue"><i class="fa fa-bug"></i>&nbsp;
-					duplinheritedmember</h5>
+					sizeofdivisionmemfunc</h5>
 				</div>
 			</div>
 
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Description </div>
 				<div class="table-grid-value-highlight"><i class="fa fa-th"></i>&nbsp;
-Duplicate inherited member.
+sizeof division mem function.
 				</div>
 			</div>
 
@@ -61,14 +61,14 @@ Duplicate inherited member.
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Detector / Bug Pattern </div>
 				<div class="table-grid-value">
-Duplicate inherited member.
+sizeof division mem function.
 				</div>
 			</div>
 
 			<div class="table-grid-row">
 				<div class="table-grid-label"> More Information </div>
 				<div class="table-grid-value">
-Duplicate inherited member.
+Division by result of sizeof(). mem function(*memchr,memcmp,*memcpy,*memmove and *memset) expects a size in bytes.
 				</div>
 			</div>
 
@@ -76,22 +76,13 @@ Duplicate inherited member.
 				<div class="table-grid-label"> Bad Code </div>
 				<div class="table-grid-value">
 			<pre class="prettyprint linenums warning">
-class A
+#define ArraySize(X)  (int)(sizeof(X)/sizeof(X[0]))
+int MyFun()
 {
-public:
-  int x;
-};
-
-
-class B : public A
-{
-public:
-  int x;
-  B() 
-  { 
-    x = 1;   
-  }
-};
+   //Third argument of mem function should be in byte.
+   memset(p->colWidth,0,ArraySize(p->colWidth)); 
+   return(0);
+}
 </pre>
 			</div>
 			</div>
@@ -100,23 +91,12 @@ public:
 				<div class="table-grid-label"> Good Code </div>
 				<div class="table-grid-value">
 			<pre class="prettyprint linenums correct">
-class A
+int MyFun()
 {
-public:
-  int x;
-};
-
-
-class B : public A
-{
-public:
-  int x;
-  B() 
-  { 
-    x = 0;
-    A::x = 1;
-  }
-};
+   //Third argument of mem function should be in byte.
+   memset(p->colWidth,0,sizeof(p->colWidth)); 
+   return(0);
+}
 </pre>
 				</div>
 			</div>

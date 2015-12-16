@@ -40,14 +40,14 @@
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Checker Code</div>
 				<div class="table-grid-value"><h5 class="header blue"><i class="fa fa-bug"></i>&nbsp;
-					duplinheritedmember</h5>
+					badbitmaskcheck</h5>
 				</div>
 			</div>
 
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Description </div>
 				<div class="table-grid-value-highlight"><i class="fa fa-th"></i>&nbsp;
-Duplicate inherited member.
+Bad bit mask check.
 				</div>
 			</div>
 
@@ -61,14 +61,15 @@ Duplicate inherited member.
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Detector / Bug Pattern </div>
 				<div class="table-grid-value">
-Duplicate inherited member.
+Bad bit mask check.
+
 				</div>
 			</div>
 
 			<div class="table-grid-row">
 				<div class="table-grid-label"> More Information </div>
 				<div class="table-grid-value">
-Duplicate inherited member.
+Result of operator /|/ is always true if one operand is non-zero. Did you intend to use /&/? 
 				</div>
 			</div>
 
@@ -76,22 +77,23 @@ Duplicate inherited member.
 				<div class="table-grid-label"> Bad Code </div>
 				<div class="table-grid-value">
 			<pre class="prettyprint linenums warning">
-class A
-{
-public:
-  int x;
-};
+#define BUFFER_BIT_MASK	0xcc
 
-
-class B : public A
+bool my_func(int* surface)
 {
-public:
-  int x;
-  B() 
-  { 
-    x = 1;   
-  }
-};
+	bool result = 0;
+	//Result of operator /|/ is always true if one operand is non-zero. Please check you intend to use /&/ instead of /|/. 
+	if(surface->bo[surface->current]->status | BUFFER_BIT_MASK)
+	{
+	 	result=false;
+	}
+	else
+	{
+	 	result=true;
+	}
+ 
+	return result;
+}
 </pre>
 			</div>
 			</div>
@@ -100,23 +102,22 @@ public:
 				<div class="table-grid-label"> Good Code </div>
 				<div class="table-grid-value">
 			<pre class="prettyprint linenums correct">
-class A
-{
-public:
-  int x;
-};
+#define BUFFER_BIT_MASK	0xcc
 
-
-class B : public A
+bool my_func(int* surface)
 {
-public:
-  int x;
-  B() 
-  { 
-    x = 0;
-    A::x = 1;
-  }
-};
+	bool result = 0;	
+	if(surface->bo[surface->current]->status & BUFFER_BIT_MASK)
+	{
+	 	result=false;
+	}
+	else
+	{
+	 	result=true;
+	}
+ 
+	return result;
+}
 </pre>
 				</div>
 			</div>
@@ -132,16 +133,14 @@ public:
 				<div class="table-grid-label"> Code Review Asset </div>
 				<div class="table-grid-value">
 				N/A
-
+				
 				</div>
 			</div>
 			<div class="table-grid-row">
 				<div class="table-grid-label"> URLs </div>
-				<div class="table-grid-value"> <i class="fa fa-link"></i>&nbsp;			
-				
+				<div class="table-grid-value"> <i class="fa fa-link"></i>&nbsp;				
 					<a target="_blank" href="">					
-					</a> 						
-					
+					</a>						
 																
 				</div>
 			</div>
