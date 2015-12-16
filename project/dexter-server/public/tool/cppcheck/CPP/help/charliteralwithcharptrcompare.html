@@ -40,14 +40,14 @@
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Checker Code</div>
 				<div class="table-grid-value"><h5 class="header blue"><i class="fa fa-bug"></i>&nbsp;
-					duplinheritedmember</h5>
+					charliteralwithcharptrcompare</h5>
 				</div>
 			</div>
 
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Description </div>
 				<div class="table-grid-value-highlight"><i class="fa fa-th"></i>&nbsp;
-Duplicate inherited member.
+Comparing char literal with char pointer.
 				</div>
 			</div>
 
@@ -61,14 +61,15 @@ Duplicate inherited member.
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Detector / Bug Pattern </div>
 				<div class="table-grid-value">
-Duplicate inherited member.
+Comparing char literal with char pointer.
+
 				</div>
 			</div>
 
 			<div class="table-grid-row">
 				<div class="table-grid-label"> More Information </div>
 				<div class="table-grid-value">
-Duplicate inherited member.
+Comparing char literal with char pointer.
 				</div>
 			</div>
 
@@ -76,22 +77,18 @@ Duplicate inherited member.
 				<div class="table-grid-label"> Bad Code </div>
 				<div class="table-grid-value">
 			<pre class="prettyprint linenums warning">
-class A
+void my_func(void)
 {
-public:
-  int x;
-};
+	char value[10];  
+	value ="TEST";
+	int size = strlen(value) +1;
+	char * temp = new char[size];
+	if(temp == value)
+	{
+		cout << "Comparing char literal with char pointer. ";
+	}
 
-
-class B : public A
-{
-public:
-  int x;
-  B() 
-  { 
-    x = 1;   
-  }
-};
+}
 </pre>
 			</div>
 			</div>
@@ -100,23 +97,18 @@ public:
 				<div class="table-grid-label"> Good Code </div>
 				<div class="table-grid-value">
 			<pre class="prettyprint linenums correct">
-class A
-{
-public:
-  int x;
-};
+void my_func(void)
+{	
+ 	char value[10];  
+	value ="TEST";
+	int size = strlen(value) +1;
+	char * temp = new char[size];
+	if(strcmp(temp, value))
+	{
+		cout << "Comparing char literal with char pointer. ";
+	}
 
-
-class B : public A
-{
-public:
-  int x;
-  B() 
-  { 
-    x = 0;
-    A::x = 1;
-  }
-};
+}
 </pre>
 				</div>
 			</div>
@@ -137,7 +129,8 @@ public:
 			</div>
 			<div class="table-grid-row">
 				<div class="table-grid-label"> URLs </div>
-				<div class="table-grid-value"> <i class="fa fa-link"></i>&nbsp;			
+				<div class="table-grid-value"> <i class="fa fa-link"></i>&nbsp;
+				
 				
 					<a target="_blank" href="">					
 					</a> 						

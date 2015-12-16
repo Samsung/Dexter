@@ -40,14 +40,14 @@
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Checker Code</div>
 				<div class="table-grid-value"><h5 class="header blue"><i class="fa fa-bug"></i>&nbsp;
-					duplinheritedmember</h5>
+					va_end_missing</h5>
 				</div>
 			</div>
 
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Description </div>
 				<div class="table-grid-value-highlight"><i class="fa fa-th"></i>&nbsp;
-Duplicate inherited member.
+va_end missing.
 				</div>
 			</div>
 
@@ -61,14 +61,14 @@ Duplicate inherited member.
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Detector / Bug Pattern </div>
 				<div class="table-grid-value">
-Duplicate inherited member.
+va_end missing.
 				</div>
 			</div>
 
 			<div class="table-grid-row">
 				<div class="table-grid-label"> More Information </div>
 				<div class="table-grid-value">
-Duplicate inherited member.
+va_end should call after va_start.
 				</div>
 			</div>
 
@@ -76,22 +76,27 @@ Duplicate inherited member.
 				<div class="table-grid-label"> Bad Code </div>
 				<div class="table-grid-value">
 			<pre class="prettyprint linenums warning">
-class A
+void PrintFloats (int n, ...)
 {
-public:
-  int x;
-};
-
-
-class B : public A
-{
-public:
-  int x;
-  B() 
-  { 
-    x = 1;   
+  int i;
+  double val;
+  printf ("Printing floats:");
+  va_list vl;
+  va_start(vl,n);
+  for (i=0;i < n; i++)
+  {
+    val=va_arg(vl,double);
+    printf (" [%.2f]",val);
   }
-};
+  //should call va_end(vl);
+  printf ("\n");
+}
+
+int main ()
+{
+  PrintFloats (3,3.14159,2.71828,1.41421);
+  return 0;
+}
 </pre>
 			</div>
 			</div>
@@ -100,23 +105,27 @@ public:
 				<div class="table-grid-label"> Good Code </div>
 				<div class="table-grid-value">
 			<pre class="prettyprint linenums correct">
-class A
+void PrintFloats (int n, ...)
 {
-public:
-  int x;
-};
-
-
-class B : public A
-{
-public:
-  int x;
-  B() 
-  { 
-    x = 0;
-    A::x = 1;
+  int i;
+  double val;
+  printf ("Printing floats:");
+  va_list vl;
+  va_start(vl,n);
+  for (i=0; i< n; i++)
+  {
+    val=va_arg(vl,double);
+    printf (" [%.2f]",val);
   }
-};
+  va_end(vl);
+  printf ("\n");
+}
+
+int main ()
+{
+  PrintFloats (3,3.14159,2.71828,1.41421);
+  return 0;
+}
 </pre>
 				</div>
 			</div>
@@ -131,7 +140,7 @@ public:
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Code Review Asset </div>
 				<div class="table-grid-value">
-				N/A
+				 N/A
 
 				</div>
 			</div>

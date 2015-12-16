@@ -40,14 +40,14 @@
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Checker Code</div>
 				<div class="table-grid-value"><h5 class="header blue"><i class="fa fa-bug"></i>&nbsp;
-					duplinheritedmember</h5>
+					noexplicitcopymoveconstructor</h5>
 				</div>
 			</div>
 
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Description </div>
 				<div class="table-grid-value-highlight"><i class="fa fa-th"></i>&nbsp;
-Duplicate inherited member.
+No explicit copy move constructor.
 				</div>
 			</div>
 
@@ -61,14 +61,16 @@ Duplicate inherited member.
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Detector / Bug Pattern </div>
 				<div class="table-grid-value">
-Duplicate inherited member.
+No explicit copy move constructor.
 				</div>
 			</div>
 
 			<div class="table-grid-row">
 				<div class="table-grid-label"> More Information </div>
 				<div class="table-grid-value">
-Duplicate inherited member.
+For abstract classes, even copy/move constructors may be declared explicit,
+as, by definition, abstract classes cannot be instantiated, and so objects of
+such type should never be passed by value.
 				</div>
 			</div>
 
@@ -76,22 +78,13 @@ Duplicate inherited member.
 				<div class="table-grid-label"> Bad Code </div>
 				<div class="table-grid-value">
 			<pre class="prettyprint linenums warning">
-class A
+class Abstract 
 {
-public:
-  int x;
-};
-
-
-class B : public A
-{
-public:
-  int x;
-  B() 
-  { 
-    x = 1;   
-  }
-};
+ public:
+	virtual void f() = 0;
+	Abstract(Abstract const&);
+	//No explicit copy move constructor defined
+}
 </pre>
 			</div>
 			</div>
@@ -100,23 +93,17 @@ public:
 				<div class="table-grid-label"> Good Code </div>
 				<div class="table-grid-value">
 			<pre class="prettyprint linenums correct">
-class A
+class Abstract 
 {
-public:
-  int x;
-};
-
-
-class B : public A
-{
-public:
-  int x;
-  B() 
-  { 
-    x = 0;
-    A::x = 1;
-  }
-};
+ public:
+	virtual void f() = 0;
+	Abstract(Abstract const&);
+	explicit Abstract(Abstract const&);
+}
+//"explicit" avoids accidental pass by
+//value of an abstract class. But declaring a parameter with abstract class
+//is an error by itself, regardless the explicit-ness of its copy/move
+//constructor.
 </pre>
 				</div>
 			</div>
@@ -141,8 +128,7 @@ public:
 				
 					<a target="_blank" href="">					
 					</a> 						
-					
-																
+																	
 				</div>
 			</div>
 	</div>

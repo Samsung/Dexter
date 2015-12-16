@@ -40,14 +40,14 @@
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Checker Code</div>
 				<div class="table-grid-value"><h5 class="header blue"><i class="fa fa-bug"></i>&nbsp;
-					duplinheritedmember</h5>
+					sizeofvoid</h5>
 				</div>
 			</div>
 
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Description </div>
 				<div class="table-grid-value-highlight"><i class="fa fa-th"></i>&nbsp;
-Duplicate inherited member.
+size of void.
 				</div>
 			</div>
 
@@ -61,14 +61,16 @@ Duplicate inherited member.
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Detector / Bug Pattern </div>
 				<div class="table-grid-value">
-Duplicate inherited member.
+size of void.
 				</div>
 			</div>
 
 			<div class="table-grid-row">
 				<div class="table-grid-label"> More Information </div>
 				<div class="table-grid-value">
-Duplicate inherited member.
+Behaviour of sizeof(void) is not covered by the ISO C standard. 
+A value for sizeof(void) is defined only as part of a GNU C extension,
+which defines sizeof(void) to be 1
 				</div>
 			</div>
 
@@ -76,22 +78,13 @@ Duplicate inherited member.
 				<div class="table-grid-label"> Bad Code </div>
 				<div class="table-grid-value">
 			<pre class="prettyprint linenums warning">
-class A
+int main (void)
 {
-public:
-  int x;
-};
-
-
-class B : public A
-{
-public:
-  int x;
-  B() 
-  { 
-    x = 1;   
-  }
-};
+	//The type void has no size; that would be a compilation error. 
+	void n;	
+	void * p = (void*) malloc(sizeof(void));	
+	//Depend on the compiler it will return the size of void pointer.	
+}
 </pre>
 			</div>
 			</div>
@@ -100,23 +93,16 @@ public:
 				<div class="table-grid-label"> Good Code </div>
 				<div class="table-grid-value">
 			<pre class="prettyprint linenums correct">
-class A
+int main(void)
 {
-public:
-  int x;
-};
-
-
-class B : public A
-{
-public:
-  int x;
-  B() 
-  { 
-    x = 0;
-    A::x = 1;
-  }
-};
+	int num = 0;
+	void *ptr;
+	num = 15;
+	ptr = &ampnum;
+	/* Output the size   */
+	printf("Size of Pointer : %d Bytes",sizeof(ptr)); //It will print 2 byte.
+	return 0;
+}
 </pre>
 				</div>
 			</div>

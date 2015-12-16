@@ -40,14 +40,14 @@
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Checker Code</div>
 				<div class="table-grid-value"><h5 class="header blue"><i class="fa fa-bug"></i>&nbsp;
-					duplinheritedmember</h5>
+					ignoredreturnvalue</h5>
 				</div>
 			</div>
 
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Description </div>
 				<div class="table-grid-value-highlight"><i class="fa fa-th"></i>&nbsp;
-Duplicate inherited member.
+Ignored return value.
 				</div>
 			</div>
 
@@ -61,14 +61,15 @@ Duplicate inherited member.
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Detector / Bug Pattern </div>
 				<div class="table-grid-value">
-Duplicate inherited member.
+Ignored return value.
+
 				</div>
 			</div>
 
 			<div class="table-grid-row">
 				<div class="table-grid-label"> More Information </div>
 				<div class="table-grid-value">
-Duplicate inherited member.
+Ignored the value that return from the function.
 				</div>
 			</div>
 
@@ -76,22 +77,24 @@ Duplicate inherited member.
 				<div class="table-grid-label"> Bad Code </div>
 				<div class="table-grid-value">
 			<pre class="prettyprint linenums warning">
-class A
-{
-public:
-  int x;
-};
+Example 1:
+int fn();
 
-
-class B : public A
+void whatever()
 {
-public:
-  int x;
-  B() 
-  { 
-    x = 1;   
-  }
-};
+    fn();
+}
+
+Example 2:
+class A {};
+A operator+(A const &, A const &);
+
+int main () 
+{
+  A a;
+  a + a;           // Not a problem
+  operator+(a,a);  // Using function call notation - so add the cast.
+}
 </pre>
 			</div>
 			</div>
@@ -100,23 +103,24 @@ public:
 				<div class="table-grid-label"> Good Code </div>
 				<div class="table-grid-value">
 			<pre class="prettyprint linenums correct">
-class A
-{
-public:
-  int x;
-};
+Example 1:
+int fn();
 
-
-class B : public A
+void whatever()
 {
-public:
-  int x;
-  B() 
-  { 
-    x = 0;
-    A::x = 1;
-  }
-};
+   (void) fn();
+}
+
+Example 2:
+class A {};
+A operator+(A const &, A const &);
+
+int main () 
+{
+  A a;
+  a + a;                 // Not a problem
+  (void)operator+(a,a);  // Using function call notation - so add the cast.
+}
 </pre>
 				</div>
 			</div>
@@ -137,7 +141,8 @@ public:
 			</div>
 			<div class="table-grid-row">
 				<div class="table-grid-label"> URLs </div>
-				<div class="table-grid-value"> <i class="fa fa-link"></i>&nbsp;			
+				<div class="table-grid-value"> <i class="fa fa-link"></i>&nbsp;
+				
 				
 					<a target="_blank" href="">					
 					</a> 						

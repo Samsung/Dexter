@@ -40,14 +40,14 @@
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Checker Code</div>
 				<div class="table-grid-value"><h5 class="header blue"><i class="fa fa-bug"></i>&nbsp;
-					duplinheritedmember</h5>
+					va_start_subsequentcalls</h5>
 				</div>
 			</div>
 
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Description </div>
 				<div class="table-grid-value-highlight"><i class="fa fa-th"></i>&nbsp;
-Duplicate inherited member.
+va_start subsequent call.
 				</div>
 			</div>
 
@@ -61,14 +61,14 @@ Duplicate inherited member.
 			<div class="table-grid-row">
 				<div class="table-grid-label"> Detector / Bug Pattern </div>
 				<div class="table-grid-value">
-Duplicate inherited member.
+va_start subsequent call.
 				</div>
 			</div>
 
 			<div class="table-grid-row">
 				<div class="table-grid-label"> More Information </div>
 				<div class="table-grid-value">
-Duplicate inherited member.
+A function that invokes va_start, shall also invoke va_end before it returns..
 				</div>
 			</div>
 
@@ -76,22 +76,35 @@ Duplicate inherited member.
 				<div class="table-grid-label"> Bad Code </div>
 				<div class="table-grid-value">
 			<pre class="prettyprint linenums warning">
-class A
+void PrintFloats (int n, ...)
 {
-public:
-  int x;
-};
-
-
-class B : public A
-{
-public:
-  int x;
-  B() 
-  { 
-    x = 1;   
+  int i;
+  double val;
+  printf ("Printing floats:");
+  va_list vl;
+  va_list v2;
+  va_start(vl,n);
+  va_start(v2,n);//Subsequent call of va_start before calling va_end
+  for (i=0; i< n;i++)
+  {
+    val=va_arg(vl,double);
+    printf (" [%.2f]",val);
   }
-};
+  for (i=0; i< n; i++)
+  {
+    val=va_arg(v2,double);
+    printf (" [%.2f]",val);
+  }
+  va_end(vl);
+  va_end(v2);
+  printf ("\n");
+}
+
+int main ()
+{
+  PrintFloats (3,3.14159,2.71828,1.41421);
+  return 0;
+}
 </pre>
 			</div>
 			</div>
@@ -100,23 +113,36 @@ public:
 				<div class="table-grid-label"> Good Code </div>
 				<div class="table-grid-value">
 			<pre class="prettyprint linenums correct">
-class A
+void PrintFloats (int n, ...)
 {
-public:
-  int x;
-};
-
-
-class B : public A
-{
-public:
-  int x;
-  B() 
-  { 
-    x = 0;
-    A::x = 1;
+  int i;
+  double val;
+  printf ("Printing floats:");
+  va_list vl;
+  va_list v2;
+  va_start(vl,n);
+  va_start(v2,n);//Subsequent call of va_start before calling va_end
+  for (i=0; i< n; i++)
+  {
+    val=va_arg(vl,double);
+    printf (" [%.2f]",val);
   }
-};
+  va_end(vl);
+  va_start(v2,n)
+  for (i=0; i< n; i++)
+  {
+    val=va_arg(v2,double);
+    printf (" [%.2f]",val);
+  }
+  va_end(v2);
+  printf ("\n");
+}
+
+int main ()
+{
+  PrintFloats (3,3.14159,2.71828,1.41421);
+  return 0;
+}
 </pre>
 				</div>
 			</div>
