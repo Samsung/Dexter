@@ -707,7 +707,7 @@ public class DexterUtil {
 	 * @return
 	 */
 	public static String refinePath(final String path) {
-		// TODO: 올바른 코드인가? 
+		// TODO: �щ컮瑜�肄붾뱶�멸�? 
 		if(Strings.isNullOrEmpty(path)){
 			return "";
 		}

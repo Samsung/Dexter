@@ -113,7 +113,7 @@ public class DexterBuilder extends IncrementalProjectBuilder{
 			return;
 		}
 
-		if (resource instanceof IFile && resource.getName().endsWith(".java")) {
+		if (isValidResource(resource)) {
 			final Stopwatch s = Stopwatch.createStarted();
 			
 			final IFile file = (IFile) resource;
@@ -125,6 +125,12 @@ public class DexterBuilder extends IncrementalProjectBuilder{
 				DexterEclipseActivator.LOG.error("Analysis Failed: " + file.getFullPath().toOSString() + " : " + e.getMessage(), e);
 			}
 		}
+	}
+	
+	private boolean isValidResource(IResource resource){
+		if(! (resource.getType() != IResource.FILE)) return false;
+		
+		return resource.getName().endsWith(".java");
 	}
 	
 	private void deleteDefect(final IResource resource){
