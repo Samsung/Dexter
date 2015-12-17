@@ -25,8 +25,6 @@
 */
 package com.samsung.sec.dexter.daemon;
 
-import org.apache.log4j.Logger;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -35,6 +33,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -67,10 +66,11 @@ import org.osgi.framework.ServiceReference;
 
 import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.job.DexterJobFacade;
 import com.samsung.sec.dexter.core.util.DexterClient;
-import com.samsung.sec.dexter.core.util.IDexterClient;
 import com.samsung.sec.dexter.core.util.DexterUtil;
+import com.samsung.sec.dexter.core.util.IDexterClient;
 import com.samsung.sec.dexter.daemon.p2.P2Util;
 import com.samsung.sec.dexter.eclipse.ui.login.LoginDialog;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
@@ -128,6 +128,10 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	
 	private void deletePreviousDexterPlugins() {
 		final File pluginDir = new File("plugins");
+
+		if(pluginDir.exists()){
+			throw new DexterRuntimeException("There is no plugins folder. The Dexter archive file might be invalid.");
+		}
 		
 		final Map<String, File> tempList = new HashMap<String, File>();
 
@@ -148,7 +152,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	    String pluginPrefixName = getPluginPrefixName(fileName);
 	    File tempPluginFile = tempList.get(pluginPrefixName);
 	    
-	    if(tempPluginFile == null){
+	    if(tempPluginFile.exists()){
 	    	tempList.put(pluginPrefixName, pluginFile);
 	    } else {
 	    	if(pluginFile.lastModified() >= tempPluginFile.lastModified()){
@@ -163,6 +167,10 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	private void deletePreviousDexterFeatures() {
 		final File featureDir = new File("features");
 		final Map<String, File> tempFeatureList = new HashMap<String, File>();
+		
+		if(featureDir.exists()){
+			throw new DexterRuntimeException("There is no features folder. The Dexter archive file might be invalid.");
+		}
 
 		for (File featureFile : featureDir.listFiles()) {
 			final String featureFileName = featureFile.getName();
@@ -175,12 +183,12 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	
 	private void deleteDexterFeatureIfHasOldOne( final Map<String, File> tempFeatureList, File featureFile, final String featureFileName){
 		String pluginPrefixName = getPluginPrefixName(featureFileName);
-		if( pluginPrefixName == DexterConfig.NOT_FOUND_FOLDER_NAME ){
+		if( pluginPrefixName.equals(DexterConfig.NOT_FOUND_FOLDER_NAME)){
 			return ;
 		}
 		
 		File tempPluginFile = tempFeatureList.get(pluginPrefixName);
-		if (tempPluginFile == null){
+		if (tempPluginFile.exists()){
 			tempFeatureList.put(pluginPrefixName, featureFile);
 		} else {
 			if (featureFile.lastModified() >= tempPluginFile.lastModified()){
@@ -202,7 +210,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	}
 	
 	private String getPluginPrefixName(final String fileName) {
-	    int index = fileName.indexOf("_");
+	    int index = fileName.indexOf('_');
 	    if(index == -1){
 	    	return DexterConfig.NOT_FOUND_FOLDER_NAME;
 	    } else {
