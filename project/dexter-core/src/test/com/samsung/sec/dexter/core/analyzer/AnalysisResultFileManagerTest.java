@@ -79,8 +79,11 @@ public class AnalysisResultFileManagerTest {
 		
 		boolean hasResultFile = false;
 		String resultFilePath = "";
-		for(File file : new File(tempDexterHomePath.getAbsolutePath() + "/result").listFiles()){
-			final String fileExtension = Files.getFileExtension(file.getAbsolutePath().toString());
+		
+		File resultFile = new File(tempDexterHomePath.getAbsolutePath() + "/result");
+		
+		for(File file : DexterUtil.getSubFiles(resultFile)){
+			final String fileExtension = Files.getFileExtension(file.getAbsolutePath());
 			if(file.isFile() && "json".equals(fileExtension)){
 				hasResultFile = true;
 				resultFilePath = file.getAbsolutePath();

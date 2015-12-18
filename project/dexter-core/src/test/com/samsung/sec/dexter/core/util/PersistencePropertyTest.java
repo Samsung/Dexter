@@ -29,7 +29,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Properties;
 
 import org.junit.Test;
@@ -39,7 +41,7 @@ import com.samsung.sec.dexter.core.config.DexterConfig;
 public class PersistencePropertyTest {
 	
 	@Test
-	public void test_writing() throws Exception {
+	public void test_writing() {
 		DexterConfig.getInstance().setDexterHome(".");
 		
 		PersistenceProperty p = PersistenceProperty.getInstance();
@@ -49,27 +51,54 @@ public class PersistencePropertyTest {
 		p.write(key, value);
 		
 		Properties prop = new Properties();
-		FileInputStream fis = new FileInputStream("./" + p.getPropertyFileName());
-		prop.load(fis);
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream("./" + p.getPropertyFileName());
+			prop.load(fis);
+			assertEquals(value, prop.get(key));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if(fis != null)
+				try {
+					fis.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		}
 		
-		assertEquals(value, prop.get(key));
-		
-		fis.close();
 		
 		deletePropertyFile(p);
 	}
 	
 	@Test
-	public void test_reading() throws Exception {
+	public void test_reading(){
 		String key = "test-key";
 		String value = "test-value";
 		
 		Properties prop = new Properties();
 		prop.put(key, value);
 		
-		FileOutputStream fos = new FileOutputStream("./dexter-core-config.properties");
-		prop.store(fos, null);
-		fos.close();
+		
+		FileOutputStream fos = null;
+		try {
+			fos = new FileOutputStream("./dexter-core-config.properties");
+			prop.store(fos, null);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(fos != null)
+					fos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
 		
 		DexterConfig.getInstance().setDexterHome(".");		
 		PersistenceProperty p = PersistenceProperty.getInstance();

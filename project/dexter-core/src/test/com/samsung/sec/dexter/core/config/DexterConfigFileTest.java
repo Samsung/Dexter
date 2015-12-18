@@ -65,8 +65,8 @@ public class DexterConfigFileTest {
 		DexterConfigFile dcf = new DexterConfigFile();
 		File cfgFile = new File("./not_exist_file_cfg.json");
 		try {
-			@SuppressWarnings("unused")
 			Map<String, Object> cfgMap = dcf.getConfigurationMap(cfgFile);
+			assertNotNull(cfgMap);
 			fail();
 		} catch (DexterRuntimeException e){
 			

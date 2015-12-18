@@ -61,7 +61,6 @@ import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.analyzer.EndOfAnalysisHandler;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
-import com.samsung.sec.dexter.core.metrics.CodeMetrics;
 
 public class DexterUtil {
 	public final static String LINE_SEPARATOR = System.getProperty("line.separator");
@@ -82,12 +81,12 @@ public class DexterUtil {
 
 	public final static String currentDateTime() {
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
-		return format.format(Calendar.getInstance().getTime()).toString();
+		return format.format(Calendar.getInstance().getTime());
 	}
 
 	public final static String currentDateTimeMillis() {
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-		return format.format(Calendar.getInstance().getTime()).toString();
+		return format.format(Calendar.getInstance().getTime());
 	}
 
 	private static String getPathSeparator() {
@@ -375,7 +374,7 @@ public class DexterUtil {
 				continue;
 			}
 
-			final int lastIndex = filePath.lastIndexOf("/");
+			final int lastIndex = filePath.lastIndexOf('/');
 			if (lastIndex > 0) {
 				String fileDir = filePath.substring(0, lastIndex);
 				if (!Strings.isNullOrEmpty(fileDir)) {
@@ -474,20 +473,7 @@ public class DexterUtil {
 		}
 	}
 
-	/*
-	 * public static synchronized String getRegistryStringForHCU(String homeKey,
-	 * String key){ return
-	 * Advapi32Util.registryGetStringValue(WinReg.HKEY_CURRENT_USER, homeKey,
-	 * key); }
-	 * 
-	 * public static synchronized void setRegistryStringForHCU(String homeKey,
-	 * String key, String value){
-	 * Advapi32Util.registrySetStringValue(WinReg.HKEY_CURRENT_USER, homeKey,
-	 * key, value); }
-	 */
-
 	/**
-	 * 
 	 * @param location
 	 *            path in the registry
 	 * @param key
@@ -495,9 +481,10 @@ public class DexterUtil {
 	 * @return registry value or null if not found
 	 */
 	public static final String readRegistry(final String location, final String key) {
+		Process process;
 		try {
-			final Process process = Runtime.getRuntime().exec("reg query " + '"' + location + "\" /v " + key);
-
+			process = Runtime.getRuntime().exec("reg query " + '"' + location + "\" /v " + key);
+			
 			final StreamReader reader = new StreamReader(process.getInputStream());
 			reader.start();
 			process.waitFor();
@@ -505,13 +492,14 @@ public class DexterUtil {
 
 			// Parse out the value
 			final String[] parsed = reader.getResult().split("\n");
+			
 			if (parsed.length > 3) {
 				return parsed[2].substring(parsed[2].indexOf("REG_SZ") + 6).trim();
 			}
-		} catch (Exception e) {
+		} catch (IOException | InterruptedException e) {
 			logger.warn(e.getMessage(), e);
 		}
-
+		
 		return "";
 	}
 
@@ -638,12 +626,12 @@ public class DexterUtil {
 	 */
 	private static void addSourceDir(final File dir, final List<String> result) {
 		final String dirName = dir.getName().toLowerCase();
-		if ("src".equals(dirName) || "source".equals(dirName)) {
+		if ("src".equalsIgnoreCase(dirName) || "source".equalsIgnoreCase(dirName)) {
 			result.add(dir.getPath());
 			return;
 		}
-
-		for(final File sub : dir.listFiles()) {
+		
+		for(final File sub : getSubFiles(dir)) {
 			if (sub.isDirectory()) {
 				addSourceDir(sub, result);
 			}
@@ -673,16 +661,30 @@ public class DexterUtil {
 	 */
 	private static void addHeaderDir(final File dir, final List<String> result) {
 		final String dirName = dir.getName().toLowerCase();
-		if ("src".equals(dirName) || "source".equals(dirName) || "inc".equals(dirName) || "include".equals(dirName) || "i".equals(dirName)) {
+		if ("src".equalsIgnoreCase(dirName) 
+				|| "source".equalsIgnoreCase(dirName) 
+				|| "inc".equalsIgnoreCase(dirName) 
+				|| "include".equalsIgnoreCase(dirName) 
+				|| "i".equalsIgnoreCase(dirName)) {
 			result.add(dir.getPath());
 			return;
 		}
 
-		for (final File sub : dir.listFiles()) {
+		for (final File sub : getSubFiles(dir)) {
 			if (sub.isDirectory()) {
 				addHeaderDir(sub, result);
 			}
 		}
+	}
+	
+	public static File[] getSubFiles(final File parentDir){
+		if(parentDir == null){
+			throw new DexterRuntimeException("parameter 'dir' is null");
+		}
+		
+		File[] files = parentDir.listFiles();
+		
+		return files == null ? new File[0] : files;
 	}
 
 	/**
@@ -986,15 +988,9 @@ public class DexterUtil {
 		assert Strings.isNullOrEmpty(contents) == false;
 		
 		Gson gson = new Gson();
-		return gson.fromJson(contents.toString(), Map.class);
+		return gson.fromJson(contents, Map.class);
 	}
 
-	@SuppressWarnings("unchecked")
-	public static Object getObjectFromJsonString(String jsonString, Class clazz) {
-		Gson gson = new Gson();
-		return gson.fromJson(jsonString, clazz);
-	}
-	
 	public static void deleteDirectory(File directory) throws IOException {
 			if (!directory.exists()) {
 				return;
