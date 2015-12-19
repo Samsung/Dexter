@@ -286,6 +286,8 @@ function initRestAPI(){
     /* Server Managing v1 */
     app.get('/api/v1/isServerAlive', checkServer);
     app.get('/api/v1/isServerAlive2', checkServer2);
+    app.get('/api/v2/server-status', checkServer2);
+    app.get('/api/v2/server-detailed-status/', getServerDetailedStatus);
     app.delete('/api/v1/server', stopServer);
     app.delete('/api/v1/dexter-db', auth, deleteDexterDatabase);
 
@@ -416,4 +418,13 @@ function checkServer (req, res){
 function checkServer2 (req, res){
     //res.writeHead(200, { 'Content-Type': 'application/json' });
     res.jsonp({"isAlive":"ok"});
+}
+
+function getServerDetailedStatus (req, res){
+    res.jsonp({
+        "isAlive":"ok",
+        "pid": process.pid,
+        "memory": process.memoryUsage(),
+        "uptime": process.uptime()
+    });
 }
