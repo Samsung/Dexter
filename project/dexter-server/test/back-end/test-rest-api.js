@@ -48,6 +48,7 @@ describe('RESTful API Test Suite', function() {
         var logStub = createLogStub();
         var authUtilStub = createAuthUtilStub();
         var analysisStub = createAnalysisStub();
+        var dexterUtilStub = createDexterUtilStub();
 
         server = proxyquire('../../server', {
             './util/database': databaseStub,
@@ -55,7 +56,8 @@ describe('RESTful API Test Suite', function() {
             './routes/analysis': analysisStub,
             './routes/config': configStub,
             './util/logging': logStub,
-            './util/auth-util': authUtilStub
+            './util/auth-util': authUtilStub,
+            './util/dexter-util': dexterUtilStub
         });
     }
 
@@ -142,15 +144,28 @@ describe('RESTful API Test Suite', function() {
         analysisStub.getCheckerAndDefects = function(req, res){ res.send(200); };
         analysisStub.getDevelopers = function(req, res){ res.send(200); };
 
-        /*
-
-         analysisStub. = function(req, res){ res.send(200); };
-
-         */
-
-
-
         return analysisStub;
+    }
+
+    function createDexterUtilStub(){
+        var stub = sinon.stub();
+        stub.getCliOptions = function (){
+            return {
+                options: {},
+                getCliValue : function(key, defaultValue){
+                    if(defaultValue) return defaultValue;
+                    else return "";
+                }
+            };
+        };
+
+        /*
+        stub.getCliValue = function(key, defaultValue){
+            if(defaultValue) return defaultValue;
+            else return "";
+        };*/
+
+        return stub;
     }
 
     after(function(){

@@ -25,6 +25,8 @@
  */
     
 var moment = require('moment');
+var log = require('../util/logging');
+var _ = require('lodash');
 
 // 20150414-153520
 exports.getCurrentTimeString = function () {
@@ -96,27 +98,76 @@ exports.wait = function (ms){
 };
 
 exports.getLocalhostIp = function(callback){
-    var ipAddresses = [];
+    callback(getLocalIPAddress());
+};
 
+/* refer to : http://stackoverflow.com/questions/3653065/get-local-ip-address-in-node-js */
+exports.getLocalIPAddress = getLocalIPAddress;
+
+function getLocalIPAddress(){
     var interfaces = require('os').networkInterfaces();
     for (var devName in interfaces) {
         var iface = interfaces[devName];
+
         for (var i = 0; i < iface.length; i++) {
             var alias = iface[i];
-            if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal) {
-                ipAddresses.push(alias.address);
-            }
+            if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal)
+                return alias.address;
         }
     }
 
-    if(ipAddresses.length == 0){
-        callback(undefined);
-    }else{
-        callback(ipAddresses[0]);
-    }
-
+    return '0.0.0.0';
 };
 
+exports.getCliOptions = function() {
+    var options = {};
+
+    _(process.argv).forEach(function(item){
+        var option = item.split('=');
+
+        if(isValidCliOption(option)){
+            option[0] = _.trim(option[0])
+            var key = option[0].substr(1, (option[0].length-1));
+            options[key] = _.trim(option[1]);
+        }
+    }).value();
+
+    return {
+        options: options,
+        getValue: function (key, defaultValue){
+            if(!key || _.trim(key).length === 0){
+                return undefined;
+            }
+
+            var _key = _.trim(key);
+
+            if(this.options[_key]){
+                return this.options[_key];
+            } else if(defaultValue){
+                this.options[_key] = defaultValue;
+                return defaultValue;
+            } else {
+                return undefined;
+            }
+        }
+    };
+};
+
+function isValidCliOption(option){
+    if(_.isArray(option) === false || option.length !== 2) return false;
+
+    var key = _.trim(option[0]);
+    var value = _.trim(option[1]);
+
+    if(key.length < 2) return false;
+    if(value.length < 1) return false;
+
+    return key.startsWith('-');
+}
+
+
+
+/*
 exports.getCliOptions = function() {
     var options = {};
 
@@ -134,4 +185,4 @@ exports.getCliOptions = function() {
             return this.options[key] === undefined ? defaultValue : this.options[key];
         }
     };
-};
+};*/
