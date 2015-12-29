@@ -238,6 +238,7 @@ public class Main {
 	private void setStandAlone(final CommandLine cmd) {
 	    if (cmd.hasOption("s")){
 			this.isStandAlone = true;
+			config.setStandalone(true);
 		}
     }
 
@@ -248,6 +249,7 @@ public class Main {
     }
 
 	private void setUserAndPassword(final CommandLine cmd) {
+		if(isStandAlone) return; 
 	    if(cmd.hasOption("u") && cmd.hasOption("p")){
 			userId = cmd.getOptionValue("u");
 			password = cmd.getOptionValue("p");

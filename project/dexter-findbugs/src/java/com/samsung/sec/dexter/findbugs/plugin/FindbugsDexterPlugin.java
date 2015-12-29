@@ -62,7 +62,7 @@ public class FindbugsDexterPlugin implements IDexterPlugin {
     	if(this.pluginDescription == null)
     	{
     		this.pluginDescription = new PluginDescription(PLUGIN_NAME, PLUGIN_NAME, 
-    				new PluginVersion(0,9,1), 
+    				new PluginVersion(0,9,2), 
     				DexterConfig.LANGUAGE.JAVA, "Dexter plug-in for FindBugs");
     	}
 	    return this.pluginDescription;

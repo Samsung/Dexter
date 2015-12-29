@@ -33,6 +33,7 @@ import org.apache.log4j.Logger;
 //import com.google.gson.Gson;
 import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.util.DexterClient;
+import com.samsung.sec.dexter.core.util.IDexterClient;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.IDexterPluginInitializer;
@@ -74,10 +75,12 @@ public class DexterPluginManager implements IDexterHomeListener{
 		
 		this.isInitialized = false;
 		pluginList = new ArrayList<IDexterPlugin>(0);
+		IDexterClient client = DexterClient.getInstance();
 		
 		initializer.init(pluginList);
 		initSupportingFileExetensions();
-		if(!DexterConfig.getInstance().isStandalone()){
+		if(!DexterConfig.getInstance().isStandalone()
+				&& client.isServerAlive()){  
 			updateCheckerConfig();
 		}
 		this.isInitialized = true;

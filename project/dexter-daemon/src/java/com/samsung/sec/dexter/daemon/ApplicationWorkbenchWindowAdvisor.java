@@ -129,7 +129,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	private void deletePreviousDexterPlugins() {
 		final File pluginDir = new File("plugins");
 
-		if(pluginDir.exists()){
+		if(!pluginDir.exists()){
 			throw new DexterRuntimeException("There is no plugins folder. The Dexter archive file might be invalid.");
 		}
 		
@@ -152,7 +152,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	    String pluginPrefixName = getPluginPrefixName(fileName);
 	    File tempPluginFile = tempList.get(pluginPrefixName);
 	    
-	    if(tempPluginFile.exists()){
+	    if(tempPluginFile == null){
 	    	tempList.put(pluginPrefixName, pluginFile);
 	    } else {
 	    	if(pluginFile.lastModified() >= tempPluginFile.lastModified()){
@@ -168,7 +168,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		final File featureDir = new File("features");
 		final Map<String, File> tempFeatureList = new HashMap<String, File>();
 		
-		if(featureDir.exists()){
+		if(!featureDir.exists()){
 			throw new DexterRuntimeException("There is no features folder. The Dexter archive file might be invalid.");
 		}
 
@@ -188,7 +188,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		}
 		
 		File tempPluginFile = tempFeatureList.get(pluginPrefixName);
-		if (tempPluginFile.exists()){
+		if (tempPluginFile == null){
 			tempFeatureList.put(pluginPrefixName, featureFile);
 		} else {
 			if (featureFile.lastModified() >= tempPluginFile.lastModified()){

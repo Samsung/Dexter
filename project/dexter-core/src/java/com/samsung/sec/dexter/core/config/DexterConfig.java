@@ -506,6 +506,10 @@ public class DexterConfig {
 
 		LOG.error("Standalone mode: " + isStandalone);
 		this.isStandalone = isStandalone;
+		if(this.runMode.equals(RunMode.CLI)){
+			return;
+		}
+		
 		if(this.isStandalone)
 			setDexterHome(getDefaultDexterHome());
 		

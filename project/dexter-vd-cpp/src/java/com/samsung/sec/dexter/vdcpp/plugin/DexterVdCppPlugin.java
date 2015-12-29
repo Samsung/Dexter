@@ -1,28 +1,3 @@
-/**
- * Copyright (c) 2014 Samsung Electronics, Inc.,
- * All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * 
- * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
- * 
- * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
 package com.samsung.sec.dexter.vdcpp.plugin;
 
 import java.io.IOException;
@@ -31,17 +6,14 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
 import net.xeoh.plugins.base.annotations.PluginImplementation;
-
 import org.apache.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
-
 import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
-import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
+import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory ;
 import com.samsung.sec.dexter.core.checker.Checker;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
@@ -65,7 +37,7 @@ public class DexterVdCppPlugin implements IDexterPlugin {
 	private Map<String, ICheckerLogic> checkerLogicMap;
 	
 	private ITranslationUnitFactory unitFactory = new TranslationUnitFactory();
-	private IAnalysisEntityFactory analysisEntityFactory = new AnalysisEntityFactory();
+	private IAnalysisEntityFactory  analysisEntityFactory = new AnalysisEntityFactory();
 	
 	public DexterVdCppPlugin() {
 	}
@@ -101,9 +73,9 @@ public class DexterVdCppPlugin implements IDexterPlugin {
         }
     }
 	
-	protected synchronized void initCheckerLogicMap(final Properties checkerLogicProperties){
-		assert this.checkerConfig != null;
-		
+	// removed synchronized statement due to thread locking for too much time (dexter bug). 
+	protected void initCheckerLogicMap(final Properties checkerLogicProperties){
+		assert this.checkerConfig != null;		
 		checkerLogicMap = new HashMap<String, ICheckerLogic>();
 		
 		for(Checker checker : this.checkerConfig.getCheckerList()){
@@ -138,7 +110,7 @@ public class DexterVdCppPlugin implements IDexterPlugin {
 	@Override
 	public PluginDescription getDexterPluginDescription() {
 		return new PluginDescription("Samsung Electroincs", PLUGIN_NAME, 
-				new  PluginVersion(0, 9, 1), 
+				new  PluginVersion(0, 9, 2), 
 				DexterConfig.LANGUAGE.CPP, 
 				"");
 	}
