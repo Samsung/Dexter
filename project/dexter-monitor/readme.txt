@@ -1,6 +1,9 @@
 dexter-monitor is to monitor web servers and check if the server is alive
 
 * how to use
+0. install modules for node
+ - $ npm install
+ 
 1. write config.json file
  - email property should be set properly in your environment(SMTP or WebService)
  - I tested only WebService version.
