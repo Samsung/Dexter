@@ -32,8 +32,8 @@ var logFilePath = "./log/dexter-server.log";
 var logger;
 var _prefix;
 
-exports.init = function (serverName, port){
-    _prefix = serverName + '@' + port + " : ";
+exports.init = function (){
+    _prefix = global.runOptions.serverName + '@' + global.runOptions.port + " : ";
 
     if(!fs.existsSync("./log")){
         fs.mkdirSync("./log");
@@ -56,12 +56,11 @@ exports.init = function (serverName, port){
         ]
     });
 
-    /*
+
     if(process.env.NODE_ENV === 'production'){
         winston.remove(winston.transports.Console);
         logger.remove(winston.transports.Console);
     }
-    */
 
     logger.setLevels(winston.config.syslog.levels);
 };

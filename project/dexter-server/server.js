@@ -39,7 +39,7 @@ var config = require("./routes/config");
 
 var app = express();
 
-var _runOptions = {
+global.runOptions = {
     port:4982,
     databaseHost:'localhost',
     databasePort:3306,
@@ -64,6 +64,8 @@ var noNeedAccessLogUriList = [
     '/api/accounts/checkLogin',
     '/api/v1/isServerAlive',
     '/api/v1/isServerAlive2',
+    '/api/v2/server-status',
+    '/api/v2/server-detailed-status',
     '/api/v1/analysis/snapshot/source',
     '/api/v1/version/false-alarm',
     '/api/v1/accounts/checkLogin'
@@ -86,15 +88,16 @@ function initialize(){
 function setRunOptionsByCliOptions(){
     var cliOptions = util.getCliOptions();
 
-    _runOptions.port = cliOptions.getCliValue('p', 4982);
-    _runOptions.databaseHost = cliOptions.getCliValue('database.host', 'localhost');
-    _runOptions.databasePort = cliOptions.getCliValue('database.port', 3306);
-    _runOptions.databaseUser = cliOptions.getCliValue('database.user', '');
-    _runOptions.databasePassword = cliOptions.getCliValue('database.password', '');
-    _runOptions.databaseAdminUser = cliOptions.getCliValue('database.admin.user', '');
-    _runOptions.databaseAdminPassword = cliOptions.getCliValue('database.admin.password', '');
-    _runOptions.databaseName = cliOptions.getCliValue('database.name', '');
-    _runOptions.serverName = cliOptions.getCliValue('server.name', 'dexter-server-default');
+    global.runOptions.port = cliOptions.getValue('p', 4982);
+    global.runOptions.databaseHost = cliOptions.getValue('database.host', 'localhost');
+    global.runOptions.databasePort = cliOptions.getValue('database.port', 3306);
+    global.runOptions.databaseUser = cliOptions.getValue('database.user', '');
+    global.runOptions.databasePassword = cliOptions.getValue('database.password', '');
+    global.runOptions.databaseAdminUser = cliOptions.getValue('database.admin.user', '');
+    global.runOptions.databaseAdminPassword = cliOptions.getValue('database.admin.password', '');
+    global.runOptions.databaseName = cliOptions.getValue('database.name', '');
+    global.runOptions.serverName = cliOptions.getValue('server.name', 'dexter-server-default');
+    global.runOptions.serverIP = util.getLocalIPAddress();
 }
 
 function setExecutionMode(){
@@ -105,7 +108,6 @@ function setExecutionMode(){
 
 function setAppConfigure(){
     app.configure(function () {
-        app.set('_runOptions', _runOptions);
         app.set("jsonp callback", true);
         app.set('views', path.join(__dirname, 'views'));
         app.set('view engine', 'jade');
@@ -135,8 +137,8 @@ function setAppConfigure(){
 }
 
 function initModules(){
-    log.init(_runOptions.serverName, _runOptions.port);
-    database.init(_runOptions);
+    log.init();
+    database.init();
     account.init();
 }
 
@@ -255,13 +257,13 @@ function initRestAPI(){
     app.get('/api/version/false-alarm', analysis.getFalseAlarmVersion);
     app.get('/api/config/update-url/_32', function(req, res){
         util.getLocalhostIp(function(localhostIp) {
-            var url = "http://"+localhostIp + ":" + _runOptions.port + "/plugin/32";
+            var url = "http://"+localhostIp + ":" + global.runOptions.port + "/plugin/32";
             res.send(200, {status: "ok", "url": url });
         });
     });
     app.get('/api/config/update-url/_64', function(req, res){
         util.getLocalhostIp(function(localhostIp) {
-            res.send(200, {status: "ok", "url": "http://"+ localhostIp + ":" +  _runOptions.port + "/plugin/64" });
+            res.send(200, {status: "ok", "url": "http://"+ localhostIp + ":" +  global.runOptions.port + "/plugin/64" });
         });
     });
 
@@ -287,7 +289,7 @@ function initRestAPI(){
     app.get('/api/v1/isServerAlive', checkServer);
     app.get('/api/v1/isServerAlive2', checkServer2);
     app.get('/api/v2/server-status', checkServer2);
-    app.get('/api/v2/server-detailed-status/', getServerDetailedStatus);
+    app.get('/api/v2/server-detailed-status', getServerDetailedStatus);
     app.delete('/api/v1/server', stopServer);
     app.delete('/api/v1/dexter-db', auth, deleteDexterDatabase);
 
@@ -345,12 +347,12 @@ function initRestAPI(){
     app.get('/api/v1/version/false-alarm', analysis.getFalseAlarmVersion);
     app.get('/api/v1/config/update-url/_32', function(req, res){
         util.getLocalhostIp(function(localhostIp) {
-            res.send(200, {status: "ok", "url": "http://"+localhostIp + ":" + _runOptions.port + "/plugin/32" });
+            res.send(200, {status: "ok", "url": "http://"+localhostIp + ":" + global.runOptions.port + "/plugin/32" });
         });
     });
     app.get('/api/v1/config/update-url/_64', function(req, res){
         util.getLocalhostIp(function(localhostIp) {
-            res.send(200, {status: "ok", "url": "http://"+ localhostIp + ":" +  _runOptions.port + "/plugin/64" });
+            res.send(200, {status: "ok", "url": "http://"+ localhostIp + ":" +  global.runOptions.port + "/plugin/64" });
         });
     });
 
@@ -363,8 +365,8 @@ function initRestAPI(){
 function startServer(){
     http.globalAgent.maxSockets = Infinity;  // 5, 10, ...
 
-    dexterServer = http.createServer(app).listen(_runOptions.port, function(){
-        log.info('Dexter server listening on port ' + _runOptions.port);
+    dexterServer = http.createServer(app).listen(global.runOptions.port, function(){
+        log.info('Dexter server listening on port ' + global.runOptions.port);
         log.info('Dexter server location : ' + __dirname);
         log.info("Execution Mode : " + app.get('env'));
     });
@@ -380,7 +382,7 @@ function stopServer (req, res){
         return;
     }
 
-    log.info('Dexter server is closing on port ' + _runOptions.port);
+    log.info('Dexter server is closing on port ' + global.runOptions.port);
 
     if(res != undefined) res.send("ok");
 
@@ -425,6 +427,8 @@ function getServerDetailedStatus (req, res){
         "isAlive":"ok",
         "pid": process.pid,
         "memory": process.memoryUsage(),
-        "uptime": process.uptime()
+        "uptime": process.uptime(),
+        "ip": global.runOptions.serverIP,
+        "port": global.runOptions.port
     });
 }

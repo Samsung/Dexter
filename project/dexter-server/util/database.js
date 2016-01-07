@@ -31,33 +31,30 @@ var util = require('./dexter-util');
 var _databasePool;
 
 
-var _runOptions;
-exports.init = function(runOptions){
-    _runOptions = runOptions;
-
+exports.init = function(){
     setRunOptionsImmutable();
     initDatabase();
 };
 
 function setRunOptionsImmutable(){
-    Object.freeze(_runOptions);
+    Object.freeze(global.runOptions);
 }
 
 exports.getProjectName = function(req, res){
     res.send({
         status : "ok",
-        projectName :  _runOptions.databaseName
+        projectName :  global.runOptions.databaseName
     });
 };
 
 exports.deleteDexterDatabase = function(){
     // TODO : root account info from server.conf
-    _runOptions.databaseAdminUser = 'dexterAdmin';
-    _runOptions.databaseAdminPassword = "dex2admin";
+    global.runOptions.databaseAdminUser = 'dexterAdmin';
+    global.runOptions.databaseAdminPassword = "dex2admin";
 
     util.getLocalhostIp(function(localhostIp){
         var scripts = [
-                "DROP DATABASE " + _runOptions.databaseName
+                "DROP DATABASE " + global.runOptions.databaseName
         ];
 
         runMysqlScript(scripts, 0);
@@ -76,7 +73,7 @@ function initDatabase(){
                 // TODO fix and test below codes
                 //installDexterDatabase(); return;
             } else if (err.code === "ER_ACCESS_DENIED_ERROR") {
-                logging.error("You can not access Dexter Database by account '" + _runOptions.databaseUser + "'.");
+                logging.error("You can not access Dexter Database by account '" + global.runOptions.databaseUser + "'.");
                 logging.error("You have to create and grant an account for Dexter Database in MySql console.")
                 logging.error("mysql> create user user_id identified by user_password;");
                 logging.error("mysql> grant all on 'dexter_db_name'.* to 'user_id'@'dexter_server_ip' identified by 'user_password';");
@@ -94,34 +91,34 @@ function initDatabase(){
 function initDbPool(){
     _databasePool = mysql.createPool({
         /*    debug: true, */
-        host : _runOptions.databaseHost,
-        port : _runOptions.databasePort,
-        user : _runOptions.databaseUser,
-        password: _runOptions.databasePassword,
-        database : _runOptions.databaseName
+        host : global.runOptions.databaseHost,
+        port : global.runOptions.databasePort,
+        user : global.runOptions.databaseUser,
+        password: global.runOptions.databasePassword,
+        database : global.runOptions.databaseName
         /*connectTimeout: 10000 */
     });
 
     _databasePool.query('SELECT 1 + 1 AS solution', function(err) {
         if (err){
-            logging.error('Dexter Database Connection Failed : ' + _runOptions.getDbUrl())
+            logging.error('Dexter Database Connection Failed : ' + global.runOptions.getDbUrl())
         } else {
-            logging.info('Dexter Database Connected : ' + _runOptions.getDbUrl());
+            logging.info('Dexter Database Connected : ' + global.runOptions.getDbUrl());
         }
     });
 }
 
 // TODO should move to dexter-monitor module.
 function installDexterDatabase(){
-    logging.info("There is no Dexter Database(" + _runOptions.databaseName + "). Thus Dexter Database will be installed.");
+    logging.info("There is no Dexter Database(" + global.runOptions.databaseName + "). Thus Dexter Database will be installed.");
 
     util.getLocalhostIp(function(localhostIp){
         var scripts = [
-                "CREATE DATABASE " + _runOptions.databaseName,
-                "CREATE USER '" + _runOptions.databaseUser + "'@'" + localhostIp
-                    + "' IDENTIFIED BY '" + _runOptions.databasePassword + "'",
-                "GRANT ALL PRIVILEGES ON " + _runOptions.databaseName + ".* TO '" + _runOptions.databaseUser
-                    + "'@'" + localhostIp + "' IDENTIFIED BY '" + _runOptions.databasePassword + "'"
+                "CREATE DATABASE " + global.runOptions.databaseName,
+                "CREATE USER '" + global.runOptions.databaseUser + "'@'" + localhostIp
+                    + "' IDENTIFIED BY '" + global.runOptions.databasePassword + "'",
+                "GRANT ALL PRIVILEGES ON " + global.runOptions.databaseName + ".* TO '" + global.runOptions.databaseUser
+                    + "'@'" + localhostIp + "' IDENTIFIED BY '" + global.runOptions.databasePassword + "'"
         ];
 
         runMysqlScript(scripts, 0);
@@ -133,9 +130,9 @@ function runMysqlScript(scripts, index){
         return;
     }
 
-    var cmd = "mysql -h " + _runOptions.databaseHost
-        + " -u " + _runOptions.databaseAdminUser
-        + " -p" + _runOptions.databaseAdminPassword + " -e \"" + scripts[index] + "\"";
+    var cmd = "mysql -h " + global.runOptions.databaseHost
+        + " -u " + global.runOptions.databaseAdminUser
+        + " -p" + global.runOptions.databaseAdminPassword + " -e \"" + scripts[index] + "\"";
 
     logging.info(cmd);
 
@@ -164,10 +161,10 @@ function runMysqlScript(scripts, index){
 
 
 function execMysqlScript(scriptFilePath){
-    var cmd = "mysql -h " + _runOptions.databaseHost
-        + " -u " + _runOptions.databaseUser
-        + " -p" + _runOptions.databasePassword
-        + " " + _runOptions.databaseName + " < " + scriptFilePath;
+    var cmd = "mysql -h " + global.runOptions.databaseHost
+        + " -u " + global.runOptions.databaseUser
+        + " -p" + global.runOptions.databasePassword
+        + " " + global.runOptions.databaseName + " < " + scriptFilePath;
 
     var exec = require('child_process').exec;
     exec(cmd, function(error, stdout, stderr){
@@ -189,31 +186,8 @@ function execMysqlScript(scriptFilePath){
     });
 }
 
-/*
-function execMysqlCmd(script){
-    var cmd = "mysql -h " + _runOptions.databaseHost
-        + " -u " + _runOptions.databaseAdminUser
-        + " -p" + _runOptions.databaseAdminPassword
-        + " -e \"" + script + "\"";
-
-    var exec = require('child_process').exec;
-    exec(cmd, function(error, stdout, stderr){
-        if(error){
-            if(error.code != 1){
-                logging.error(error);
-                logging.error("Execute Failed: " + cmd);
-                return;
-            }
-        }
-
-        logging.info("Executed: " + cmd);
-    });
-}
-*/
-
-
 exports.getDatabaseName = function(){
-    return _runOptions.databaseName;
+    return global.runOptions.databaseName;
 };
 
 exports.exec = function (sql, callback){

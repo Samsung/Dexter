@@ -108,8 +108,8 @@ describe('RESTful API Test Suite', function() {
     function createLogStub(){
         var logStub = sinon.stub();
         logStub.info = function(message){};
-        logStub.warn = function(message){};
-        logStub.error = function(message){};
+        logStub.warn = function(message){console.log(message);};
+        logStub.error = function(message){console.log(message);};
         logStub.debug = function(message){};
 
         return logStub;
