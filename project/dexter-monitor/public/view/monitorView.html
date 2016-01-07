@@ -1,0 +1,10 @@
+<div>
+    <h3><p>Server Status</p></h3>
+    <h5><span style="background-color:red; color:white;">{{errorMessage}}</span></h5>
+    <hr>
+    <h4>Inactive List: {{inactiveServers.length}}</h4>
+    <div id="inactiveServerListGrid" ng-grid="inactiveServerGridOptions" style="min-height: 200px; overflow-y: auto"></div>
+    <hr>
+    <h4>Active List: {{activeServers.length}}</h4>
+    <div id="activeServerListGrid" ng-grid="activeServerGridOptions" style="min-height: 200px; overflow-y: auto"></div>
+</div>

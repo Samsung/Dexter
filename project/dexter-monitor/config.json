@@ -1,0 +1,13 @@
+{
+    "version":"2.3.31",
+    "appName":"Dexter Monitor",
+    "description":"This program will monitor and control servers",
+    "serverStatusCheckInterval":5,
+    "serverDetailedStatusCheckInterval":5,
+    "email":{
+        "type":"api",
+        "apiUrl":"http://168.219.243.31:5003/api/v1/email",
+        "defaultSenderEmail":"min.ho.kim@samsung.com",
+        "defaultSenderName":"MinHo Kim"
+    }
+}

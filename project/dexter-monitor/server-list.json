@@ -1,0 +1,12 @@
+[
+  {
+    "type": "Your Server Type (top category)",
+    "group": "Your Server Group (sub category)",
+    "name": "Your Server Name and Short Information",
+    "heartbeat": "Web Service URL to check if your server is alive",
+    "heartbeatInDetail": "Web Service URL to gather server resource status such as CPU, Memory, IP, Port, etc",
+    "emailingWhenServerDead": true,
+    "emailList": [ "min.ho.kim@samsung.com" ],
+    "serverAdministrator": "MinHo Kim - min.ho.kim@samsung.com"
+  }
+]

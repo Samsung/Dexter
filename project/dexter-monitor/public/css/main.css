@@ -1,0 +1,26 @@
+.ngViewport.ng-scope {
+    height: auto !important;
+    overflow-y: hidden;
+}
+
+.ngTopPanel.ng-scope, .ngHeaderContainer{
+    width: auto !important;
+}
+
+.green {
+    background-color: green;
+    color: white;
+}
+
+.red {
+    background-color: red;
+    color: white;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.input-text-box {
+    margin-right:10px;
+}

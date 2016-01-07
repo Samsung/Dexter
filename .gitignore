@@ -36,3 +36,7 @@ project/dexter-server/**/workspace.xml
 project/dexter-server/.idea/workspace.xml
 project/dexter-server/log/
 project/.gradle/
+project/dexter-monitor/node_modules/
+project/dexter-monitor/.idea/
+project/dexter-monitor/log/
+project/dexter-monitor/dist/

@@ -1,0 +1,26 @@
+[
+    {
+        "type": "Dexter Server",
+        "group": "SE",
+        "name": "Test Dexter Server for VD",
+        "heartbeat": "http://localhost:4982/api/v2/server-status",
+        "heartbeatInDetail": "http://localhost:4983/api/v2/server-detailed-status",
+        "emailingWhenServerDead": true,
+        "emailList": [
+                "min.ho.kim@samsung.com"
+            ],
+        "serverAdministrator": "MinHo Kim, min.ho.kim@samsung.com"
+    },
+    {
+        "type": "Dexter Server",
+        "group": "SE",
+        "name": "Test Dexter Server for VD2",
+        "heartbeat": "http://localhost:4983/api/v2/server-status",
+        "heartbeatInDetail": "http://localhost:4983/api/v2/server-detailed-status",
+        "emailingWhenServerDead": true,
+        "emailList": [
+            "min.ho.kim@samsung.com"
+        ],
+        "serverAdministrator": "MinHo Kim, min.ho.kim@samsung.com"
+    }
+]
