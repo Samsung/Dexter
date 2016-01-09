@@ -49,5 +49,6 @@ Export-Package: com.samsung.sec.dexter.core,
  com.samsung.sec.dexter.util
 Bundle-Vendor: Samsung Electronics VD SE Lab
 Bundle-Activator: com.samsung.sec.dexter.core.DexterCoreActivator
-Require-Bundle: org.eclipse.core.runtime
+Require-Bundle: org.eclipse.core.runtime,
+ com.ibm.icu
 Bundle-ActivationPolicy: lazy

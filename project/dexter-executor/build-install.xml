@@ -110,6 +110,8 @@
 			<zipfileset excludes="META-INF/*.SF" src="${core-lib-path}/org.eclipse.core.resources_3.7.101.v20120125-1505.jar"/>
 			<zipfileset excludes="META-INF/*.SF" src="${core-lib-path}/org.eclipse.core.jobs_3.5.1.R36x_v20100824.jar"/>
 			<zipfileset excludes="META-INF/*.SF" src="${core-lib-path}/org.eclipse.core.runtime_3.6.0.v20100505.jar"/>
+			<zipfileset excludes="META-INF/*.SF" src="${core-lib-path}/org.eclipse.core.runtime_3.6.0.v20100505.jar"/>
+			<zipfileset excludes="META-INF/*.SF" src="${core-lib-path}/com.ibm.icu_4.4.2.v20110823.jar"/>
 			<zipfileset excludes="META-INF/*.SF" src="${core-lib-path}/org.eclipse.osgi_3.6.2.R36x_v20110210.jar"/>
 		</jar>
 	</target>

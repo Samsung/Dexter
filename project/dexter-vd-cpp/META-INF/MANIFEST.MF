@@ -27,3 +27,4 @@ Bundle-ClassPath: .,
  lib/jspf/jspf.remote.xmlrpc-1.0.2.jar,
  lib/jspf/jspf.remote.xmlrpcdelight-1.0.2.jar,
  lib/cdt/org.eclipse.cdt.core_5.9.1.201502131403.jar
+Import-Package: com.ibm.icu.text
