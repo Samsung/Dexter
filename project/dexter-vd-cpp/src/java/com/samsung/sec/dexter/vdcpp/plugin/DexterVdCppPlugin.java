@@ -31,17 +31,14 @@ import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-
 import net.xeoh.plugins.base.annotations.PluginImplementation;
-
 import org.apache.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
-
 import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
-import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
+import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory ;
 import com.samsung.sec.dexter.core.checker.Checker;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
@@ -65,7 +62,7 @@ public class DexterVdCppPlugin implements IDexterPlugin {
 	private Map<String, ICheckerLogic> checkerLogicMap;
 	
 	private ITranslationUnitFactory unitFactory = new TranslationUnitFactory();
-	private IAnalysisEntityFactory analysisEntityFactory = new AnalysisEntityFactory();
+	private IAnalysisEntityFactory  analysisEntityFactory = new AnalysisEntityFactory();
 	
 	public DexterVdCppPlugin() {
 	}
@@ -101,9 +98,9 @@ public class DexterVdCppPlugin implements IDexterPlugin {
         }
     }
 	
-	protected synchronized void initCheckerLogicMap(final Properties checkerLogicProperties){
-		assert this.checkerConfig != null;
-		
+	// removed synchronized statement due to thread locking for too much time (dexter bug). 
+	protected void initCheckerLogicMap(final Properties checkerLogicProperties){
+		assert this.checkerConfig != null;		
 		checkerLogicMap = new HashMap<String, ICheckerLogic>();
 		
 		for(Checker checker : this.checkerConfig.getCheckerList()){
@@ -138,7 +135,7 @@ public class DexterVdCppPlugin implements IDexterPlugin {
 	@Override
 	public PluginDescription getDexterPluginDescription() {
 		return new PluginDescription("Samsung Electroincs", PLUGIN_NAME, 
-				new  PluginVersion(0, 9, 1), 
+				new  PluginVersion(0, 9, 2), 
 				DexterConfig.LANGUAGE.CPP, 
 				"");
 	}

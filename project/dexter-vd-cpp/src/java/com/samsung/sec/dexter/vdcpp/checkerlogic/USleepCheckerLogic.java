@@ -49,13 +49,14 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.checker.Checker;
 import com.samsung.sec.dexter.core.defect.PreOccurence;
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.vdcpp.plugin.DexterVdCppPlugin;
 import com.samsung.sec.dexter.vdcpp.util.CppUtil;
 
 
 public class USleepCheckerLogic implements ICheckerLogic{
 
-	private int SleepTime;
+	private int sleepTime;
 	private IASTTranslationUnit translationUnit;		
 
 
@@ -63,7 +64,7 @@ public class USleepCheckerLogic implements ICheckerLogic{
 	public void analyze(final AnalysisConfig config, final AnalysisResult result, 
 			final Checker checker, IASTTranslationUnit unit) {
 		translationUnit =unit;		
-		SleepTime =Integer.valueOf(checker.getProperty("value"));
+		sleepTime =Integer.valueOf(checker.getProperty("value"));
 		ASTVisitor visitor = createVisitor(config, result, checker);
 		visitor.shouldVisitDeclarations = true;
 		unit.accept(visitor);
@@ -91,83 +92,106 @@ public class USleepCheckerLogic implements ICheckerLogic{
 
 						if(astExpression instanceof IASTFunctionCallExpression)
 						{				
-							IASTExpression exp =   ((IASTFunctionCallExpression) astExpression).getFunctionNameExpression();		
-
-							String functionName =exp.getRawSignature();
-
-							if(exp instanceof IASTIdExpression)
-							{
-								functionName =((IASTIdExpression) exp).getName().toString();
-							}
-
-							if(functionName.equals("usleep"))
-							{
-								IASTInitializerClause[] expParameters =((IASTFunctionCallExpression) astExpression).getArguments();
-								for (IASTInitializerClause expParameter : expParameters)
-								{								
-									if(expParameter instanceof IASTLiteralExpression)
-									{
-
-										int value =Integer.valueOf(expParameter.toString());
-										if(value <SleepTime)
-										{
-
-											String msg ="checkUsleep function aggument "+expParameter.toString()+ "  should be greater than "+SleepTime+ " to avoid performance issue;";
-											fillDefectData( config, result,checker,expParameter.getFileLocation(),msg,expParameter.toString());
-
-										}
-
-									}
-									else if(expParameter instanceof IASTIdExpression)
-									{
-										final IBinding binding = ((IASTIdExpression) expParameter).getName().resolveBinding();
-										if ((binding != null) )
-										{
-											final IASTName[] references1 = translationUnit.getDeclarationsInAST(binding);	
-
-											for (IASTName reference : references1)
-											{
-												IASTNode node =reference.getParent();
-
-												if(node instanceof IASTDeclarator) 
-												{
-													IASTInitializer inst =((IASTDeclarator)node).getInitializer();
-
-													if(inst instanceof  CPPASTEqualsInitializer)													
-													{
-														expParameter = ((CPPASTEqualsInitializer)inst).getInitializerClause();
-														if(expParameter instanceof IASTLiteralExpression)
-														{
-															try
-															{
-																int value =Integer.valueOf(expParameter.toString());
-																if(value <SleepTime)
-																{											
-																	String msg ="argument"+ expParameter.toString()+"  in checkUsleep function should be greater than "+SleepTime+" to avoid performance issue;";
-																	fillDefectData( config, result,checker,astExpression.getFileLocation(),msg,expParameter.toString());
-																}
-															}
-															catch(Exception ex)
-															{
-																ex.getMessage();
-															}
-
-														}
-													}
-
-												}
-											}
-
-										}
-									}
-								}
-
-							}
+							visitFunctioncallExpressions(config, result,
+									checker, astExpression);
 
 						}
 
 						return ASTVisitor.PROCESS_CONTINUE;
 
+					}
+
+					private void visitFunctioncallExpressions(
+							final AnalysisConfig config,
+							final AnalysisResult result, final Checker checker,
+							IASTExpression astExpression) {
+						IASTExpression functionCallExpression =   ((IASTFunctionCallExpression) astExpression).getFunctionNameExpression();		
+
+						String functionName =functionCallExpression.getRawSignature();
+
+						if(functionCallExpression instanceof IASTIdExpression)
+						{
+							functionName =((IASTIdExpression) functionCallExpression).getName().toString();
+						}
+
+						if(functionName.equals("usleep"))
+						{
+							IASTInitializerClause[] expParameters =((IASTFunctionCallExpression) astExpression).getArguments();
+							for (IASTInitializerClause expParameter : expParameters)
+							{								
+								if(expParameter instanceof IASTLiteralExpression)
+								{
+
+									int value =Integer.valueOf(expParameter.toString());
+									if(value <sleepTime)
+									{
+
+										String msg ="checkUsleep function aggument "+expParameter.toString()+ "  should be greater than "+sleepTime+ " to avoid performance issue;";
+										fillDefectData( config, result,checker,expParameter.getFileLocation(),msg,expParameter.toString());
+
+									}
+
+								}
+								else if(expParameter instanceof IASTIdExpression)
+								{
+									 visitIdExpressions(
+											config, result, checker,
+											astExpression, expParameter);
+								}
+								else
+								{
+									//Do Nothing
+								}
+							}
+
+						}
+					}
+
+					private void visitIdExpressions(
+							final AnalysisConfig config,
+							final AnalysisResult result, final Checker checker,
+							IASTExpression astExpression,
+							IASTInitializerClause expParameter) {
+						final IBinding binding = ((IASTIdExpression) expParameter).getName().resolveBinding();
+						if ((binding != null) )
+						{
+							final IASTName[] references = translationUnit.getDeclarationsInAST(binding);	
+
+							for (IASTName reference : references)
+							{
+								IASTNode parentNode =reference.getParent();
+
+								if(parentNode instanceof IASTDeclarator) 
+								{
+									IASTInitializer initializer =((IASTDeclarator)parentNode).getInitializer();
+
+									if(initializer instanceof  CPPASTEqualsInitializer)													
+									{
+										expParameter = ((CPPASTEqualsInitializer)initializer).getInitializerClause();
+										if(expParameter instanceof IASTLiteralExpression)
+										{
+											try
+											{
+												int value =Integer.valueOf(expParameter.toString());
+												if(value <sleepTime)
+												{											
+													String msg ="argument"+ expParameter.toString()+"  in checkUsleep function should be greater than "+sleepTime+" to avoid performance issue;";
+													fillDefectData( config, result,checker,astExpression.getFileLocation(),msg,expParameter.toString());
+												}
+											}
+											catch(Exception ex)
+											{
+												throw new DexterRuntimeException(ex.getMessage());
+											}
+
+										}
+									}
+
+								}
+							}
+
+						}
+						//return expParameter;
 					}						
 
 				};

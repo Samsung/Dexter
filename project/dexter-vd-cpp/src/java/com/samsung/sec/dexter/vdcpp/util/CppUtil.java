@@ -25,20 +25,18 @@
 */
 package com.samsung.sec.dexter.vdcpp.util;
 
-import java.io.PrintStream;
 import java.util.Map;
+
 import org.eclipse.cdt.core.dom.ast.ASTVisitor;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
+import org.mortbay.util.IO;
+
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 
 
 public class CppUtil {
 
-	static PrintStream out =null;
-	static PrintStream getPrintStream()
-	{
-		return out;
-	}
 	
 	private CppUtil()
 	{
@@ -77,11 +75,8 @@ public class CppUtil {
 			translationUnit.accept(visitor);
 		}
 		catch(Exception ex)
-		{
-			if(out !=null)
-			{
-				out.println(ex.getMessage());
-			}
+		{			
+			throw new DexterRuntimeException(ex.getMessage());			
 		}
 		mapModuleName =DexterUtilHelper.getMapData();
 

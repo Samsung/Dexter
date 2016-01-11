@@ -51,7 +51,7 @@ import com.samsung.sec.dexter.core.util.DexterUtil;
 @PluginImplementation
 public class CppcheckDexterPlugin implements IDexterPlugin {
 	public final static String PLUGIN_NAME = "cppcheck";
-	public final static PluginVersion version = new PluginVersion(0, 9, 1);
+	public final static PluginVersion version = new PluginVersion(0, 9, 2);
 	private PluginDescription pluginDescription;
 	private CppcheckWrapper cppcheck = new CppcheckWrapper();
 	private final static Logger logger = Logger.getLogger(CppcheckWrapper.class);

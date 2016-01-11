@@ -52,6 +52,8 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTemplateId;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTryBlockStatement;
 
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+
 
 class DexterUtilHelper 
 {
@@ -464,10 +466,7 @@ class DexterUtilHelper
 		} 
 		catch (IOException ex) 
 		{			
-			if(CppUtil.out !=null)
-			{
-				CppUtil.out.println(ex.getMessage());
-			}
+			throw new DexterRuntimeException(ex.getMessage());			
 		} 
 		finally
 		{

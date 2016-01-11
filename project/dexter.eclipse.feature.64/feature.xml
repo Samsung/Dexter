@@ -2,7 +2,7 @@
 <feature
       id="dexter.eclipse.feature.64"
       label="Dexter Eclipse Feature 64bit"
-      version="0.9.1"
+      version="0.9.2"
       provider-name="Samsung Electronics VD SE Lab">
 
    <description url="http://www.example.com/description">
@@ -1419,6 +1419,13 @@ Public License instead of this License.  But first, please read
 
    <plugin
          id="dexter-metrics"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="dexter-opensource"
          download-size="0"
          install-size="0"
          version="0.0.0"
