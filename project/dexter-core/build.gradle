@@ -1,5 +1,9 @@
+configurations {
+	includeInJar
+}
+
 dependencies {
-	compile 'commons-codec:commons-codec:1.9',
+	includeInJar 'commons-codec:commons-codec:1.9',
 			'commons-io:commons-io:2.4',
 			'commons-logging:commons-logging:1.2',
 			'com.google.code.gson:gson:2.2.4',
@@ -28,12 +32,15 @@ dependencies {
 			':org.eclipse.equinox.common_3.6.200.v20130402-1505:',
 			':org.eclipse.core.resources_3.7.101.v20120125-1505:',
 			':org.eclipse.core.jobs_3.5.1.R36x_v20100824:'
+	
+	configurations.compile.extendsFrom(configurations.includeInJar)
+	configurations.compile.extendsFrom(configurations.testJars)
 }
 
 copy {
 		into "lib"
-		from configurations.compile
-		from configurations.testCompile
+		from configurations.includeInJar
+		from configurations.testJars
 }
 
 test {

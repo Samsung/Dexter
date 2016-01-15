@@ -1,12 +1,19 @@
+configurations {
+	includeInJar
+}
+
 dependencies {
 	compile project(':dexter-core')
-	compile 'com.google.code.gson:gson:2.2.4',
+	includeInJar 'com.google.code.gson:gson:2.2.4',
 			'log4j:log4j:1.2.17',
 			':checkstyle-5.7-all:'
+	
+	configurations.compile.extendsFrom(configurations.includeInJar)
+	configurations.compile.extendsFrom(configurations.testJars)
 }
 
 copy {
-		into "lib"
-		from configurations.compile
-		from configurations.testCompile
+		into "lib" 
+		from configurations.includeInJar
+		from configurations.testJars
 }

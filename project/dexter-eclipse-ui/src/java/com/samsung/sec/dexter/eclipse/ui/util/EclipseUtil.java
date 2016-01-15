@@ -32,6 +32,7 @@ import java.net.URL;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
@@ -89,6 +90,16 @@ public class EclipseUtil {
 		}
 		
 		return path;
+	}
+	
+	public static boolean isValidJavaResource(IResource resource){
+		final String javaExtension = ".java";
+		
+		if((resource.getType() != IResource.FILE)) return false;
+		if(Strings.isNullOrEmpty(resource.getName())) return false;
+		if(resource.getName().length() <= javaExtension.length()) return false;
+		
+		return resource.getName().endsWith(".java");
 	}
 	
 	public static String getDefaultDexterHomePath() {
@@ -150,7 +161,14 @@ public class EclipseUtil {
 	}
 	
 	public static IFile getIFileFromFile(File file){
-		final IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IWorkspace workspace = null; 
+				
+		try {
+			workspace = ResourcesPlugin.getWorkspace();
+		} catch (IllegalStateException e){
+			throw new DexterRuntimeException("cannot create IFile from File: " + e.getMessage(), e);
+		}
+		
 		final IPath location = Path.fromOSString(file.getAbsolutePath());
 		
 		if(workspace == null || location == null){

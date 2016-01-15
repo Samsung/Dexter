@@ -1,10 +1,14 @@
-<div>
+<div style="width:95%; margin-left:auto; margin-right:auto;">
     <h3><p>Server Status</p></h3>
     <h5><span style="background-color:red; color:white;">{{errorMessage}}</span></h5>
     <hr>
     <h4>Inactive List: {{inactiveServers.length}}</h4>
-    <div id="inactiveServerListGrid" ng-grid="inactiveServerGridOptions" style="min-height: 200px; overflow-y: auto"></div>
-    <hr>
+    <div id='inactiveTable' ui-grid="inactiveServerGridOptions"
+         ui-grid-resize-columns ui-grid-move-columns ui-grid-selection ui-grid-exporter ui-grid-auto-resize
+         style="height: 500px;"></div>
+    <br><hr><br>
     <h4>Active List: {{activeServers.length}}</h4>
-    <div id="activeServerListGrid" ng-grid="activeServerGridOptions" style="min-height: 200px; overflow-y: auto"></div>
+    <div id='activeTable' ui-grid="activeServerGridOptions"
+         ui-grid-resize-columns ui-grid-move-columns ui-grid-selection ui-grid-exporter ui-grid-auto-resize
+         style="height: 500px;"></div>
 </div>

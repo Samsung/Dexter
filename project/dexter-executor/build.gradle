@@ -1,6 +1,11 @@
+configurations {
+	includeInJar
+}
+
 dependencies {
 	compile project(':dexter-core'), project(':dexter-metrics')
-	compile 'com.google.code.gson:gson:2.2.4',
+
+	includeInJar 	'com.google.code.gson:gson:2.2.4',
 					'com.google.guava:guava:16.0.1',
 					'commons-io:commons-io:2.4',
 					'commons-cli:commons-cli:1.2',
@@ -13,12 +18,15 @@ dependencies {
 					':jspf.remote.xmlrpc:1.0.2',
 					':jspf.remote.xmlrpcdelight:1.0.2',
 					'log4j:log4j:1.2.17'
+	
+	configurations.compile.extendsFrom(configurations.includeInJar)
+	configurations.compile.extendsFrom(configurations.testJars)
 }
 
 copy {
-		into "lib"
-		from configurations.compile
-		from configurations.testCompile
+	into "lib"
+	from configurations.includeInJar
+	from configurations.testJars
 }
 
 test {

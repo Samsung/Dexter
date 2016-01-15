@@ -31,6 +31,8 @@ function monitorController ($scope, $http, $log, $interval, _){
     var serverListLastModifiedTime = new Date();
     var currentLoadingCount = 0;
     var MAX_LOADING_COUNT = 10;
+    var rowHeight = 30;
+    var headerHeight = 110;
 
     initialize();
 
@@ -54,38 +56,33 @@ function monitorController ($scope, $http, $log, $interval, _){
     }
 
     function createServerGridColumnDefinitions(){
-        var tooltipTemplate = '<span tooltip="{{row.entity.name}}" tooltip-append-to-body="true" tooltip-trigger:"focus">{{row.entity.name}}</span>';
         _columnDefinitions = [
-            //{field:'active', displayName:'Active', width: 60, cellTemplate: cellTemplate},
-            {field:'type', displayName:'Type'},
-            {field:'group', displayName:'Group'},
-            {field:'name', displayName:'Name', width:"50%", cellTemplate:tooltipTemplate},
-            {field:'emailingWhenServerDead', displayName:'Email', width: 60}
+            {field:'type', displayName:'Type', cellTooltip: function(row, col){ return row.entity.type;}},
+            {field:'group', displayName:'Group', cellTooltip: function(row, col){ return row.entity.group;}},
+            {field:'name', displayName:'Name', width:"50%", cellTooltip: function(row, col){ return row.entity.name;}},
+            {field:'emailingWhenServerDead', displayName:'Email', width: 60, cellTooltip: function(row, col){
+                return row.entity.emailingWhenServerDead;}}
         ];
     }
 
     function createServerGridOptions(){
         var commonOptions = {
-            //multiSelect: true,
-            enablePaging: false,
-            showFooter: true,
-            enablePinning: true,
-            enableColumnResize: true,
-            enableColumnReordering: true,
-            enableRowSelection: false,
-            enableRowReordering: true,
-            //enableCellEditOnFocus: true,
-            filterOptions: $scope.filterOptions,
-            showGroupPanel: true,
-            showColumnMenu: true,
-            showFilter: true,
-            //showSelectionCheckbox: true,
-            jqueryUIDraggable: false,
-            columnDefs: _columnDefinitions,
-            sortInfo: {
-                fields: ['type', 'group', 'name'],
-                directions: ['asc']
-            }
+            enableSorting: true,
+            enableFiltering: true,
+            showGridFooter: true,
+            enableGridMenu: true,
+            enableSelectAll: true,
+            exporterCsvFilename: 'server-list.csv',
+            exporterPdfFilename: 'server-list.pdf',
+            exporterPdfDefaultStyle: {fontSize: 8},
+            exporterTableStyle: {margin: [5,5,5,5]},
+            exporterPdfTableHeaderStyle: {fontSize: 10, bold: true, italics: true, color: 'red'},
+            exporterPdfOrientation: 'landscape',
+            exporterPdfPageSize: 'A4',
+            onRegisterApi: function(gridApi){
+                $scope.gridApi = gridApi;
+            },
+            columnDefs: _columnDefinitions
         }
 
         $scope.activeServerGridOptions = _.cloneDeep(commonOptions);
@@ -132,15 +129,27 @@ function monitorController ($scope, $http, $log, $interval, _){
 
     function loadServerList(){
         $http.get("/api/v1/server").then(function(results){
-            $scope.activeServers = _.filter(results.data, function(server){
-                return server.active === true;
-            });
-
-            $scope.inactiveServers = _.filter(results.data, function(server){
-                return server.active === false;
-            });
+            handleActiveServers(results);
+            handleInactiveServers(results);
         }, function(results){
             $log.error("Error: " + results.data + "; " + results.status);
         });
+    }
+
+    function handleActiveServers(results) {
+        $scope.activeServers = _.filter(results.data, function(server){
+            return server.active === true;
+        });
+
+        angular.element(document.getElementById('activeTable'))
+            .css('height', ($scope.activeServers.length * rowHeight + headerHeight) + 'px');
+    }
+
+    function handleInactiveServers(results) {
+        $scope.inactiveServers = _.filter(results.data, function(server){
+            return !server.active;
+        });
+        angular.element(document.getElementById('inactiveTable'))
+            .css('height', ($scope.inactiveServers.length * rowHeight + headerHeight) + 'px');
     }
 }
