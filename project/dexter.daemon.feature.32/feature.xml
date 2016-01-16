@@ -2,7 +2,7 @@
 <feature
       id="dexter.daemon.feature.32"
       label="Dexter Deamon Feature"
-      version="0.9.0">
+      version="0.9.2">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -188,6 +188,20 @@
 
    <plugin
          id="org.eclipse.core.net"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="dexter-opensource"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="dexter-vd-cpp"
          download-size="0"
          install-size="0"
          version="0.0.0"
