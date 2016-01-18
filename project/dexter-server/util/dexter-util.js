@@ -162,7 +162,7 @@ function isValidCliOption(option){
     if(key.length < 2) return false;
     if(value.length < 1) return false;
 
-    return key.startsWith('-');
+    return _.startsWith(key,'-');
 }
 
 
