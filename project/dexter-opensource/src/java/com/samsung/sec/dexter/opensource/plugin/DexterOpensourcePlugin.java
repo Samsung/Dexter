@@ -88,7 +88,7 @@ public class DexterOpensourcePlugin implements IDexterPlugin {
 	@Override
 	public PluginDescription getDexterPluginDescription() {
 		return new PluginDescription("Samsung Electroincs", PLUGIN_NAME, 
-				new  PluginVersion(0, 9, 2), 
+				PluginVersion.fromImplementationVersion(DexterOpensourcePlugin.class), 
 				DexterConfig.LANGUAGE.ALL, 
 				"");
 	}

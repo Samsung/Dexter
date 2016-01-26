@@ -15,6 +15,7 @@
 			<manifest>
 				<!--attribute name="Main-Class" value="com.samsung.sec.dexter.findbugs.plugin.FindBugsWrapper"/-->
 				<attribute name="Class-Path" value="."/>
+				<attribute name="Implementation-Version" value="${version}"/>
 			</manifest>
 			
 			<fileset dir="bin"/>
