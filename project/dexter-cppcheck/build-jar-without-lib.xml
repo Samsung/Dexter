@@ -17,6 +17,7 @@
 		<jar destfile="${dist}/dexter-cppcheck_${version}.jar" filesetmanifest="mergewithoutmain">
 			<manifest>
 				<attribute name="Class-Path" value="."/>
+				<attribute name="Implementation-Version" value="${version}"/>
 			</manifest>
 			
 			<fileset dir="bin"/>

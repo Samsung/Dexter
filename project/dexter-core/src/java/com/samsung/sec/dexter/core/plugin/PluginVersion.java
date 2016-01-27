@@ -41,6 +41,18 @@ public class PluginVersion {
 	
 	final static Logger logger = Logger.getLogger(PluginVersion.class);
 	
+	/**
+	 * Create new PluginVersion based on implementation version of given plugin class.
+	 * 
+	 * @param clazz the class of the plugin
+	 * 
+	 * @return new PluginVersion based on 'Implementation-Version' property in a manifest file
+	 */
+	public static PluginVersion fromImplementationVersion(Class<?> clazz) {
+		String version = clazz.getPackage().getImplementationVersion();
+		return new PluginVersion(version);
+	}
+	
 	public PluginVersion(final int major, final int minor, final int patch){
 		this.major = major;
 		this.minor = minor;

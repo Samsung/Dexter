@@ -135,7 +135,7 @@ public class DexterVdCppPlugin implements IDexterPlugin {
 	@Override
 	public PluginDescription getDexterPluginDescription() {
 		return new PluginDescription("Samsung Electroincs", PLUGIN_NAME, 
-				new  PluginVersion(0, 9, 2), 
+				PluginVersion.fromImplementationVersion(DexterVdCppPlugin.class),
 				DexterConfig.LANGUAGE.CPP, 
 				"");
 	}
