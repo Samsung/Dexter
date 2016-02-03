@@ -11,18 +11,26 @@ module.exports = function(config) {
 
     plugins: [
         'karma-mocha',
-        'karma-firefox-launcher',
+        'karma-chrome-launcher',
         'karma-chai'
     ],
 
     files: [
-        {pattern: 'public/css/**/*.css'},
-        {pattern: 'public/js/jq/**/*.js'},
-        {pattern: 'public/js/ng/angular.min.js'},
-        {pattern: 'public/js/ng/**/*.js'},
-        {pattern: 'public/view/**/*.*'},
-        {pattern: 'public/ctrl/**/*.*'},
-        {pattern: 'public/index.html'},
+        {pattern: 'public/js/**/*.css'},
+        'public/js/angular/angular.js',
+        'public/js/angular-route/angular-route.min.js',
+        'public/js/angular-touch/angular-touch.min.js',
+        'public/js/angular-animate/angular-animate.min.js',
+        'public/js/angular-ui-grid/ui-grid.min.js',
+        'public/js/pdfmake/build/pdfmake.min.js',
+        'public/js/pdfmake/build/vfs_fonts.js',
+        'public/js/jquery/dist/jquery.min.js',
+        'public/js/bootstrap/dist/js/bootstrap.min.js',
+        'public/js/lodash/dist/lodash.min.js',
+        'public/ctrl/dexterMonitorApp.js',
+        'public/ctrl/monitorCtrl.js',
+        'public/ctrl/server-service.js',
+        'public/js/angular-mocks/angular-mocks.js',
         {pattern: 'test/front-end/**/*.js'}
     ],
 
@@ -56,7 +64,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Firefox'],
+    browsers: ['Chrome'],
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits

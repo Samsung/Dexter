@@ -5,7 +5,7 @@
         "name": "Test Dexter Server for VD",
         "heartbeat": "http://localhost:4982/api/v2/server-status",
         "heartbeatInDetail": "http://localhost:4983/api/v2/server-detailed-status",
-        "emailingWhenServerDead": true,
+        "emailingWhenServerDead": false,
         "emailList": [
                 "min.ho.kim@samsung.com"
             ],
@@ -17,7 +17,7 @@
         "name": "Test Dexter Server for VD2",
         "heartbeat": "http://localhost:4983/api/v2/server-status",
         "heartbeatInDetail": "http://localhost:4983/api/v2/server-detailed-status",
-        "emailingWhenServerDead": true,
+        "emailingWhenServerDead": false,
         "emailList": [
             "min.ho.kim@samsung.com"
         ],

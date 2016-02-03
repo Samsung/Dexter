@@ -59,6 +59,7 @@ public class DexterBuilder extends IncrementalProjectBuilder{
 		 */
 		public boolean visit(IResourceDelta delta) throws CoreException {
 			final IResource resource = delta.getResource();
+			
 			switch (delta.getKind()) {
 			case IResourceDelta.ADDED: // handle added resource
 			case IResourceDelta.CHANGED: // handle changed resource
@@ -112,7 +113,7 @@ public class DexterBuilder extends IncrementalProjectBuilder{
 		if (DexterPluginManager.getInstance().getPluginList().size() < 1) {
 			return;
 		}
-
+		
 		if (EclipseUtil.isValidJavaResource(resource)) {
 			final Stopwatch s = Stopwatch.createStarted();
 			

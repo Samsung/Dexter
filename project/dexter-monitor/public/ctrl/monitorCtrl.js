@@ -23,50 +23,35 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-monitorApp.controller("MonitorCtrl", monitorController);
+monitorApp.controller("MonitorCtrl",
+function ($interval, ServerService, _){
+    var main = this;
 
-function monitorController ($scope, $http, $log, $interval, _){
-    var _columnDefinitions = [];
     var serverMonitor;
-    var serverListLastModifiedTime = new Date();
-    var currentLoadingCount = 0;
-    var MAX_LOADING_COUNT = 10;
     var rowHeight = 30;
     var headerHeight = 110;
+
+    main.startMonitoringServers = startMonitoringServers;
+    main.stopMonitoringServers = stopMonitoringServers;
 
     initialize();
 
     function initialize(){
-        initNgVariables();
-        loadServerList();
         createServerListTable();
+        loadServerList();
         startMonitoringServers();
     }
 
-    function initNgVariables(){
-        $scope.activeServers = [];
-        $scope.inactiveServers = [];
-        $scope.serverListModifiedTime = new Date();
-        $scope.$log = $log;
-    }
-
     function createServerListTable(){
-        createServerGridColumnDefinitions();
-        createServerGridOptions();
+        main.activeServerGridOptions = getCommonOptions();
+        main.activeServerGridOptions.data = [];
+
+        main.inactiveServerGridOptions = getCommonOptions();
+        main.inactiveServerGridOptions.data = [];
     }
 
-    function createServerGridColumnDefinitions(){
-        _columnDefinitions = [
-            {field:'type', displayName:'Type', cellTooltip: function(row, col){ return row.entity.type;}},
-            {field:'group', displayName:'Group', cellTooltip: function(row, col){ return row.entity.group;}},
-            {field:'name', displayName:'Name', width:"50%", cellTooltip: function(row, col){ return row.entity.name;}},
-            {field:'emailingWhenServerDead', displayName:'Email', width: 60, cellTooltip: function(row, col){
-                return row.entity.emailingWhenServerDead;}}
-        ];
-    }
-
-    function createServerGridOptions(){
-        var commonOptions = {
+    function getCommonOptions(){
+        return {
             enableSorting: true,
             enableFiltering: true,
             showGridFooter: true,
@@ -79,77 +64,53 @@ function monitorController ($scope, $http, $log, $interval, _){
             exporterPdfTableHeaderStyle: {fontSize: 10, bold: true, italics: true, color: 'red'},
             exporterPdfOrientation: 'landscape',
             exporterPdfPageSize: 'A4',
-            onRegisterApi: function(gridApi){
-                $scope.gridApi = gridApi;
-            },
-            columnDefs: _columnDefinitions
-        }
-
-        $scope.activeServerGridOptions = _.cloneDeep(commonOptions);
-        $scope.activeServerGridOptions.data = 'activeServers';
-
-        $scope.inactiveServerGridOptions = _.cloneDeep(commonOptions);
-        $scope.inactiveServerGridOptions.data = 'inactiveServers';
+            columnDefs: getServerGridColumnDefinitions()
+        };
     }
 
-    $scope.startMonitoringServers = startMonitoringServers;
+    function getServerGridColumnDefinitions(){
+        return [
+            {field:'type', displayName:'Type', cellTooltip: function(row, col){ return row.entity.type;}},
+            {field:'group', displayName:'Group', cellTooltip: function(row, col){ return row.entity.group;}},
+            {field:'name', displayName:'Name', width:"50%", cellTooltip: function(row, col){ return row.entity.name;}},
+            {field:'emailingWhenServerDead', displayName:'Email', width: 60, cellTooltip: function(row, col){
+                return row.entity.emailingWhenServerDead;}}
+        ];
+    }
 
     function startMonitoringServers(){
         serverMonitor = $interval(function(){
-            loadServerListWhenServerStatusChanged()
+            ServerService.IsServerStatusChanged(function(error){
+                if(error){
+                    console.log("stop");
+                    stopMonitoringServers();
+                    ServerService.initServerList();
+                    main.errorMessage = "Fail to connect Dexter Monitor Server. After checking the server, refresh this page";
+                } else {
+                    console.log("load");
+                    loadServerList();
+                }
+            })
         }, 1000);
     }
-
-    $scope.stopMonitoringServers = stopMonitoringServers;
 
     function stopMonitoringServers() {
         $interval.cancel(serverMonitor);
     }
 
-    function loadServerListWhenServerStatusChanged(){
-        $http.get("/api/v1/server/last-modified-time").then(function(results){
-            currentLoadingCount = 0;
-            var currentLastModifiedTime = results.data.serverListLastModifiedTime;
-            if(currentLastModifiedTime !== serverListLastModifiedTime){
-                serverListLastModifiedTime = currentLastModifiedTime;
-                loadServerList();
-            }
-        }, function(results){
-            if(currentLoadingCount == 0)
-                $log.error("Error: " + results.data + "; " + results.status);
-
-            if(currentLoadingCount++ > MAX_LOADING_COUNT){
-                stopMonitoringServers();
-                $scope.activeServers = [];
-                $scope.inactiveServers = [];
-                $scope.errorMessage = "Fail to connect Dexter Monitor Server. After checing the server, refresh this page";
-            };
-        });
-    }
-
     function loadServerList(){
-        $http.get("/api/v1/server").then(function(results){
-            handleActiveServers(results);
-            handleInactiveServers(results);
-        }, function(results){
-            $log.error("Error: " + results.data + "; " + results.status);
+        ServerService.loadServerList(function(){
+            main.activeServerGridOptions.data = ServerService.getActiveServers();
+            main.inactiveServerGridOptions.data = ServerService.getInactiveServers();
+            resizeHeightOfServerTables();
         });
     }
 
-    function handleActiveServers(results) {
-        $scope.activeServers = _.filter(results.data, function(server){
-            return server.active === true;
-        });
-
+    function resizeHeightOfServerTables(){
         angular.element(document.getElementById('activeTable'))
-            .css('height', ($scope.activeServers.length * rowHeight + headerHeight) + 'px');
-    }
+            .css('height', (ServerService.getActiveServerCount() * rowHeight + headerHeight) + 'px');
 
-    function handleInactiveServers(results) {
-        $scope.inactiveServers = _.filter(results.data, function(server){
-            return !server.active;
-        });
         angular.element(document.getElementById('inactiveTable'))
-            .css('height', ($scope.inactiveServers.length * rowHeight + headerHeight) + 'px');
+            .css('height', (ServerService.getInactiveServerCount() * rowHeight + headerHeight) + 'px');
     }
-}
+});

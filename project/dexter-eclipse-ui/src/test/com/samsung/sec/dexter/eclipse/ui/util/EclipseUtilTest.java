@@ -25,12 +25,15 @@
 */
 package com.samsung.sec.dexter.eclipse.ui.util;
 
-import org.eclipse.core.resources.IResource;
-import org.junit.Test;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.io.File;
+
+import org.eclipse.core.resources.IResource;
+import org.junit.Test;
 
 public class EclipseUtilTest {
 	@Test

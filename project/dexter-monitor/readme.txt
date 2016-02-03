@@ -1,7 +1,7 @@
 dexter-monitor is to monitor web servers and check if the server is alive
 
 * how to use
-0. install modules for node
+0. install modules for node (tested on v4.2.1)
  - $ npm install
  
 1. write config.json file

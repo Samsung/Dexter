@@ -8,32 +8,27 @@ describe('tests for server.js', function(){
 
     before(function (){
         server = proxyquire('../../routes/server', {  });
-        server.setServerListJsonFilePath("./server-list.sample.json");
+        server.setServerListJsonFilePath("./test/back-end/server-list.sample.json");
 
-        server.init();
+        server.init(true);
     });
 
-    it('should have proper configuration information', function(){
-        expect(config.appName).to.equal('Dexter Monitor');
-        expect(config.description).to.equal('This program will monitor and control servers');
+    after(function(){
+        if(server) server.stopServerChecking();
     });
 
     it('should have proper server list', function(done){
         var res = sinon.stub();
+
         res.send = function(serverList){
-            assert.equal(1, serverList.length);
+            assert.equal(2, serverList.length);
             assert.equal("Dexter Server", serverList[0].type);
             assert.equal("SE", serverList[0].group);
             assert.equal("Test Dexter Server for VD", serverList[0].name);
-            assert.equal("http://localhost:4982/api/v1/isServerAlive", serverList[0].heartbeat);
-            assert.equal("ok", serverList[0].expectedResponse);
-            assert.equal(true, serverList[0].usingRunCommandWhenServerDead);
-            assert.equal(true, serverList[0].emailingWhenServerDead);
-            assert.deepEqual(['min.ho.kim@samsung.com'], serverList[0].emailList);
-            assert.equal('MinHo Kim, min.ho.kim@samsung.com', serverList[0].serverAdministrator);
-
-            //assert.isTrue(serverList[0].rerunLastTryTime > 0);
-            //assert.equal(0, serverList[0].rerunTimes);
+            assert.equal("http://localhost:4983/api/v2/server-status", serverList[1].heartbeat);
+            assert.equal(false, serverList[1].emailingWhenServerDead);
+            assert.deepEqual(['min.ho.kim@samsung.com'], serverList[1].emailList);
+            assert.equal('MinHo Kim, min.ho.kim@samsung.com', serverList[1].serverAdministrator);
 
             done();
         };

@@ -28,7 +28,6 @@
 var fs = require('fs');
 var http = require('http');
 var log = require('../util/logging');
-var dUtil = require('../util/dexter-util');
 var mailing = require('../util/mailing');
 var _ = require('lodash');
 
@@ -37,11 +36,13 @@ var serverList = [];
 var serverListLastModifiedTime = new Date();
 var checkingServerStatus;
 
-exports.init = function(){
+exports.init = function(doNotStartChecking){
     loadServerListFromFile();
 
     mailing.init();
-    startCheckingServerStatus();
+
+    if(!doNotStartChecking)
+        startCheckingServerStatus();
 };
 
 function loadServerListFromFile(){

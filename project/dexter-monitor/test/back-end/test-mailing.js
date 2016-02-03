@@ -5,17 +5,23 @@ var proxyquire = require('proxyquire');
 
 describe('tests for mailing.js', function(){
     var mailing;
+    var server;
 
     before(function (){
-        var server = proxyquire('../../routes/server', {  });
+        server = proxyquire('../../routes/server', {  });
         server.setServerListJsonFilePath("./server-list.sample.json");
-        server.init();
+        global.config = { email: 'test@samsungtest.com' };
+        server.init(true);
         var logStub = createLogStub();
 
         mailing = proxyquire('../../util/mailing',
             {
                 '../util/logging': logStub
             });
+    });
+
+    after(function(){
+        if(server) server.stopServerChecking();
     });
 
     function createLogStub(){
@@ -74,7 +80,7 @@ describe('tests for mailing.js', function(){
     it('should email by API Service successfully', function(done){
         global.config.email = {
             "type":"api",
-            "apiUrl":"http://168.219.243.31:5003/api/v1/email",
+            "apiUrl":"http://email-server:5003/api/v1/email",
             "defaultSenderEmail":"min.ho.kim@samsung.com",
             "defaultSenderName":"MinHo Kim"
         };

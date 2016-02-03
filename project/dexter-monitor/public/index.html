@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="js/angular-ui-grid/ui-grid.min.css" />
     <link rel="stylesheet" href="js/bootstrap/dist/css/bootstrap.min.css" />
 </head>
-<body>
+<body ng-controller="MonitorCtrl as main">
 <div ng-view=""></div>
     <script src="js/angular/angular.min.js"></script>
     <script src="js/angular-route/angular-route.min.js"></script>
@@ -19,9 +19,9 @@
     <script src="js/pdfmake/build/vfs_fonts.js"></script>
     <script src="js/jquery/dist/jquery.min.js"></script>
     <script src="js/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="js/util/lodash.min.js"></script>
-    <script src="js/util/dexterUtil.js"></script>
+    <script src="js/lodash/dist/lodash.min.js"></script>
     <script src="ctrl/dexterMonitorApp.js"></script>
+    <script src="ctrl/server-service.js"></script>
     <script src="ctrl/monitorCtrl.js"></script>
 </body>
 </html>
