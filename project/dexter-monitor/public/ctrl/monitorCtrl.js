@@ -82,12 +82,10 @@ function ($interval, ServerService, _){
         serverMonitor = $interval(function(){
             ServerService.IsServerStatusChanged(function(error){
                 if(error){
-                    console.log("stop");
                     stopMonitoringServers();
                     ServerService.initServerList();
                     main.errorMessage = "Fail to connect Dexter Monitor Server. After checking the server, refresh this page";
                 } else {
-                    console.log("load");
                     loadServerList();
                 }
             })

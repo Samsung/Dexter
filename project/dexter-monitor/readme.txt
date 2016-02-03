@@ -1,8 +1,9 @@
 dexter-monitor is to monitor web servers and check if the server is alive
 
 * how to use
-0. install modules for node (tested on v4.2.1)
+0. install modules for node(v4.2.1) and bower(v1.5.3)
  - $ npm install
+ - $ bower install
  
 1. write config.json file
  - email property should be set properly in your environment(SMTP or WebService)
