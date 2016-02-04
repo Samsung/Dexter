@@ -86,9 +86,10 @@ function sendEmailByAPI(emailParameters, callback){
         email.apiUrl,
         { form: mailOptions },
         function (error, response /*, body*/){
-            handleEmailingErrorWithCallback(error, callback);
-
-            if(response.statusCode === 200){
+	    if(error){
+	        handleEmailingErrorWithCallback(error, callback);
+ 	    }
+	    else if(response.statusCode === 200){
                 handleEmailingSuccessWithCallback(emailParameters.title, callback);
             } else {
                 log.error(response)
