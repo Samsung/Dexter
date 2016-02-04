@@ -33,7 +33,7 @@ import com.samsung.sec.dexter.core.defect.Defect;
 
 public class AnalysisLog {
 	private RootAnalysisLog rootLog;
-	private Date createdTime;
+	private Date createdTime = new Date();
 	private String createdTimeStr = "";
 	private String fileName = "";
 	private String fileFullPath = "";
@@ -76,14 +76,14 @@ public class AnalysisLog {
 	 * @param date2 
 	 */
     public void setCreatedTime(final Date date) {
-    	this.createdTime = date;
+    	this.createdTime = new Date(date.getTime());
     }
 
 	/**
 	 * @return the createdTime
 	 */
 	public Date getCreatedTime() {
-		return createdTime;
+		return new Date(createdTime.getTime());
 	}
 	
 	/**
