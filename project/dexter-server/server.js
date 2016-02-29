@@ -138,8 +138,7 @@ function setAppConfigure(){
 
 function initModules(){
     log.init();
-    database.init();
-    account.init();
+    database.init().then(account.init());
 }
 
 function setCurrentUserIdAndNoOnRequest(req, res){
