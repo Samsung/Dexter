@@ -1,5 +1,5 @@
 #include "stdafx.h"
-
+#include "SampleClass.h"
 
 int main()
 {
