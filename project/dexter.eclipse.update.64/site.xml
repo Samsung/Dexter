@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/dexter.eclipse.feature.64_0.9.3.jar" id="dexter.eclipse.feature.64" version="0.9.3">
+   <feature url="features/dexter.eclipse.feature.64_0.9.4.jar" id="dexter.eclipse.feature.64" version="0.9.4">
       <category name="dexter-eclipse"/>
    </feature>
    <category-def name="dexter-eclipse" label="New Category 2"/>

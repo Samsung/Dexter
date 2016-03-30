@@ -87,7 +87,9 @@ public class CodeMetricsGenerator {
 			}
 		} else if(language == DexterConfig.LANGUAGE.C || language == DexterConfig.LANGUAGE.CPP){
 			codeMetrics.setMetrics(CppUtil.generatorCodeMetrics(filePath));
-			functionMetrics.setFunctionMetrics(CdtUtil.generatorCodeMetrics(filePath, functionList));
+			if (functionList.size() > 0) {
+				functionMetrics.setFunctionMetrics(CdtUtil.generatorCodeMetrics(filePath, functionList));
+			}
 			if(file.length() ==0 || codeMetrics.getMetrics() == null || codeMetrics.getMetrics().size() == 0){
 				createDefaultMetrics(codeMetrics);
 			}

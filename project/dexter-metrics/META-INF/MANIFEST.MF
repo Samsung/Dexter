@@ -13,11 +13,6 @@ Bundle-ClassPath: .,
  lib/log4j-1.2.17.jar,
  lib/gson-2.2.4.jar,
  lib/checkstyle-5.7-all.jar
-Import-Package: com.samsung.sec.dexter.core.analyzer,
- com.samsung.sec.dexter.core.config,
- com.samsung.sec.dexter.core.exception,
- com.samsung.sec.dexter.core.metrics,
- com.samsung.sec.dexter.util,
- org.junit
 Export-Package: com.samsung.sec.dexter.metrics,
  com.samsung.sec.dexter.metrics.util
+Import-Package: org.junit;version="4.10.0"

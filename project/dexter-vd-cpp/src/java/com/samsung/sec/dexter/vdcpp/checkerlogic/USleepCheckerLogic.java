@@ -52,6 +52,7 @@ import com.samsung.sec.dexter.core.defect.PreOccurence;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.vdcpp.plugin.DexterVdCppPlugin;
 import com.samsung.sec.dexter.vdcpp.util.CppUtil;
+import java.math.BigDecimal;
 
 
 public class USleepCheckerLogic implements ICheckerLogic{
@@ -122,7 +123,7 @@ public class USleepCheckerLogic implements ICheckerLogic{
 								if(expParameter instanceof IASTLiteralExpression)
 								{
 
-									int value =Integer.valueOf(expParameter.toString());
+									int value =convertIntoDecimalNumber(expParameter.toString());
 									if(value <sleepTime)
 									{
 
@@ -172,7 +173,7 @@ public class USleepCheckerLogic implements ICheckerLogic{
 										{
 											try
 											{
-												int value =Integer.valueOf(expParameter.toString());
+												int value =convertIntoDecimalNumber(expParameter.toString());
 												if(value <sleepTime)
 												{											
 													String msg ="argument"+ expParameter.toString()+"  in checkUsleep function should be greater than "+sleepTime+" to avoid performance issue;";
@@ -237,6 +238,21 @@ public class USleepCheckerLogic implements ICheckerLogic{
 
 				return preOcc;
 
+			}
+			
+			private Integer convertIntoDecimalNumber(String string) 
+			{
+				Integer outputDecimal = 0;
+				if(string.contains("e"))
+				{
+					outputDecimal = new BigDecimal(string).intValue();
+				}				
+				else 
+				{
+					outputDecimal =Integer.valueOf(string);	
+				}
+				
+				return outputDecimal;						
 			}
 
 		};

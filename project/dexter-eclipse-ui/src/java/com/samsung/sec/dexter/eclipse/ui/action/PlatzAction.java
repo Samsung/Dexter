@@ -10,6 +10,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 import com.samsung.sec.dexter.eclipse.ui.view.PlatzView;
 
@@ -29,7 +30,8 @@ public class PlatzAction implements IObjectActionDelegate {
 			IViewPart platzPart = EclipseUtil.findView(PlatzView.ID);
 			final PlatzView platzView = (PlatzView) platzPart;
 			StringBuilder url = new StringBuilder();
-			url.append(DexterConfig.PLATZ_API_URL);
+			url.append(DexterConfig.PLATZ_API_URL).append("?dexterId=").append(DexterClient.getInstance().getCurrentUserId());
+			
 			platzView.setUrl(url.toString());
 			EclipseUtil.showView(PlatzView.ID);
 		} catch (DexterRuntimeException e){

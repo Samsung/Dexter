@@ -10,6 +10,7 @@ import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 
 public class MetricUtil {
+	static Logger logger = Logger.getLogger(MetricUtil.class);
 	public static int getFunctionLOCArray(final String source, final int start, final int end) {
 		if(Strings.isNullOrEmpty(source) || start == end){
 			return 0;
@@ -41,7 +42,6 @@ public class MetricUtil {
 		boolean isComment = false;
 		for(int i=0; i < length; i++){
 			String line = scanner.nextLine().trim();
-			
 			if(line.length() == 0)
 				continue;
 			

@@ -8,8 +8,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
-import com.samsung.sec.dexter.executor.ProjectAnalysisConfiguration;
-
 public class PlatzView extends ViewPart{
 	public final static String ID = "dexter-eclipse.platz";
 	private Browser browser = null;

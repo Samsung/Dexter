@@ -62,7 +62,7 @@ public class DexterVdCppPluginTest {
 		assertEquals("Samsung Electroincs", desc.get3rdPartyName());
 		assertEquals(DexterConfig.LANGUAGE.CPP, desc.getLanguage());
 		assertEquals("dexter-vd-cpp", desc.getPluginName());
-		assertEquals("0.9.2", desc.getVersion().toString());
+		assertEquals("0.9.4", desc.getVersion().toString());
 	}
 	
 	@Test

@@ -66,9 +66,7 @@ import com.samsung.sec.dexter.core.exception.DexterException;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
-import com.samsung.sec.dexter.eclipse.ui.view.CodeMetricsView;
 import com.samsung.sec.dexter.eclipse.ui.view.FunctionMetricsView;
-import com.samsung.sec.dexter.eclipse.ui.view.DefectHelpView;
 
 public class EclipseUtil {
 	/**

@@ -27,8 +27,6 @@ package com.samsung.sec.dexter.findbugs.plugin;
 
 import net.xeoh.plugins.base.annotations.PluginImplementation;
 
-import org.osgi.framework.Version;
-
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
