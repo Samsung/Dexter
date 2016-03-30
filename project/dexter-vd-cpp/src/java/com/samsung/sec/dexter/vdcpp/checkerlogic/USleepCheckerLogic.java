@@ -126,7 +126,7 @@ public class USleepCheckerLogic implements ICheckerLogic{
 									if(value <sleepTime)
 									{
 
-										String msg ="checkUsleep function aggument "+expParameter.toString()+ "  should be greater than "+sleepTime+ " to avoid performance issue;";
+										String msg ="checkUsleep function argument "+expParameter.toString()+ "  should be greater than "+sleepTime+ " to avoid performance issue;";
 										fillDefectData( config, result,checker,expParameter.getFileLocation(),msg,expParameter.toString());
 
 									}

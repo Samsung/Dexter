@@ -69,7 +69,6 @@ public class CheckerDescription implements IObjectActionDelegate {
 				}
 				
 				if(DexterClient.getInstance().hasSupportedHelpHtmlFile(url) == false){
-					System.out.println(DexterClient.getInstance().hasSupportedHelpHtmlFile(url) );
 					url.setLength(0);
 					url.append("http://").append(DexterClient.getInstance().getServerHost()).append(":") //$NON-NLS-1$ //$NON-NLS-2$
 					.append(DexterClient.getInstance().getServerPort()).append(DexterConfig.DEFECT_HELP_BASE).append("/") //$NON-NLS-1$

@@ -108,6 +108,7 @@ public class DexterMarker {
 			marker.setAttribute(ResultFileConstant.FILE_NAME, defect.getFileName());
 			marker.setAttribute(ResultFileConstant.MODULE_PATH, defect.getModulePath());
 			marker.setAttribute(ResultFileConstant.SEVERITY_CODE, defect.getSeverityCode());
+			marker.setAttribute(ResultFileConstant.CATEGORY_NAME, defect.getCategoryName());
 			marker.setAttribute(ResultFileConstant.LOCAL_DID, defect.getLocalDid());
 			
 			marker.setAttribute(ResultFileConstant.CHAR_START, Integer.toString(occurence.getCharStart()));

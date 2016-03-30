@@ -28,6 +28,7 @@ package com.samsung.sec.dexter.core;
 import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.metrics.CodeMetrics;
+import com.samsung.sec.dexter.core.metrics.FunctionMetrics;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 
 public class BaseAnalysisEntity extends TargetFile {
@@ -62,6 +63,7 @@ public class BaseAnalysisEntity extends TargetFile {
 	
 	/** the result of code metrics */
 	private CodeMetrics codeMetrics = new CodeMetrics();
+	private FunctionMetrics functionMetrics = new FunctionMetrics();
 	
 	protected BaseAnalysisEntity(){}
 	
@@ -75,6 +77,7 @@ public class BaseAnalysisEntity extends TargetFile {
 		setSourceFileFullPath(entity.getSourceFileFullPath());
 		setResultFileFullPath(entity.getResultFileFullPath());
 		setCodeMetrics(entity.getCodeMetrics());
+		setFunctionMetrics(entity.getFunctionMetrics());
     }
 
 	/**
@@ -176,11 +179,18 @@ public class BaseAnalysisEntity extends TargetFile {
     public CodeMetrics getCodeMetrics() {
 	    return this.codeMetrics;
     }
+    
+    public FunctionMetrics getFunctionMetrics(){
+    	return this.functionMetrics;
+    }
 
     public void setCodeMetrics(final CodeMetrics metrics) {
 	    this.codeMetrics = metrics;
     }
     
+    public void setFunctionMetrics(final FunctionMetrics metrics){
+    	this.functionMetrics = metrics;
+    }
 	public long getDefectGroupId() {
 		return defectGroupId;
 	}

@@ -48,6 +48,8 @@ public class TargetFile {
 	 */
 	private String modulePath = "";
 	
+	private String fileStatus ="";
+	
 	protected TargetFile(){
 		
 	}
@@ -55,6 +57,7 @@ public class TargetFile {
 	protected TargetFile(TargetFile other){
 		setFileName(other.getFileName());
 		setModulePath(other.getModulePath());
+		setFileStatus(other.getFileStatus());
 	}
 	
 	/**
@@ -88,6 +91,11 @@ public class TargetFile {
     	this.modulePath = path;
     }
     
+    
+    public void setFileStatus(String fileStatus){
+    	this.fileStatus = fileStatus;
+    }
+    
     /**
 	 * @return modulePath
 	 * 
@@ -96,6 +104,10 @@ public class TargetFile {
 	 */
     public String getModulePath() {
 	    return this.modulePath;
+    }
+    
+    public String getFileStatus(){
+    	return this.fileStatus;
     }
     
     /**

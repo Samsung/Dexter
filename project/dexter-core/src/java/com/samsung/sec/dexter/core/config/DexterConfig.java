@@ -70,6 +70,7 @@ public class DexterConfig {
 	public static final String STOP_SERVER = "/api/v1/server";
 	public static final String CHECK_SERVER_ADDRESS = "/api/v1/isServerAlive";
 	public static final String PUT_ANALYSIS_RESULT = "/api/v1/analysis/result";
+	public static final String PUT_ANALYSIS_RESULT_V2 = "/api/v2/analysis/result";
 	public static final String DISMISS_DEFECT = "/api/v1/defect/dismiss";
 	public static final String FILTER_FALSE_ALARM = "/api/v1/filter/false-alarm";
 	public static final String FILTER_FALSE_ALARM_LIST = "/api/v1/filter/false-alarm-list";
@@ -82,17 +83,35 @@ public class DexterConfig {
 	public static final String POST_SNAPSHOT_SOURCECODE = "/api/v1/analysis/snapshot/source";
 	public static final String SOURCE_CODE = "/api/v1/analysis/snapshot/source";
 	
+	public static final String POST_FUNCTION_METRICS = "/api/v2/functionMetrics";
+	
 	public static final String GET_DEXTER_PLUGIN_UPDATE_URL = "/api/v1/config/update-url";
 	public static final String GET_DEXTER_PLUGIN_CHECKER_JSON_FILE = "/api/v1/config";
 	
+	public static final String GET_CODE_METRICS_INFO = "/api/vi/codeMetrics/"; 
 	    
 	public static final Object DEFECT_HELP_BASE = "/tool";
 	public static final Object DEFECT_HELP = "/help";
 	public static final Object NOT_FOUND_CHECKER_DESCRIPTION = "/NotFoundCheckerDescription/";
 	public static final Object EMPTY_HTML_FILE_NAME = "empty_checker_description";
+	
+	public static final Object CODE_METRICS_BASE ="/codeMetrics/#/";
+	public static final Object CODE_METRICS_TOOLNAME="/BOTH";
+	public static final Object CODE_METRICS_FILE_NAME="fileName";
+	public static final Object CODE_METRICS_MODULE_PATH="modulePath";
+	
+	public static final Object CODE_METRICS_VIEW_FILE_NAME = "/codeMetricsView";
+
+	public static final Object FUNCTION_METRICS_BASE ="/functionMetrics/#/";
+	public static final Object FUNCTION_METRICS_FUNCTION_LIST="functionList";	
 	  
 	/** common constants */
 	public static final String DEXTER_HOME_KEY = "dexterHome";
+	
+	/** Platz constants */
+	public static final String PLATZ_KEYWORD_FILENAME = "platz_keyword.json";
+	public static final String PLATZ_API_URL = "http://platz.sec.samsung.net/tapi/#/";
+	public static final String PLATZ_SEARCH_API_URL = "http://platz.sec.samsung.net/tapi/#/search/";
 	
 	private RunMode runMode = RunMode.CLI;
 	private String dexterHome = System.getenv(DEXTER_HOME_KEY);  
@@ -504,7 +523,6 @@ public class DexterConfig {
 			return;
 		}
 
-		LOG.error("Standalone mode: " + isStandalone);
 		this.isStandalone = isStandalone;
 		if(this.runMode.equals(RunMode.CLI)){
 			return;

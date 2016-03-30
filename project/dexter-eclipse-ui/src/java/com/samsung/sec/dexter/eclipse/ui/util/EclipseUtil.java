@@ -66,6 +66,8 @@ import com.samsung.sec.dexter.core.exception.DexterException;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
+import com.samsung.sec.dexter.eclipse.ui.view.CodeMetricsView;
+import com.samsung.sec.dexter.eclipse.ui.view.FunctionMetricsView;
 import com.samsung.sec.dexter.eclipse.ui.view.DefectHelpView;
 
 public class EclipseUtil {
@@ -317,20 +319,34 @@ public class EclipseUtil {
 	}
 
 	public static IViewPart findView(String viewId) {
+		IViewPart view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(viewId);
+
+		if (view == null) {
+			try {
+				view = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+						.getActivePage().showView(viewId);
+			} catch (PartInitException e) {
+				throw new DexterRuntimeException(e.getMessage(), e);
+			}
+		}
+
+		return view;
+	}
+
+	public static IViewPart findFunctionMetricsView(String viewId){
 		IViewPart view =  PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(viewId);
 		
 		if(view == null){
-			try {
-	            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(DefectHelpView.ID);
-	            view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(DefectHelpView.ID);
-            } catch (PartInitException e) {
+			try{
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(FunctionMetricsView.ID);
+				view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(FunctionMetricsView.ID);
+			}catch (PartInitException e) {
             	throw new DexterRuntimeException(e.getMessage(), e);
             }
 		}
-		
 		return view;
-    }
-
+	}
+	
 	public static void showView(String viewId) {
 		if(PlatformUI.getWorkbench() == null){
 			DexterUIActivator.LOG.error("workbench is null");

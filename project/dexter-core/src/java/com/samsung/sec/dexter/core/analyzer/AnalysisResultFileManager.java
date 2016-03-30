@@ -79,6 +79,7 @@ public class AnalysisResultFileManager {
 		
 		addGeneralContent(result, contents);
 		addMetricsContent(result, gson, contents);
+		addFunctionMetricsContent(result, gson, contents);
 		addDefectContent(result, gson, contents);
 		
 		return contents.append(DexterUtil.LINE_SEPARATOR);
@@ -88,6 +89,12 @@ public class AnalysisResultFileManager {
 			final Gson gson, final StringBuilder contents) {
 		contents.append(",\"").append(ResultFileConstant.CODE_METRICS).append("\":")
 			.append(gson.toJson(result.getCodeMetrics().getMetrics()));
+	}
+	
+	private void addFunctionMetricsContent(final AnalysisResult result,
+			final Gson gson, final StringBuilder contents){
+		contents.append(",\"").append(ResultFileConstant.FUNCTION_METRICS).append("\":")
+		.append(gson.toJson(result.getFunctionMetrics().getFunctionMetrics()));		
 	}
 
 	private void addGeneralContent(final AnalysisResult result,

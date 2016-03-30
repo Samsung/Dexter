@@ -264,7 +264,7 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
 		Map<String, Object> body = new HashMap<String, Object>();
 		body.put("result", resultJson);
 
-		String resultText = webResource.postWithBody(getServiceUrl(DexterConfig.PUT_ANALYSIS_RESULT), 
+		String resultText = webResource.postWithBody(getServiceUrl(DexterConfig.PUT_ANALYSIS_RESULT_V2), 
 				this.currentUserId, this.currentUserPwd, body);
 
 		checkResultOk(resultText);
@@ -1003,6 +1003,28 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
 		}
 	}
 	
+	/**
+	 * @return String
+	 */
+	public String getDexterCodeMetricsUrl() {
+		if (getServerHost().startsWith("http")) {
+			return this.serverHost + ":" + this.serverPort + "/dashboard";
+		} else {
+			return HTTP_PREFIX + this.serverHost + ":" + this.serverPort + "/codeMetrics";
+		}
+	}
+	
+	/**
+	 * @return String
+	 */
+	public String getDexterFunctionMetricsUrl() {
+		if (getServerHost().startsWith("http")) {
+			return this.serverHost + ":" + this.serverPort + "/dashboard";
+		} else {
+			return HTTP_PREFIX + this.serverHost + ":" + this.serverPort + "/functionMetrics";
+		}
+	}
+	
 	@Override
 	public synchronized void addLoginInfoListener(final IDexterLoginInfoListener listener){
 		if(!loginInfoListenerList.contains(listener)){
@@ -1056,6 +1078,42 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
 				return cc;
 			}
 		} catch (DexterRuntimeException e) {
+			LOG.error(e.getMessage(), e);
+			throw new DexterRuntimeException(e.getMessage(), e);
+		}
+	}
+	
+	public void getCodeMetricsFromFile(String fileName, String modulePath){
+		try{
+			String text = webResource.getText(getServiceUrl(DexterConfig.GET_CODE_METRICS_INFO + "?fileName="+fileName + "&modulePath="+modulePath), this.currentUserId, this.currentUserPwd);
+			final Gson gson = new Gson();
+			
+			@SuppressWarnings("unchecked")
+			final Map<String, Object> result = gson.fromJson(text, Map.class);
+			
+			if("ok".equals(result.get("result"))){
+				
+			}
+			
+		} catch (DexterRuntimeException e){
+			LOG.error(e.getMessage(), e);
+			throw new DexterRuntimeException(e.getMessage(), e);
+		}
+	}
+	
+	
+	public void getFunctionMetrics(String fileName, String modulePath, List<String> functionList){
+		try{
+			final Map<String, Object> body = new HashMap<String, Object>();
+			body.put(ResultFileConstant.FILE_NAME,fileName);
+			body.put(ResultFileConstant.MODULE_PATH, modulePath);
+			body.put(ResultFileConstant.FUNCTION_LIST, functionList);
+			
+			final String text = webResource.postWithBody(getServiceUrl(DexterConfig.POST_FUNCTION_METRICS), 
+		        		this.currentUserId, this.currentUserPwd, body);
+			
+			 checkResultOk(text);
+		}catch (DexterRuntimeException e){
 			LOG.error(e.getMessage(), e);
 			throw new DexterRuntimeException(e.getMessage(), e);
 		}

@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Dexter Eclipse UI
+Bundle-Name: %Bundle-Name
 Bundle-SymbolicName: dexter-eclipse-ui; singleton:=true
-Bundle-Version: 0.9.2
+Bundle-Version: 0.9.4
 Bundle-Activator: com.samsung.sec.dexter.eclipse.ui.DexterUIActivator
-Bundle-Vendor: Samsung Electronics VD SE Lab
+Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  dexter-core,
@@ -15,10 +15,13 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jdt.core,
  org.eclipse.ui.workbench.texteditor,
  org.eclipse.jface.text,
- org.junit
+ org.junit,
+ org.eclipse.mylyn.commons.ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
+ lib/quartz-2.2.2.jar,
+ lib/quartz-jobs-2.2.2.jar,
  lib/guava-16.0.1.jar,
  lib/gson-2.2.4.jar,
  lib/jersey-client-1.18.jar,
@@ -28,4 +31,5 @@ Bundle-ClassPath: .,
 Export-Package: com.samsung.sec.dexter.eclipse.ui,
  com.samsung.sec.dexter.eclipse.ui.login,
  com.samsung.sec.dexter.eclipse.ui.util,
- com.samsung.sec.dexter.eclipse.ui.view
+ com.samsung.sec.dexter.eclipse.ui.view,
+ org.quartz.jobs

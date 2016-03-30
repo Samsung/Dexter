@@ -1,0 +1,88 @@
+package com.samsung.sec.dexter.eclipse.ui.action;
+
+import java.util.Iterator;
+
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPart;
+
+import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.util.DexterClient;
+import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
+import com.samsung.sec.dexter.eclipse.ui.view.AnalysisLog;
+import com.samsung.sec.dexter.eclipse.ui.view.CodeMetricsView;
+
+import com.samsung.sec.dexter.eclipse.ui.notifier.NotificationType;
+import com.samsung.sec.dexter.eclipse.ui.notifier.NotifierDialog;
+
+public class CodeMetricsDescription implements IObjectActionDelegate {
+	private AnalysisLog analysisLog;
+	private String fileName;
+	private String modulePath;
+
+	private IWorkbenchPart part;
+	
+	public CodeMetricsDescription(){
+		
+	}
+	
+	@Override
+	public void run(IAction action) {
+		assert analysisLog != null;
+		
+		try{
+		IViewPart view = EclipseUtil.findView(CodeMetricsView.ID);
+		final CodeMetricsView codeMetricsView = (CodeMetricsView) view;
+		
+		StringBuilder url = new StringBuilder();
+		url.append("http://").append(DexterClient.getInstance().getServerHost()).append(":") //$NON-NLS-1$ //$NON-NLS-2$
+		.append(DexterClient.getInstance().getServerPort()).append(DexterConfig.CODE_METRICS_BASE)//$NON-NLS-1$
+		.append("?").append(DexterConfig.CODE_METRICS_FILE_NAME).append("=").append(fileName)//$NON-NLS-1$
+		.append("&").append(DexterConfig.CODE_METRICS_MODULE_PATH).append("=").append(modulePath);//$NON-NLS-1$
+	
+		
+		codeMetricsView.setUrl(url.toString());
+		
+		EclipseUtil.showView(CodeMetricsView.ID);	
+		NotifierDialog.notify("[Dexter] Need to confirm Code Metrics",  "This require immediate attention" + fileName, NotificationType.values()[1]);
+		
+		}
+		catch (DexterRuntimeException e){
+			MessageDialog.openError(part.getSite().getShell(), "Code Metrics Description Error", 
+					"Cannot open the Code Metrics Description View");
+		}
+	}
+
+	@Override
+	public void selectionChanged(IAction action, ISelection selection) {
+		if(!(selection instanceof IStructuredSelection)){
+			analysisLog = null;
+			return;
+		}
+		
+		final IStructuredSelection sel = (IStructuredSelection) selection;
+		@SuppressWarnings("unchecked")
+		final Iterator<Object> iter = sel.iterator();
+		
+		while(iter.hasNext()){
+			final Object obj = iter.next();
+			
+			if(obj instanceof AnalysisLog){
+				fileName = ((AnalysisLog) obj).getFileName();
+				modulePath = ((AnalysisLog) obj).getModulePath();
+			} 
+		}
+
+	}
+
+	@Override
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		part = targetPart;
+	}
+
+}

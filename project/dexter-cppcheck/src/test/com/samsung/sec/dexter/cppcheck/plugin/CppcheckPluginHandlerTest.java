@@ -116,6 +116,7 @@ public class CppcheckPluginHandlerTest {
 		Defect d = new Defect();
 		// don't set the message, because it will be created automatically by adding Occurence
 		d.setSeverityCode("ETC");
+		d.setCategoryName("security");
 		d.setCheckerCode("unreachableCode");
 		d.setToolName(toolName);
 		d.setLanguage(language);
