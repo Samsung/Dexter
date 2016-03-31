@@ -51,7 +51,7 @@ import com.samsung.sec.dexter.core.util.DexterUtil;
 @PluginImplementation
 public class CppcheckDexterPlugin implements IDexterPlugin {
 	public final static String PLUGIN_NAME = "cppcheck";
-	//public final static PluginVersion version = PluginVersion.fromImplementationVersion(CppcheckDexterPlugin.class);
+	public final static PluginVersion version = PluginVersion.fromImplementationVersion(CppcheckDexterPlugin.class);
 	private PluginDescription pluginDescription;
 	private CppcheckWrapper cppcheck = new CppcheckWrapper();
 	private final static Logger logger = Logger.getLogger(CppcheckWrapper.class);
@@ -86,15 +86,12 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
 		String cppcheckPath = "";
 
 		if (DexterUtil.getOS() == DexterUtil.OS.WINDOWS) {
-			zipFilePath += "/temp/cppcheck-windows_" + PluginVersion.fromImplementationVersion(CppcheckDexterPlugin.class) + ".zip";
+			//zipFilePath += "/temp/cppcheck-windows_" + CppcheckDexterPlugin.version.getVersion() + ".zip";
+			zipFilePath += "/temp/cppcheck-windows_0.9.4.zip";
+			
 			cppcheckPath = "/cppcheck-windows.zip";
 		} else {
 			return true;
-			/*
-			 * zipFilePath += "/temp/cppcheck-linux_" +
-			 * CppcheckDexterPlugin.version.getVersion() + ".zip"; cppcheckPath
-			 * = "/cppcheck-linux.zip";
-			 */
 		}
 
 		final File file = new File(zipFilePath);
