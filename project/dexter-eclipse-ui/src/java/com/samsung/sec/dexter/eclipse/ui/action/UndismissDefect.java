@@ -58,6 +58,11 @@ public class UndismissDefect implements IObjectActionDelegate {
 			return;
 		}
 		
+		if(part == null){
+			DexterUIActivator.LOG.error("Cannot make a defect");
+			return ;
+		}
+		
 		if(!(part.getSite().getPart() instanceof AnalysisLogTreeView)){
 			MessageDialog.openError(part.getSite().getShell(), "error", "invalid part");
 			return;

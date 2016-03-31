@@ -3,5 +3,9 @@
    <feature url="features/dexter.eclipse.feature.64_0.9.4.jar" id="dexter.eclipse.feature.64" version="0.9.4">
       <category name="dexter-eclipse"/>
    </feature>
-   <category-def name="dexter-eclipse" label="New Category 2"/>
+   <category-def name="dexter-eclipse" label="Dexter Eclipse Feature 64bit">
+      <description>
+         Samsung Electronics VD SE Lab
+      </description>
+   </category-def>
 </site>
