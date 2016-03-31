@@ -46,6 +46,7 @@ public class Defect extends BaseDefect {
 	private long createdDateTime = -1;
 	private String message = "";
 	private String severityCode = "";
+	private String categoryName ="";
 	private long modifiedDateTime = -1;
 	
     public Defect() {
@@ -212,7 +213,22 @@ public class Defect extends BaseDefect {
 	public void setSeverityCode(final String severityCode) {
 		this.severityCode = severityCode;
 	}
+	
+	/**
+	 * @return the category
+	 */
+	public String getCategoryName(){
+		return this.categoryName;
+	}
 
+	/**
+	 * @param category the severity to set
+	 */
+	
+	public void setCategoryName(final String categoryName){
+		this.categoryName = categoryName;
+	}
+	
 	/**
 	 * @param currentUserNo
 	 * @return DefectFilter
@@ -257,6 +273,8 @@ public class Defect extends BaseDefect {
     	defect.setCreatedDateTime(Double.doubleToLongBits((Double)map.get("createdDateTime")) / 1000);
     	//defect.setMessage((String) map.get("message"));
     	defect.setSeverityCode((String) map.get(ResultFileConstant.SEVERITY_CODE));
+    	defect.setCategoryName((String) map.get(ResultFileConstant.CATEGORY_NAME));
+    	
     	defect.setModifiedDateTime(Double.doubleToLongBits((Double) map.get("modifiedDateTime")) / 1000);
     	defect.setCheckerCode((String) map.get(ResultFileConstant.CHECKER_CODE));
     	defect.setMethodName((String) map.get(ResultFileConstant.METHOD_NAME));

@@ -51,6 +51,7 @@ public class AnalysisEntityTestUtil {
 		defect.setMethodName("test-method");
 		defect.setModulePath("test-module");
 		defect.setSeverityCode("CRI");
+		defect.setCategoryName("security");
 		defect.setToolName("test-tool");
 		
 		Occurence occ = new Occurence();

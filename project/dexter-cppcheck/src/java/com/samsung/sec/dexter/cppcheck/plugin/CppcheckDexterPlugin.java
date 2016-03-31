@@ -138,7 +138,8 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
 	@Override
 	public PluginDescription getDexterPluginDescription() {
 		if (this.pluginDescription == null) {
-			this.pluginDescription = new PluginDescription(CppcheckDexterPlugin.PLUGIN_NAME, PLUGIN_NAME, version,
+			this.pluginDescription = new PluginDescription(CppcheckDexterPlugin.PLUGIN_NAME, PLUGIN_NAME, 
+					PluginVersion.fromImplementationVersion(CppcheckDexterPlugin.class),
 			        DexterConfig.LANGUAGE.CPP, "Dexter plug-in for Cppcheck");
 		}
 		return this.pluginDescription;

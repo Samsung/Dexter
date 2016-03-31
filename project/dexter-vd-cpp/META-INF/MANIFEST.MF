@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dexter VD C & CPP
 Bundle-SymbolicName: dexter-vd-cpp;singleton:=true
-Bundle-Version: 0.9.2
+Bundle-Version: 0.9.4
 Bundle-Activator: com.samsung.sec.dexter.vdcpp.DexterVdCppActivator
 Require-Bundle: org.eclipse.core.runtime,
  dexter-core,
@@ -25,6 +25,5 @@ Bundle-ClassPath: .,
  lib/jspf/jspf.remote.javascript-1.0.2.jar,
  lib/jspf/jspf.remote.lipermi-1.0.2.jar,
  lib/jspf/jspf.remote.xmlrpc-1.0.2.jar,
- lib/jspf/jspf.remote.xmlrpcdelight-1.0.2.jar,
- lib/cdt/org.eclipse.cdt.core_5.9.1.201502131403.jar
+ lib/jspf/jspf.remote.xmlrpcdelight-1.0.2.jar
 Import-Package: com.ibm.icu.text

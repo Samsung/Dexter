@@ -29,7 +29,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 public class DexterVdCppActivator implements BundleActivator {
-
+	public static final String PLUGIN_ID = "dexter-cppcheck"; //$NON-NLS-1$
 	private static BundleContext context;
 
 	static BundleContext getContext() {

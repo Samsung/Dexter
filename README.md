@@ -14,8 +14,8 @@ Dexter helps you to improve coding skills. Whenever you save a source file, Dext
 ## Downloads (ver. 0.9.2, 11. Jan. 2016)
 
 #### Eclipse Update Site
-- Win 32bit: https://dl.bintray.com/minho/dexter-eclipse-32/
-- Win 64bit: https://dl.bintray.com/minho/dexter-eclipse-64/
+- Win 32bit: http://dl.bintray.com/minho/dexter-eclipse-32/
+- Win 64bit: http://dl.bintray.com/minho/dexter-eclipse-64/
 
 #### Dexter Daemon for Source Insight
 - [Win 32bit](https://dexter.atlassian.net/wiki/download/attachments/6258746/dexter-daemon_0.9.2_32.zip?version=1&modificationDate=1452312234246&api=v2)

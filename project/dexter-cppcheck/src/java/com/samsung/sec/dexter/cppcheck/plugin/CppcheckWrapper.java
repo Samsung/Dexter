@@ -93,14 +93,18 @@ public class CppcheckWrapper {
     	// 3. Create Command
     	final StringBuilder cmd = new StringBuilder(500);
     	
+    	
     	setCppcheckCommand(cmd);
+    	setCustomRuleOption(cmd);
     	cmd.append(" --inconclusive "); // for unreachableCode
     	cmd.append(" --enable=all --xml --xml-version=2 --report-progress -v ");
     	cmd.append(" --std=posix --std=c++03 "); // posix | c89 | c99 | c11 | c++03 | c++11 => VD - C++98
+    	
     	cmd.append(sourceFileFullPath);
     	setPlatformOption(cmd); 
     	setLanguageOption(cmd);
     	setHeaderFilesOption(cmd);
+    	
     	
     	// 4. Run Command
     	Process process = null;
@@ -128,7 +132,7 @@ public class CppcheckWrapper {
 	private void setCppcheckCommand(final StringBuilder cmd) {
 	    final String dexterHome = DexterConfig.getInstance().getDexterHome();
     	final String tempFolder = dexterHome + DexterUtil.PATH_SEPARATOR + "temp";
-    	
+    	    	
     	if((new File(tempFolder)).exists() == false){
     		if(new File(tempFolder).mkdir() == false) {
     			throw new DexterRuntimeException("Can't create temp folder to save cppcheck result: " + tempFolder);
@@ -150,6 +154,16 @@ public class CppcheckWrapper {
     		throw new DexterRuntimeException("This command supports only Windows and Linux('bin/bash')");
     	}
     }
+	
+	private void setCustomRuleOption(final StringBuilder cmd){
+		final String dexterHome = DexterConfig.getInstance().getDexterHome();
+		final String cppcheckHome = dexterHome + DexterUtil.PATH_SEPARATOR + "bin" + DexterUtil.PATH_SEPARATOR + "cppcheck";
+		
+		final String customRuleFileName = "custom_rule.xml";
+		cmd.append(" --rule-file=");
+		cmd.append(cppcheckHome).append(DexterUtil.PATH_SEPARATOR).append(customRuleFileName);
+    	
+	}
 
 	private void setHeaderFilesOption(final StringBuilder cmd) {
 	    for(final String inc : config.getHeaderBaseDirList()){

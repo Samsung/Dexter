@@ -65,6 +65,7 @@ public class AnalysisEntityFactory implements IAnalysisEntityFactory {
 		result.setSourceFileFullPath(config.getSourceFileFullPath());
 		result.setResultFileFullPath(config.getResultFileFullPath());
 		result.setCodeMetrics(config.getCodeMetrics());
+		result.setFunctionMetrics(config.getFunctionMetrics());
 //		result.setResultHandler(config.getResultHandler());
 		
 		return result;
@@ -84,6 +85,7 @@ public class AnalysisEntityFactory implements IAnalysisEntityFactory {
 		result.setSourceFileFullPath(base.getSourceFileFullPath());
 		result.setResultFileFullPath(base.getResultFileFullPath());
 		result.setCodeMetrics(base.getCodeMetrics());
+		result.setFunctionMetrics(base.getFunctionMetrics());
 		
 		for(int i=0; i<resultList.size(); i++){
 			result.getDefectList().addAll(resultList.get(i).getDefectList());

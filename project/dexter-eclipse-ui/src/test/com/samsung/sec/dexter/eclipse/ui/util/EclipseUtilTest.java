@@ -30,8 +30,6 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
-
 import org.eclipse.core.resources.IResource;
 import org.junit.Test;
 
