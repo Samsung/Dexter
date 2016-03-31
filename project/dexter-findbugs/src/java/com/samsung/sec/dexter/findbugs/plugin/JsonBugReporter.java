@@ -25,8 +25,6 @@
 */
 package com.samsung.sec.dexter.findbugs.plugin;
 
-import java.io.File;
-
 import javax.annotation.CheckForNull;
 
 import org.apache.log4j.Logger;

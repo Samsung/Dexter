@@ -96,7 +96,10 @@ public class ResultFileHandler extends DefaultHandler {
 	    	try{
 	    		Checker checker = checkerConfig.getChecker(checkerCode);
 	    		currentOccurence.setSeverityCode(checker.getSeverityCode());
+	    		currentOccurence.setCategoryName(checker.getCategoryName());
+	    		
 	    	} catch (DexterRuntimeException e){
+	    		logger.info(e.getMessage());
 	    		Checker checker = new Checker(checkerCode, checkerCode, CppcheckDexterPlugin.version.getVersion(), true);
 	    		
 	    		if("true".equals(attributes.getValue("inconclusive"))){

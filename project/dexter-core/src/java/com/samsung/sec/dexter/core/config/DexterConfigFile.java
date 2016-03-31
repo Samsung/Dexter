@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
@@ -44,6 +46,7 @@ import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 
 public class DexterConfigFile {
+	static Logger logger = Logger.getLogger(DexterConfigFile.class);
 	private String dexterHome;
 	private String dexterServerIp;
 	private int dexterServerPort;
@@ -51,6 +54,7 @@ public class DexterConfigFile {
 	private String projectFullPath;
 	private List<String> sourceDirList;
 	private List<String> headerDirList;
+	private List<String> functionList;
 	private String sourceEncoding;
 	private List<String> libDirList;
 	private String binDir;
@@ -151,6 +155,7 @@ public class DexterConfigFile {
 		analysisConfig.setLibDirList(getLibDirList());
 		analysisConfig.setSnapshotId(generateSnapshotId());
 		analysisConfig.setResultFileFullPath(getResultFileFullPath());
+		analysisConfig.setFunctionList(getFunctionList());
 
 		return analysisConfig;
 	}
@@ -177,6 +182,7 @@ public class DexterConfigFile {
 		setModulePath((String) params.get(ResultFileConstant.MODULE_PATH));
 		setFileNameList(getStringListFromMap(params, ResultFileConstant.FILE_NAME));
 		setResultFileFullPath((String) params.get("resultFileFullPath"));
+		setFunctionList(getStringListFromMap(params, "functionList"));
 		setSnapshotId((String) params.get(ResultFileConstant.SNAPSHOT_ID));
 	}
 
@@ -303,6 +309,14 @@ public class DexterConfigFile {
 
 	public void setHeaderDirList(List<String> headerDirList) {
 		this.headerDirList = headerDirList;
+	}
+
+	public List<String> getFunctionList(){
+		return this.functionList;
+	}
+	
+	public void setFunctionList(List<String> functionList){
+		this.functionList = functionList;
 	}
 
 	public String getSourceEncoding() {

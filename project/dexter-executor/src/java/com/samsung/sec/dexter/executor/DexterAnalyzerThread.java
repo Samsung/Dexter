@@ -81,7 +81,7 @@ public class DexterAnalyzerThread extends Thread{
 			config.getCodeMetrics().setFileName(config.getFileName());
 			config.getCodeMetrics().setModulePath(config.getModulePath());
 			CodeMetricsGenerator.getCodeMetrics(config.getLanguageEnum(), config.getSourceFileFullPath(),
-			        config.getCodeMetrics());
+			        config.getCodeMetrics(), config.getFunctionMetrics(), config.getFunctionList());
 			analyzer.postRunCodeMetrics(config);
 	
 			// 4. call plugin's analyzer (static analysis)

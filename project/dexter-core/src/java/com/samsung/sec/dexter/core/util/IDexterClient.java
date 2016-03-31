@@ -171,7 +171,7 @@ public interface IDexterClient {
 			final String modulePath, final String fileName, final String sourceCode);
 
 	/**
-	 * [Mandatory] Method의 핵심 기능 및 사용된 알고리즘을 완전한 문장으로 기술한다.
+	 * [Mandatory] Method���듭떖 湲곕뒫 諛��ъ슜���뚭퀬由ъ쬁���꾩쟾��臾몄옣�쇰줈 湲곗닠�쒕떎.
 	 * 
 	 * @param resultJson
 	 * @return void
@@ -216,4 +216,5 @@ public interface IDexterClient {
 	public void addLoginInfoListener(final IDexterLoginInfoListener listener);
 	public void removeLoginInfoListener(final IDexterLoginInfoListener listener);
 	public void runLoginInfoHandler(String oldServerHost, int oldServerPort, String oldUserId);
+
 }

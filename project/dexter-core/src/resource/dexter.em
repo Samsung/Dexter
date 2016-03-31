@@ -24,7 +24,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * -------------------------------------------------------------------------------------------------------------------
- * Version : 0.9.2
+ * Version : 0.9.4
  * -------------------------------------------------------------------------------------------------------------------
  * Add Key Assignments :
  *   - markDexterDefectToFalseAlarm() : to mark defect status as a false alarm  (async: 3~5 sec)
@@ -49,7 +49,7 @@ macro initDexterGlobalVariables()
 	global g_showResultMsgDialog;	// 1: show,  0: hide
 	global g_waitDexterResult;		// 1: wait(synchronously),  0: no wait(asynchronously)
 	global g_analysisWhenOpen;		// 1: analysis when open, 0: not analysis when open a file(default)
-
+	global g_functionList;
 
 	g_dexterRunning = 1;
 	g_maxUpdateCount = 6;
@@ -60,6 +60,7 @@ macro initDexterGlobalVariables()
 	g_showResultMsgDialog = 0;
 	g_waitDexterResult = 0;
 	g_analysisWhenOpen = 0;
+	g_functionList = "";
 
 	g_dexterConfig.sourceDirRegKey = "sourceDirRegKey"
 	g_dexterConfig.headerDirRegKey = "headerDirRegKey"
@@ -147,8 +148,8 @@ event DocumentOpen(sFile)
 event DocumentSaveComplete(sFile) // synchronously 
 //event DocumentChanged(sFile)  // asynchronously
 {
+
 	runDexter(sFile);
-	g_updateCount = g_maxUpdateCount;
 	stop;
 }
 
@@ -230,7 +231,7 @@ macro runDexter(sFile)
 		error("can't run dexter because dexter is not initialized : " # sFile);
 		stop;
 	}
-
+	saveModifiedFunctionList();
 	createDexterConfFile();
 
 	/* don't use this until connecting cppcheck.dll
@@ -518,7 +519,7 @@ macro createDexterConfFile()
 	var confFile;
 	var requestTime;
 	var contents;
-
+	var functionList;
 	initDexterHome();
 	confFile = g_dexterConfig.dexterHome # "\\bin\\daemon\\dexter_daemon_cfg.json"
 	hConfbuf = OpenBuf(confFile);
@@ -552,7 +553,8 @@ macro createDexterConfFile()
 	}
 
 	contents = contents # "\t\"fileName\":[\"" # GetBufName(hFile) # "\"],";
-	contents = contents # "\t\"type\":\"FILE\"";
+	contents = contents # "\t\"type\":\"FILE\",";
+	contents = contents # "\t\"functionList\":[" # g_functionList # "]";
 	contents = contents # "}";
 
 	emptyFileContent(hConfbuf, 0);
@@ -560,6 +562,193 @@ macro createDexterConfFile()
 	SaveBuf(hConfbuf);
 	CloseBuf(hConfbuf);
 }
+macro saveModifiedFunctionList(){
+	var firstRevisionLine;
+	var changeCount;
+	var functionName;
+	var curSymbol;
+	hbuf = GetCurrentBuf();
+	currentLine  = 0;
+	changeCount = 0;
+	firstRevisionLine = 0;
+
+	g_functionList= "";
+	
+	while(1){
+		Go_To_Next_Change;
+		if(changeCount == 0){
+			firstRevisionLine = GetBufLnCur(hbuf);
+		}else if( isNavigatedLine(hbuf,changeCount,firstRevisionLine) == true){
+			break;
+		}
+		changeCount = changeCount +1;
+
+		curSymbol = GetCurSymbol();
+		symbolLocation = GetSymbolLocation(curSymbol);
+		if( symbolLocation == "" ){
+			
+		}else if(symbolLocation.Type == "Function" || symbolLocation.Type == "Method"){
+			functionName = SymbolLeafName(symbolLocation);
+			addFunctionNameIfNotExist(functionName);		
+		}
+	}
+	if(g_functionList !=""){
+	g_functionList = strtrunc(g_functionList,strlen(g_functionList)-1);	
+	}
+}
+macro isNavigatedLine(hbuf, count,firstRevisionLine){
+	
+	var currentLine;
+	currentLine = GetBufLnCur(hbuf);
+	if(count>=1 && currentLine == firstRevisionLine){
+		return true;
+	}
+	return false;
+
+}
+macro addFunctionNameIfNotExist(functionName){
+	var index;
+	var functionListLength;
+	var compareFunctionName;
+	var frontIndex;
+	var backIndex;
+	
+	index = 0;
+	frontIndex = 0;
+	backIndex = 0;
+	functionListLength = strlen(g_functionList);
+
+	while(index<functionListLength){
+		if(g_functionList[index] == ","){
+				backIndex = index;
+				compareFunctionName = strmid(g_functionList,frontIndex+1,backIndex-1);
+				if(compareFunctionName == functionName){
+				return;
+				}				
+			frontIndex = index +1;			
+		}
+		index = index +1;
+	}
+	
+	g_functionList = g_functionList # "\"" #  functionName # "\"" # ",";
+
+}
+
+macro createPlatzKeywordFile()
+{
+	if(g_dexterInitialized != 1){
+		stop;
+	}
+	var keyword;
+	var hFile;
+
+	hFile = GetCurrentBuf();
+	if(hFile == hNil){
+		Msg("There is no open/target File to search");
+		stop;
+	}
+	keyword = GetKeywordFromCurrentLine(hFile);
+	if(keyword == nil){
+		Msg("There is no target keyword to search. Please move your insertion cursor and restart search macro");
+		stop;
+	}
+  
+	var hKeywordBuf;
+	var keywordFile;
+	var requestTime;
+	var contents;
+
+	initDexterHome();
+	keywordFile = g_dexterConfig.dexterHome # "\\bin\\daemon\\platz_keyword.json"
+	hKeywordBuf = OpenBuf(keywordFile);
+
+	if(hKeywordBuf == hNil){	
+		hKeywordBuf = NewBuf(keywordFile);
+		if(hKeywordBuf == hNil){
+			Msg("Invalid Platz Keyword file(Open Error) : " # keywordFile);
+			stop;
+		}
+	}
+	requestTime = getCurrentTimeString();	
+
+	contents = "{";
+	contents = contents # "\t\"keyword\":\"" # keyword # "\"";
+	contents = contents # "}";
+	emptyFileContent(hKeywordBuf, 0);
+	AppendBufLine(hKeywordBuf, contents);
+	SaveBuf(hKeywordBuf);
+	CloseBuf(hKeywordBuf);
+}
+
+macro GetKeywordFromCurrentLine(hbuf)
+{
+	var currentCursorIndex;
+	var current
+	var index;
+	var currentLineNumber;
+	var currentLineText;
+	var firstCharIndex;
+	var lastCharIndex;
+	var keyword;
+	
+	hwnd = GetCurrentWnd();
+	currentLineNumber = GetWndSelLnFirst(hwnd);
+	currentLineText = GetBufLine(hbuf,currentLineNumber);
+	currentCursorIndex = GetWndSelIchFirst(hwnd);
+	index = currentCursorIndex;
+
+
+	
+	if(checkAllowedChar(currentLineText[index]) == 0){
+		msg("[Dexter] You have to move your cursor on a character.");
+		stop;
+	}
+	
+	firstCharIndex = index;
+	while(index--){
+		if(checkAllowedChar(currentLineText[index]) == 0){
+			firstCharIndex = index+1;
+			break;
+		}
+	}
+
+	index = currentCursorIndex;
+	lastCharIndex = index;
+	while(index++){
+		if(checkAllowedChar(currentLineText[index]) == 0){
+			lastCharIndex = index-1;
+			break;
+		}
+	}
+
+	keyword = strmid(currentLineText,firstCharIndex,lastCharIndex+1);
+	return keyword;
+		
+}
+
+macro checkAllowedChar(char){
+	var asciiNum;
+	if(char ==Nil){
+		return 0;
+	}
+	asciiNum  =  AsciiFromChar(char);
+	if(asciiNum == 95 || asciiNum == 36){
+		return 1;
+	}
+	if(asciiNum >= 65 && asciiNum <=90){ 
+		return 1;
+	}
+	if(asciiNum >=97 && asciiNum <=122){
+		return 1;
+	}
+	if(asciiNum >=48 && asciiNum <=57){
+		return 1;
+	}
+	return 0;
+	
+	
+}
+
 
 macro createDefectFilterFile(defect, hFile, curLine)
 {

@@ -129,6 +129,7 @@ public class DexterOpensourcePlugin implements IDexterPlugin {
 					defect.setMethodName("");
 					defect.setLanguage(config.getLanguageEnum().toString());
 					defect.setSeverityCode(checker.getSeverityCode());
+					defect.setCategoryName(checker.getCategoryName());
 					defect.setMessage(checker.getProperty("EnglishDescription"));
 					defect.setToolName(PLUGIN_NAME);
 					

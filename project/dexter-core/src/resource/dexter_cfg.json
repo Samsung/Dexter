@@ -1,5 +1,5 @@
 {
-	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_0.9.2_64",
+	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_#.#.#_64",
 	"dexterServerIp":"dexter_server_ip",
 	"dexterServerPort":"dexter_server_port",
 	"projectName":"your_project_name",

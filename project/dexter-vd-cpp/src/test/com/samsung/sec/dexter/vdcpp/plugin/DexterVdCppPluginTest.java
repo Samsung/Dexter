@@ -46,7 +46,7 @@ public class DexterVdCppPluginTest {
 		//assertTrue(firstChecker.isActive());
 		assertEquals("CRC", firstChecker.getSeverityCode());
 		assertEquals("BOTH", firstChecker.getType());
-		assertEquals("2.8.4", firstChecker.getVersion().toString());
+		assertEquals("0.9.4", firstChecker.getVersion().toString());
 		assertEquals("The name of a const variable should be consist of Upper alphabet, underline, or number.", 
 				firstChecker.getDescription());
 		assertEquals("[A-Z][0-9_A-Z]+", firstChecker.getProperty("RegExp"));
@@ -62,7 +62,7 @@ public class DexterVdCppPluginTest {
 		assertEquals("Samsung Electroincs", desc.get3rdPartyName());
 		assertEquals(DexterConfig.LANGUAGE.CPP, desc.getLanguage());
 		assertEquals("dexter-vd-cpp", desc.getPluginName());
-		assertEquals("0.9.2", desc.getVersion().toString());
+		assertEquals("0.9.4", desc.getVersion().toString());
 	}
 	
 	@Test
@@ -106,7 +106,7 @@ public class DexterVdCppPluginTest {
 		for(Defect defect : result.getDefectList()){
 			if(defect.getCheckerCode().equals("USLEEP")){
 				assertEquals(1, defect.getOccurences().size());
-				assertEquals("[#1@31] checkUsleep function aggument 1000  should be greater than 10000 to avoid performance issue; ", defect.getMessage());
+				assertEquals("[#1@31] checkUsleep function argument 1000  should be greater than 10000 to avoid performance issue; ", defect.getMessage());
 				
 				Occurence occ = defect.getOccurences().get(0);				
 				assertEquals(31, occ.getStartLine());
