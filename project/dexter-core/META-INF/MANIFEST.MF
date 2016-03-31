@@ -46,8 +46,14 @@ Export-Package: com.samsung.sec.dexter.core,
  com.samsung.sec.dexter.core.util,
  com.samsung.sec.dexter.util,
  org.eclipse.cdt.core.dom.ast,
+ org.eclipse.cdt.core.dom.parser,
+ org.eclipse.cdt.core.dom.parser.c,
+ org.eclipse.cdt.core.dom.parser.cpp,
  org.eclipse.cdt.core.parser,
- org.eclipse.cdt.internal.core.dom.parser.cpp
+ org.eclipse.cdt.internal.core.dom.parser,
+ org.eclipse.cdt.internal.core.dom.parser.c,
+ org.eclipse.cdt.internal.core.dom.parser.cpp,
+ org.eclipse.cdt.internal.core.parser.scanner
 Bundle-Vendor: Samsung Electronics VD SE Lab
 Bundle-Activator: com.samsung.sec.dexter.core.DexterCoreActivator
 Require-Bundle: org.eclipse.core.runtime,

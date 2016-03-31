@@ -4,15 +4,8 @@ import java.util.Iterator;
 import com.samsung.sec.dexter.eclipse.DexterEclipseActivator;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 
-import org.eclipse.jdt.core.IClasspathEntry;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -23,15 +16,14 @@ import org.eclipse.ui.IWorkbenchPart;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterClient;
-import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 import com.samsung.sec.dexter.eclipse.ui.view.CodeMetricsView;
 
 public class OpenCodeMetricsActionDelegate implements IObjectActionDelegate {
 
 	ISelection selection;
-	String modulePath = "";
-	String fileName = "";
+	//String modulePath = "";
+	//String fileName = "";
 	
 	@Override
 	public void run(IAction action) {
@@ -57,23 +49,20 @@ public class OpenCodeMetricsActionDelegate implements IObjectActionDelegate {
 			final IFile targetFile = (IFile) resource;
 			if (targetFile.getName().endsWith(".java")) {
 
-				setModulePath(getModulePath(targetFile));
-				setFileName(targetFile.getName());
-				StringBuilder url = new StringBuilder();
+				//setModulePath(getModulePath(targetFile));
+				//setFileName(targetFile.getName());
+				StringBuilder makeCodeMetricsUrl = new StringBuilder();
 				try {
 					IViewPart view = EclipseUtil.findView(CodeMetricsView.ID);
 					final CodeMetricsView codeMetricsView = (CodeMetricsView) view;
 
 					
-					url.append("http://").append(DexterClient.getInstance().getServerHost()).append(":") //$NON-NLS-1$ //$NON-NLS-2$
-							.append(DexterClient.getInstance().getServerPort())
-							.append(DexterConfig.CODE_METRICS_BASE)
-							//$NON-NLS-1$
-							.append("?").append(DexterConfig.CODE_METRICS_FILE_NAME).append("=").append(getFileName())//$NON-NLS-1$
-							.append("&").append(DexterConfig.CODE_METRICS_MODULE_PATH).append("=").append(getModulePath());//$NON-NLS-1$
+					makeCodeMetricsUrl.append("http://").append(DexterClient.getInstance().getServerHost()).append(":") //$NON-NLS-1$ //$NON-NLS-2$
+							.append(DexterClient.getInstance().getServerPort()).append(DexterConfig.CODE_METRICS_BASE)//$NON-NLS-1$
+							.append("?").append(DexterConfig.CODE_METRICS_FILE_NAME).append("=").append(targetFile.getName())//$NON-NLS-1$
+							.append("&").append(DexterConfig.CODE_METRICS_MODULE_PATH).append("=").append(EclipseUtil.getModulePath(targetFile));//$NON-NLS-1$
 					
-					DexterEclipseActivator.LOG.info(url.toString());
-					codeMetricsView.setUrl(url.toString());
+					codeMetricsView.setUrl(makeCodeMetricsUrl.toString());
 
 					EclipseUtil.showView(CodeMetricsView.ID);
 				} catch (DexterRuntimeException e) {
@@ -84,26 +73,22 @@ public class OpenCodeMetricsActionDelegate implements IObjectActionDelegate {
 		}
 	}
 
-	private void setModulePath(String modulePath) {
+	/*private void setModulePath(String modulePath) {
 		if (modulePath.startsWith("/")) {
 			modulePath = modulePath.substring(1, modulePath.length());
 		}
 		this.modulePath = modulePath;
-	}
+	}*/
 
-	private void setFileName(String fileName) {
+	/*private void setFileName(String fileName) {
 		this.fileName = fileName;
-	}
+	}*/
 
-	final private String getModulePath() {
-		return this.modulePath;
-	}
-
-	final private String getFileName() {
+	/*final private String getFileName() {
 		return this.fileName;
-	}
+	}*/
 
-	public static IJavaProject getJavaProject(final IFile file) {
+	/*public static IJavaProject getJavaProject(final IFile file) {
 		final IProject project = file.getProject();
 		if (project == null) {
 			throw new DexterRuntimeException("Project is null");
@@ -122,8 +107,8 @@ public class OpenCodeMetricsActionDelegate implements IObjectActionDelegate {
 
 		return javaProject;
 	}
-
-	public String getModulePath(IFile file) {
+*/
+	/*public String getModulePath(IFile file) {
 		String fileFullPath = DexterUtil.refinePath(file.getLocation().toFile()
 				.getAbsolutePath());
 
@@ -162,7 +147,7 @@ public class OpenCodeMetricsActionDelegate implements IObjectActionDelegate {
 		throw new DexterRuntimeException(
 				"Cannot extract module path from IFile object : "
 						+ fileFullPath);
-	}
+	}*/
 
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {

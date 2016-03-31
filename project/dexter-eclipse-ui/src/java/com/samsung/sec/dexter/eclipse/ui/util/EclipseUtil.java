@@ -66,7 +66,6 @@ import com.samsung.sec.dexter.core.exception.DexterException;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
-import com.samsung.sec.dexter.eclipse.ui.view.FunctionMetricsView;
 
 public class EclipseUtil {
 	/**
@@ -132,7 +131,6 @@ public class EclipseUtil {
 				DexterUIActivator.LOG.error("Platform.getProduct() null");
 				return "";
 			}
-			
 			
 			url = new URL(Platform.getInstallLocation().getURL() + Platform.getProduct().getName() + ".ini");
 			String path = url.getPath();
@@ -328,20 +326,6 @@ public class EclipseUtil {
 			}
 		}
 
-		return view;
-	}
-
-	public static IViewPart findFunctionMetricsView(String viewId){
-		IViewPart view =  PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(viewId);
-		
-		if(view == null){
-			try{
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(FunctionMetricsView.ID);
-				view = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(FunctionMetricsView.ID);
-			}catch (PartInitException e) {
-            	throw new DexterRuntimeException(e.getMessage(), e);
-            }
-		}
 		return view;
 	}
 	

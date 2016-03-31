@@ -467,9 +467,6 @@ public class DexterConfigFile {
 		
 		for(String srcDir : this.sourceDirList){
 			File baseFile = new File(srcDir);
-			if(baseFile == null){
-				System.out.println(">>>" + srcDir);
-			}
 			addSourceFileFullPathHierachy(baseFile, sourceFileFullPathList);
 		}
 		

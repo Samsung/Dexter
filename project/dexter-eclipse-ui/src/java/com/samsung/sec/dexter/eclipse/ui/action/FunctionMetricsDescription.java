@@ -59,8 +59,6 @@ public class FunctionMetricsDescription implements IObjectActionDelegate {
 		functionMetricsView.setUrl(makeFunctionMetricsUrl.toString());
 		EclipseUtil.showView(FunctionMetricsView.ID);	
 		
-		//NotifierDialog.notify("[Dexter] Need to confirm Code Metrics (Function)",  "This require immediate attention" + fileName, NotificationType.values()[1]);
-		
 		}
 		catch (DexterRuntimeException e){
 			MessageDialog.openError(part.getSite().getShell(), "Code Metrics (Fuction) Description Error", 

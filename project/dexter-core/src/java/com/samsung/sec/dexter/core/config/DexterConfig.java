@@ -108,11 +108,6 @@ public class DexterConfig {
 	/** common constants */
 	public static final String DEXTER_HOME_KEY = "dexterHome";
 	
-	/** Platz constants */
-	public static final String PLATZ_KEYWORD_FILENAME = "platz_keyword.json";
-	public static final String PLATZ_API_URL = "http://platz.sec.samsung.net/tapi/#/";
-	public static final String PLATZ_SEARCH_API_URL = "http://platz.sec.samsung.net/tapi/#/search/";
-	
 	
 	/** BROWSER constants */
 	public static final String REGISTRY_FIREFOX = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\firefox.exe";

@@ -549,7 +549,6 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
 			final List<String> allFunctionList = config.getFunctionList();
 			final String fileName = DexterAnalyzer.getFileName(resultList);
 			final String modulePath = config.getModulePath();
-			final String fileStatus = config.getFileStatus();
 			final String sourceFileFullPath = DexterAnalyzer.getSourceFileFullPath(resultList);
 			
 			final AnalysisLog log = new AnalysisLog();

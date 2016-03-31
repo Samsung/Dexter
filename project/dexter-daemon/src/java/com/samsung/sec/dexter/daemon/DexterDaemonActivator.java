@@ -46,9 +46,6 @@ import com.samsung.sec.dexter.core.util.PersistenceProperty;
 import com.samsung.sec.dexter.daemon.job.MonitorForDexterConfigFile;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseLog;
 
-import com.samsung.sec.dexter.daemon.job.MonitorForPlatzKeywordFile;
-
-
 /**
  * The activator class controls the plug-in life cycle
  */
@@ -63,7 +60,6 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
 	private String sourceInsiteExe;
 	
 	MonitorForDexterConfigFile monitorJob;
-	MonitorForPlatzKeywordFile monitorKeywordJob;
 
 	private static DexterDaemonActivator plugin;
 
@@ -121,7 +117,6 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
 		setWindowTitleWithLoginInformation();
 		initializeSourceInsightEnvironment();
 		startMonitorForDexterConfigFile();
-		startMonitorForPlatzKeywordFile();
 		
 		setSourceInsightStatusRegistryAsRunning();
 	}
@@ -213,15 +208,6 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
 		monitorJob.setSystem(true);
 		monitorJob.schedule();
 	}
-	
-	private void startMonitorForPlatzKeywordFile(){
-		monitorKeywordJob = new MonitorForPlatzKeywordFile();
-		monitorKeywordJob.setUser(false);
-		monitorKeywordJob.setPriority(Job.LONG);
-		monitorKeywordJob.setSystem(true);
-		monitorKeywordJob.schedule();
-	}
-	
 	
 	private void setSourceInsightStatusRegistryAsRunning() {
 		Job job = new Job("set registry for sourceinsight"){
