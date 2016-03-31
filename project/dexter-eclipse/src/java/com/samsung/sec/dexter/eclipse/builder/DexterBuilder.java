@@ -98,6 +98,7 @@ public class DexterBuilder extends IncrementalProjectBuilder{
 			fullBuild(monitor);
 		} else {
 			final IResourceDelta delta = getDelta(getProject());
+
 			if (delta == null) {
 				fullBuild(monitor);
 			} else {
@@ -114,7 +115,7 @@ public class DexterBuilder extends IncrementalProjectBuilder{
 			return;
 		}
 		
-		if (EclipseUtil.isValidJavaResource(resource)) {
+		if (EclipseUtil.isValidJavaResource(resource) || EclipseUtil.isValidCAndCppResource(resource)) {
 			final Stopwatch s = Stopwatch.createStarted();
 			
 			final IFile file = (IFile) resource;
@@ -152,6 +153,8 @@ public class DexterBuilder extends IncrementalProjectBuilder{
 
 	protected void incrementalBuild(IResourceDelta delta, IProgressMonitor monitor) throws CoreException {
 		// the visitor does the work.
+		
+		// TODO try to use singleton object instead of new instance.
 		delta.accept(new DexterDeltaVisitor());
 	}
 }

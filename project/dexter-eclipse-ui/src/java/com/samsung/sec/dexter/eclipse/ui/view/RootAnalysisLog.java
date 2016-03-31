@@ -41,6 +41,7 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.defect.Defect;
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
 
 public class RootAnalysisLog {
@@ -61,7 +62,12 @@ public class RootAnalysisLog {
     		return;
     	}
     	
-    	for(File sub : resultDir.listFiles()){
+    	File[] resultFiles = resultDir.listFiles();
+    	if(resultFiles == null){
+    		throw new DexterRuntimeException("the result file array is null");
+    	}
+    		
+    	for(File sub : resultFiles){
     		if(sub.isFile()){
     			addAnalysisLogFromFile(sub);
     		}
@@ -74,6 +80,11 @@ public class RootAnalysisLog {
     	
     	if(resultOldDir.isDirectory() == false || resultOldDir.exists() == false){
     		return;
+    	}
+    	
+    	resultFiles = resultDir.listFiles();
+    	if(resultFiles == null){
+    		throw new DexterRuntimeException("the result file array is null");
     	}
     	
     	for(final File subFile : resultOldDir.listFiles()){
@@ -119,7 +130,6 @@ public class RootAnalysisLog {
 	        	
 	        	for(final LinkedTreeMap<String, Object> defectMap : defectList){
 	        		final Defect defect = Defect.fromMap(defectMap);
-	        		
 	        		datetime = defect.getModifiedDateTime();
 	        		if(datetime <= 0){
 	        			datetime = defect.getCreatedDateTime();

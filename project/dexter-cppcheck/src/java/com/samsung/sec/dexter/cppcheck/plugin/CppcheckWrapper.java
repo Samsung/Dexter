@@ -112,7 +112,7 @@ public class CppcheckWrapper {
         } catch (IOException e) {
 	        throw new DexterRuntimeException(e.getMessage() + " cmd: " + cmd.toString(), e);
         } catch (Exception e) {
-	        throw new DexterRuntimeException(e.getMessage() + " cmd: " + cmd.toString(), e);
+	        throw new DexterRuntimeException(e.getMessage() + "use the following command. if you see the error of absence of MSVCP120.dll. you have to install MS Visual C++ 2013 Redistributeable first.  cmd: " + cmd.toString(), e);
         } finally {
         	if(process != null){
         		try {

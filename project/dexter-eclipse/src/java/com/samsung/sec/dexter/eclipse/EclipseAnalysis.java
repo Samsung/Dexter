@@ -28,19 +28,17 @@ package com.samsung.sec.dexter.eclipse;
 import java.util.concurrent.ExecutionException;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 
 import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
 import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.exception.DexterException;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterUtil;
+import com.samsung.sec.dexter.eclipse.ui.util.EclipseCppUtil;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 import com.samsung.sec.dexter.executor.DexterAnalyzer;
 
@@ -83,38 +81,50 @@ public class EclipseAnalysis {
 	}
 
 	private static AnalysisConfig createAnalysisConfig(final IFile file, final IAnalysisEntityFactory configFactory){
+		LANGUAGE language = DexterUtil.getLanguage(file.getFileExtension());
+		
+		if(language == LANGUAGE.JAVA){
+			return createAnalysisConfigForJava(file, configFactory);
+		} else if(language == LANGUAGE.C || language == LANGUAGE.CPP){
+			return createAnalysisConfigForCpp(file, configFactory);
+		} else {
+			throw new DexterRuntimeException("cannot analyze the file: " + file.getName());
+		}
+	}
+	
+	private static AnalysisConfig createAnalysisConfigForJava(final IFile file, final IAnalysisEntityFactory configFactory){
 		final AnalysisConfig config = configFactory.createAnalysisConfig();
 		config.setProjectName(file.getProject().getName());
 
 		final String projectFullPath = DexterUtil.refinePath(file.getProject().getLocation().toFile().getAbsolutePath());
 		config.setProjectFullPath(projectFullPath);
+		
 		EclipseUtil.addSourceFoldersAndLibFiles(file, config);
 		config.setFileName(file.getName());
+		
 		final String outputDir = EclipseUtil.getOutputDir(file);
-		config.setOutputDir(outputDir);
+		config.setOutputDir(outputDir); 
 		config.setModulePath(EclipseUtil.getModulePath(file));
 		config.setSourceFileFullPath(file.getLocation().toFile().getAbsolutePath());
 		
 		return config;
 	}
 	
+	private static AnalysisConfig createAnalysisConfigForCpp(final IFile file, final IAnalysisEntityFactory configFactory){
+		final AnalysisConfig config = configFactory.createAnalysisConfig();
+		config.setProjectName(file.getProject().getName());
+
+		final String projectFullPath = DexterUtil.refinePath(file.getProject().getLocation().toFile().getAbsolutePath());
+		config.setProjectFullPath(projectFullPath);
+		config.setFileName(file.getName());
+		EclipseCppUtil.addReferencePaths(file, config);
+		config.setSourceFileFullPath(file.getLocation().toFile().getAbsolutePath());
+		
+		return config;
+	}
+	
+	
 	private static void execute(final AnalysisConfig config) {
 		DexterAnalyzer.getInstance().runSync(config);
 	}
-	
-	public static IJavaProject getJavaProject(final IProject project) {
-	    IJavaProject javaProject;
-		try {
-			if (project.hasNature(JavaCore.NATURE_ID)) {
-				javaProject = JavaCore.create(project);
-			} else {
-				DexterEclipseActivator.LOG.error("this is not java project");
-				return null;
-			}
-		} catch (CoreException e1) {
-			DexterEclipseActivator.LOG.error(e1.getMessage(), e1);
-			return null;
-		}
-	    return javaProject;
-    }
 }

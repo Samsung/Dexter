@@ -90,7 +90,7 @@
            colorPreferenceValue="93,93,93"
            contributesToHeader="false"
            highlightPreferenceKey="dexter.highlight"
-           highlightPreferenceValue="true"
+           highlightPreferenceValue="false"
            icon="icons/dismissed.gif"
            includeOnPreferencePage="true"
            label="Dexter Dismissed Marker"

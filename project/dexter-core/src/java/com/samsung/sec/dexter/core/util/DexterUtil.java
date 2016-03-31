@@ -45,6 +45,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -60,6 +61,7 @@ import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.analyzer.EndOfAnalysisHandler;
 import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 
 public class DexterUtil {
@@ -1046,5 +1048,25 @@ public class DexterUtil {
 			}
 		}
 	}
-	
+
+	public static LANGUAGE getLanguage(String fileExtension) {
+		final String language = fileExtension.toLowerCase();
+		
+		switch(language){
+			case "java":
+				return LANGUAGE.JAVA;
+			case "h":
+			case "c":
+				return LANGUAGE.C;
+			case "hpp":
+			case "cpp":
+				return LANGUAGE.CPP;
+			case "cs":
+				return LANGUAGE.C_SHARP;
+			case "js":
+				return LANGUAGE.JAVASCRIPT;
+			default:
+				return LANGUAGE.UNKNOWN;
+		}
+	}
 }

@@ -54,6 +54,10 @@ class ARHandler implements EndOfAnalysisHandler {
 		List<Defect> allDefectList = DexterAnalyzer.getAllDefectList(resultList);
 		
 		for (final Defect d : allDefectList) {
+			// TODO remove log
+			System.out.println(d.getShortDescription());
+			
+			
 			boolean isDefectDissmissed = AnalysisFilterHandler.getInstance().isDefectDismissed(d);
 			
     		for(final Occurence o : d.getOccurences()){

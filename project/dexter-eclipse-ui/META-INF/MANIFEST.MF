@@ -29,3 +29,5 @@ Export-Package: com.samsung.sec.dexter.eclipse.ui,
  com.samsung.sec.dexter.eclipse.ui.login,
  com.samsung.sec.dexter.eclipse.ui.util,
  com.samsung.sec.dexter.eclipse.ui.view
+Import-Package: org.eclipse.cdt.core,
+ org.eclipse.cdt.core.model

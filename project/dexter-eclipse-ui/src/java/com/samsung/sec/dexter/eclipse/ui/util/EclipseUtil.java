@@ -93,13 +93,25 @@ public class EclipseUtil {
 	}
 	
 	public static boolean isValidJavaResource(IResource resource){
-		final String javaExtension = ".java";
-		
 		if((resource.getType() != IResource.FILE)) return false;
-		if(Strings.isNullOrEmpty(resource.getName())) return false;
-		if(resource.getName().length() <= javaExtension.length()) return false;
 		
-		return resource.getName().endsWith(".java");
+		String fileExtension = resource.getFileExtension(); 
+		if(Strings.isNullOrEmpty(fileExtension)) return false;
+		fileExtension = fileExtension.toLowerCase();
+		
+		return "java".equals(fileExtension);
+	}
+
+	public static boolean isValidCAndCppResource(IResource resource){
+		if((resource.getType() != IResource.FILE)) return false;
+		
+		// c h cpp hpp => 1 or 3
+		String fileExtension = resource.getFileExtension(); 
+		if(Strings.isNullOrEmpty(fileExtension)) return false;
+		fileExtension = fileExtension.toLowerCase();
+		
+		return "c".equals(fileExtension) || "cpp".equals(fileExtension) 
+				|| "h".equals(fileExtension) || "hpp".equals(fileExtension);
 	}
 	
 	public static String getDefaultDexterHomePath() {
@@ -178,11 +190,6 @@ public class EclipseUtil {
 		return workspace.getRoot().getFileForLocation(location);
 	}
 
-	/**
-	 * @param file
-	 * @param config
-	 * @throws DexterException
-	 */
 	public static void addSourceFoldersAndLibFiles(IFile file, AnalysisConfig config){
 		if(Strings.isNullOrEmpty(config.getProjectName())){
 			throw new DexterRuntimeException("config.projectName should be set before call this method");

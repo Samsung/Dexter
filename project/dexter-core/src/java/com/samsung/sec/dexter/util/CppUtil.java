@@ -33,6 +33,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.ASTVisitor;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
+import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.parser.ParserLanguage;
 
@@ -68,7 +69,7 @@ public class CppUtil {
 
 		ASTVisitor visitor = new ASTVisitor() {
 			public int visit(IASTDeclaration declaration) {
-
+				
 				boolean visitStatus = DexterUtilHelper.visitFunction(declaration, lineNumber, fileExtension);
 
 				if (visitStatus) {
