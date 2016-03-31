@@ -10,8 +10,14 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
+		<buildCommand>
+			<name>dexter-eclipse.dexterBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
 	</buildSpec>
 	<natures>
+		<nature>dexter-eclipse.dexterNature</nature>
 		<nature>org.eclipse.pde.UpdateSiteNature</nature>
 	</natures>
 </projectDescription>

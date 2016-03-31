@@ -42,6 +42,7 @@ import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.defect.PreOccurence;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.plugin.PluginVersion;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.util.CppUtil;
 
@@ -100,7 +101,8 @@ public class ResultFileHandler extends DefaultHandler {
 	    		
 	    	} catch (DexterRuntimeException e){
 	    		logger.info(e.getMessage());
-	    		Checker checker = new Checker(checkerCode, checkerCode, CppcheckDexterPlugin.version.getVersion(), true);
+	    		Checker checker = new Checker(checkerCode, checkerCode, 
+	    				PluginVersion.fromImplementationVersion(CppcheckDexterPlugin.class).getVersion(), true);
 	    		
 	    		if("true".equals(attributes.getValue("inconclusive"))){
 	    			checker.setSeverityCode("ETC");
