@@ -111,7 +111,6 @@ public class RootAnalysisLog {
 	        	resultLog.setFileName((String) map.get(ResultFileConstant.FILE_NAME));
 	        	resultLog.setFileFullPath((String) map.get(ResultFileConstant.FULL_FILE_PATH));
 	        	resultLog.setModulePath((String) map.get(ResultFileConstant.MODULE_PATH));
-	        	resultLog.setStatus((String) map.get(ResultFileConstant.FILE_STATUS));
 	        	resultLog.setDefectCount(Integer.parseInt((String)map.get(ResultFileConstant.DEFECT_COUNT)));
 	        	
 	        	final String fileStr = file.toString();

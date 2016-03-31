@@ -1008,7 +1008,7 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
 	 */
 	public String getDexterCodeMetricsUrl() {
 		if (getServerHost().startsWith("http")) {
-			return this.serverHost + ":" + this.serverPort + "/dashboard";
+			return this.serverHost + ":" + this.serverPort + "/codeMetrics";
 		} else {
 			return HTTP_PREFIX + this.serverHost + ":" + this.serverPort + "/codeMetrics";
 		}
@@ -1019,7 +1019,7 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
 	 */
 	public String getDexterFunctionMetricsUrl() {
 		if (getServerHost().startsWith("http")) {
-			return this.serverHost + ":" + this.serverPort + "/dashboard";
+			return this.serverHost + ":" + this.serverPort + "/functionMetrics";
 		} else {
 			return HTTP_PREFIX + this.serverHost + ":" + this.serverPort + "/functionMetrics";
 		}
@@ -1082,25 +1082,6 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
 			throw new DexterRuntimeException(e.getMessage(), e);
 		}
 	}
-	
-	public void getCodeMetricsFromFile(String fileName, String modulePath){
-		try{
-			String text = webResource.getText(getServiceUrl(DexterConfig.GET_CODE_METRICS_INFO + "?fileName="+fileName + "&modulePath="+modulePath), this.currentUserId, this.currentUserPwd);
-			final Gson gson = new Gson();
-			
-			@SuppressWarnings("unchecked")
-			final Map<String, Object> result = gson.fromJson(text, Map.class);
-			
-			if("ok".equals(result.get("result"))){
-				
-			}
-			
-		} catch (DexterRuntimeException e){
-			LOG.error(e.getMessage(), e);
-			throw new DexterRuntimeException(e.getMessage(), e);
-		}
-	}
-	
 	
 	public void getFunctionMetrics(String fileName, String modulePath, List<String> functionList){
 		try{

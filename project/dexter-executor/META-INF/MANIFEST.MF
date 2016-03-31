@@ -20,7 +20,6 @@ Bundle-ClassPath: .,
  lib/jspf.remote.xmlrpcdelight-1.0.2.jar,
  lib/mockito-all-1.10.19.jar
 Export-Package: com.samsung.sec.dexter.executor,
- net.xeoh.plugins.base.impl.spawning.handler,
  org.junit
 Require-Bundle: org.eclipse.core.runtime,
  dexter-core,

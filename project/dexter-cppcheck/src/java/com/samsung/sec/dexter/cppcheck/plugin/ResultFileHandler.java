@@ -95,10 +95,7 @@ public class ResultFileHandler extends DefaultHandler {
 	    	
 	    	try{
 	    		Checker checker = checkerConfig.getChecker(checkerCode);
-	    		if("securitycheck".equals(checker.getName())){
-	    			checker.setSeverityCode("MAJ");
-	    			checker.setCategoryName("SECURITY");
-	    		}currentOccurence.setSeverityCode(checker.getSeverityCode());
+	    		currentOccurence.setSeverityCode(checker.getSeverityCode());
 	    		currentOccurence.setCategoryName(checker.getCategoryName());
 	    		
 	    	} catch (DexterRuntimeException e){

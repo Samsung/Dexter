@@ -559,7 +559,6 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
 			log.setDefectCount(allDefectList.size());
 			log.setFileName(fileName);
 			log.setModulePath(modulePath);
-			log.setStatus(fileStatus);
 			log.setFileFullPath(sourceFileFullPath);
 			
 			for(final Defect defect : allDefectList){

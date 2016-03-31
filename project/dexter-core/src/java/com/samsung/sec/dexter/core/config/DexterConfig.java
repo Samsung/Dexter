@@ -113,6 +113,12 @@ public class DexterConfig {
 	public static final String PLATZ_API_URL = "http://platz.sec.samsung.net/tapi/#/";
 	public static final String PLATZ_SEARCH_API_URL = "http://platz.sec.samsung.net/tapi/#/search/";
 	
+	
+	/** BROWSER constants */
+	public static final String REGISTRY_FIREFOX = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\firefox.exe";
+	public static final String REGISTRY_CHROME = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe";
+	
+	
 	private RunMode runMode = RunMode.CLI;
 	private String dexterHome = System.getenv(DEXTER_HOME_KEY);  
 	private Charset sourceEncoding = Charsets.UTF_8;

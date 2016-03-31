@@ -327,10 +327,10 @@
                tooltip="%action.tooltip.1">
          </action>
          <action
-               class="com.samsung.sec.dexter.eclipse.ui.action.FunctionMetricsDescroption"
+               class="com.samsung.sec.dexter.eclipse.ui.action.FunctionMetricsDescription"
                enablesFor="?"
                icon="icons/functionMetricsView.gif"
-               id="com.samsung.sec.dexter.action.FunctionMetricsDescroption"
+               id="com.samsung.sec.dexter.action.FunctionMetricsDescription"
                label="%action.label.3"
                menubarPath="additions"
                tooltip="%action.tooltip.2">

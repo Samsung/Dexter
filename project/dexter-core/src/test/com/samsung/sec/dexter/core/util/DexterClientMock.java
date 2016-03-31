@@ -265,8 +265,4 @@ public class DexterClientMock implements IDexterClient {
 	public CheckerConfig getDexterPluginChecker(IDexterPlugin plugin, String pluginName) {
 		return null ;
 	}
-
-	@Override
-	public void getCodeMetricsFromFile(String fileName, String modulePath) {
-	}	
 }

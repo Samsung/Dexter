@@ -217,5 +217,4 @@ public interface IDexterClient {
 	public void removeLoginInfoListener(final IDexterLoginInfoListener listener);
 	public void runLoginInfoHandler(String oldServerHost, int oldServerPort, String oldUserId);
 
-	public void getCodeMetricsFromFile(String fileName, String modulePath);
 }

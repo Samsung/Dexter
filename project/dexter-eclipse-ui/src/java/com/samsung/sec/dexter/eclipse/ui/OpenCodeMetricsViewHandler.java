@@ -26,7 +26,6 @@
 package com.samsung.sec.dexter.eclipse.ui;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.core.commands.AbstractHandler;
@@ -37,6 +36,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 import com.google.common.base.Strings;
+import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.core.util.DexterUtil;
@@ -48,14 +48,14 @@ public class OpenCodeMetricsViewHandler extends AbstractHandler implements IHand
 		try {
 			final String url = DexterClient.getInstance().getDexterCodeMetricsUrl();			
 			if(DexterUtil.getOS() == DexterUtil.OS.WINDOWS){
-				String exePath = DexterUtil.readRegistry("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\firefox.exe", "Path");
+				String exePath = DexterUtil.readRegistry(DexterConfig.REGISTRY_FIREFOX, "Path");
 				
 				if(!Strings.isNullOrEmpty(exePath)){
 					Runtime.getRuntime().exec("\"" + exePath + "\\firefox.exe\" " + url);
 					return null;
 				}
 				
-				exePath = DexterUtil.readRegistry("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe", "Path");
+				exePath = DexterUtil.readRegistry(DexterConfig.REGISTRY_CHROME, "Path");
 				
 				if(!Strings.isNullOrEmpty(exePath)){
 					Runtime.getRuntime().exec("\"" + exePath + "\\chrome.exe\" " + url);
@@ -66,11 +66,7 @@ public class OpenCodeMetricsViewHandler extends AbstractHandler implements IHand
 			} else {
 				PlatformUI.getWorkbench().getBrowserSupport().getExternalBrowser().openURL(new URL(url));
 			}
-        } catch (PartInitException e) {
-        	handleCommonError(e);
-        } catch (MalformedURLException e) {
-        	handleCommonError(e);
-        } catch (IOException e) {
+        } catch (PartInitException | IOException e) {
         	handleCommonError(e);
         } catch (DexterRuntimeException e){
         	DexterUIActivator.LOG.error(e.getMessage(), e);

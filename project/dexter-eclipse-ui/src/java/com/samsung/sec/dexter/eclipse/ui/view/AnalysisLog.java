@@ -38,7 +38,6 @@ public class AnalysisLog {
 	private String fileName = "";
 	private String modulePath = "";
 	private String fileFullPath = "";
-	private String status =""; 
 	private int defectCount;
 	
 	private List<DefectLog> defectLogList = new ArrayList<DefectLog>(1);
@@ -80,11 +79,7 @@ public class AnalysisLog {
     	this.modulePath = modulePath;
     }
     
-    public void setStatus(final String status){
-    	this.status = status;
-    }
-    
-	/**
+    /**
 	 * @param defect 
 	 */
     public void addDefectLog(final Defect defect) {
@@ -158,13 +153,6 @@ public class AnalysisLog {
 	 */
 	public String getModulePath() {
 		return modulePath;
-	}
-	
-	/**
-	 * @return the status
-	 */
-	public String getStatus(){
-		return status;
 	}
 	
 	/**

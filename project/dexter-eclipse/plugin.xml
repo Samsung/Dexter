@@ -168,7 +168,7 @@
             nameFilter="*"
             objectClass="org.eclipse.core.resources.IFile">
          <action
-               class="com.samsung.sec.dexter.eclipse.action.OpenCodeMetricsDelegate"
+               class="com.samsung.sec.dexter.eclipse.action.OpenCodeMetricsActionDelegate"
                icon="icons/codeMetricsView7.gif"
                id="dexter-eclipse.action.openCodeMetrics"
                label="%OPEN_CODE_METRICS"
@@ -181,14 +181,6 @@
             id="dexter-eclipse.objectContribution.openFunctionMetrics"
             nameFilter="*"
             objectClass="org.eclipse.core.resources.IFile">
-         <action
-               class="com.samsung.sec.dexter.eclipse.action.OpenFunctionMetricsDelegate"
-               icon="icons/functionMetricsView.gif"
-               id="dexter-eclipse.action.openFunctionMetrics"
-               label="%OPEN_FUNCTION_METRICS"
-               menubarPath="additions"
-               tooltip="%OPEN_FUNCTION_METRICS_TOOLTIP">
-         </action>
       </objectContribution>
    </extension>
 

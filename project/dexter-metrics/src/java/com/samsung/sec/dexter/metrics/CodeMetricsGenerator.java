@@ -55,7 +55,6 @@ import com.samsung.sec.dexter.util.CppUtil;
 public class CodeMetricsGenerator {
 	static Logger logger = Logger.getLogger(CodeMetricsGenerator.class);
 	
-	
 	public static void main(String[] args) throws IOException, CheckstyleException {
 		final String filePath = "C:\\DEV\\workspace\\runtime-EclipseApplication\\DefectTest\\src\\defect\\example\\LockInversion.java";
 		List<String> functionList = new ArrayList<String>();

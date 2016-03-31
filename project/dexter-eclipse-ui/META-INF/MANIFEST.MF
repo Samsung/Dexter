@@ -20,8 +20,6 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,
- lib/quartz-2.2.2.jar,
- lib/quartz-jobs-2.2.2.jar,
  lib/guava-16.0.1.jar,
  lib/gson-2.2.4.jar,
  lib/jersey-client-1.18.jar,
@@ -31,5 +29,4 @@ Bundle-ClassPath: .,
 Export-Package: com.samsung.sec.dexter.eclipse.ui,
  com.samsung.sec.dexter.eclipse.ui.login,
  com.samsung.sec.dexter.eclipse.ui.util,
- com.samsung.sec.dexter.eclipse.ui.view,
- org.quartz.jobs
+ com.samsung.sec.dexter.eclipse.ui.view
