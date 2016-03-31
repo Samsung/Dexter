@@ -214,12 +214,13 @@ public class FindBugsWrapper {
 	/**
 	 * @return CheckerConfig
 	 */
-	public synchronized CheckerConfig getCheckerConfig() {
+	public CheckerConfig getCheckerConfig() {
 		if (this.checkerConfig == null) {
 			initCheckerConfig();
 		}
-
-		return this.checkerConfig;
+		synchronized (this.checkerConfig) {	
+			return this.checkerConfig;
+		}
 	}
 	
 	public void setCheckerConfig(CheckerConfig checkerConfig) {

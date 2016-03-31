@@ -72,6 +72,8 @@ public class CreateSnapshotActionDelegate implements IObjectActionDelegate {
 		if(isNotAdmin()) return;
 		
 		final StructuredSelection selection = (StructuredSelection) this.selection;
+		if(selection == null ) return ;
+		
 		final Object selectedObject = selection.getFirstElement();
 		if(isNotProjectSelection(selectedObject)) return;
 		
@@ -167,8 +169,9 @@ public class CreateSnapshotActionDelegate implements IObjectActionDelegate {
     }
 	
 	private void showErrorMessage(final String title, final String message){
-//		if(targetPart != null && targetPart.getSite() != null && targetPart.getSite().getShell() != null){
-		MessageDialog.openError(targetPart.getSite().getShell(), title, message);
+		if (targetPart != null && targetPart.getSite() != null	&& targetPart.getSite().getShell() != null) {
+			MessageDialog.openError(targetPart.getSite().getShell(), title,	message);
+		}
 	}
 
 	private void addResourceAsTargetFile(final IResource resource){
