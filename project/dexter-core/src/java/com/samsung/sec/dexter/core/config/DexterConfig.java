@@ -105,6 +105,11 @@ public class DexterConfig {
 	public static final Object FUNCTION_METRICS_BASE ="/functionMetrics/#/";
 	public static final Object FUNCTION_METRICS_FUNCTION_LIST="functionList";	
 	  
+	public static final String SECURITY_CHECK_PREFIX = "sec_";
+	public static final String EXECUTION_PERMISSION = "chmod 755";
+	public static final String DEXTER_SCRIPT_NAME = "dexter.sh";
+	public static final String DEXTER2_SCRIPT_NAME = "dexter2.sh";
+	
 	/** common constants */
 	public static final String DEXTER_HOME_KEY = "dexterHome";
 	

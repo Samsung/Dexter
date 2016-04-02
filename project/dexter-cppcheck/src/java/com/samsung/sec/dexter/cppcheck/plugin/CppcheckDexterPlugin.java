@@ -43,6 +43,7 @@ import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 import com.samsung.sec.dexter.core.plugin.PluginDescription;
 import com.samsung.sec.dexter.core.plugin.PluginVersion;
@@ -55,7 +56,7 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
 	private PluginDescription pluginDescription;
 	private CppcheckWrapper cppcheck = new CppcheckWrapper();
 	private final static Logger logger = Logger.getLogger(CppcheckWrapper.class);
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -74,6 +75,44 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
 		// do nothing
 	}
 
+
+	public boolean checkCppcheckPermission(){
+		String dexterHome = DexterConfig.getInstance().getDexterHome();
+		
+		Process changePermissionProcess = null;
+    	StringBuilder changePermissionCmd = new StringBuilder(500);
+    	
+    	String dexterBin = dexterHome + DexterUtil.PATH_SEPARATOR + "bin";
+    	String cppcheckHome = dexterBin + DexterUtil.PATH_SEPARATOR + "cppcheck";
+    	
+    	if (Strings.isNullOrEmpty(dexterBin)) {
+			logger.error("Can't initialize Cppcheck plugin, because the dexter_home/bin is not initialized");
+			return false;
+		}
+    	
+    	if (Strings.isNullOrEmpty(cppcheckHome)) {
+			logger.error("Can't initialize Cppcheck plugin, because the cppcheckHome is not initialized");
+			return false;
+		}
+		
+    	
+    	String baseCommand = DexterConfig.EXECUTION_PERMISSION + " ";
+    	changePermissionCmd.append(baseCommand).append(cppcheckHome).append(DexterUtil.PATH_SEPARATOR).append("cppcheck");
+    	
+    	try {
+			changePermissionProcess = Runtime.getRuntime().exec(changePermissionCmd.toString());
+		} catch (IOException e) {
+			  throw new DexterRuntimeException(e.getMessage() + " changePermissionCmd: " + changePermissionCmd.toString(), e);
+		}finally {
+        	if(changePermissionProcess != null){
+        		changePermissionProcess.destroy();
+        	}
+        }
+
+		return true;
+	}
+	
+	
 	public boolean copyCppcheckRunModule() {
 		String dexterHome = DexterConfig.getInstance().getDexterHome();
 		if (Strings.isNullOrEmpty(dexterHome)) {
@@ -88,10 +127,10 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
 		if (DexterUtil.getOS() == DexterUtil.OS.WINDOWS) {
 			//zipFilePath += "/temp/cppcheck-windows_" + CppcheckDexterPlugin.version.getVersion() + ".zip";
 			zipFilePath += "/temp/cppcheck-windows_0.9.4.zip";
-			
 			cppcheckPath = "/cppcheck-windows.zip";
-		} else {
-			return true;
+		} else { // LINUX or MAC
+			zipFilePath += "/temp/cppcheck-linux_0.9.4.zip";
+			cppcheckPath = "/cppcheck-linux.zip";
 		}
 
 		final File file = new File(zipFilePath);
@@ -104,11 +143,7 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
 
 			try {
 				FileUtils.copyInputStreamToFile(is, file);
-
-				if (DexterUtil.getOS() == DexterUtil.OS.WINDOWS) {
-					DexterUtil.unzip(zipFilePath, dexterHome + CppcheckWrapper.CPPCHECK_HOME_DIR);
-				} else { // LINUX or MAC
-				}
+				DexterUtil.unzip(zipFilePath, dexterHome + CppcheckWrapper.CPPCHECK_HOME_DIR);
 			} catch (IOException e) {
 				logger.error(e.getMessage(), e);
 				return false;
@@ -160,6 +195,9 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
 		if (bin.exists() == false){
 			DexterConfig.getInstance().createInitialFolderAndFiles();
 			copyCppcheckRunModule();
+			if (DexterUtil.getOS() == DexterUtil.OS.LINUX || DexterUtil.getOS() == DexterUtil.OS.MAC) {
+				checkCppcheckPermission();
+			}
 		}
 
 		IAnalysisEntityFactory factory = new AnalysisEntityFactory();
@@ -210,6 +248,9 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
 	@Override
     public void handleDexterHomeChanged(String oldPath, String newPath) {
 		copyCppcheckRunModule();
+		if (DexterUtil.getOS() == DexterUtil.OS.LINUX || DexterUtil.getOS() == DexterUtil.OS.MAC) {
+			checkCppcheckPermission();
+		}
     }
 
 	@Override

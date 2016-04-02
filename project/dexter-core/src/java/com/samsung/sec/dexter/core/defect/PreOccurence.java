@@ -45,6 +45,10 @@ public class PreOccurence extends BaseDefect {
 	private String categoryName = "";
 
 	
+	public String getCategoryName() {
+		return categoryName;
+	}
+
 	/**
 	 * @param severityCode the severityCode to set
 	 */
