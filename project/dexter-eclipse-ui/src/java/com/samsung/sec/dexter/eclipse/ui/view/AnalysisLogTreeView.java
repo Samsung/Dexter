@@ -25,23 +25,15 @@
 */
 package com.samsung.sec.dexter.eclipse.ui.view;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import org.eclipse.core.filesystem.EFS;
-import org.eclipse.core.filesystem.IFileStore;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
@@ -63,16 +55,11 @@ import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
-import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.XMLMemento;
-import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.ViewPart;
-import org.eclipse.ui.texteditor.ITextEditor;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
@@ -83,6 +70,7 @@ import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.IDexterHomeListener;
 import com.samsung.sec.dexter.core.defect.Defect;
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.core.util.PersistenceProperty;
@@ -127,6 +115,7 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
 		rootLog = new RootAnalysisLog();
 		rootLog.loadFromLogFiles();
 	}
+	
 	
 	@Override
 	public void createPartControl(final Composite parent) {
@@ -200,120 +189,15 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
 		gridData.verticalAlignment = GridData.FILL;
 		tree.setLayoutData(gridData);
 		
-		
 		logTreeView = new TreeViewer(tree);
 		logTreeView.setLabelProvider(new AnalysisLogLabelProvider());
 		logTreeView.setContentProvider(new AnalysisLogContentProvider());
 		logTreeView.setSorter(new LogTreeViewerSorter());
 		logTreeView.setInput(rootLog);
 		logTreeView.getSorter().sort(logTreeView, tree.getItems());
-		
-		logTreeView.addDoubleClickListener(new IDoubleClickListener() {
-			@Override
-			public void doubleClick(DoubleClickEvent event) {
-				final String sourceInsightExe = PersistenceProperty.getInstance().read(DexterConfig.SOURCE_INSIGHT_EXE_PATH_KEY);
-				if(Strings.isNullOrEmpty(sourceInsightExe)){
-					final FileDialog dialog = new FileDialog(parent.getShell(), SWT.OPEN);
-					dialog.setText("Select your Source Insight executable file : Insight3.exe");
-					final String[] filterExt = { "*.exe" };
-					dialog.setFilterExtensions(filterExt);
-					
-					final String exePath = dialog.open();
-					
-					if(Strings.isNullOrEmpty(exePath)){
-						MessageDialog.openError(parent.getShell(), "Error for Insight3.exe" , "You have to select Insight3.exe file first");
-						DexterUIActivator.LOG.error("You have to select Insight3.exe file first");
-						return;
-					}
 
-					DexterUIActivator.LOG.info("set Insight3.exe file path :" + exePath);
-					PersistenceProperty.getInstance().write(DexterConfig.SOURCE_INSIGHT_EXE_PATH_KEY, exePath);
-				}
-				
-				if(event.getSelection().isEmpty() || !(event.getSelection() instanceof IStructuredSelection)){
-					DexterUIActivator.LOG.error("Invalid Selection : it is not IStructuredSelection");
-					return;
-				}
-				
-				final Object target = ((IStructuredSelection) event.getSelection()).getFirstElement();
-				
-				if(target instanceof DefectLog){
-					// XXX Needs to implement
-				} else if(target instanceof OccurenceLog){
-					display.asyncExec(new Runnable() {
-                        public void run() {
-	                    	final OccurenceLog log = (OccurenceLog) target;
-	                    	final DexterConfig.LANGUAGE lang = log.getParent().getDefect().getLanguageEnum();
-	    					
-	                    	final String sourceInsightExe = PersistenceProperty.getInstance().read(DexterConfig.SOURCE_INSIGHT_EXE_PATH_KEY);
-	    					if((DexterConfig.LANGUAGE.C == lang || DexterConfig.LANGUAGE.CPP == lang) 
-	    							&& !Strings.isNullOrEmpty(sourceInsightExe)){
-	    						final String fileFullPath = log.getParent().getParent().getFileFullPath();
-	    						final int line = log.getOccurence().getStartLine();
-	    						if(line == -1){
-	    							DexterUIActivator.LOG.error("cannot open the SourceInsight because line is -1");
-	    							return;
-	    						}
-	    						
-	    						
-	    						final StringBuilder cmd = new StringBuilder();
-	    						cmd.append("\"").append(sourceInsightExe).append("/Insight3.exe").append("\"").append(" -i ")
-	    						.append("+").append(line).append(" ").append(fileFullPath);
-	    						try {
-	    							Runtime.getRuntime().exec(cmd.toString());
-	    						} catch (IOException e) {
-	    							DexterUIActivator.LOG.error(e.getMessage(), e);
-	    						} catch (Exception e){
-	    							DexterUIActivator.LOG.error(e.getMessage(), e);
-	    						}
-	    					} else if(DexterConfig.RunMode.ECLIPSE == DexterConfig.getInstance().getRunMode()){
-	    						final File f = new File(log.getParent().getParent().getFileFullPath());
-	    						final IFile file = EclipseUtil.getIFileFromFile(f);
-	    						
-	    						if(file == null){
-	    							DexterUIActivator.LOG.error("Cannot open the file because of null pointer of the file");
-	    							return;
-	    						}
-	    						
-	    						final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-	    						int line = log.getOccurence().getStartLine();
-	                            try {
-	    	                        IEditorPart openEditor = IDE.openEditor(page, file);
-	    	                        
-	    	                        if(openEditor instanceof ITextEditor) {
-	    	                        	ITextEditor textEditor = (ITextEditor) openEditor;
-	    	                        	IDocument document = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
-	    	                        	textEditor.selectAndReveal(document.getLineOffset(line -1), document.getLineLength(line-1)-1);
-	    	                        }
-	                            } catch (CoreException e) {
-	                            	DexterUIActivator.LOG.error(e.getMessage(), e);
-	                            } catch (BadLocationException e) {
-	                            	DexterUIActivator.LOG.error(e.getMessage(), e);
-                                }
-	    					} else {
-	    						final File file = new File(log.getParent().getParent().getFileFullPath());
-	    						if(file.exists() == false){
-	    							DexterUIActivator.LOG.error("Cannot open the file because of no exist the file");
-	    							return;
-	    						}
-	    						
-	    						final IFileStore fileStore = EFS.getLocalFileSystem().getStore(file.toURI());
-	    						final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-	    						
-	    						try{
-	    							IDE.openEditorOnFileStore(page, fileStore);
-	    						} catch (PartInitException e){
-	    							DexterUIActivator.LOG.error(e.getMessage(), e);
-	    						}
-	    					}
-	                    }
-                    });
-				} 
-				
-			}
-		});
 		
-		
+		logTreeView.addDoubleClickListener(new ItemDoubleClickListener(parent));
 		logTreeView.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
@@ -346,6 +230,79 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
 		
 		DexterClient.getInstance().login();
 		DexterConfig.getInstance().createInitialFolderAndFiles();
+	}
+	
+	class ItemDoubleClickListener implements IDoubleClickListener {
+		private Composite parent;
+		
+		public ItemDoubleClickListener(Composite parent) {
+			this.parent = parent;
+		}
+		
+		@Override
+		public void doubleClick(DoubleClickEvent event) {
+			try{
+				final Object target = getSelectedTarget(event);
+				
+				if(target instanceof OccurenceLog){
+					handleOccurenceLogDoubleClickEvent((OccurenceLog) target);
+				}
+			} catch (DexterRuntimeException e){
+				DexterUIActivator.LOG.error(e.getMessage());
+				return;
+			}
+		}
+
+		private Object getSelectedTarget(final DoubleClickEvent event) {
+			if(event.getSelection().isEmpty() || !(event.getSelection() instanceof IStructuredSelection)){
+				throw new DexterRuntimeException("Invalid Selection : it is not IStructuredSelection");
+			}
+			
+			return ((IStructuredSelection) event.getSelection()).getFirstElement();
+		}
+		
+		private void handleOccurenceLogDoubleClickEvent(final OccurenceLog log) {
+			display.asyncExec(new Runnable() {
+                public void run() {
+                	final String sourceFileFullPath = log.getParent().getParent().getFileFullPath();
+                	final int line = log.getOccurence().getStartLine();
+                	
+                	System.out.println("RUNMODE: " + DexterConfig.getInstance().getRunMode());
+                	
+                	switch(DexterConfig.getInstance().getRunMode()){
+	                	case DAEMON:
+	                	case SOURCE_INSIGHT:
+	                		try{
+	                			DexterUtil.openSourceInsight(sourceFileFullPath, line);
+	                		} catch (DexterRuntimeException e){
+	                			saveSourceInsightExePath(parent);
+	                			DexterUtil.openSourceInsight(sourceFileFullPath, line);
+	                		}
+	                		break;
+	                	case ECLIPSE:
+	                	default:
+	                		EclipseUtil.openEditor(sourceFileFullPath, line);
+	            			break;
+                	}
+                }                	
+            });
+		}
+	}
+	
+	private void saveSourceInsightExePath(final Composite parent) {
+			final FileDialog dialog = new FileDialog(parent.getShell(), SWT.OPEN);
+			dialog.setText("Select your Source Insight executable file : Insight3.exe");
+			final String[] filterExt = { "*.exe" };
+			dialog.setFilterExtensions(filterExt);
+			
+			final String exePath = dialog.open();
+			
+			if(Strings.isNullOrEmpty(exePath)){
+				MessageDialog.openError(parent.getShell(), "Error for Insight3.exe" , "You have to select Insight3.exe file first");
+				throw new RuntimeException("You have to select Insight3.exe file first");
+			}
+
+			PersistenceProperty.getInstance().write(DexterConfig.SOURCE_INSIGHT_EXE_PATH_KEY, exePath);
 	}
 
 	private void initMenu() {

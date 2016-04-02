@@ -25,6 +25,7 @@
 */
 package com.samsung.sec.dexter.core.util;
 
+import java.awt.FileDialog;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -45,7 +46,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -1068,5 +1068,35 @@ public class DexterUtil {
 			default:
 				return LANGUAGE.UNKNOWN;
 		}
+	}
+
+	public static File getFile(String fileFullPath) {
+		final File file = new File(fileFullPath);
+		if(file.exists() == false){
+			throw new DexterRuntimeException("Cannot open the file because of no exist the file");
+		}
+		
+		return file;
+	}
+
+	public static void openSourceInsight(String fileFullPath, int line) {
+		final String sourceInsightExe = PersistenceProperty.getInstance().read(DexterConfig.SOURCE_INSIGHT_EXE_PATH_KEY);
+		if(Strings.isNullOrEmpty(sourceInsightExe)){
+			throw new DexterRuntimeException("Source Insight Exe Path is not set yet");
+		}
+		
+		if(line == -1){
+			throw new DexterRuntimeException("cannot open the SourceInsight because line is -1");
+		}
+		
+		final StringBuilder cmd = new StringBuilder();
+		cmd.append("\"").append(sourceInsightExe).append("/Insight3.exe").append("\"").append(" -i ")
+		.append("+").append(line).append(" ").append(fileFullPath);
+		
+		try {
+			Runtime.getRuntime().exec(cmd.toString());
+		} catch (Exception e) {
+			throw new DexterRuntimeException(e.getMessage(), e);
+		}	
 	}
 }

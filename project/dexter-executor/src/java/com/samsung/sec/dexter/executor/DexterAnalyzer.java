@@ -57,7 +57,7 @@ public class DexterAnalyzer implements IDexterHomeListener{
 	private final static Logger LOG = Logger.getLogger(DexterAnalyzer.class);
 
 	private List<IDexterAnalyzerListener> listenerList = new ArrayList<IDexterAnalyzerListener>(1);
-	private List<ProjectAnalysisConfiguration> projectAnalysisConfigurationList = null;
+	private List<ProjectAnalysisConfiguration> projectAnalysisConfigurationList = new ArrayList<ProjectAnalysisConfiguration>(0);
 
 	private DexterAnalyzer() {
 		DexterConfig.getInstance().addDexterHomeListener(this);

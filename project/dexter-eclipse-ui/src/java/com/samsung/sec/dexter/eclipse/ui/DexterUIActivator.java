@@ -81,10 +81,13 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 		DexterConfig.getInstance().addDexterStandaloneListener(DexterClient.getInstance());
 		
 		initDexterClient();
+		DexterPluginManager.getInstance().initDexterPlugins();
 	}
 	
 	void initDexterClient(){
 		final DexterConfig config = DexterConfig.getInstance();
+		final String dexterHome = getPreferenceStore().getString(DexterConfig.DEXTER_HOME_KEY);
+		config.setDexterHome(dexterHome);
 		
 		if(config.isStandalone() )  {
 			return;
@@ -96,7 +99,7 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 		
 		if(Strings.isNullOrEmpty(id) || Strings.isNullOrEmpty(pwd) 
 				|| Strings.isNullOrEmpty(serverAddress)){
-			LOG.info("Initialize failure for Connection of Dexter Server because no id, pwd, serverAddress");
+			LOG.info("Initialize failure for Connection of Dexter Server because no id, pwd, serverAddress. If you are using standalong mode Dexter, ignore this message");
 			return;
 		}
 		
@@ -105,10 +108,6 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 		client.setCurrentUserId(id);
 		client.setCurrentUserPwd(pwd);
 		client.setDexterServer(serverAddress);
-		
-		final String dexterHome = getPreferenceStore().getString(DexterConfig.DEXTER_HOME_KEY);
-		config.setDexterHome(dexterHome);
-		
 		
 		try{
 			client.login(id, pwd);

@@ -78,7 +78,6 @@ public class RunDexterAnalysisHandler extends AbstractHandler implements IHandle
 	    		}
 	    	}
 
-	    	// TODO 언제 발생하는지?
 	    	private void showErrorMessage(final IllegalStateException e) {
 	            Display.getDefault().syncExec(new Runnable() {
 	            	@Override

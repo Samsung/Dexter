@@ -63,7 +63,7 @@ public class DexterBuilder extends IncrementalProjectBuilder{
 			switch (delta.getKind()) {
 			case IResourceDelta.ADDED: // handle added resource
 			case IResourceDelta.CHANGED: // handle changed resource
-				checkJava(resource);
+				analysis(resource);
 				break;
 			case IResourceDelta.REMOVED: // handle removed resource
 				deleteDefect(resource);
@@ -78,7 +78,7 @@ public class DexterBuilder extends IncrementalProjectBuilder{
 
 	class JavaResourceVisitor implements IResourceVisitor {
 		public boolean visit(final IResource resource) {
-			checkJava(resource);
+			analysis(resource);
 
 			return true;
 		}
@@ -109,7 +109,7 @@ public class DexterBuilder extends IncrementalProjectBuilder{
 		return new IProject[0];
 	}
 
-	void checkJava(final IResource resource) {
+	void analysis(final IResource resource) {
 		// can analyze without login because there can be network problem.
 		if (DexterPluginManager.getInstance().getPluginList().size() < 1) {
 			return;

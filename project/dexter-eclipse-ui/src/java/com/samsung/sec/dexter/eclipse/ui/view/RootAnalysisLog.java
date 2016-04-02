@@ -39,11 +39,12 @@ import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.config.IDexterHomeListener;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
 
-public class RootAnalysisLog {
+public class RootAnalysisLog implements IDexterHomeListener{
 	private Queue<AnalysisLog> children = new LinkedList<AnalysisLog>();
 	
 	/**
@@ -181,4 +182,9 @@ public class RootAnalysisLog {
     public AnalysisLog removeFirstChild() {
    		return this.children.poll();
     }
+
+	@Override
+	public void handleDexterHomeChanged() {
+		loadFromLogFiles();
+	}
 }

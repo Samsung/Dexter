@@ -29,10 +29,13 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.eclipse.core.filesystem.EFS;
+import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IPath;
@@ -43,16 +46,22 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
+import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.progress.UIJob;
+import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.config.DexterConfig;
@@ -280,4 +289,46 @@ public class EclipseUtil {
 			throw new DexterRuntimeException(e.getMessage(), e);
 		}
 	}
+
+	/**
+	 * @param sourceFileFullPath
+	 * @param line		if editor is eclipse editor(extends IEditorPart), it will move to the line
+	 */
+	public static void openEditor(final String sourceFileFullPath, final int line) {
+		final File file = DexterUtil.getFile(sourceFileFullPath);
+		final IFileStore fileStore = EFS.getLocalFileSystem().getStore(file.toURI());
+		final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		
+		try{
+			IEditorPart editor = IDE.openEditorOnFileStore(page, fileStore);
+			
+			if(editor instanceof ITextEditor){
+				ITextEditor textEditor = (ITextEditor) editor;
+            	IDocument document = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
+            	textEditor.selectAndReveal(document.getLineOffset(line -1), document.getLineLength(line-1)-1);
+			}
+		} catch (PartInitException | BadLocationException e){
+			DexterUIActivator.LOG.error(e.getMessage(), e);
+		}
+	}
+	
+	/*
+	public static voi
+		
+		final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+		int line = log.getOccurence().getStartLine();
+        try {
+            IEditorPart openEditor = IDE.openEditor(page, file);
+            
+            if(openEditor instanceof ITextEditor) {
+            	ITextEditor textEditor = (ITextEditor) openEditor;
+            	IDocument document = textEditor.getDocumentProvider().getDocument(textEditor.getEditorInput());
+            	textEditor.selectAndReveal(document.getLineOffset(line -1), document.getLineLength(line-1)-1);
+            }
+        } catch (CoreException e) {
+        	DexterUIActivator.LOG.error(e.getMessage(), e);
+        } catch (BadLocationException e) {
+        	DexterUIActivator.LOG.error(e.getMessage(), e);
+        }
+	} */
 }
