@@ -56,7 +56,7 @@ public class OpenCodeMetricsActionDelegate implements IObjectActionDelegate {
 					makeCodeMetricsUrl.append("http://").append(DexterClient.getInstance().getServerHost()).append(":") //$NON-NLS-1$ //$NON-NLS-2$
 							.append(DexterClient.getInstance().getServerPort()).append(DexterConfig.CODE_METRICS_BASE)//$NON-NLS-1$
 							.append("?").append(DexterConfig.CODE_METRICS_FILE_NAME).append("=").append(targetFile.getName())//$NON-NLS-1$
-							.append("&").append(DexterConfig.CODE_METRICS_MODULE_PATH).append("=").append(EclipseUtil.getModulePath(targetFile));//$NON-NLS-1$
+							.append("&").append(DexterConfig.CODE_METRICS_MODULE_PATH).append("=").append(DexterEclipseActivator.getJDTUtil().getModulePath(targetFile));//$NON-NLS-1$
 					
 					codeMetricsView.setUrl(makeCodeMetricsUrl.toString());
 

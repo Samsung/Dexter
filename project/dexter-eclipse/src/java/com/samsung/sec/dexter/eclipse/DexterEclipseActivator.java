@@ -43,6 +43,11 @@ import com.samsung.sec.dexter.core.config.IDexterStandaloneListener;
 import com.samsung.sec.dexter.core.job.DexterJobFacade;
 import com.samsung.sec.dexter.eclipse.ui.login.LoginDialog;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseLog;
+import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
+import com.samsung.sec.dexter.eclipse.util.EmptyCDTUtil;
+import com.samsung.sec.dexter.eclipse.util.EmptyJDTUtil;
+import com.samsung.sec.dexter.eclipse.util.ICDTUtil;
+import com.samsung.sec.dexter.eclipse.util.IJDTUtil;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -53,7 +58,9 @@ public class DexterEclipseActivator extends AbstractUIPlugin implements IDexterS
 	private ScheduledFuture<?> loginFuture = null;
 	private static DexterEclipseActivator plugin;
 	public final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
-	public static EclipseLog LOG; 
+	public static EclipseLog LOG;
+	private static IJDTUtil jdtUtil;
+	private static ICDTUtil cdtUtil;
 	
 	static {
 		DexterConfig.getInstance().setRunMode(DexterConfig.RunMode.ECLIPSE);
@@ -147,5 +154,21 @@ public class DexterEclipseActivator extends AbstractUIPlugin implements IDexterS
 		} else {
 			startLoginScheduler();
 		}
+	}
+	
+	public synchronized static IJDTUtil getJDTUtil(){
+		if(jdtUtil == null){
+			jdtUtil = (IJDTUtil) EclipseUtil.loadSingleExtensionObject(DexterEclipseActivator.PLUGIN_ID, "JDTUtil", EmptyJDTUtil.class);
+		}
+		
+		return jdtUtil;
+	}
+	
+	public synchronized static ICDTUtil getCDTUtil(){
+		if(cdtUtil == null){
+			cdtUtil = (ICDTUtil) EclipseUtil.loadSingleExtensionObject(DexterEclipseActivator.PLUGIN_ID, "CDTUtil", EmptyCDTUtil.class);
+		}
+		
+		return cdtUtil;
 	}
 }

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="JDTUtil" name="Utilities of JDT" schema="schema/JDTUtil.exsd"/>
+   <extension-point id="CDTUtil" name="Utilities of CDT" schema="schema/CDTUtil.exsd"/>
 
    <extension
          id="dexterBuilder"

@@ -38,8 +38,6 @@ import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.exception.DexterException;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterUtil;
-import com.samsung.sec.dexter.eclipse.ui.util.EclipseCppUtil;
-import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 import com.samsung.sec.dexter.executor.DexterAnalyzer;
 
 public class EclipseAnalysis {
@@ -53,17 +51,28 @@ public class EclipseAnalysis {
 			throw new DexterRuntimeException("file is not supporting to analyze : " + file.getName());
 		}
 		
-		final AnalysisConfig config = getAnalysisConfig(file);
-		config.setSnapshotId(snapshotId);
-		config.setResultHandler(new ARHandler(file));
-		config.setProjectName(config.getProjectName());
-		config.setSnapshotId(snapshotId);
-		config.setDefectGroupId(defectGroupId);
+		try{
+			final AnalysisConfig config = getAnalysisConfig(file);
+			
+			config.setSnapshotId(snapshotId);
+			config.setResultHandler(new ARHandler(file));
+			config.setProjectName(config.getProjectName());
+			config.setSnapshotId(snapshotId);
+			config.setDefectGroupId(defectGroupId);
+			
+			execute(config);
+		} catch (DexterRuntimeException e){
+			DexterEclipseActivator.LOG.error(e.getMessage(), e);
+		}
 		
-		execute(config);
 	}
 	
-	private static AnalysisConfig getAnalysisConfig(final IFile file) throws DexterException{
+	/**
+	 * @param file
+	 * @return  null if failing to load dexter-eclipse-jdt plugin
+	 * @throws DexterException
+	 */
+	private static AnalysisConfig getAnalysisConfig(final IFile file) {
 		final String key = file.getLocation().toFile().getAbsolutePath();
 		try {
         	return DexterEclipseActivator.getDefault().getConfigCache().get(key);
@@ -84,45 +93,13 @@ public class EclipseAnalysis {
 		LANGUAGE language = DexterUtil.getLanguage(file.getFileExtension());
 		
 		if(language == LANGUAGE.JAVA){
-			return createAnalysisConfigForJava(file, configFactory);
+			return DexterEclipseActivator.getJDTUtil().createAnalysisConfigForJava(file, configFactory);
 		} else if(language == LANGUAGE.C || language == LANGUAGE.CPP){
-			return createAnalysisConfigForCpp(file, configFactory);
+			return DexterEclipseActivator.getCDTUtil().createAnalysisConfigForCpp(file, configFactory);
 		} else {
 			throw new DexterRuntimeException("cannot analyze the file: " + file.getName());
 		}
 	}
-	
-	private static AnalysisConfig createAnalysisConfigForJava(final IFile file, final IAnalysisEntityFactory configFactory){
-		final AnalysisConfig config = configFactory.createAnalysisConfig();
-		config.setProjectName(file.getProject().getName());
-
-		final String projectFullPath = DexterUtil.refinePath(file.getProject().getLocation().toFile().getAbsolutePath());
-		config.setProjectFullPath(projectFullPath);
-		
-		EclipseUtil.addSourceFoldersAndLibFiles(file, config);
-		config.setFileName(file.getName());
-		
-		final String outputDir = EclipseUtil.getOutputDir(file);
-		config.setOutputDir(outputDir); 
-		config.setModulePath(EclipseUtil.getModulePath(file));
-		config.setSourceFileFullPath(file.getLocation().toFile().getAbsolutePath());
-		
-		return config;
-	}
-	
-	private static AnalysisConfig createAnalysisConfigForCpp(final IFile file, final IAnalysisEntityFactory configFactory){
-		final AnalysisConfig config = configFactory.createAnalysisConfig();
-		config.setProjectName(file.getProject().getName());
-
-		final String projectFullPath = DexterUtil.refinePath(file.getProject().getLocation().toFile().getAbsolutePath());
-		config.setProjectFullPath(projectFullPath);
-		config.setFileName(file.getName());
-		EclipseCppUtil.addReferencePaths(file, config);
-		config.setSourceFileFullPath(file.getLocation().toFile().getAbsolutePath());
-		
-		return config;
-	}
-	
 	
 	private static void execute(final AnalysisConfig config) {
 		DexterAnalyzer.getInstance().runSync(config);

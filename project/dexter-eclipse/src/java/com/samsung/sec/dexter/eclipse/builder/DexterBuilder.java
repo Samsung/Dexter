@@ -128,12 +128,13 @@ public class DexterBuilder extends IncrementalProjectBuilder{
 			}
 		}
 	}
-	
+
 	private void deleteDefect(final IResource resource){
 		if (DexterPluginManager.getInstance().getPluginList().size() < 1) {
 			return;
 		}
 
+		// TODO for CDT !!!!!!!!!!!!!!!
 		if (!(resource instanceof IFile) || !resource.getName().endsWith(".java")) {
 			return;
 		}
@@ -141,7 +142,7 @@ public class DexterBuilder extends IncrementalProjectBuilder{
 		final IFile file = (IFile) resource;
 		
 		try {
-			DexterClient.getInstance().deleteDefects(EclipseUtil.getModulePath(file), file.getName());
+			DexterClient.getInstance().deleteDefects(DexterEclipseActivator.getJDTUtil().getModulePath(file), file.getName());
 		} catch (DexterRuntimeException e) {
 			DexterEclipseActivator.LOG.error(e.getMessage(), e);
 		}
