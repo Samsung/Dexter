@@ -1,0 +1,14 @@
+[
+  {
+    "codeMetricThreshold":{
+      "cc":{
+        "moderate":"25",
+        "caution":"50"
+      },
+      "sloc":"500",
+      "class":"20",
+      "method":"50"
+    },
+    "codeMetricQuantity":"3"
+  }
+]

@@ -19,6 +19,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
             fileName: '',
             statusCode: '',
             severityCode: '',
+            categoryName:'',
             checkerCode: '',
             modifierNo: ''
         };
@@ -50,6 +51,134 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
         checkLogin();
     };
 
+
+    $scope.csvContent = [];
+    $scope.csvSecurityContent =[];
+
+    $scope.getCSVHeader = function () {
+        if($routeParams.snapshotId === undefined){
+            return ["Did","Checker","Count","Line No","Severity","Category","Status",
+                "Module","File","Class","Method/Function","Language","Tool","Author","Date"];
+        }else{
+            return ["Did","Checker","Count","Line No","Severity","Category","Snapshot Status","Current Status",
+                "Module","File","Class","Method/Function","Language","Tool","Author","Date"];
+        }
+    };
+
+    var SECURITY_CHECKER = 'SECURITY';
+
+    function pushNoDefectInSecurity(){
+        $scope.csvSecurityContent.push({
+            'Did': 0,
+            'Checker': 'None',
+            'Count': 0,
+            'Line No': 0,
+            'Severity': 0,
+            'Category': 'None',
+            'Status': 'None',
+            'Module': 'None',
+            'File': 'None',
+            'Class': 'None',
+            'Method/Function': 'None',
+            'Language': 'None',
+            'Tool': 'None',
+            'Author': 'None',
+            'Date': 'There is no defect in this project'
+        });
+    }
+    function pushDefectInSecurity(results){
+
+    }
+
+    function setSecurityCSVContent(format){
+        $http.get('/api/v2/defect/security', {
+        }).then(function (results) {// success
+            results = results.data;
+            $scope.csvSecurityContent = [];
+
+            if(results.length === 0){
+                pushNoDefectInSecurity();
+            }
+
+            switch(format) {
+                case 'defect':
+                    for (var i = 0; i < results.length; i++) {
+                        $scope.csvSecurityContent.push({
+                            'Did': results[i].did,
+                            'Checker': results[i].checkerCode,
+                            'Count': results[i].occurenceCount,
+                            'Line No': results[i].occurenceLine,
+                            'Severity': results[i].severityCode,
+                            'Category': results[i].categoryName,
+                            'Status': results[i].statusCode,
+                            'Module': results[i].modulePath,
+                            'File': results[i].fileName,
+                            'Class':results[i].className,
+                            'Method/Function': results[i].methodName,
+                            'Language': results[i].language,
+                            'Tool': results[i].toolName,
+                            'Author': results[i].creatorId,
+                            'Date': results[i].modifiedDateTime
+                        });
+                    }
+                    break;
+            }
+        }, function (results) {
+            $log.error('Error: ' + results.data + '; ' + results.status);
+        });
+    }
+
+
+    function setCSVContent(format, results){
+        $scope.csvContent = [];
+        switch(format) {
+            case 'defect':
+                for (var i = 0; i < results.length; i++) {
+                    $scope.csvContent.push({
+                        'Did': results[i].did,
+                        'Checker': results[i].checkerCode,
+                        'Count': results[i].occurenceCount,
+                        'Line No': results[i].occurenceLine,
+                        'Severity': results[i].severityCode,
+                        'Category': results[i].categoryName,
+                        'Status': results[i].statusCode,
+                        'Module': results[i].modulePath,
+                        'File': results[i].fileName,
+                        'Class':results[i].className,
+                        'Method/Function': results[i].methodName,
+                        'Language': results[i].language,
+                        'Tool': results[i].toolName,
+                        'Author': results[i].creatorId,
+                        'Date': results[i].modifiedDateTime
+                    });
+                }
+                break;
+            case 'snapshot':
+                for (var i = 0; i < results.length; i++) {
+                    $scope.csvContent.push({
+                        'Did': results[i].did,
+                        'Checker': results[i].checkerCode,
+                        'Count': results[i].occurenceCount,
+                        'Line No': results[i].occurenceLine,
+                        'Severity': results[i].severityCode,
+                        'Category': results[i].categoryName,
+                        'Snapshot Status': results[i].statusCode,
+                        'Current Status':results[i].currentStatusCode,
+                        'Module': results[i].modulePath,
+                        'File': results[i].fileName,
+                        'Class':results[i].className,
+                        'Method/Function': results[i].methodName,
+                        'Language': results[i].language,
+                        'Tool': results[i].toolName,
+                        'Author': results[i].creatorId,
+                        'Date': results[i].modifiedDateTime
+                    });
+                }
+                break;
+        }
+    }
+
+
     init();
 
     function checkLogin(){
@@ -64,12 +193,12 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
        }, function(results){
             $log.error(results);
         });
-    };
+    }
 
     function initLocalStorage(){
         window.localStorage['pageSize'] = (window.localStorage['pageSize']) || 500;
         window.localStorage['currentPage'] = parseInt(window.localStorage['currentPage']) || 1;
-    };
+    }
 
     function getProjectName() {
         $http.get('/api/v1/projectName', {
@@ -143,13 +272,13 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
         }, function (results) {
             $log.error('Error: ' + results.data + '; ' + results.status);
         });
-    };
+    }
 
     function loadTreeItem() {
         loadTreeItemFromDB('project','project');
         loadTreeItemFromDB('modulePath','module');
         loadTreeItemFromDB('fileName','file');
-    };
+    }
 
     $scope.isFileTreeHidden = true;
     $scope.isLoginBtnHidden = true;
@@ -507,6 +636,10 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
         return value == 'CRI';
     };
 
+    $scope.isSecurity = function(value){
+        return value == SECURITY_CHECKER;
+    }
+
     $scope.isTooLate = function(value){
         var valueDate = new Date(value);
         var today = new Date();
@@ -550,7 +683,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
         if ($routeParams.snapshotId !== undefined) {
             setSnapshotColumnField();
             var snapshotId = $routeParams.snapshotId;
-            $http.get('/api/v1/snapshot/showSnapshotDefectPage', {
+            $http.get('/api/v2/snapshot/showSnapshotDefectPage', {
                 params: {
                     'snapshotId': snapshotId
     }
@@ -558,7 +691,9 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
                 if (results && results.data) {
                     $scope.defectList = results.data.defectInSnapshot;
                     $scope.totalServerItems = results.data.length;
-
+                    angular.element('#showLoading').hide();
+                    setCSVContent('snapshot', $scope.defectList);
+                    setSecurityContent('snapshot');
                 } else {
                     $log.debug(results);
                 }
@@ -578,6 +713,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
                 'fileName': $scope.search.fileName,
                 'statusCode': $scope.search.statusCode,
                 'severityCode': $scope.search.severityCode,
+                'categoryName' : $scope.search.categoryName,
                 'checkerCode': $scope.search.checkerCode,
                 'modifierNo': $scope.search.modifierNo,
                 'currentPage': $scope.pagingOptions.currentPage,
@@ -594,12 +730,14 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
             $log.error(results.status);
         });
 
-		$http.get('/api/v1/defect', {
+		$http.get('/api/v2/defect', {
 			params: defectParams
 		}).then(function (results) { // success
 			if (results && results.data) {
 				$scope.defectList = results.data;
                 angular.element('#showLoading').hide();
+                setCSVContent('defect',$scope.defectList);
+                setSecurityCSVContent('defect');
 			}
 		}, function (results) { // error
             $log.error(results.status);
@@ -652,7 +790,9 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
             {field:'occurenceCount', displayName:'Count', width:70, resizable: true, cellClass:'textAlignCenter', cellTemplate: '<div ng-class="{redBG: row.getProperty(col.field) >= 10}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>' },
             {field:'occurenceLine', displayName:'Line No.', width:70, resizable: true },
             {field:'severityCode', displayName:'Severity', width:70,resizable: true, cellClass:'textAlignCenter', cellTemplate: '<div ng-class="{redFG: isMajor(row.getProperty(col.field))}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>' },
-            {field:'statusCode', displayName:'Status', width:82, resizable: true, cellClass:'textAlignCenter', cellTemplate: '<div ng-class="{redBG: isStatusNew(row.getProperty(col.field))}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>' },
+            {field:'statusCode', displayName:'Status', width:80, resizable: true, cellClass:'textAlignCenter', cellTemplate: '<div ng-class="{redBG: isStatusNew(row.getProperty(col.field))}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>' },
+            {field:'categoryName', displayName:'Category', width:80, resizable: true, cellClass:'textAlignCenter', cellTemplate: '<div ng-class="{yellowBlackBG: isSecurity(row.getProperty(col.field))}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>',
+            cellFilter:'nullDataFilter'},
             {field:'currentStatusCode', visible:false, displayName:'cur.Status', width:82, resizable: true, cellClass:'textAlignCenter', cellTemplate: '<div class="ngCellText">{{row.getProperty(col.field)}}</div>' },
             {field:'modulePath', displayName:'Module',width:250, resizable: true, cellTemplate: '<div class="ngCellText">{{row.getProperty(col.field)}}</div>'},
             {field:'fileName', displayName:'File', resizable: true, cellTemplate: '<div class="ngCellText">{{row.getProperty(col.field)}}</div>'},
@@ -661,7 +801,8 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
             {field:'language', displayName:'Language', cellClass:'textAlignCenter', width:85, resizable: true, cellclass:'textAlignCenter' },
             {field:'toolName',displayName:'Tool',visible:false, cellClass:'textAlignCenter', width:85, resizable: true, cellclass:'textAlignCenter' },
             {field:'modifierId', displayName:'Author', resizable: true, visible:false,  cellClass:'textAlignCenter'},
-            {field:'modifiedDateTime', displayName:'Date', resizable: true, cellClass:'textAlignCenter', cellTemplate: '<div><div class="ngCellText">{{row.getProperty(col.field) | date:"yyyy-MM-dd HH:mm:ss"}}</div></div>' },
+            {field:'modifiedDateTime', displayName:'Date', resizable: true, cellClass:'textAlignCenter',
+                cellTemplate: '<div><div class="ngCellText">{{row.getProperty(col.field) | date:"yyyy-MM-dd HH:mm:ss"}}</div></div>' },
             {field:'message', displayName:"Description", visible:false, resizable: true}
         ]
     };
@@ -759,6 +900,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
                 $scope.currentDetailFileName = currentDefect.fileName;
                 $scope.currentDetailCheckerCode = currentDefect.checkerCode;
                 $scope.currentDetailSeverityCode = currentDefect.severityCode;
+                $scope.currentDetailCategoryName = currentDefect.categoryName;
                 $scope.currentDetailOccurenceCount = currentDefect.occurenceCount;
                 $scope.currentDetailStatus = currentDefect.statusCode;
                 $scope.currentDetailClassName = currentDefect.className;
@@ -1017,56 +1159,10 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
         }
         addDefectComment();
     };
-
-    $scope.currentDefectList = [];
-
-    var setExportFileFormat = function(format, results){
-        switch(format){
-            case 'defect':
-                for(var i =0 ; i < results.length ; i++){
-                    if(i == 0){
-                        $scope.csvContent = $scope.csvContent + 'Did,Checker,Count,Line No,Severity,Status, Module,File,Class,Method/Function,Language,Tool,Author,Date' + '\n' ;
-                    }
-                    $scope.currentDefectList[i] = results[i].did + ',' +  results[i].checkerCode + ',' + results[i].occurenceCount + ','+ results[i].occurenceLine + ','
-                        + results[i].severityCode + ',' + results[i].statusCode + ',' + results[i].modulePath + ',' + results[i].fileName + ',' + results[i].className + ','
-                        + results[i].methodName + ','+ results[i].language + ','+ results[i].toolName +','+results[i].creatorId + ','+ results[i].modifiedDateTime ;
-                    $scope.csvContent = $scope.csvContent + $scope.currentDefectList[i] + '\n' ;
-                }
-                break;
-            case 'snapshot':
-                for(var i =0 ; i < results.length ; i++){
-                    if(i == 0){
-                        $scope.csvContent = $scope.csvContent + 'Did,Checker,Count,Line No,Severity,Snapshot Status,Current Status,Module,File,Class,Method/Function,Language,Tool,Author,Date' + '\n' ;
-                    }
-                    $scope.currentDefectList[i] = results[i].did + ',' +  results[i].checkerCode + ',' + results[i].occurenceCount + ','+ results[i].occurenceLine + ','
-                        + results[i].severityCode + ',' + results[i].statusCode + ',' + results[i].currentStatusCode + ','+ results[i].modulePath + ',' + results[i].fileName + ',' + results[i].className + ','
-                        + results[i].methodName + ','+ results[i].language + ','+ results[i].toolName +','+ results[i].creatorId + ','+ results[i].createdDateTime ;
-                    $scope.csvContent = $scope.csvContent + $scope.currentDefectList[i] + '\n' ;
-                }
-                break;
-        }
-    };
-
-    $(".exportDefect").on('click', function () {
-        $scope.csvContent = "data:text/csv;charset=utf-8,";
-        var format = 'defect';
-        if ($routeParams.snapshotId !== undefined) {
-            format = 'snapshot';
-        }
-        setExportFileFormat(format, $scope.defectList);
-        exportExcelFile.apply(this, [$scope.csvContent, 'export.csv']);
-    });
-
-    var exportExcelFile = function (){
-        var encodedUri = encodeURI($scope.csvContent);
-        $(this)
-            .attr({
-                'download': $scope.projectName +'_defectList.csv',
-                'href': encodedUri,
-                'target': '_blank'
-            });
-
-    };
-
 });
 
+defectApp.filter('nullDataFilter', function($filter){
+   return function(input){
+       return input === null ? 'None' : input;
+   }
+});

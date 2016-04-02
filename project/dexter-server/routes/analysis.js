@@ -169,6 +169,112 @@ exports.getModuleAndFileName = function (req, res) {
     });
 };
 
+exports.getDefectForSecurity = function(req, res){
+    var sql = "select "
+        + " did, toolName, language, checkerCode, ifnull(modulePath,'') as modulePath, fileName, ifnull(className,'') as className,"
+        + " ifnull(methodName,'') as methodName, severityCode, ifnull(categoryName,'') as categoryName, statusCode, message, "
+        + " createdDateTime, modifiedDateTime, creatorNo, modifierNo, "
+        + " (select count(B.oid) from Occurence B where B.did = A.did) as occurenceCount, "
+        + " ifnull((select group_concat(if(B.startLine = -1,'1', B.startLine) ORDER BY B.startLine SEPARATOR '|') from Occurence B where B.did = A.did),'') as occurenceLine,"
+        + " (select userId from Account where userNo = A.creatorNo) as creatorId, "
+        + " (select userId from Account where userNo = A.modifierNo) as modifierId "
+        + " from "
+        + " Defect A WHERE categoryName='SECURITY' order by checkerCode, fileName, className, methodName ";
+
+    database.exec(sql, function (err, result){
+        if(err){
+            logging.error(err.message);
+            res.send(401, {status:"fail", errorMessage: err.message});
+        }
+        if(result){
+            res.send(200, result);
+        }
+    });
+};
+
+exports.getDefectsByModuleAndFileV2 = getDefectsByModuleAndFileV2;
+
+function getDefectsByModuleAndFileV2(req, res){
+    var did = req.query.did;
+    var modulePath = base64.decode(req.query.modulePath);
+    var fileName = req.query.fileName;
+    var statusCode = req.query.statusCode;
+    var severityCode = req.query.severityCode;
+    var categoryName = req.query.categoryName;
+    var checkerCode = req.query.checkerCode;
+    var modifierNo = req.query.modifierNo;
+    var currentPage = req.query.currentPage;
+    var pageSize = req.query.pageSize;
+    var message = req.query.message;
+
+    var sql = "select "
+        + "did, toolName, language, checkerCode, ifnull(modulePath,'') as modulePath, fileName, ifnull(className,'') as className,"
+        + "ifnull(methodName,'') as methodName, severityCode, ifnull(categoryName,'') as categoryName, statusCode, message, "
+        + "createdDateTime, modifiedDateTime, creatorNo, modifierNo, "
+        + "(select count(B.oid) from Occurence B where B.did = A.did) as occurenceCount, "
+        + "ifnull((select group_concat(if(B.startLine = -1,'1', B.startLine) ORDER BY B.startLine SEPARATOR '|') from Occurence B where B.did = A.did),'') as occurenceLine,"
+        + "(select userId from Account where userNo = A.creatorNo) as creatorId, "
+        + "(select userId from Account where userNo = A.modifierNo) as modifierId "
+        + "from "
+        + "Defect A ";
+
+    if(modulePath != "" || fileName != "" || statusCode != "" || severityCode != "" || checkerCode != ""
+        ||  (modifierNo != "" && modifierNo != undefined) || (did != "" && did != undefined ) ){
+        sql += " where 1 = 1 ";
+    }
+    if(did != "" && did != undefined ){
+        sql += "and did = " + did;
+    }
+
+    if(modulePath == "##HAS-NO-MODULE##"){
+        sql += "and modulePath is null ";
+    } else if(modulePath != ""){
+        sql += " and modulePath = " + database.toSqlValue(modulePath);
+    }
+
+    if(fileName != ""){
+        sql += " and fileName = " + database.toSqlValue(fileName);
+    }
+
+    if(statusCode != ""){
+        sql += " and statusCode = " + database.toSqlValue(statusCode);
+    }
+
+    if(severityCode != ""){
+        sql += " and severityCode = " + database.toSqlValue(severityCode);
+    }
+
+    if(severityCode != ""){
+        sql += " and categoryName = " + database.toSqlValue(categoryName);
+    }
+
+    if(checkerCode != ""){
+        sql += "and checkerCode = " + database.toSqlValue(checkerCode);
+    }
+
+    if(modifierNo != ""){
+        sql += "and modifierNo = " + modifierNo;
+    }
+
+    sql += " order by checkerCode, fileName, className, methodName ";
+
+
+    if(currentPage != "" && pageSize != ""){
+        var beginOffset = (currentPage - 1) * pageSize;
+        sql += " LIMIT " + beginOffset + ", " + pageSize;
+    }
+
+    database.exec(sql, function (err, result){
+        if(err){
+            logging.error(err.message);
+            res.send(401, {status:"fail", errorMessage: err.message});
+        }
+        if(result){
+            res.send(200, result);
+        }
+    });
+}
+
 // todo : Consider View for performance
 function getDefectsByModuleAndFile(req, res){
     var did = req.query.did;
@@ -187,7 +293,7 @@ function getDefectsByModuleAndFile(req, res){
         + "ifnull(methodName,'') as methodName, severityCode, statusCode, message, "
         + "createdDateTime, modifiedDateTime, creatorNo, modifierNo, "
         + "(select count(B.oid) from Occurence B where B.did = A.did) as occurenceCount, "
-        + "ifnull((select group_concat(if(B.startLine = -1,'1', B.startLine) ORDER BY B.startLine SEPARATOR '/') from Occurence B where B.did = A.did),'') as occurenceLine,"
+        + "ifnull((select group_concat(if(B.startLine = -1,'1', B.startLine) ORDER BY B.startLine SEPARATOR '|') from Occurence B where B.did = A.did),'') as occurenceLine,"
         + "(select userId from Account where userNo = A.creatorNo) as creatorId, "
         + "(select userId from Account where userNo = A.modifierNo) as modifierId "
         + "from "
@@ -243,7 +349,7 @@ function getDefectsByModuleAndFile(req, res){
             res.send(200, result);
         }
     });
-};
+}
 
 exports.getDefectsByModuleAndFile = getDefectsByModuleAndFile;
 
@@ -1143,7 +1249,66 @@ function makeAnalaysisLog(defectList, params){
     }
     addAnalysisLog(params.fileName, params.modulePath, params.userNo, criticalCount, majorCount, minorCount, crcCount, etcCount);
 
+}
+
+
+exports.addV2 = function(req, res) {
+    if(req == undefined || req.body == undefined || req.body.result == undefined || req.currentUserId == undefined){
+        res.send({status:"fail", errorMessage: "No Data or No currentUserId"});
+        return;
+    }
+
+    if(account.getUserNo(req.currentUserId) === undefined){
+        res.send({status:"fail", errorMessage: "No UserNo"});
+        return ;
+    }
+
+    var defectJson = req.body.result;
+
+    // 1. verify result
+    var defectObject = JSONbig.parse(defectJson);
+
+    if(defectObject === undefined){
+        res.send({status:"fail", errorMessage: "Invalid Data"});
+        return ;
+    }
+    res.send({status:"ok", message: "Input Data was taken and being processed to insert/update/delete SA DB"});
+
+    var defectList = defectObject.defectList;
+
+    var codeMetrics = defectObject.codeMetrics;
+    var functionMetrics = defectObject.functionMetrics;
+
+    var params = {};
+
+    params.projectName = defectObject.projectName;
+    params.snapshotId = defectObject.snapshotId;
+    params.groupId = defectObject.groupId;
+    params.modulePath = defectObject.modulePath;
+    params.fileName = defectObject.fileName;
+    params.userNo = account.getUserNo(req.currentUserId);
+
+    // log
+    makeAnalaysisLog(defectList, params);
+
+    addCodeMetrics(params.fileName, params.modulePath, params.userNo, params.snapshotId, codeMetrics);
+
+    for(var i=0;i<functionMetrics.length;i++){
+        addFunctionMetrics(params.fileName, params.modulePath, params.userNo, params.snapshotId, functionMetrics[i]);
+    }
+
+    addSnapshot(params.snapshotId, params.groupId, params.userNo);
+
+    if(defectObject.defectCount == 0){
+        newToFixDefectV2(defectList, params);
+    } else {
+        for(var j=0; j < defectList.length ; j++ ){
+            newOrUpdateDefectV2(defectList[j] , params.userNo, params.snapshotId, params.groupId);
+        }
+        newToFixDefectV2(defectList, params);
+    }
 };
+
 
 
 exports.add = function(req, res) {
@@ -1197,6 +1362,50 @@ exports.add = function(req, res) {
     }
 };
 
+function newToFixDefectV2(defectList, params){
+    var sql = "select " +
+        "did, toolName, language, checkerCode, fileName, modulePath, className, methodName," +
+        "severityCode, ifnull(categoryName,'') as categoryName, statusCode, message, " +
+        "createdDateTime, modifiedDateTime, creatorNo, modifierNo, chargerNo, reviewerNo, approvalNo " +
+        "from Defect " +
+        "where " +
+        "   fileName = " + database.toSqlValue(params.fileName) +
+        "   and modulePath " + database.compareEqual(params.modulePath) +
+        "   and statusCode = 'NEW'";
+
+    database.exec(sql, function (err, dbResult) {
+        if(err){
+            logging.error(err.message);
+            return;
+        }
+
+        if(dbResult.length >0){
+            var inDefect;
+            var isExist;
+            var dbDefect;
+
+            for(var x=0; x<dbResult.length; x++){
+                isExist = false;
+                dbDefect = dbResult[x];
+
+                for(var y=0; y<defectList.length; y++){
+                    inDefect = defectList[y];
+                    if(isSameDefect(dbDefect, inDefect)){
+                        isExist = true;
+                        break;
+                    }
+                }
+
+                if(isExist == false){
+                    fixDefect(dbDefect, params.userNo, params.snapshotId);
+                }
+            }
+        }
+
+    });
+}
+
+
 
 function newToFixDefect(defectList, params){
     var sql = "select " +
@@ -1220,11 +1429,11 @@ function newToFixDefect(defectList, params){
             var isExist;
             var dbDefect;
 
-            for(x=0; x<dbResult.length; x++){
+            for(var x=0; x<dbResult.length; x++){
                 isExist = false;
                 dbDefect = dbResult[x];
 
-                for(y=0; y<defectList.length; y++){
+                for(var y=0; y<defectList.length; y++){
                     inDefect = defectList[y];
                     if(isSameDefect(dbDefect, inDefect)){
                         isExist = true;
@@ -1239,7 +1448,7 @@ function newToFixDefect(defectList, params){
         }
 
     });
-};
+}
 
 function addAnalysisLog(fileName, modulePath, userNo, defectCriticalCount, defectMajorCount, defectMinorCount, defectCrcCount, defectEtcCount) {
     "use strict";
@@ -1272,6 +1481,44 @@ function updateAllCodeMetricsNoLast(){
         + " lastYn = 'Y'";
 
     database.exec(sql);
+}
+
+function addFunctionMetrics(fileName, modulePath, userNo, snapshotId, functionMetric){
+
+    // 일단 업데이트
+    var sql = "UPDATE FunctionMetrics SET"
+        + " lastYn = 'N' "
+        + " WHERE "
+        + " lastYn = 'Y'"
+        + " and fileName = " + database.toSqlValue(fileName)
+        + " and modulePath " + database.compareEqual(modulePath)
+        + " and functionName =" +database.toSqlValue(functionMetric.functionName);
+
+    database.exec(sql, function(err){
+        if (err) {
+            logging.error(err.message);
+            return;
+        }
+
+        sql = "INSERT INTO FunctionMetrics(snapshotId, fileName, modulePath, functionName, cc, sloc, callDepth,  createdDateTime, creatorNo, lastYn) "
+            + "VALUES ("
+            + snapshotId
+            + ", " + database.toSqlValue(fileName)
+            + ", " + database.toSqlValue(modulePath)
+            + ", " + database.toSqlValue(functionMetric.functionName)
+            + ", " + database.toSqlValue(functionMetric.cc)
+            + ", " + database.toSqlValue(functionMetric.sloc)
+            + ", " + database.toSqlValue(functionMetric.callDepth)
+            + ", now()"
+            + ", " + userNo + ", 'Y')";
+
+        database.exec(sql, function (err){
+            if (err) {
+                logging.error(err.message);
+            }
+        });
+    });
+
 }
 
 function addCodeMetrics(fileName, modulePath, userNo, snapshotId, codeMetrics) {
@@ -1689,6 +1936,38 @@ function addSnapshotDefectMap(snapshotId, defect){
     });
 }
 
+function addSnapshotDefectMapV2(snapshotId, defect){
+    if(snapshotId == undefined || snapshotId <= 0){
+        //logging.debug("Invalid parameter at analysis.js addSnapshotAndDefectMap() : " + snapshotId);
+        return;
+    }
+
+    var sql = "INSERT INTO SnapshotDefectMap "
+        + "(snapshotId, did, toolName, language, checkerCode, fileName, modulePath, className, methodName, "
+        + " severityCode, categoryName, statusCode, message, createdDateTime, modifiedDateTime, creatorNo, modifierNo) "
+        + "SELECT "
+        + snapshotId
+        + ", did, toolName, language, checkerCode, fileName, modulePath, className, methodName, "
+        + " severityCode, ifnull(categoryName,'') as categoryName, statusCode, message, createdDateTime, modifiedDateTime, creatorNo, modifierNo "
+        + " FROM Defect "
+        + " WHERE "
+        + "     did in (select did from Defect where "
+        + "         toolName = " + database.toSqlValue(defect.toolName)
+        + "         and language = " + database.toSqlValue(defect.language)
+        + "         and checkerCode = " + database.toSqlValue(defect.checkerCode)
+        + "         and fileName = " + database.toSqlValue(defect.fileName)
+        + "         and modulePath " + database.compareEqual(defect.modulePath)
+        + "         and className " + database.compareEqual(defect.className)
+        + "         and methodName " + database.compareEqual(defect.methodName)
+        + "     )";
+
+    database.exec(sql, function (err, result){
+        if(err){
+            logging.error(err.message);
+        }
+    });
+}
+
 function addSnapshotOccurenceMap(defect, index, createdDateTime, userNo, snapshotId){
     "use strict";
 
@@ -1730,6 +2009,37 @@ function addSnapshotOccurenceMap(defect, index, createdDateTime, userNo, snapsho
         if (err) {
             logging.error(err.message);
         }
+    });
+}
+
+function newOrUpdateDefectV2(defect, userNo, snapshotId, groupId){
+    var sql = "select " +
+        "did, toolName, language, checkerCode, fileName, modulePath, className, methodName," +
+        "severityCode, ifnull(categoryName,'') as categoryName, statusCode, message, " +
+        "createdDateTime, modifiedDateTime, creatorNo, modifierNo, chargerNo, reviewerNo, approvalNo " +
+        "from Defect " +
+        "where " +
+        " toolName = " +  database.toSqlValue(defect.toolName)
+        + " and language = " + database.toSqlValue(defect.language)
+        + " and checkerCode = " + database.toSqlValue(defect.checkerCode)
+        + " and categoryName " + database.compareEqual(defect.categoryName)
+        + " and fileName = " + database.toSqlValue(defect.fileName)
+        + " and modulePath " + database.compareEqual(defect.modulePath)
+        + " and className " + database.compareEqual(defect.className)
+        + " and methodName " + database.compareEqual(defect.methodName) ;
+
+    database.exec(sql, function (err, dbResult) {
+        if(err){
+            logging.error(err.message);
+            return;
+        }
+
+        if(dbResult.length < 1){
+            insertDefectV2(defect, userNo, snapshotId);
+        } else {
+            updateDefectV2(defect, userNo, snapshotId, dbResult[0].did);
+        }
+
     });
 }
 
@@ -1787,6 +2097,44 @@ function addSnapshot(snapshotId, groupId, userNo){
                     logging.error(err.message);
                 }
             });
+        }
+    });
+}
+
+function insertDefectV2(defect, userNo, snapshotId){
+    var sql = "INSERT INTO Defect "
+        + "(toolName, language, checkerCode, fileName, modulePath, className, methodName, "
+        + " severityCode, categoryName, statusCode, message, createdDateTime, modifiedDateTime, creatorNo, modifierNo) "
+        + "VALUES (  "
+        + database.toSqlValue(defect.toolName)
+        + ", " + database.toSqlValue(defect.language)
+        + ", " + database.toSqlValue(defect.checkerCode)
+        + ", " + database.toSqlValue(defect.fileName)
+        + ", " + database.toSqlValue(defect.modulePath)
+        + ", " + database.toSqlValue(defect.className)
+        + ", " + database.toSqlValue(defect.methodName)
+        + ", " + database.toSqlValue(defect.severityCode)
+        + ", " + database.toSqlValue(defect.categoryName)
+        + ", " + database.toSqlValue('NEW')
+        + ", " + database.toSqlValue(defect.message)
+        + ", now()"
+        + ", now()"
+        + ", " + userNo
+        + ", " + userNo
+        + ")";
+
+    database.exec(sql, function (err, result){
+        if(err){
+            logging.error(err.message);
+            return;
+        }
+
+        if(result){
+            for(var i=0; i<defect.occurences.length; i++){
+                insertOccurence(defect, i, defect.createdDateTime, userNo);
+                addSnapshotOccurenceMap(defect, i, defect.createdDateTime, userNo, snapshotId)
+            }
+            addSnapshotDefectMap(snapshotId, defect);
         }
     });
 }
@@ -1918,6 +2266,30 @@ function updateDefect(defect, userNo, snapshotId, did) {
         }
     });
 }
+
+// defect: update, occur: delete/insert
+function updateDefectV2(defect, userNo, snapshotId, did) {
+    var sql = "UPDATE Defect SET "
+        + " severityCode = " + database.toSqlValue(defect.severityCode)
+        + " , statusCode = CASE WHEN statusCode='FIX' THEN 'NEW' ELSE statusCode END"
+        + " , message = " + database.toSqlValue(defect.message)
+        + " , modifiedDateTime = now()"
+        + " , modifierNo = " + userNo
+        + " WHERE "
+        + "     did = " + did;
+
+    database.exec(sql, function (err, result){
+        if(err){
+            logging.error(err.message);
+        }
+
+        if(result){
+            updateOccurence(defect, userNo, snapshotId);
+            addSnapshotDefectMapV2(snapshotId, defect);
+        }
+    });
+};
+
 
 function updateOccurence(newDf, userNo, snapshotId) {
     var sql = "DELETE FROM Occurence "
@@ -2169,7 +2541,36 @@ exports.getDefectListInSnapshot = function (req, res){
         + "snapshotId, did, toolName, language, checkerCode, fileName, ifnull(modulePath,'') as modulePath , ifnull(className,'') as className ,"
         + "ifnull(methodName,'') as methodName, severityCode, statusCode, message, createdDateTime, modifiedDateTime, creatorNo, modifierNo,"
         + "(select count(B.startLine) from SnapshotOccurenceMap B where B.did = A.did and snapshotId = "+ database.toSqlValue(req.query.snapshotId)+ ") as occurenceCount,"
-        + " ifnull((select group_concat(if(B.startLine = -1,'1', B.startLine) ORDER BY B.startLine SEPARATOR '/') from SnapshotOccurenceMap B where B.did = A.did and snapshotId = "+ database.toSqlValue(req.query.snapshotId)+ "),'') as occurenceLine,"
+        + " ifnull((select group_concat(if(B.startLine = -1,'1', B.startLine) ORDER BY B.startLine SEPARATOR '|') from SnapshotOccurenceMap B where B.did = A.did and snapshotId = "+ database.toSqlValue(req.query.snapshotId)+ "),'') as occurenceLine,"
+        + "(select statusCode from Defect B where B.did = A.did) as currentStatusCode,"
+        + "(select userId from Account where userNo = A.creatorNo) as creatorId,"
+        + "(select userId from Account where userNo = A.modifierNo) as modifierId, "
+        + "ifnull(chargerNo,'') as chargerNo, ifnull(reviewerNo,'') as reviewerNo, ifnull(approvalNo,'') as approvalNo "
+        + "From SnapshotDefectMap AS A WHERE snapshotId =" + database.toSqlValue(req.query.snapshotId);
+
+    database.exec(sql, function (err, result) {
+        if(err) {
+            logging.error(err.message);
+            res.send({status:'fail', errMessage: err.message});
+        } else if(result) {
+            res.send({status:'ok', defectInSnapshot : result});
+        } else {
+            res.send({status:'fail', errMessage: 'Unknown Error'});
+        }
+    });
+};
+
+exports.getDefectListInSnapshotV2 = function (req, res){
+    if(req == undefined || req.query== undefined || req.query.snapshotId == undefined){
+        res.send({status:"fail", errorMessage: "Input(parameter) error"});
+        return;
+    }
+
+    sql = "SELECT "
+        + "snapshotId, did, toolName, language, checkerCode, fileName, ifnull(modulePath,'') as modulePath , ifnull(className,'') as className ,"
+        + "ifnull(methodName,'') as methodName, severityCode, ifnull(categoryName,''), statusCode, message, createdDateTime, modifiedDateTime, creatorNo, modifierNo,"
+        + "(select count(B.startLine) from SnapshotOccurenceMap B where B.did = A.did and snapshotId = "+ database.toSqlValue(req.query.snapshotId)+ ") as occurenceCount,"
+        + " ifnull((select group_concat(if(B.startLine = -1,'1', B.startLine) ORDER BY B.startLine SEPARATOR '|') from SnapshotOccurenceMap B where B.did = A.did and snapshotId = "+ database.toSqlValue(req.query.snapshotId)+ "),'') as occurenceLine,"
         + "(select statusCode from Defect B where B.did = A.did) as currentStatusCode,"
         + "(select userId from Account where userNo = A.creatorNo) as creatorId,"
         + "(select userId from Account where userNo = A.modifierNo) as modifierId, "
