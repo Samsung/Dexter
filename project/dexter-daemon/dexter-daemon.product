@@ -141,7 +141,7 @@
    </plugins>
 
    <features>
-      <feature id="dexter.daemon.feature.32" version="0.9.4"/>
+      <feature id="dexter.daemon.feature.64" version="0.9.4"/>
    </features>
 
    <configurations>
