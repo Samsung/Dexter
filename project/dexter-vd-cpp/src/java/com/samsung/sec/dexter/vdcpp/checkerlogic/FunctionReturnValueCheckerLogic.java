@@ -91,7 +91,6 @@ public class FunctionReturnValueCheckerLogic implements ICheckerLogic{
 
 	private void visitFunctionDefinition(AnalysisConfig config,
 			AnalysisResult result, Checker checker, IASTDeclarator ast) {
-		// TODO Auto-generated method stub
 	}
 
 	private void visitFunctionDeclarator(final AnalysisConfig config,

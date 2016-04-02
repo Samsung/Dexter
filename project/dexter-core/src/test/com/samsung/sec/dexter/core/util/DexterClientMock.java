@@ -28,12 +28,12 @@ package com.samsung.sec.dexter.core.util;
 import java.security.cert.CertificateException;
 import java.util.List;
 
-import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.config.DefectGroup;
 import com.samsung.sec.dexter.core.config.DexterCode;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.filter.IFalseAlarmConfiguration;
+import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 
 /**
  * Mock for Handling Dexter Server(Database, etc)
@@ -166,86 +166,66 @@ public class DexterClientMock implements IDexterClient {
 
 	@Override
     public boolean updateDefectGroup(DefectGroup defectGroup) {
-	    // TODO Auto-generated method stub
 	    return false;
     }
 
 	@Override
     public void insertDefectGroup(DefectGroup defectGroup) {
-	    // TODO Auto-generated method stub
 	    
     }
 
 	@Override
     public long getGlobalDid(Defect defect) {
-	    // TODO Auto-generated method stub
 	    return 0;
     }
 
 	@Override
     public void insertDefectFilter(Defect defect) {
-	    // TODO Auto-generated method stub
 	    
     }
 
 	@Override
     public void removeDefectFilter(Defect defect) {
-	    // TODO Auto-generated method stub
 	    
     }
 
 	@Override
     public void changeDefectStatus(Defect defect, String status) {
-	    // TODO Auto-generated method stub
 	    
     }
 
 	@Override
     public void deleteDefects(String modulePath, String fileName) {
-	    // TODO Auto-generated method stub
 	    
     }
 
 	@Override
     public void createAccount(String id, String pwd, boolean isAdmin) {
-	    // TODO Auto-generated method stub
-	    
     }
 
 	@Override
     public void insertSourceCode(long snapshotId, long defectGroupId, String modulePath, String fileName,
             String sourceCode) {
-	    // TODO Auto-generated method stub
-	    
     }
 
 	@Override
     public void sendAnalsysisResult(String resultJson) {
-	    // TODO Auto-generated method stub
-	    
     }
 
 	@Override
     public void login(String id, String pwd) {
-	    // TODO Auto-generated method stub
-	    
     }
 
 	@Override
     public void setCurrentUserAdmin(boolean isAdmin) {
-	    // TODO Auto-generated method stub
-	    
     }
 
 	@Override
     public void setLogin(boolean b) {
-	    // TODO Auto-generated method stub
-	    
     }
 
 	@Override
     public String getDexterPluginUpdateUrl() {
-	    // TODO Auto-generated method stub
 	    return null;
     }
 	

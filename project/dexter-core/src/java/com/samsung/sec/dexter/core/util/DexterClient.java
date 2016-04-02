@@ -313,7 +313,6 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
 	 * @return port to run Dexter Server
 	 */
 	public static int startDexterServer(final String dexterServerFullPath) {
-	//TODO: public int startDexterServer(final String dexterServerFullPath, final Map<String, String> optionMap) {
 		final Runtime rt = Runtime.getRuntime();
 		final int MaxPortNumber = 65535;
 		

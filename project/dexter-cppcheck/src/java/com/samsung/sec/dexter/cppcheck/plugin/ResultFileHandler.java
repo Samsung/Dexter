@@ -182,8 +182,6 @@ public class ResultFileHandler extends DefaultHandler {
 	    		return;
 	    	}
 	    	
-	    	System.out.println(currentOccurence.toJson());
-	    	
 	    	if (currentOccurence.getStartLine() != -1) {
 	    		result.addDefectWithPreOccurence(currentOccurence);
 			} else {

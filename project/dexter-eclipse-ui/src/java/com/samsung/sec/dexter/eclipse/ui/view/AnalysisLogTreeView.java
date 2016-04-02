@@ -267,8 +267,6 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
                 	final String sourceFileFullPath = log.getParent().getParent().getFileFullPath();
                 	final int line = log.getOccurence().getStartLine();
                 	
-                	System.out.println("RUNMODE: " + DexterConfig.getInstance().getRunMode());
-                	
                 	switch(DexterConfig.getInstance().getRunMode()){
 	                	case DAEMON:
 	                	case SOURCE_INSIGHT:

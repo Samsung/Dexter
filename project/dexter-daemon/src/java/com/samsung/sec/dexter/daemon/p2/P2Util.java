@@ -36,7 +36,6 @@ public class P2Util {
 	 * @throws OperationCanceledException
 	 */
 	public static IStatus checkForUpdates(IProvisioningAgent agent, IProgressMonitor monitor) throws OperationCanceledException {
-		System.out.println(">> checkForUpdates");
 		ProvisioningSession session = new ProvisioningSession(agent);
 		UpdateOperation operation = new UpdateOperation(session);
 		
@@ -47,7 +46,6 @@ public class P2Util {
 	}
 	
 	public static IStatus checkForUpdates2(IProvisioningAgent agent) throws OperationCanceledException {
-		System.out.println(">> checkForUpdates");
 		ProvisioningSession session = new ProvisioningSession(agent);
 		UpdateOperation operation = new UpdateOperation(session);
 		IStatus status =  operation.resolveModal(new NullProgressMonitor());
@@ -100,7 +98,6 @@ public class P2Util {
 	 * @return
 	 */
 	public static boolean addRepository(IProvisioningAgent agent, String repo) {
-		System.out.println(">> adding repository "+repo);
 		IMetadataRepositoryManager metadataManager = (IMetadataRepositoryManager) agent.getService(IMetadataRepositoryManager.SERVICE_NAME);
 		IArtifactRepositoryManager artifactManager = (IArtifactRepositoryManager) agent.getService(IArtifactRepositoryManager.SERVICE_NAME);
 		if (metadataManager == null) {

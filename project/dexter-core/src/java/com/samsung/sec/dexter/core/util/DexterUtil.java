@@ -711,7 +711,6 @@ public class DexterUtil {
 	 * @return
 	 */
 	public static String refinePath(final String path) {
-		// TODO: �щ컮瑜�肄붾뱶�멸�? 
 		if(Strings.isNullOrEmpty(path)){
 			return "";
 		}

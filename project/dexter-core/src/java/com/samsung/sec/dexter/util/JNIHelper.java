@@ -33,12 +33,10 @@ public class JNIHelper {
 		{	
 			String startDir = System.getProperty("user.dir");
 			
-			System.out.println(startDir);
 			// System.load("G:\\DexterNewWorkspace\\dexter-util\\cppcheckwrapper.dll");	
 			 System.load(startDir+"\\cppcheckwrapper.dll");	
 			 //System.load("cppcheckwrapper.dll");	
 		} catch (UnsatisfiedLinkError e) {
-			System.out.println("Loading Error");
 		}
 	}
 

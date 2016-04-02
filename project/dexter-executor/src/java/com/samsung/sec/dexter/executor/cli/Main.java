@@ -120,7 +120,7 @@ public class Main {
 	}
 	
 	public Main(){
-		LOG.startMessage();	// TODO change all LOG and remove infoln etc.
+		LOG.startMessage();
 		
 		DexterConfig.getInstance().setRunMode(RunMode.CLI);
 	}

@@ -43,11 +43,17 @@ import com.samsung.sec.dexter.core.exception.DexterException;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.plugin.DexterPluginManager;
 import com.samsung.sec.dexter.core.util.DexterClient;
+import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.eclipse.DexterEclipseActivator;
 import com.samsung.sec.dexter.eclipse.EclipseAnalysis;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 
 public class DexterBuilder extends IncrementalProjectBuilder{
+	DexterDeltaVisitor dexterDeltaVisitor;
+	
+	public DexterBuilder(){
+		dexterDeltaVisitor = new DexterDeltaVisitor();
+	}
 	
 	class DexterDeltaVisitor implements IResourceDeltaVisitor {
 		/*
@@ -134,7 +140,6 @@ public class DexterBuilder extends IncrementalProjectBuilder{
 			return;
 		}
 
-		// TODO for CDT !!!!!!!!!!!!!!!
 		if (!(resource instanceof IFile) || !resource.getName().endsWith(".java")) {
 			return;
 		}
@@ -142,7 +147,13 @@ public class DexterBuilder extends IncrementalProjectBuilder{
 		final IFile file = (IFile) resource;
 		
 		try {
-			DexterClient.getInstance().deleteDefects(DexterEclipseActivator.getJDTUtil().getModulePath(file), file.getName());
+			// TODO 다형성 적용할 것
+			if(resource.getName().endsWith(".java")){
+				DexterClient.getInstance().deleteDefects(DexterEclipseActivator.getJDTUtil().getModulePath(file), file.getName());
+			} else if(resource.getName().endsWith(".c") || resource.getName().endsWith(".h")
+					|| resource.getName().endsWith(".cpp") || resource.getName().endsWith(".hpp")){
+				DexterClient.getInstance().deleteDefects(DexterEclipseActivator.getCDTUtil().getModulePath(file), file.getName());
+			}
 		} catch (DexterRuntimeException e) {
 			DexterEclipseActivator.LOG.error(e.getMessage(), e);
 		}
@@ -153,9 +164,6 @@ public class DexterBuilder extends IncrementalProjectBuilder{
 	}
 
 	protected void incrementalBuild(IResourceDelta delta, IProgressMonitor monitor) throws CoreException {
-		// the visitor does the work.
-		
-		// TODO try to use singleton object instead of new instance.
-		delta.accept(new DexterDeltaVisitor());
+		delta.accept(dexterDeltaVisitor);
 	}
 }

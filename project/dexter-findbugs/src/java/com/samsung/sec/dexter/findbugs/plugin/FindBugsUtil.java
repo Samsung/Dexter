@@ -159,8 +159,6 @@ public class FindBugsUtil {
 				sb.append(b.getAbbrev()).append("\t");
 				sb.append(b.getCWEid()).append("\t");
 				sb.append(b.getShortDescription());
-				
-				//System.out.println(sb.toString());
 			}
 		}
 	}

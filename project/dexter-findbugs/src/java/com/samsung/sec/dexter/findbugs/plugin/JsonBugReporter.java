@@ -240,7 +240,6 @@ public class JsonBugReporter extends AbstractBugReporter {
 	protected void emitLine(String line) {
 		line = line.replaceAll("\t", "  ");
 		logger.error(line);
-//		System.err.println(line);
 	}
 
 	/*
