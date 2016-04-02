@@ -377,6 +377,7 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
 	
 	private void showTextArea(boolean visible) {
 		fMemento.putBoolean(P_SHOW_TEXT_AREA, visible);
+		if(messageText == null) return ;
 		Composite parentComposite = messageText.getParent(); 
 		GridData gd = (GridData) messageText.getLayoutData();
 		gd.exclude = !visible;
@@ -615,7 +616,9 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
     public void handleDexterHomeChanged() {
 		rootLog = new RootAnalysisLog();
 		rootLog.loadFromLogFiles();
+		if(messageText == null) return;
 		messageText.setText("");
+		if(logTreeView == null ) return;
 		logTreeView.setInput(rootLog);
 		logTreeView.refresh();
     }

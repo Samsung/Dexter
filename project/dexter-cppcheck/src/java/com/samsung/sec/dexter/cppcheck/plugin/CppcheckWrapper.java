@@ -76,7 +76,7 @@ public class CppcheckWrapper {
     	 * cmd.append(" --library=").append(cfgFile).append(" ");
     	 * cmd.append(" 2> ").append(resultFile);
     	 * 
-    	 * -rp=<path>  --rule=<rule>,  --rule-file=<file>,  --template,  -D디파인, -U언디파인
+    	 * -rp=<path>  --rule=<rule>,  --rule-file=<file>,  --template,  -D�뷀뙆�� -U�몃뵒�뚯씤
 	 * 
 	 * @param result void
 	 * @throws Exception 
@@ -93,7 +93,6 @@ public class CppcheckWrapper {
     	// 3. Create Command
     	final StringBuilder cmd = new StringBuilder(500);
     	
-    	
     	setCppcheckCommand(cmd);
     	setCustomRuleOption(cmd);
     	cmd.append(" --inconclusive "); // for unreachableCode
@@ -104,7 +103,6 @@ public class CppcheckWrapper {
     	setPlatformOption(cmd); 
     	setLanguageOption(cmd);
     	setHeaderFilesOption(cmd);
-    	
     	
     	// 4. Run Command
     	Process process = null;
@@ -129,7 +127,7 @@ public class CppcheckWrapper {
         }
     }
 
-	private void setCppcheckCommand(final StringBuilder cmd) {
+    private void setCppcheckCommand(final StringBuilder cmd) {
 	    final String dexterHome = DexterConfig.getInstance().getDexterHome();
     	final String tempFolder = dexterHome + DexterUtil.PATH_SEPARATOR + "temp";
     	    	
@@ -138,21 +136,20 @@ public class CppcheckWrapper {
     			throw new DexterRuntimeException("Can't create temp folder to save cppcheck result: " + tempFolder);
     		}
     	}
+    	
+    	final String cppcheckHome = dexterHome + DexterUtil.PATH_SEPARATOR + "bin" + DexterUtil.PATH_SEPARATOR + "cppcheck";
+    	if(new File(cppcheckHome).exists() == false){
+    		throw new DexterRuntimeException("There is no cppcheck home folder : " + cppcheckHome);
+    	}
+    	
     	if(DexterUtil.getOsBit() == DexterUtil.OS_BIT.WIN32 || DexterUtil.getOsBit() == DexterUtil.OS_BIT.WIN64){
-    		cmd.append("cmd /C ");
-    		
-    		final String cppcheckHome = dexterHome + DexterUtil.PATH_SEPARATOR + "bin" + DexterUtil.PATH_SEPARATOR + "cppcheck";
-        	if(new File(cppcheckHome).exists() == false){
-        		throw new DexterRuntimeException("There is no cppcheck home folder : " + cppcheckHome);
-        	}
-        	
-        	cmd.append(cppcheckHome).append(DexterUtil.PATH_SEPARATOR).append("cppcheck");
+    		cmd.append("cmd /C ").append(cppcheckHome).append(DexterUtil.PATH_SEPARATOR).append("cppcheck");
     	} else if(DexterUtil.getOsBit() == DexterUtil.OS_BIT.LINUX32 || DexterUtil.getOsBit() == DexterUtil.OS_BIT.LINUX64){
-    		//cmd.append("/bin/bash -c ");
-    		cmd.append("cppcheck");
+    		cmd.append(cppcheckHome).append(DexterUtil.PATH_SEPARATOR).append("cppcheck");
     	} else {
     		throw new DexterRuntimeException("This command supports only Windows and Linux('bin/bash')");
     	}
+    	
     }
 	
 	private void setCustomRuleOption(final StringBuilder cmd){

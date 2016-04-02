@@ -39,9 +39,11 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 import com.samsung.sec.dexter.core.checker.Checker;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
+import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.defect.PreOccurence;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.plugin.PluginVersion;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.util.CppUtil;
 
@@ -86,7 +88,12 @@ public class ResultFileHandler extends DefaultHandler {
 	    	
 	    	currentOccurence = new PreOccurence();
 	    	currentOccurence.setLanguage(LANGUAGE.CPP.toString());
-	    	currentOccurence.setMessage(attributes.getValue("verbose").replace("&apos;", "'"));
+	    	if(checkerCode.startsWith(DexterConfig.SECURITY_CHECK_PREFIX)){
+	    		currentOccurence.setMessage(attributes.getValue("msg").replace("&apos;", "'"));
+	    	}	
+	    	else{
+	    		currentOccurence.setMessage(attributes.getValue("verbose").replace("&apos;", "'"));
+	    	}
 	    	currentOccurence.setToolName(CppcheckDexterPlugin.PLUGIN_NAME);
 	    	currentOccurence.setFileName(config.getFileName());
 	    	currentOccurence.setModulePath(config.getModulePath());
@@ -100,7 +107,8 @@ public class ResultFileHandler extends DefaultHandler {
 	    		
 	    	} catch (DexterRuntimeException e){
 	    		logger.info(e.getMessage());
-	    		Checker checker = new Checker(checkerCode, checkerCode, CppcheckDexterPlugin.version.getVersion(), true);
+	    		Checker checker = new Checker(checkerCode, checkerCode, 
+	    				PluginVersion.fromImplementationVersion(CppcheckDexterPlugin.class).getVersion(), true);
 	    		
 	    		if("true".equals(attributes.getValue("inconclusive"))){
 	    			checker.setSeverityCode("ETC");
@@ -108,7 +116,6 @@ public class ResultFileHandler extends DefaultHandler {
 	    		} else {
 	    			setSeverityForNewChecker(attributes, checker);
 	    		}
-	    		
 	    		checkerConfig.addChecker(checker);
 	    		logger.info("Found new checker(" + checkerCode + ") in " + config.getSourceFileFullPath());
 	    	}

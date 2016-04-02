@@ -668,7 +668,9 @@ public class Main {
 							etcCnt++;
 							break;
 						default:
-							LOG.errorln("Unknown severity code: " + defect.getSeverityCode() + " / " + defect.getCheckerCode());
+							defect.setSeverityCode("ETC");
+							etcCnt++;
+							break;
 					}
 					
 					totalCnt++;
