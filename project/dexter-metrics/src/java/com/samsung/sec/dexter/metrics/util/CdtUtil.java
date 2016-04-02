@@ -148,9 +148,6 @@ public class CdtUtil {
 		final Map<String, Integer> mapSourceMatrices = CdtUtilHelper.mapSourceMatrices;
 		final Map<String, Integer> mapLocSourceMetrices = CdtUtilHelper.mapFunctionLocMetrices;
 
-		logger.info(mapSourceMatrices);
-		logger.info(mapLocSourceMetrices);
-		
 		final List<Map<String, Object>> functionMetricsMap = new ArrayList<Map<String, Object>>();
 
 		for (int i = 0; i < functionList.size(); i++) {

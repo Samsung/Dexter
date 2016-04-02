@@ -39,6 +39,7 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 import com.samsung.sec.dexter.core.checker.Checker;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
+import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.defect.PreOccurence;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
@@ -87,7 +88,12 @@ public class ResultFileHandler extends DefaultHandler {
 	    	
 	    	currentOccurence = new PreOccurence();
 	    	currentOccurence.setLanguage(LANGUAGE.CPP.toString());
-	    	currentOccurence.setMessage(attributes.getValue("verbose").replace("&apos;", "'"));
+	    	if(checkerCode.startsWith(DexterConfig.SECURITY_CHECK_PREFIX)){
+	    		currentOccurence.setMessage(attributes.getValue("msg").replace("&apos;", "'"));
+	    	}	
+	    	else{
+	    		currentOccurence.setMessage(attributes.getValue("verbose").replace("&apos;", "'"));
+	    	}
 	    	currentOccurence.setToolName(CppcheckDexterPlugin.PLUGIN_NAME);
 	    	currentOccurence.setFileName(config.getFileName());
 	    	currentOccurence.setModulePath(config.getModulePath());
@@ -110,7 +116,6 @@ public class ResultFileHandler extends DefaultHandler {
 	    		} else {
 	    			setSeverityForNewChecker(attributes, checker);
 	    		}
-	    		
 	    		checkerConfig.addChecker(checker);
 	    		logger.info("Found new checker(" + checkerCode + ") in " + config.getSourceFileFullPath());
 	    	}
