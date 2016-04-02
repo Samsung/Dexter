@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<font face="Tahoma, Lucida Grande, Helvetica, Arial, sans-serif">
+
+    <head>
+        <link rel="stylesheet" href="../defect/asset/css/prettify.css" />
+        <script src="../defect/asset/js/prettify.js"></script>
+        <script type="text/javascript">
+            $(function() {
+
+                window.prettyPrint && prettyPrint();
+                $('#id-check-horizontal').removeAttr('checked').on('click', function(){
+                    $('#dt-list-1').toggleClass('dl-horizontal').prev().html(this.checked ? '&lt;dl class="dl-horizontal"&gt;' : '&lt;dl&gt;');
+                });
+
+            })
+        </script>
+    </head>
+    <div class = "slocListDiv">
+        <div class="row">
+            <div class="col-xs-6">
+                <div class="slocList" id="slocListGrid" ng-grid="slocListGridOptions">
+
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <br><font size="5"><span class="glyphicon glyphicon-subtitles"></span>&nbsp;&nbsp;What is the Source lines of code (SLOC)?</font>
+                <br>
+                Source lines of code (SLOC), also known as lines of code (LOC),
+                is a software metric used to measure the size of a computer program by counting the number of lines in the text of the program's source code.<br>
+                SLOC is typically used to predict the amount of effort that will be required to develop a program,
+                as well as to estimate programming productivity or maintainability once the software is produced.<br>
+                <br><font size="5"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;How to REDUCE SLOC ?</font>
+
+			<pre class="prettyprint linenums warning">
+                @ Bad Code
+switch (parseInt(fl)) {
+   case 1: if (me(loc_fr1[fr_c])) {
+      ++fr_c;
+     }
+    break;
+   case 2: fr_c = 0;
+     if (me(loc_fr2[fr_c2])) {
+      ++fr_c2;
+     }
+    break;
+   case 3: if (me(loc_fr3[fr_c])) {
+      ++fr_c;
+     }
+    break;
+   case 4: fr_c = 0;
+     if (me(loc_fr4[fr_c2])) {
+      ++fr_c2;
+     }
+    break;
+   case 5: fr_c2 = 0;
+     if (me(loc_fr5[fr_c])) {
+      ++fr_c;
+     }
+    break;
+   case 6: fr_c = 0;
+     if (me(loc_fr6[fr_c2])) {
+      ++fr_c2;
+     }
+    break;
+    case 7: fr_c2 = 0;
+     if (me(loc_fr7[fr_c])) {
+      ++fr_c;
+     }
+     break;
+   case 8: fr_c = 0;
+     if (me(loc_fr8[fr_c2])) {
+      ++fr_c2;
+     }
+    break;
+}
+</pre>
+
+              <br>
+			<pre class="prettyprint linenums correct">
+                @ Good Code
+if(parseInt(fl) % 2) {
+    if (me( eval("loc_fr"+parseInt(fl))[fr_c] )) {
+        ++fr_c;
+       }
+    } else {
+      fr_c = 0;
+       if (me( eval("loc_fr"+parseInt(fl))[fr_c2] )) {
+        ++fr_c2;
+       }
+}</pre>
+            </div>
+        </div>
+</font>

@@ -23,117 +23,63 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-"use strict";
+var assert = require("assert");
+var should = require('should');
 
-var sinon = require('sinon');
-var chai = require('chai');
-var assert = chai.assert;
-var rewire = require("rewire");
-
+var database = require('../../util/database');
 var logging = require('../../util/logging');
+/*
+describe('Check Rest', function() {
+	describe('#indexOf()', function() {
+		it('should return -1 when the value is not present', function() {
+			assert.equal(-1, [1,2,3].indexOf(5));
+			assert.equal(-1, [1,2,3].indexOf(0));
+		});
+	});
+});
 
-describe('test for util/database.js', function(){
-    var database;
+describe('Check Util', function() {
+    var server;
 
     before(function(){
-        createDatabaseMock();
+        logging.init(false);
+        database.init();
     });
 
-    function createDatabaseMock(){
-        database = rewire("../../util/database");
-
-        database.__set__({
-            global : {
-                runOptions :  {
-                    "databaseHost":"", "databasePort":"", "databaseUser":"", "databasePassword":"", "databaseName":"",
-                    getDbUrl : function() {
-                        return {};
-                    }
-                }
-            },
-            logging : {
-                info: function(){},
-                error: function(msg){
-                    console.log(msg);
-                }
-            },
-            mysql : {
-                createPool: function(){
-                    return {
-                        query : function(sql, callback){
-                            callback();
-                        }
-                    };
-                }
-            }
-        });
-    }
-
-    describe('for init function', function(){
-        it('should create database pool object', function(done){
-            var mysql = database.__get__("mysql");
-            var createPoolSpy = sinon.spy(mysql, 'createPool');
-
-            database.init()
-                .then(function(){
-                    assert.equal(1, createPoolSpy.callCount);
-                    var databasePool = database.__get__("databasePool");
-                    assert.isNotNull(databasePool);
-                    done();
-                })
-                .catch(function(err){
-                    done(err);
-                });
-        });
+    after(function(done){
+        done();
     });
 
-    describe('for getProjectName function', function(){
-        it('should return proper project name when condition is fine', function(){
-            database.__set__({
-                global : {
-                    runOptions :  {
-                        "databaseHost":"", "databasePort":"", "databaseUser":"", "databasePassword":"", "databaseName":"test-db-name",
-                        getDbUrl : function() { return {}; }
-                    }
-                }
-            });
+    after(function(){
 
-            var res = sinon.stub();
-            var returnCode, returnMessage;
-            res.send = function(code, arg){
-                returnCode= code;
-                returnMessage=arg;
-            };
-            database.getProjectName({}, res);
-
-            assert.equal(200, returnCode);
-            assert.equal("ok", returnMessage.status);
-            assert.equal("test-db-name", returnMessage.projectName);
-        });
-
-        it('should return error when condition is fine', function(){
-            database.__set__({
-                global : {
-                    runOptions :  {
-                        "databaseHost":"", "databasePort":"", "databaseUser":"", "databasePassword":"", "databaseName":"",
-                        getDbUrl : function() { return {}; }
-                    }
-                },
-                logging : {
-                    info: function(){},
-                    error: function(msg){ console.log(msg); }}
-            });
-
-            var res = sinon.stub();
-            var returnCode, returnMessage;
-            res.send = function(code, arg){returnCode= code; returnMessage=arg;};
-            database.getProjectName({}, res);
-
-            assert.equal(500, returnCode);
-            assert.equal("fail", returnMessage.status);
-            assert.equal("unknown", returnMessage.projectName);
-        });
     });
 
-    // TODO Add new test for real connection to Dexter DB when it exists
+    beforeEach(function(){
+
+    });
+
+    afterEach(function(){
+
+    });
+
+    describe('database test', function() {
+        it('Account table should be existed', function(done) {
+            var sql = 'select * from Account';
+            database.exec(sql, function (err, result){
+                should.not.exist(err);
+                should.exist(result);
+                done();
+            })
+        });
+
+        it('AccountTemp table should not be existed', function(done) {
+            var sql = 'select * from AccountTemp';
+            database.exec(sql, function (err, result){
+                should.not.exist(result);
+                should.exist(err);
+                done();
+            })
+        });
+    });
 });
+*/

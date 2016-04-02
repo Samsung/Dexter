@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<font face="Tahoma, Lucida Grande, Helvetica, Arial, sans-serif">
+
+    <head>
+        <link rel="stylesheet" href="../defect/asset/css/prettify.css" />
+        <script src="../defect/asset/js/prettify.js"></script>
+        <script type="text/javascript">
+            $(function() {
+
+                window.prettyPrint && prettyPrint();
+                $('#id-check-horizontal').removeAttr('checked').on('click', function(){
+                    $('#dt-list-1').toggleClass('dl-horizontal').prev().html(this.checked ? '&lt;dl class="dl-horizontal"&gt;' : '&lt;dl&gt;');
+                });
+
+            })
+        </script>
+    </head>
+    <div class = "ccListDiv">
+        <div class="row">
+            <div class="col-xs-6">
+                <div class="ccList" id="ccListGrid" ng-grid="ccListGridOptions">
+
+                </div>
+            </div>
+            <div class="col-xs-6">
+                <br><font size="5"><span class="glyphicon glyphicon-subtitles"></span>&nbsp;&nbsp;What is the Cyclomatic Complexity(CC) ?</font>
+                <br>
+                Cyclomatic complexity is a software metric (measurement), used to indicate the complexity of a program.<br>
+                It is a quantitative measure of the number of linearly independent paths through a program's code.
+                <br><br><br><font size="5"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;How to REDUCE Cyclomatic Complexity(CC) ?</font>
+                <br>
+                1. Add private methods with meaningful names to remove duplicate code<br>
+                2. Add private methods with meaningful names to wrap any functionalities that are not directly related to business logic such as<br>
+                <br><br><font size="5"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;SAMPLE CODE </font>
+                <br><br>
+			<pre class="prettyprint linenums warning">
+                @ Bad Code
+public ResponseObject generateResponseObject(String route) {
+  ResponseObject responseObject;
+  if (route.equals("time")) {
+    responseObject = new TimeResponse();
+  } else if (route.equals("echo")) {
+    responseObject = new EchoResponse();
+  } else if (route.equals("redirect")) {
+    responseObject = new RedirectResponse();
+  } else if (route.equals("file")) {
+    responseObject = new FileResponse();
+  } else {
+    responseObject = new FormResponse();
+  }
+  return responseObject;
+}
+</pre>
+
+                <br><br>
+			<pre class="prettyprint linenums correct">
+                @ Good Code
+public ResponseObject generateResponseObject(HashMap<String, ResponseObject> routes) {
+  ResponseObject responseObject;
+  String route = httpRequestContent.get("route");
+  responseObject = routes.get(route);
+  return responseObject;
+}
+            </pre>
+        </div>
+    </div>
+</font>
