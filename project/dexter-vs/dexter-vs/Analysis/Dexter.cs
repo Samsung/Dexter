@@ -33,7 +33,7 @@ namespace dexter_vs.Analysis
             Process javaProcess = new Process();
 
             javaProcess.StartInfo.FileName = "java.exe";
-            javaProcess.StartInfo.Arguments = "-jar " + dexterPath + " -u test_user -p test_password";
+            javaProcess.StartInfo.Arguments = "-jar " + dexterPath + "-s";
             javaProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(dexterPath);
             javaProcess.StartInfo.CreateNoWindow = true;
             javaProcess.StartInfo.UseShellExecute = false;
