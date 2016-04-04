@@ -11,6 +11,8 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using dexter_vs.Analysis;
 using System.Collections.Generic;
+using EnvDTE80;
+using EnvDTE;
 
 namespace dexter_vs.UI
 {
@@ -55,6 +57,7 @@ namespace dexter_vs.UI
                 var menuItem = new MenuCommand(this.MenuItemCallback, menuCommandID);
                 commandService.AddCommand(menuItem);
             }
+
         }
 
         /// <summary>
@@ -97,19 +100,33 @@ namespace dexter_vs.UI
         {
             Dexter dexter = new Dexter("D:/Applications/dexter/0.9.2/dexter-cli_0.9.2_32/bin/dexter-executor.jar");
 
+            OutputWindowPane outputPane = CreatePane("Dexter");
+            outputPane.Activate();
+
+            outputPane.OutputString("Analysis started!");
             List<Defect> defects = dexter.Analyse();
+            outputPane.OutputString("Analysis finished!");
+        }
 
-            string message = string.Format("Dexster Analysis Peformed! \n Found defects: {0}", defects.Count);
-            string title = "";
-
-            // Show a message box to prove we were here
-            VsShellUtilities.ShowMessageBox(
-                this.ServiceProvider,
-                message,
-                title,
-                OLEMSGICON.OLEMSGICON_INFO,
-                OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+        /// <summary>
+        /// Creates (or returns, if exists) Output Pane
+        /// </summary>
+        /// <param name="title">Pane title</param>
+        private OutputWindowPane CreatePane(string title)
+        {
+            DTE2 dte = (DTE2)ServiceProvider.GetService(typeof(DTE));
+            OutputWindowPanes panes = dte.ToolWindows.OutputWindow.OutputWindowPanes;
+       
+            try
+            {
+                // If the pane exists already, write to it.
+                return panes.Item(title);
+            }
+            catch (ArgumentException)
+            {
+                // Create a new pane and write to it.
+                return panes.Add(title);
+            }
         }
     }
 }
