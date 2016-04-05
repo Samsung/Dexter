@@ -5,48 +5,43 @@
    <extension
          point="org.eclipse.ui.commands">
       <category
-            name="%category.name"
+            name="Dexter"
             id="dexter-eclipse-ui.commands.category.dexter">
       </category>
       <category
-            description="%category.description"
+            description="Run Dexter Static Analysis "
             id="dexter-eclipse-ui.commands.category.analysis"
-            name="%category.name.0">
+            name="Analysis">
       </category>
       <command
             categoryId="dexter-eclipse-ui.commands.category.dexter"
             id="dexter-eclipse-ui.commands.loginCommand"
-            name="%command.name">
+            name="Login">
       </command>
       <command
             categoryId="dexter-eclipse-ui.commands.category.dexter"
             id="dexter-eclipse-ui.commands.OpenDexterWeb"
-            name="%command.name.0">
+            name="Open Dexter WEB">
       </command>
       <command
             categoryId="dexter-eclipse-ui.commands.category.dexter"
             id="dexter-eclipse-ui.commands.OpenDexterDashboard"
-            name="%command.name.1">
+            name="Open Dexter Dashboard">
       </command>
       <command
             categoryId="dexter-eclipse-ui.commands.category.dexter"
             id="dexter-eclipse-ui.commands.DexterAnalysis"
-            name="%command.name.2">
+            name="Run">
       </command>
       <command
             categoryId="dexter-eclipse-ui.commands.category.dexter"
             id="dexter-eclipse-ui.commands.OpenAnalysisLogView"
-            name="%command.name.3">
+            name="Open Analysis Log View">
       </command>
-      <command
+       <command
             categoryId="dexter-eclipse-ui.commands.category.dexter"
-            id="dexter-eclipse-ui.commands.OpenDexterCodeMetrics"
-            name="%command.name.4">
-      </command>
-      <command
-            categoryId="dexter-eclipse-ui.commands.category.dexter"
-            id="dexter-eclipse-ui.commands.OpenDexterFunctionMetrics"
-            name="%command.name.5">
+            id="dexter-eclipse-ui.commands.OpenPlatzView"
+            name="Open PLATZ View (http://platz.sec.samsung.net)">
       </command>
    </extension>
    <extension
@@ -72,12 +67,8 @@
             commandId="dexter-eclipse-ui.commands.OpenAnalysisLogView">
       </handler>
       <handler
-            class="com.samsung.sec.dexter.eclipse.ui.OpenCodeMetricsViewHandler"
-            commandId="dexter-eclipse-ui.commands.OpenDexterCodeMetrics">
-      </handler>
-      <handler
-            class="com.samsung.sec.dexter.eclipse.ui.OpenFunctionMetricsViewHandler"
-            commandId="dexter-eclipse-ui.commands.OpenDexterFunctionMetrics">
+            class="com.samsung.sec.dexter.eclipse.ui.OpenPlatzViewHandler"
+            commandId="dexter-eclipse-ui.commands.OpenPlatzView">
       </handler>
    </extension>
    <extension
@@ -94,61 +85,53 @@
       <menuContribution
             locationURI="menu:org.eclipse.ui.main.menu?after=additions">
          <menu
-               label="%menu.label"
-               mnemonic="%menu.mnemonic"
+               label="Dexter"
+               mnemonic="M"
                id="dexter-eclipse-ui.menus.loginMenu">
             <command
                   commandId="dexter-eclipse-ui.commands.loginCommand"
                   icon="icons/login.gif"
                   id="dexter-eclipse-ui.menus.loginCommand"
-                  mnemonic="%command.mnemonic"
-                  tooltip="%command.tooltip">
+                  mnemonic="D"
+                  tooltip="Login to Dexter Server (Coding-time Static Analysis Server)">
             </command>
             <command
                   commandId="dexter-eclipse-ui.commands.OpenDexterWeb"
                   icon="icons/dexterweb.gif"
                   id="dexter-eclipse-ui.commands.OpenDexterWeb"
-                  mnemonic="%command.mnemonic.0"
+                  mnemonic="W"
                   style="push"
-                  tooltip="%command.tooltip.0">
+                  tooltip="Open Dexter WEB site">
             </command>
             <command
                   commandId="dexter-eclipse-ui.commands.OpenDexterDashboard"
                   icon="icons/dexterdashboard.gif"
                   id="dexter-eclipse-ui.commands.OpenDexterDashboard"
-                  mnemonic="%command.mnemonic.1"
+                  mnemonic="T"
                   style="push"
-                  tooltip="%command.tooltip.1">
+                  tooltip="Open Dexter WEB / Dashboard">
             </command>
             <command
                   commandId="dexter-eclipse-ui.commands.DexterAnalysis"
                   icon="icons/analysis.gif"
                   id="dexter-eclipse-ui.commands.DexterAnalysis"
-                  mnemonic="%command.mnemonic.2"
+                  mnemonic="R"
                   style="push"
-                  tooltip="%command.tooltip.2">
+                  tooltip="Run Dexter static analysis by project, module path, or files.">
             </command>
             <command
                   commandId="dexter-eclipse-ui.commands.OpenAnalysisLogView"
                   icon="icons/analysisLogView.gif"
                   id="dexter-eclipse-ui.commands.OpenAnalysisLogView"
-                  mnemonic="%command.mnemonic.3"
+                  mnemonic="L"
                   style="push">
             </command>
             <command
-                  commandId="dexter-eclipse-ui.commands.OpenDexterCodeMetrics"
-                  icon="icons/codeMetricsView7.gif"
-                  id="dexter-eclipse-ui.commands.OpenDexterCodeMetrics"
-                  mnemonic="%command.mnemonic.4"
-                  style="push"
-                  tooltip="%command.tooltip.3">
-            </command>
-            <command
-                  commandId="dexter-eclipse-ui.commands.OpenDexterFunctionMetrics"
-                  icon="icons/functionMetricsView.gif"
-                  id="dexter-eclipse-ui.commands.OpenDexterFunctionMetrics"
-                  style="push"
-                  tooltip="%command.tooltip.10">
+                  commandId="dexter-eclipse-ui.commands.OpenPlatzView"
+                  icon="icons/platz.gif"
+                  id="dexter-eclipse-ui.commands.OpenPlatzView"
+                  mnemonic="H"
+                  style="push">
             </command>
          </menu>
       </menuContribution>
@@ -160,53 +143,45 @@
                   commandId="dexter-eclipse-ui.commands.loginCommand"
                   icon="icons/login.gif"
                   id="dexter-eclipse-ui.toolbars.loginCommand"
-                  mnemonic="%command.mnemonic.5"
-                  tooltip="%command.tooltip.4">
+                  mnemonic="D"
+                  tooltip="Login to Dexter Server (Coding-time Static Analysis Server)">
             </command>
             <command
                   commandId="dexter-eclipse-ui.commands.OpenDexterWeb"
                   icon="icons/dexterweb.gif"
                   id="dexter-eclipse-ui.commands.OpenDexterWeb"
-                  mnemonic="%command.mnemonic.6"
+                  mnemonic="W"
                   style="push"
-                  tooltip="%command.tooltip.5">
+                  tooltip="Open Dexter WEB site">
             </command>
             <command
                   commandId="dexter-eclipse-ui.commands.OpenDexterDashboard"
                   icon="icons/dexterdashboard.gif"
                   id="dexter-eclipse-ui.commands.OpenDexterDashboard"
-                  mnemonic="%command.mnemonic.7"
+                  mnemonic="T"
                   style="push"
-                  tooltip="%command.tooltip.6">
+                  tooltip="Open Dexter WEB / Dashboard">
             </command>
             <command
                   commandId="dexter-eclipse-ui.commands.DexterAnalysis"
                   icon="icons/analysis.gif"
                   id="dexter-eclipse-ui.commands.DexterAnalysis"
-                  mnemonic="%command.mnemonic.8"
+                  mnemonic="R"
                   style="push"
-                  tooltip="%command.tooltip.7">
+                  tooltip="Run Dexter static analysis by project, module path, or files.">
             </command>
             <command
                   commandId="dexter-eclipse-ui.commands.OpenAnalysisLogView"
                   icon="icons/analysisLogView.gif"
                   id="dexter-eclipse-ui.commands.OpenAnalysisLogView"
-                  mnemonic="%command.mnemonic.9"
+                  mnemonic="L"
                   style="push">
             </command>
             <command
-                  commandId="dexter-eclipse-ui.commands.OpenDexterCodeMetrics"
-                  icon="icons/codeMetricsView7.gif"
-                  id="dexter-eclipse-ui.commands.OpenDexterCodeMetrics"
-                  mnemonic="%command.mnemonic.10"
-                  style="push"
-                  tooltip="%command.tooltip.8">
-            </command>
-            <command
-                  commandId="dexter-eclipse-ui.commands.OpenDexterFunctionMetrics"
-                  icon="icons/functionMetricsView.gif"
-                  id="dexter-eclipse-ui.commands.OpenDexterFunctionMetrics"
-                  mnemonic="%command.mnemonic.11"
+                  commandId="dexter-eclipse-ui.commands.OpenPlatzView"
+                  icon="icons/platz.gif"
+                  id="dexter-eclipse-ui.commands.OpenPlatzView"
+                  mnemonic="H"
                   style="push">
             </command>
          </toolbar>
@@ -216,14 +191,15 @@
          point="org.eclipse.ui.views">
       <category
             id="com.samsung.sec.dexter.category"
-            name="%category.name.1">
+            name="Dexter">
       </category>
       <view
             allowMultiple="false"
             category="com.samsung.sec.dexter.category"
             class="com.samsung.sec.dexter.eclipse.ui.view.AnalysisLogTreeView"
+            icon="icons/analysisLogView.gif"
             id="com.samsung.sec.dexter.eclipse.ui.view.AnalysisLogTreeView"
-            name="%view.name"
+            name="Analysis Log"
             restorable="true">
       </view>
       <view
@@ -231,25 +207,17 @@
             class="com.samsung.sec.dexter.eclipse.ui.view.DefectHelpView"
             icon="icons/defectHelp.gif"
             id="dexter-eclipse.defect-description"
-            name="%view.name.0"
+            name="Checker Description"
             restorable="true">
       </view>
-       <view
+      <view
             category="com.samsung.sec.dexter.category"
-            class="com.samsung.sec.dexter.eclipse.ui.view.CodeMetricsView"
-            icon="icons/codeMetricsView7.gif"
-            id="dexter-eclipse.code-metrics"
-            name="%view.name.1"
+            class="com.samsung.sec.dexter.eclipse.ui.view.PlatzView"
+            icon="icons/platz.gif"
+            id="dexter-eclipse.platz"
+            name="Platz"
             restorable="true">
       </view>
-       <view
-             category="com.samsung.sec.dexter.category"
-             class="com.samsung.sec.dexter.eclipse.ui.view.FunctionMetricsView"
-             icon="icons/functionMetricsView.gif"
-             id="dexter-eclipse.function-metrics"
-             name="%view.name.2"
-             restorable="true">
-       </view>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
@@ -262,15 +230,15 @@
                enablesFor="+"
                icon="icons/undismiss.gif"
                id="com.samsung.sec.dexter.action.UndismissDefect"
-               label="%action.label"
+               label="Undismiss Defect"
                menubarPath="additions"
-               tooltip="%action.tooltip">
+               tooltip="Undismiss defect that has the status of &apos;Dismissed&apos;">
          </action>
          <action
                class="com.samsung.sec.dexter.eclipse.ui.action.DismissDefect"
                icon="icons/dismiss.gif"
                id="com.samsung.sec.dexter.action.DismissDefect"
-               label="%action.label.0"
+               label="Dismiss Defect"
                menubarPath="additions">
          </action>
          <action
@@ -278,32 +246,9 @@
                enablesFor="+"
                icon="icons/defectHelp.gif"
                id="com.samsung.sec.dexter.action.CheckerDescription"
-               label="%action.label.1"
+               label="Checker Description"
                menubarPath="additions"
-               tooltip="%action.tooltip.0">
-         </action>
-      </objectContribution>
-      <objectContribution
-            adaptable="true"
-            id="com.samsung.sec.dexter.FileLogContribution"
-            objectClass="com.samsung.sec.dexter.eclipse.ui.view.AnalysisLog">
-         <action
-               class="com.samsung.sec.dexter.eclipse.ui.action.CodeMetricsDescription"
-               enablesFor="?"
-               icon="icons/codeMetricsView7.gif"
-               id="com.samsung.sec.dexter.action.CodeMetricsDescription"
-               label="%action.label.2"
-               menubarPath="additions"
-               tooltip="%action.tooltip.1">
-         </action>
-         <action
-               class="com.samsung.sec.dexter.eclipse.ui.action.FunctionMetricsDescription"
-               enablesFor="?"
-               icon="icons/functionMetricsView.gif"
-               id="com.samsung.sec.dexter.action.FunctionMetricsDescription"
-               label="%action.label.3"
-               menubarPath="additions"
-               tooltip="%action.tooltip.2">
+               tooltip="Open Checker Description View">
          </action>
       </objectContribution>
    </extension>

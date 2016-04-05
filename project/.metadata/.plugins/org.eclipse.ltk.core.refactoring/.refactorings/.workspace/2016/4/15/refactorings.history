@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Delete 13 resources" deleteContents="false" description="Delete 13 resources" element1="/dexter-core" element10="/dexter-opensource" element11="/dexter-vd-cpp" element12="/dexter.daemon.feature.64" element13="/dexter.eclipse.feature.64" element2="/dexter-cppcheck" element3="/dexter-daemon" element4="/dexter-eclipse" element5="/dexter-eclipse-help" element6="/dexter-eclipse-ui" element7="/dexter-executor" element8="/dexter-findbugs" element9="/dexter-metrics" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="13" stamp="1459841860279"/>
+</session>

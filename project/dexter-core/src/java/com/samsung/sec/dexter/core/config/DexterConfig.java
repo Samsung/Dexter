@@ -169,6 +169,9 @@ public class DexterConfig {
 	 * we cannot use 'cfg' extension because of NASCA
 	 */
 	public static final String DEXTER_DAEMON_CFG_FILENAME = "dexter_daemon_cfg.json";
+	public static final String PLATZ_KEYWORD_FILENAME = "platz_keyword.json";
+	public static final String PLATZ_API_URL = "http://platz.sec.samsung.net/tapi/#/";
+	public static final String PLATZ_SEARCH_API_URL = "http://platz.sec.samsung.net/tapi/#/search/";
 	
 	private boolean isReviewMode = false;
 	
