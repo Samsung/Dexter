@@ -21,8 +21,8 @@
 			<fileset dir="bin"/>
 			<zipfileset excludes="META-INF/*.SF" src="lib/gson-2.2.4.jar"/>
 			<zipfileset excludes="META-INF/*.SF" src="lib/guava-16.0.1.jar"/>
-			<zipfileset excludes="META-INF/*.SF" src="lib/cdt/org.eclipse.cdt.core_5.9.1.201502131403.jar"/>
-			<zipfileset excludes="META-INF/*.SF" src="lib/cdt/org.eclipse.equinox.common_3.6.200.v20130402-1505.jar"/>
+			<!--zipfileset excludes="META-INF/*.SF" src="lib/cdt/org.eclipse.cdt.core_5.9.1.201502131403.jar"/ -->
+			<!--zipfileset excludes="META-INF/*.SF" src="lib/cdt/org.eclipse.equinox.common_3.6.200.v20130402-1505.jar"/-->
 		</jar>
 
 		<!--copy file="dist/dexter-findbugs_${version}.jar" toDir="../dexter-daemon/src/resource/plugin" overwrite="true" failonerror="false"/-->

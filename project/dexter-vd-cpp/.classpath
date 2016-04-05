@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="lib/cdt/org.eclipse.cdt.core_5.9.1.201502131403.jar" sourcepath="lib/cdt/org.eclipse.cdt.core_5.9.1.201502131403.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jspf/jspf.core-1.0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jspf/jspf.remote-1.0.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jspf/jspf.remote.discovery-1.0.2.jar"/>
@@ -20,7 +19,5 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src/java"/>
 	<classpathentry kind="src" path="src/test"/>
-	<classpathentry kind="lib" path="lib/cdt/org.eclipse.core.resources_3.7.101.v20120125-1505.jar"/>
-	<classpathentry kind="lib" path="lib/cdt/org.eclipse.equinox.common_3.6.200.v20130402-1505.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -37,7 +37,6 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
-import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.defect.Defect;
@@ -105,11 +104,13 @@ public class RootAnalysisLog {
 	        	final Map map = gson.fromJson(content, Map.class);
 	        	@SuppressWarnings("rawtypes")
 	        	final List<LinkedTreeMap> defectList = (List<LinkedTreeMap>) map.get(ResultFileConstant.DEFECT_LIST);
+	        	final List<String> functionList = (List<String>) map.get(ResultFileConstant.FUNCTION_LIST);
 	        	
 	        	long datetime = -1;
 	        	final AnalysisLog resultLog = new AnalysisLog();
 	        	resultLog.setFileName((String) map.get(ResultFileConstant.FILE_NAME));
 	        	resultLog.setFileFullPath((String) map.get(ResultFileConstant.FULL_FILE_PATH));
+	        	resultLog.setModulePath((String) map.get(ResultFileConstant.MODULE_PATH));
 	        	resultLog.setDefectCount(Integer.parseInt((String)map.get(ResultFileConstant.DEFECT_COUNT)));
 	        	
 	        	final String fileStr = file.toString();
@@ -127,6 +128,12 @@ public class RootAnalysisLog {
 	        		resultLog.addDefectLog(defect);
 	        		
 	        	}
+	        	
+	        	if(functionList != null){
+		        	for(final String function : functionList ){
+		        		resultLog.addFunctionList(function);
+		        	}
+		        }
 	        	
 	        	resultLog.setCreatedTime(new Date(datetime));
 	        	

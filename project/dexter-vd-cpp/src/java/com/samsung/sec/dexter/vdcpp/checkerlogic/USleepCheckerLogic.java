@@ -28,6 +28,7 @@ package com.samsung.sec.dexter.vdcpp.checkerlogic;
 
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.ASTVisitor;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
@@ -52,12 +53,13 @@ import com.samsung.sec.dexter.core.defect.PreOccurence;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.vdcpp.plugin.DexterVdCppPlugin;
 import com.samsung.sec.dexter.vdcpp.util.CppUtil;
-
+import java.math.BigDecimal;
 
 public class USleepCheckerLogic implements ICheckerLogic{
 
 	private int sleepTime;
-	private IASTTranslationUnit translationUnit;		
+	private IASTTranslationUnit translationUnit;
+	private final static Logger LOG = Logger.getLogger(DexterVdCppPlugin.class);
 
 
 	@Override
@@ -121,16 +123,19 @@ public class USleepCheckerLogic implements ICheckerLogic{
 							{								
 								if(expParameter instanceof IASTLiteralExpression)
 								{
-
-									int value =Integer.valueOf(expParameter.toString());
-									if(value <sleepTime)
+									try
 									{
-
-										String msg ="checkUsleep function aggument "+expParameter.toString()+ "  should be greater than "+sleepTime+ " to avoid performance issue;";
-										fillDefectData( config, result,checker,expParameter.getFileLocation(),msg,expParameter.toString());
-
+										int value =convertIntoDecimalNumber(expParameter.toString());
+										if(value <sleepTime)
+										{
+	
+											String msg ="checkUsleep function argument "+expParameter.toString()+ "  should be greater than "+sleepTime+ " to avoid performance issue;";
+											fillDefectData( config, result,checker,expParameter.getFileLocation(),msg,expParameter.toString());
+										}
 									}
-
+									catch (DexterRuntimeException e) {
+										LOG.error(e.getMessage(), e);
+									}
 								}
 								else if(expParameter instanceof IASTIdExpression)
 								{
@@ -172,16 +177,15 @@ public class USleepCheckerLogic implements ICheckerLogic{
 										{
 											try
 											{
-												int value =Integer.valueOf(expParameter.toString());
+												int value =convertIntoDecimalNumber(expParameter.toString());
 												if(value <sleepTime)
 												{											
 													String msg ="argument"+ expParameter.toString()+"  in checkUsleep function should be greater than "+sleepTime+" to avoid performance issue;";
 													fillDefectData( config, result,checker,astExpression.getFileLocation(),msg,expParameter.toString());
 												}
 											}
-											catch(Exception ex)
-											{
-												throw new DexterRuntimeException(ex.getMessage());
+											catch (DexterRuntimeException e) {
+												LOG.error(e.getMessage(), e);
 											}
 
 										}
@@ -238,6 +242,41 @@ public class USleepCheckerLogic implements ICheckerLogic{
 				return preOcc;
 
 			}
+			
+			private Integer convertIntoDecimalNumber(String string) 
+			{				
+				Integer outputDecimal=0;	
+				
+				try
+				{	
+					string = string.replaceAll("(U|u|LL|ll|L|l)", "");		
+					
+					if(string.contains("x") ||string.contains("X") )		//ex) 0xff : hexa-decimal
+					{
+						string = string.replaceFirst("(0x|0X)", "");	
+						outputDecimal = Integer.parseInt(string, 16);
+					}
+					else if(string.contains("e") || string.contains("E"))	//ex) 1e5
+					{
+						outputDecimal = new BigDecimal(string).intValue();
+					}
+					else if(string.startsWith("0") && string.length()>1 )	//ex) 033 : octa-decimal
+					{
+						string = string.replaceFirst("[0]", "");	
+						outputDecimal = Integer.parseInt(string, 8);
+					}
+					else 
+					{
+						outputDecimal =Integer.valueOf(string);	
+					}
+					
+					return outputDecimal;
+				}
+				catch(Exception e)
+				{
+					throw new DexterRuntimeException("Invalid input number " + e.getMessage(), e);	
+				}						
+			}	
 
 		};
 

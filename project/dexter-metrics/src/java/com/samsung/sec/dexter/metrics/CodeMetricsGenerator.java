@@ -47,19 +47,25 @@ import com.puppycrawl.tools.checkstyle.api.CheckstyleException;
 import com.puppycrawl.tools.checkstyle.api.Configuration;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.metrics.CodeMetrics;
+import com.samsung.sec.dexter.core.metrics.FunctionMetrics;
+import com.samsung.sec.dexter.metrics.util.CdtUtil;
 import com.samsung.sec.dexter.util.CppUtil;
+
 
 public class CodeMetricsGenerator {
 	static Logger logger = Logger.getLogger(CodeMetricsGenerator.class);
 	
-	
 	public static void main(String[] args) throws IOException, CheckstyleException {
 		final String filePath = "C:\\DEV\\workspace\\runtime-EclipseApplication\\DefectTest\\src\\defect\\example\\LockInversion.java";
-		getCodeMetrics(DexterConfig.LANGUAGE.JAVA, filePath, new CodeMetrics());
+		List<String> functionList = new ArrayList<String>();
+		functionList.add("CSQLiteCursorCache");
+		functionList.add("~CDbRow");
+		getCodeMetrics(DexterConfig.LANGUAGE.JAVA, filePath, new CodeMetrics(), new FunctionMetrics(), functionList);
     }
 	
 	
-	public static void getCodeMetrics(final DexterConfig.LANGUAGE language, final String filePath, final CodeMetrics codeMetrics){
+	public static void getCodeMetrics(final DexterConfig.LANGUAGE language, final String filePath,
+			final CodeMetrics codeMetrics, final FunctionMetrics functionMetrics, final List<String> functionList){
 		if(Strings.isNullOrEmpty(filePath)){
 			logger.error("there is no file to analyze for code metrics");
 			return;
@@ -76,14 +82,22 @@ public class CodeMetricsGenerator {
 			useCheckStyle(filePath, new QualityAuditListener(codeMetrics));
 			if(file.length() == 0){
 				createDefaultMetrics(codeMetrics);
+				createDefaultFunctionMetrics(functionMetrics);
 			}
 		} else if(language == DexterConfig.LANGUAGE.C || language == DexterConfig.LANGUAGE.CPP){
 			codeMetrics.setMetrics(CppUtil.generatorCodeMetrics(filePath));
+			if (functionList.size() > 0) {
+				functionMetrics.setFunctionMetrics(CdtUtil.generatorCodeMetrics(filePath, functionList));
+			}
 			if(file.length() ==0 || codeMetrics.getMetrics() == null || codeMetrics.getMetrics().size() == 0){
 				createDefaultMetrics(codeMetrics);
 			}
+			if(file.length()==0|| functionMetrics.getMetrics() == null || functionMetrics.getMetrics().size() == 0){
+				createDefaultFunctionMetrics(functionMetrics);
+			}
 		} else {	// default values
 			createDefaultMetrics(codeMetrics);
+			createDefaultFunctionMetrics(functionMetrics);
 		}
 	}
 
@@ -98,6 +112,12 @@ public class CodeMetricsGenerator {
 	    codeMetrics.addMetric("averageCompexity", 0);
 	    codeMetrics.addMetric("commentRatio", 0.00f);
     }
+	
+	private static void createDefaultFunctionMetrics(final FunctionMetrics functionMetrics){
+		functionMetrics.addMetric("cc", 0);
+		functionMetrics.addMetric("sloc", 0);
+		functionMetrics.addMetric("callDepth", 0);
+	}
 	
 	@SuppressWarnings("deprecation")
     private static void useCheckStyle(final String javaFilePath, final AuditListener listener) {

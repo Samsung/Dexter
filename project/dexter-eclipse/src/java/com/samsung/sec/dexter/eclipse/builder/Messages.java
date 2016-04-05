@@ -29,6 +29,10 @@ import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "com.samsung.sec.dexter.eclipse.builder.messages"; //$NON-NLS-1$
+	public static String CodeMetricsResolution_SHOW_CODE_METRICS_DESC;
+	public static String CodeMetricsResolution_CODE_METRICS_DESC;
+	public static String CodeMetricsResolution_CODE_METRICS_ERROR;
+	public static String CodeMetricsResolution_CODE_METRICS_ERROR_DESC;
 	public static String DefectHelpResolution_DEFECT_HELP_DESC;
 	public static String DefectHelpResolution_DEFECT_HELP_ERROR;
 	public static String DefectHelpResolution_DEFECT_HELP_ERROR_DESC;

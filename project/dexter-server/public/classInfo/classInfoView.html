@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<font face="Tahoma, Lucida Grande, Helvetica, Arial, sans-serif">
+    <head>
+        <link rel="stylesheet" href="../defect/asset/css/prettify.css" />
+        <script src="../defect/asset/js/prettify.js"></script>
+        <script type="text/javascript">
+            $(function() {
+                window.prettyPrint && prettyPrint();
+            })
+        </script>
+    </head>
+
+    <div class ="ccListDiv">
+        <div class="row">
+            <div class="col-xs-6">
+                <div class="classInfo" id="classInfoGrid" ng-grid="classInfoGridOptions">
+
+                </div>
+            </div>
+
+
+            <div class="col-xs-6">
+                <br><font size="5"><span class="glyphicon glyphicon-subtitles"></span>&nbsp;&nbsp;왜 중요한가 Class를 나누는 것이?</font>
+                <br>
+                SLOC<br>
+                <br><br><br><font size="5"><span class="glyphicon glyphicon-tag"></span>&nbsp;&nbsp;How to REDUCE SLOC?</font>
+                <br>
+                1. Add private methods with meaningful names to remove duplicate code<br>
+                2. Add private methods with meaningful names to wrap any functionalities that are not directly related to business logic such as<br>
+                <br><br><font size="5"><span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;SAMPLE CODE </font>
+                <br><br>
+			<pre class="prettyprint linenums warning">
+                @ Bad Code
+public ResponseObject generateResponseObject(String route) {
+  ResponseObject responseObject;
+  if (route.equals("time")) {
+    responseObject = new TimeResponse();
+  } else if (route.equals("echo")) {
+    responseObject = new EchoResponse();
+  } else if (route.equals("redirect")) {
+    responseObject = new RedirectResponse();
+  } else if (route.equals("file")) {
+    responseObject = new FileResponse();
+  } else {
+    responseObject = new FormResponse();
+  }
+  return responseObject;
+}
+</pre><br>
+                <pre class="prettyprint linenums correct">
+                @ Good Code
+public ResponseObject generateResponseObject(HashMap<String, ResponseObject> routes) {
+  ResponseObject responseObject;
+  String route = httpRequestContent.get("route");
+  responseObject = routes.get(route);
+  return responseObject;
+}
+            </pre>
+            </div>
+        </div>
+    </div>
+</font>

@@ -69,7 +69,7 @@ public class DexterOpensourcePluginTest {
 		assertTrue(firstChecker.isActive());
 		assertEquals("MAJ", firstChecker.getSeverityCode());
 		assertEquals("BOTH", firstChecker.getType());
-		assertEquals("2.5.30", firstChecker.getVersion().toString());
+		assertEquals("0.9.4", firstChecker.getVersion().toString());
 	}
 	
 	@Test

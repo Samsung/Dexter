@@ -377,6 +377,7 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
 	
 	private void showTextArea(boolean visible) {
 		fMemento.putBoolean(P_SHOW_TEXT_AREA, visible);
+		if(messageText == null) return ;
 		Composite parentComposite = messageText.getParent(); 
 		GridData gd = (GridData) messageText.getLayoutData();
 		gd.exclude = !visible;
@@ -546,7 +547,9 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
 		@Override
 		public void handlePostRunStaticAnalysis(final AnalysisConfig config, final List<AnalysisResult> resultList) {
 			final List<Defect> allDefectList = DexterAnalyzer.getAllDefectList(resultList);
+			final List<String> allFunctionList = config.getFunctionList();
 			final String fileName = DexterAnalyzer.getFileName(resultList);
+			final String modulePath = config.getModulePath();
 			final String sourceFileFullPath = DexterAnalyzer.getSourceFileFullPath(resultList);
 			
 			final AnalysisLog log = new AnalysisLog();
@@ -555,10 +558,15 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
 			log.setCreatedTimeStr(DexterUtil.currentDateTime());
 			log.setDefectCount(allDefectList.size());
 			log.setFileName(fileName);
+			log.setModulePath(modulePath);
 			log.setFileFullPath(sourceFileFullPath);
 			
 			for(final Defect defect : allDefectList){
 				log.addDefectLog(defect);
+			}
+			
+			for(final String function : allFunctionList){
+				log.addFunctionList(function);
 			}
 			
 			display.syncExec(new Runnable() {
@@ -608,7 +616,9 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
     public void handleDexterHomeChanged() {
 		rootLog = new RootAnalysisLog();
 		rootLog.loadFromLogFiles();
+		if(messageText == null) return;
 		messageText.setText("");
+		if(logTreeView == null ) return;
 		logTreeView.setInput(rootLog);
 		logTreeView.refresh();
     }

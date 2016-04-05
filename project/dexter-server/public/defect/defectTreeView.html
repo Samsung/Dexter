@@ -43,11 +43,21 @@
                 <span class="glyphicon glyphicon-align-left"></span>&nbsp;{{isFileTreeBtnTitleHidden}}
             </button>&nbsp;
 
-            <a href="#" class="exportDefect">
+            <!--a href="#" class="exportDefect">
                 <button  id="exportTreeBtn"  class="btn btn-xs btn-success">
                     <span class="glyphicon glyphicon-save"></span> Export Defect List
                 </button>
-            </a>
+            </a-->
+            <button id="exportDefectBtn" class="btn btn-xs btn-success" csv-header="getCSVHeader()"
+                    ng-csv="csvContent" lazy-load="true" filename="{{projectName}}.csv" field-separator=",">
+                <span class="glyphicon glyphicon-save"></span> Export Defect List
+            </button>&nbsp;
+
+            <button class="btn btn-xs btn-warning" csv-header="getCSVHeader()"
+                    ng-csv="csvSecurityContent" lazy-load="true" filename="{{projectName}}-Security.csv" field-separator=",">
+                <span class="glyphicon glyphicon-save"></span> Security Report
+            </button>
+
 
         </div>
         </p>

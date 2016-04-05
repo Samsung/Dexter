@@ -62,6 +62,15 @@ public class AnalysisConfig extends BaseAnalysisEntity{
 	 */
 	private List<String> headerBaseDirList = new ArrayList<String>(0);
 	
+	
+	/** 
+	 * eg)  changed function List 
+	 * 		"functionList":[]
+	 * 		"functionList":["~CDbRow"]
+	 *  	"functionList":["CSQLiteCursorCache","~CDbRow"]
+	 */
+	private List<String> functionList= new ArrayList<String>(0);
+	
 	/**  
 	 * eg)  absolute full base directory path for compiled files such as *.class, *.obj, *.o
 	 * 		C:/dev/workspace/project-a/bin
@@ -184,6 +193,15 @@ public class AnalysisConfig extends BaseAnalysisEntity{
 		this.headerBaseDirList = baseHeaderFolderList;
 	}
 
+	
+	public final List<String> getFunctionList(){
+		return this.functionList;
+	}
+	
+	public void setFunctionList(final List<String> functionList){
+		this.functionList = functionList;
+	}
+	
 	/**
 	 * @return the outputDir
 	 * eg)  absolute full base directory path for compiled files such as *.class, *.obj, *.o

@@ -60,6 +60,7 @@ public class AnalysisResultFileManagerTest {
 		defect.setCreatedDateTime(1439973272636L);
 		defect.setMessage("[#1@79] Memory leak: sgtree ");
 		defect.setSeverityCode("CRI");
+		defect.setCategoryName("security");
 		defect.setModifiedDateTime(1439973272636L);
 		defect.setCheckerCode("memleak");
 		defect.setClassName("TestSource");

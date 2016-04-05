@@ -126,7 +126,7 @@ exports.getCliOptions = function() {
         var option = item.split('=');
 
         if(isValidCliOption(option)){
-            option[0] = _.trim(option[0])
+            option[0] = _.trim(option[0]);
             var key = option[0].substr(1, (option[0].length-1));
             options[key] = _.trim(option[1]);
         }
@@ -153,6 +153,19 @@ exports.getCliOptions = function() {
     };
 };
 
+
+function startsWith(str, checker){
+    if(str!=null && checker!=null && str.length > checker.length){
+        if(str.toUpperCase().substr(0,checker.toUpperCase().length) == checker.toUpperCase()){
+            return true;
+        }else{
+            return false;
+        }
+    }else{
+        return false;
+    }
+}
+
 function isValidCliOption(option){
     if(_.isArray(option) === false || option.length !== 2) return false;
 
@@ -163,6 +176,7 @@ function isValidCliOption(option){
     if(value.length < 1) return false;
 
     return key.startsWith('-');
+
 }
 
 
