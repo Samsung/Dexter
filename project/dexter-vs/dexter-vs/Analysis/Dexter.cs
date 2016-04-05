@@ -16,6 +16,17 @@ namespace dexter_vs.Analysis
 
         private List<Defect> defects = new List<Defect>();
 
+        /// <summary>
+        /// Occurs when dexter process writes to its standard output stream
+        /// </summary>
+        public event DataReceivedEventHandler OutputDataReceived;
+
+        /// <summary>
+        /// Occurs when dexter process writes to its standard error stream
+        /// </summary>   
+        public event DataReceivedEventHandler ErrorDataReceived;
+
+
         public Dexter(string dexterPath)
         {
             this.dexterPath = dexterPath;
@@ -33,18 +44,23 @@ namespace dexter_vs.Analysis
             Process javaProcess = new Process();
 
             javaProcess.StartInfo.FileName = "java.exe";
-            javaProcess.StartInfo.Arguments = "-jar " + dexterPath + "-s";
+            javaProcess.StartInfo.Arguments = "-jar " + dexterPath + " -s";
             javaProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(dexterPath);
             javaProcess.StartInfo.CreateNoWindow = true;
             javaProcess.StartInfo.UseShellExecute = false;
             javaProcess.StartInfo.RedirectStandardOutput = true;
             javaProcess.StartInfo.RedirectStandardError = true;
+
+            javaProcess.OutputDataReceived += OutputDataReceived;
+            javaProcess.ErrorDataReceived += ErrorDataReceived;
+
             javaProcess.Start();
 
-            
-            Console.WriteLine(javaProcess.StartInfo.Arguments);
-            Console.WriteLine(javaProcess.StandardOutput.ReadToEnd());
-            Console.WriteLine(javaProcess.StandardError.ReadToEnd());
+            javaProcess.BeginErrorReadLine();
+            javaProcess.BeginOutputReadLine();
+
+            javaProcess.WaitForExit();
+
             return defects;
         }
 

@@ -13,6 +13,7 @@ using dexter_vs.Analysis;
 using System.Collections.Generic;
 using EnvDTE80;
 using EnvDTE;
+using System.Diagnostics;
 
 namespace dexter_vs.UI
 {
@@ -101,13 +102,16 @@ namespace dexter_vs.UI
             Dexter dexter = new Dexter("D:/Applications/dexter/0.9.2/dexter-cli_0.9.2_32/bin/dexter-executor.jar");
 
             OutputWindowPane outputPane = CreatePane("Dexter");
+
             outputPane.Activate();
 
-            outputPane.OutputString("Analysis started!");
-            List<Defect> defects = dexter.Analyse();
-            outputPane.OutputString("Analysis finished!");
-        }
+            DataReceivedEventHandler writeToOutputPane = (s, e1) => outputPane.OutputString(e1.Data + Environment.NewLine);  
+            dexter.OutputDataReceived += writeToOutputPane;
+            dexter.ErrorDataReceived += writeToOutputPane;
 
+            List<Defect> defects = dexter.Analyse();
+        }
+               
         /// <summary>
         /// Creates (or returns, if exists) Output Pane
         /// </summary>
