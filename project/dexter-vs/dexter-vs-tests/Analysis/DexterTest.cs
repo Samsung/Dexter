@@ -8,13 +8,11 @@ namespace dexter_vs.Analysis
     public class DexterTest
     {
         private Dexter dexter;
-        private Dexter invalidDexter; 
 
         [SetUp]
         public void Init()
         {
             dexter = new Dexter("D:/Applications/dexter/0.9.2/dexter-cli_0.9.2_32/bin/dexter-executor.jar");
-            invalidDexter = new Dexter("D:/");
         }
 
         /// <summary>
@@ -24,7 +22,6 @@ namespace dexter_vs.Analysis
         public void TestDexterFound()
         {
             Assert.IsTrue(dexter.IsDexterFound);
-            Assert.IsFalse(invalidDexter.IsDexterFound);
         }
 
         /// <summary>
@@ -45,7 +42,7 @@ namespace dexter_vs.Analysis
         public void TestStandardOuputput()
         {
             var dataReceived = false;
-            dexter.OutputDataReceived += (s, e) => dataReceived = true;
+            dexter.OutputDataReceived += (s, e) => { Console.WriteLine(e.Data); dataReceived = true; };
             dexter.Analyse();
             Assert.IsTrue(dataReceived);
         }
@@ -57,8 +54,8 @@ namespace dexter_vs.Analysis
         public void TestErrorOuputput()
         {
             var dataReceived = false;
-            invalidDexter.ErrorDataReceived += (s, e) => dataReceived = true;
-            invalidDexter.Analyse();
+            dexter.ErrorDataReceived += (s, e) => { Console.WriteLine(e.Data); dataReceived = true; };
+            dexter.Analyse("");
             Assert.IsTrue(dataReceived);
         }
 

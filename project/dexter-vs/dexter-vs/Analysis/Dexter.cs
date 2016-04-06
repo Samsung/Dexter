@@ -8,12 +8,9 @@ namespace dexter_vs.Analysis
 {
     /// <summary>
     /// Adapter for Dexter application
-    /// <param name="dexterPath">path to a dexter-executor.jar</param>
     /// </summary>
     public class Dexter
     {
-        private string dexterPath;
-
         private List<Defect> defects = new List<Defect>();
 
         /// <summary>
@@ -26,12 +23,35 @@ namespace dexter_vs.Analysis
         /// </summary>   
         public event DataReceivedEventHandler ErrorDataReceived;
 
-
+        /// <summary>
+        /// Creates new Dexter instance
+        /// </summary>   
+        /// <param name="dexterPath">path to a dexter-executor.jar</param>
         public Dexter(string dexterPath)
         {
-            this.dexterPath = dexterPath;
+            DexterPath = dexterPath;
         }
-        
+
+        /// <summary>
+        /// Path to dexter
+        /// </summary>
+        public string DexterPath
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Checks if dexter-executor.jar is found under DexerPath
+        /// </summary>
+        public bool IsDexterFound
+        {
+            get
+            {
+                return File.Exists(DexterPath) && Path.GetExtension(DexterPath).Equals(".jar");
+            }
+        }
+
         /// <summary>
         /// Performs analysis of files in given path
         /// </summary>
@@ -39,42 +59,40 @@ namespace dexter_vs.Analysis
         /// <returns>List of found defects</returns>
         public List<Defect> Analyse(string path = "/")
         {
-            string fullPath = Path.GetFullPath(path);
-       
-            Process javaProcess = new Process();
+            Process dexterProcess = CreateDexterProcess();
 
-            javaProcess.StartInfo.FileName = "java.exe";
-            javaProcess.StartInfo.Arguments = "-jar " + dexterPath + " -s";
-            javaProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(dexterPath);
-            javaProcess.StartInfo.CreateNoWindow = true;
-            javaProcess.StartInfo.UseShellExecute = false;
-            javaProcess.StartInfo.RedirectStandardOutput = true;
-            javaProcess.StartInfo.RedirectStandardError = true;
-
-            javaProcess.OutputDataReceived += OutputDataReceived;
-            javaProcess.ErrorDataReceived += ErrorDataReceived;
-
-            javaProcess.Start();
-
-            javaProcess.BeginErrorReadLine();
-            javaProcess.BeginOutputReadLine();
-
-            javaProcess.WaitForExit();
+            dexterProcess.Start();
+            dexterProcess.BeginErrorReadLine();
+            dexterProcess.BeginOutputReadLine();
+            dexterProcess.WaitForExit();
 
             return defects;
         }
 
         /// <summary>
-        /// Checks if dexter-executor.jar was found in path
+        /// Creates (but doesn't start) new Dexter process
         /// </summary>
-        /// <returns></returns>
-        public bool IsDexterFound
+        /// <returns>new dexter process</returns>
+        private Process CreateDexterProcess()
         {
-            get
+            if (!IsDexterFound) throw new FileNotFoundException("Cannot find dexter in specified path", DexterPath);
+                   
+            Process dexterProcess = new Process();
+            dexterProcess.StartInfo = new ProcessStartInfo()
             {
-                return File.Exists(dexterPath) && Path.GetExtension(dexterPath).Equals(".jar");
-            }
+                FileName = "java.exe",
+                Arguments = "-jar " + DexterPath + " -s",
+                WorkingDirectory = Path.GetDirectoryName(DexterPath),
+                CreateNoWindow = true,
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true
+            };
+            
+            dexterProcess.OutputDataReceived += OutputDataReceived;
+            dexterProcess.ErrorDataReceived += ErrorDataReceived;
+            return dexterProcess;
         }
-
+        
     }
 }
