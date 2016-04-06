@@ -15,10 +15,28 @@ import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 import com.samsung.sec.dexter.eclipse.ui.view.PlatzView;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 public class OpenPlatzViewHandler extends AbstractHandler implements IHandler {
+	private final static int SERVER_TIMEOUT = 500;
 	private IWorkbenchPart part;
-	private boolean isPlatzAlive;
+	private static boolean isPlatzAlive =false;
 	
+	public OpenPlatzViewHandler() {
+		try {
+			if (!InetAddress.getByName(DexterConfig.PLATZ_DOMAIN).isReachable(SERVER_TIMEOUT)) {
+				isPlatzAlive = true;
+			}
+		} catch (UnknownHostException e) {
+			isPlatzAlive = false;
+			e.printStackTrace();
+		} catch (IOException e) {
+			isPlatzAlive = false;
+			e.printStackTrace();
+		}
+	}	
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		try {
@@ -34,7 +52,6 @@ public class OpenPlatzViewHandler extends AbstractHandler implements IHandler {
 
 		return null;
 	}
-
 	
 	
 
