@@ -6,6 +6,7 @@
 
 using System;
 using System.ComponentModel.Design;
+
 using System.Globalization;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -14,6 +15,7 @@ using System.Collections.Generic;
 using EnvDTE80;
 using EnvDTE;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace dexter_vs.UI
 {
@@ -105,11 +107,11 @@ namespace dexter_vs.UI
 
             outputPane.Activate();
 
-            DataReceivedEventHandler writeToOutputPane = (s, e1) => outputPane.OutputString(e1.Data + Environment.NewLine);  
+            DataReceivedEventHandler writeToOutputPane = (s, e1) => outputPane.OutputString(e1.Data + Environment.NewLine);
             dexter.OutputDataReceived += writeToOutputPane;
             dexter.ErrorDataReceived += writeToOutputPane;
 
-            List<Defect> defects = dexter.Analyse();
+            System.Threading.Tasks.Task.Run(() => { dexter.Analyse();  });
         }
                
         /// <summary>
