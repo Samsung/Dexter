@@ -17,6 +17,8 @@ import com.samsung.sec.dexter.eclipse.ui.view.PlatzView;
 
 public class OpenPlatzViewHandler extends AbstractHandler implements IHandler {
 	private IWorkbenchPart part;
+	private boolean isPlatzAlive;
+	
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 		try {

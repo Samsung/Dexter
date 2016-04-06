@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
+	<section name="ProductExportWizard">
+		<item value="false" key="exportSource"/>
+		<item value="true" key="syncProduct"/>
+		<item value="/dexter-daemon/dexter-daemon.product" key="productConfig1"/>
+		<item value="Generate source bundles" key="exportSourceFormat"/>
+		<item value="true" key="p2metadata"/>
+		<item value="true" key="exportDirectory"/>
+		<item value="/dexter-daemon/dexter-daemon.product" key="productConfig0"/>
+		<item value="C:\Users\User\Documents\Dexter\PlatzMini\test32" key="destination0"/>
+		<item value="true" key="allowBinaryCycles"/>
+		<item value="eclipse" key="productRoot"/>
+	</section>
 	<section name="quick_assist_proposal_size">
 	</section>
 	<section name="PDEFormActionManager">

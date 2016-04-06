@@ -2,6 +2,9 @@ package com.samsung.sec.dexter.daemon.job;
 
 
 import java.io.File;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -21,12 +24,21 @@ import org.eclipse.ui.progress.UIJob;
 public class MonitorForPlatzKeywordFile extends Job implements IDexterHomeListener{
 	public static long LAST_CONF_CHANAGED_TIME = -1;
 	private final static int MONITOR_DELAY = 500;
+	private final static int SERVER_TIMEOUT = 500;
 	private File keywordFile;
 	
 	public MonitorForPlatzKeywordFile(){
 		super("Monitoring target keyword in sourceinsight");
-		initPlatzKeywordFile();
-		DexterConfig.getInstance().addDexterHomeListener(this);
+		try {
+			if (!InetAddress.getByName(DexterConfig.PLATZ_DOMAIN).isReachable(SERVER_TIMEOUT)) {
+				initPlatzKeywordFile();
+				DexterConfig.getInstance().addDexterHomeListener(this);
+			}
+		} catch (UnknownHostException e) {
+			DexterDaemonActivator.LOG.info(e.getMessage());
+		} catch (IOException e) {
+			DexterDaemonActivator.LOG.error(e.getMessage(),e);
+		}
 	}
 	
 	private void initPlatzKeywordFile(){

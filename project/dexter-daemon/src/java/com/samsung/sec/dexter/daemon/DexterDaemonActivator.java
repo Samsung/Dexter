@@ -25,15 +25,16 @@
 */
 package com.samsung.sec.dexter.daemon;
 
+import java.io.IOException;
 import java.io.InputStream;
-
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-
 import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.IDexterHomeListener;
@@ -44,9 +45,8 @@ import com.samsung.sec.dexter.core.util.IDexterClient;
 import com.samsung.sec.dexter.core.util.IDexterLoginInfoListener;
 import com.samsung.sec.dexter.core.util.PersistenceProperty;
 import com.samsung.sec.dexter.daemon.job.MonitorForDexterConfigFile;
-import com.samsung.sec.dexter.eclipse.ui.util.EclipseLog;
 import com.samsung.sec.dexter.daemon.job.MonitorForPlatzKeywordFile;
-
+import com.samsung.sec.dexter.eclipse.ui.util.EclipseLog;
 /**
  * The activator class controls the plug-in life cycle
  */
@@ -56,7 +56,7 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
 	public static final String PLUGIN_ID = "dexter-daemon"; //$NON-NLS-1$
 	public static final String APP_NAME = "Dexter Daemon";
 	public final static EclipseLog LOG = new EclipseLog(PLUGIN_ID);
-
+	public static final int SERVER_TIMEOUT = 500;
 	private static final String SOURCE_INSIGHT_EXE_KEY = "sourceInsightExe";
 	private String sourceInsiteExe;
 
@@ -117,7 +117,15 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
 		setWindowTitleWithLoginInformation();
 		initializeSourceInsightEnvironment();
 		startMonitorForDexterConfigFile();
-		startMonitorForPlatzKeywordFile();
+		try {
+			if (!InetAddress.getByName(DexterConfig.PLATZ_DOMAIN).isReachable(SERVER_TIMEOUT)) {
+				startMonitorForPlatzKeywordFile();
+			}
+		} catch (UnknownHostException e) {
+			LOG.info(e.getMessage());
+		} catch (IOException e) {
+			LOG.error(e.getMessage());
+		}
 		setSourceInsightStatusRegistryAsRunning();
 	}
 

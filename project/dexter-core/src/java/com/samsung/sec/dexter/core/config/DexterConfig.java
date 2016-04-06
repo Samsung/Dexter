@@ -172,7 +172,7 @@ public class DexterConfig {
 	public static final String PLATZ_KEYWORD_FILENAME = "platz_keyword.json";
 	public static final String PLATZ_API_URL = "http://platz.sec.samsung.net/tapi/#/";
 	public static final String PLATZ_SEARCH_API_URL = "http://platz.sec.samsung.net/tapi/#/search/";
-	
+	public static final String PLATZ_DOMAIN = "platz.sec.samsung.net";
 	private boolean isReviewMode = false;
 	
 	//private ScheduledFuture<?> sendResultFuture = null;
