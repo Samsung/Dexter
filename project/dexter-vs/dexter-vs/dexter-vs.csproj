@@ -51,8 +51,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Analysis\Defect.cs" />
+    <Compile Include="Defect\Defect.cs" />
+    <Compile Include="Defect\Result.cs" />
     <Compile Include="Analysis\Dexter.cs" />
+    <Compile Include="Defect\FileDefects.cs" />
+    <Compile Include="Defect\Occurence.cs" />
     <Compile Include="UI\DexterCommand.cs" />
     <Compile Include="UI\DexterCommandPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

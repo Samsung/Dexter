@@ -1,6 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using System.Collections.Generic;
+using dexter_vs.Defect;
 
 namespace dexter_vs.Analysis
 {
@@ -30,9 +31,9 @@ namespace dexter_vs.Analysis
         [Test]
         public void TestAnalysis()
         {
-            List<Defect> defects = dexter.Analyse();
-            Assert.IsNotNull(defects);
-            Assert.IsNotEmpty(defects);
+            Result result = dexter.Analyse();
+            Assert.IsNotNull(result);
+            Assert.IsNotEmpty(result.FileDefects);
         }
 
         /// <summary>

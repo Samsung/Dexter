@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using dexter_vs.Defect;
 using System.Diagnostics;
 
 using System.IO;
@@ -11,8 +10,6 @@ namespace dexter_vs.Analysis
     /// </summary>
     public class Dexter
     {
-        private List<Defect> defects = new List<Defect>();
-
         /// <summary>
         /// Occurs when dexter process writes to its standard output stream
         /// </summary>
@@ -57,7 +54,7 @@ namespace dexter_vs.Analysis
         /// </summary>
         /// <param name="path">path to analysed directory</param>
         /// <returns>List of found defects</returns>
-        public List<Defect> Analyse(string path = "/")
+        public Result Analyse(string path = "/")
         {
             Process dexterProcess = CreateDexterProcess();
 
@@ -66,7 +63,7 @@ namespace dexter_vs.Analysis
             dexterProcess.BeginOutputReadLine();
             dexterProcess.WaitForExit();
 
-            return defects;
+            return null;
         }
 
         /// <summary>
