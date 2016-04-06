@@ -10126,3 +10126,12 @@ java.lang.Exception: Stack Trace
 
 !ENTRY dexter-eclipse 1 0 2016-04-06 11:31:55.852
 !MESSAGE Analysis Elapsed : 1175 ms >> \dexter-core\src\java\com\samsung\sec\dexter\core\config\DexterConfig.java
+
+!ENTRY dexter-eclipse 1 0 2016-04-06 12:36:23.479
+!MESSAGE Analysis Elapsed : 464 ms >> \dexter-eclipse-ui\src\java\com\samsung\sec\dexter\eclipse\ui\OpenPlatzViewHandler.java
+
+!ENTRY dexter-eclipse 1 0 2016-04-06 12:36:26.263
+!MESSAGE Analysis Elapsed : 199 ms >> \dexter-eclipse-ui\src\java\com\samsung\sec\dexter\eclipse\ui\OpenPlatzViewHandler.java
+
+!ENTRY dexter-eclipse 1 0 2016-04-06 12:36:51.767
+!MESSAGE Analysis Elapsed : 207 ms >> \dexter-eclipse-ui\src\java\com\samsung\sec\dexter\eclipse\ui\OpenPlatzViewHandler.java

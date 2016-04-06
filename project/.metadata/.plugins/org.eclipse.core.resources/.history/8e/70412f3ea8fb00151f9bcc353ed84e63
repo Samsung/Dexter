@@ -139,6 +139,7 @@
                   			</equals>
                   	</with>
                   </visibleWhen>
+                  
             </command>
          </menu>
       </menuContribution>
@@ -190,13 +191,6 @@
                   id="dexter-eclipse-ui.commands.OpenPlatzView"
                   mnemonic="H"
                   style="push">
-                  <visibleWhen>
-                  	<with 
-                  		variable="isPlatzAlive">                  	
-                  			<equals value="true">
-                  			</equals>
-                  	</with>
-                  </visibleWhen>
             </command>
          </toolbar>
       </menuContribution>

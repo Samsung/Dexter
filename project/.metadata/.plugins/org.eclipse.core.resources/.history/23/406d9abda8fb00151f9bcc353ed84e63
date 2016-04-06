@@ -31,8 +31,10 @@ public class OpenPlatzViewHandler extends AbstractHandler implements IHandler {
 			}
 		} catch (UnknownHostException e) {
 			isPlatzAlive = false;
+			DexterDaemonActivator.LOG.error(e.getMessage(),e);
 		} catch (IOException e) {
 			isPlatzAlive = false;
+			e.printStackTrace();
 		}
 	}	
 	@Override
