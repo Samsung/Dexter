@@ -44,11 +44,7 @@ public class PlatzKeywordFile {
 	
 	
 	public void setFields(final Map<String,Object> params){
-		try{
-			setKeyword((String)params.get("keyword"));
-		}catch(NullPointerException e){
-			throw new DexterRuntimeException(e.getMessage(), e);
-		}
+		setKeyword((String)params.get("keyword"));
 	}
 	
 	public String getKeyword() {

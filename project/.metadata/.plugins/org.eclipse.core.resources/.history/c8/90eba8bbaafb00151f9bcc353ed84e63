@@ -30,11 +30,12 @@ public class PlatzKeywordFile {
 					break;
 				}
 			}
-				final Gson gson = new Gson();
-	            @SuppressWarnings("unchecked")
-				Map<String, Object> keywordMap = gson.fromJson(keywordJson.toString(), Map.class);
-	            return keywordMap;  
+			final Gson gson = new Gson();
+            @SuppressWarnings("unchecked")
+            Map<String, Object> keywordMap = gson.fromJson(keywordJson.toString(), Map.class);
             
+            
+            return keywordMap;
 		} catch(IOException e){
 			throw new DexterRuntimeException(e.getMessage(), e);
 		}catch (com.google.gson.JsonSyntaxException e) {
@@ -44,11 +45,7 @@ public class PlatzKeywordFile {
 	
 	
 	public void setFields(final Map<String,Object> params){
-		try{
-			setKeyword((String)params.get("keyword"));
-		}catch(NullPointerException e){
-			throw new DexterRuntimeException(e.getMessage(), e);
-		}
+		setKeyword((String)params.get("keyword"));
 	}
 	
 	public String getKeyword() {
