@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace dexter_vs.Defect
+namespace dexter_vs.Defects
 {
 
     /// <summary>

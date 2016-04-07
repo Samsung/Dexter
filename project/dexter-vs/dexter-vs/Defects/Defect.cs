@@ -1,7 +1,7 @@
 ﻿using System.Xml.Schema;
 using System.Xml.Serialization;
 
-namespace dexter_vs.Defect
+namespace dexter_vs.Defects
 {
     /// <summary>
     /// Code defect found by Dexter
@@ -14,7 +14,7 @@ namespace dexter_vs.Defect
         /// List of all occurences of defect
         /// </summary>
         [XmlElement("occurence", Form = XmlSchemaForm.Unqualified)]
-        public Occurence[] occurence
+        public Occurence[] Occurences
         {
             get;
             set;

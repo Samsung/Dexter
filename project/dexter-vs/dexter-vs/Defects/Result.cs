@@ -1,7 +1,7 @@
 ﻿using System.Xml.Schema;
 using System.Xml.Serialization;
 
-namespace dexter_vs.Defect
+namespace dexter_vs.Defects
 {
     /// <summary>
     /// Result of dexter analysis

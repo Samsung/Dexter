@@ -1,7 +1,9 @@
-﻿using dexter_vs.Defect;
+﻿using dexter_vs.Defects;
 using System.Diagnostics;
 
 using System.IO;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace dexter_vs.Analysis
 {
@@ -63,7 +65,9 @@ namespace dexter_vs.Analysis
             dexterProcess.BeginOutputReadLine();
             dexterProcess.WaitForExit();
 
-            return null;
+            Result result = GetAnalysisResult();
+
+            return result;
         }
 
         /// <summary>
@@ -78,7 +82,7 @@ namespace dexter_vs.Analysis
             dexterProcess.StartInfo = new ProcessStartInfo()
             {
                 FileName = "java.exe",
-                Arguments = "-jar " + DexterPath + " -s",
+                Arguments = "-jar " + DexterPath + " -s -x",
                 WorkingDirectory = Path.GetDirectoryName(DexterPath),
                 CreateNoWindow = true,
                 UseShellExecute = false,
@@ -91,5 +95,25 @@ namespace dexter_vs.Analysis
             return dexterProcess;
         }
         
+        /// <summary>
+        /// Loads analysis result from generated file
+        /// </summary>
+        /// <returns></returns>
+        private Result GetAnalysisResult()
+        {
+       
+            string resultFile = Path.GetDirectoryName(DexterPath) + "\\dexter-result.xml";
+
+            if (!File.Exists(resultFile)) throw new FileNotFoundException("Cannot find result file: " + resultFile, resultFile);
+
+            Result result;
+            using (XmlReader reader = XmlReader.Create(resultFile))
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(Result));
+                result = (Result)serializer.Deserialize(reader);
+            }
+
+            return result;
+        }
     }
 }

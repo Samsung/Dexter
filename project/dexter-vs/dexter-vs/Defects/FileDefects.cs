@@ -2,7 +2,7 @@
 using System.Xml.Schema;
 using System.Xml.Serialization;
 
-namespace dexter_vs.Defect
+namespace dexter_vs.Defects
 {
     /// <summary>
     /// A list of defects in a single file

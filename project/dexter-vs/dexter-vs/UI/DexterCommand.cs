@@ -6,16 +6,12 @@
 
 using System;
 using System.ComponentModel.Design;
-
-using System.Globalization;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using dexter_vs.Analysis;
-using System.Collections.Generic;
 using EnvDTE80;
 using EnvDTE;
 using System.Diagnostics;
-using System.Threading.Tasks;
+using dexter_vs.Defects;
 
 namespace dexter_vs.UI
 {
@@ -38,6 +34,11 @@ namespace dexter_vs.UI
         /// VS Package that provides this command, not null.
         /// </summary>
         private readonly Package package;
+
+        /// <summary>
+        /// Dexter task provider
+        /// </summary>
+        private DexterTaskProvider taskProvider;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DexterCommand"/> class.
@@ -104,16 +105,41 @@ namespace dexter_vs.UI
             Dexter dexter = new Dexter("D:/Applications/dexter/0.9.2/dexter-cli_0.9.2_32/bin/dexter-executor.jar");
 
             OutputWindowPane outputPane = CreatePane("Dexter");
-
             outputPane.Activate();
 
             DataReceivedEventHandler writeToOutputPane = (s, e1) => outputPane.OutputString(e1.Data + Environment.NewLine);
             dexter.OutputDataReceived += writeToOutputPane;
             dexter.ErrorDataReceived += writeToOutputPane;
 
-            System.Threading.Tasks.Task.Run(() => { dexter.Analyse();  });
+            System.Threading.Tasks.Task.Run(() => 
+            {
+                Result result = dexter.Analyse();
+                ReportResult(result);
+            });
         }
-               
+        
+        /// <summary>
+        /// Clears task provider
+        /// </summary>
+        private void ClearTaskProvider()
+        {
+            taskProvider = taskProvider ?? new DexterTaskProvider(ServiceProvider);
+            taskProvider.Tasks.Clear();
+        }
+                
+        /// <summary>
+        /// Reports defects from analysis result
+        /// </summary>
+        /// <param name="result">analysis result</param>
+        private void ReportResult(Result result)
+        {
+            ClearTaskProvider();
+
+            taskProvider.ReportResult(result);
+            taskProvider.Show();
+            taskProvider.BringToFront();
+        }
+                       
         /// <summary>
         /// Creates (or returns, if exists) Output Pane
         /// </summary>
@@ -122,7 +148,7 @@ namespace dexter_vs.UI
         {
             DTE2 dte = (DTE2)ServiceProvider.GetService(typeof(DTE));
             OutputWindowPanes panes = dte.ToolWindows.OutputWindow.OutputWindowPanes;
-       
+            
             try
             {
                 // If the pane exists already, write to it.

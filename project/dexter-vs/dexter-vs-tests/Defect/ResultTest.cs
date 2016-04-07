@@ -3,13 +3,13 @@ using System;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace dexter_vs.Defect
+namespace dexter_vs.Defects
 {
     [TestFixture]
     public class ResultTest
     {
         /// <summary>
-        /// Tests deserialization of Result class into XML
+        /// Tests deserialization of Result class from XML
         /// </summary>
         [Test]
         public void TestResultDeserialization()
