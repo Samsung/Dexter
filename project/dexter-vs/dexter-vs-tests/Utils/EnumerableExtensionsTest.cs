@@ -14,10 +14,8 @@ namespace dexter_vs.Utils
         {
             object[] array = null;
 
-            foreach (var element in array.OrEmptyIfNull())
-            {
-                Assert.IsNotNull(array);
-            }
+            Assert.IsNull(array);
+            Assert.IsNotNull(array.OrEmptyIfNull());  
         }
     }
 }
