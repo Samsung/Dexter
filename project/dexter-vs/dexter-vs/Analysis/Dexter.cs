@@ -1,4 +1,5 @@
 ﻿using dexter_vs.Defects;
+using System;
 using System.Diagnostics;
 
 using System.IO;
@@ -23,21 +24,23 @@ namespace dexter_vs.Analysis
         public event DataReceivedEventHandler ErrorDataReceived;
 
         /// <summary>
+        /// Path to configuration file
+        /// </summary>
+        private string configPath;
+
+        private Configuration configuration;
+
+        /// <summary>
         /// Creates new Dexter instance
         /// </summary>   
         /// <param name="dexterPath">path to a dexter-executor.jar</param>
-        public Dexter(string dexterPath)
+        /// <param name="configuration">Configuration</param>
+        public Dexter(Configuration configuration) 
         {
-            DexterPath = dexterPath;
-        }
-
-        /// <summary>
-        /// Path to dexter
-        /// </summary>
-        public string DexterPath
-        {
-            get;
-            set;
+            this.configuration = configuration;
+            if (!IsDexterFound) throw new FileNotFoundException("Cannot find dexter in specified path", configuration.dexterExecutorPath);
+            configPath = configuration.dexterHome + "\\bin\\dexter-config-vsplugin.json";
+            configuration.Save(configPath);
         }
 
         /// <summary>
@@ -47,7 +50,7 @@ namespace dexter_vs.Analysis
         {
             get
             {
-                return File.Exists(DexterPath) && Path.GetExtension(DexterPath).Equals(".jar");
+                return File.Exists(configuration.dexterExecutorPath);
             }
         }
 
@@ -56,7 +59,7 @@ namespace dexter_vs.Analysis
         /// </summary>
         /// <param name="path">path to analysed directory</param>
         /// <returns>List of found defects</returns>
-        public Result Analyse(string path = "/")
+        public Result Analyse()
         {
             Process dexterProcess = CreateDexterProcess();
 
@@ -76,14 +79,14 @@ namespace dexter_vs.Analysis
         /// <returns>new dexter process</returns>
         private Process CreateDexterProcess()
         {
-            if (!IsDexterFound) throw new FileNotFoundException("Cannot find dexter in specified path", DexterPath);
-                   
+            string configFlag = File.Exists(configPath) ? "-f" + configPath : "";
+
             Process dexterProcess = new Process();
             dexterProcess.StartInfo = new ProcessStartInfo()
             {
                 FileName = "java.exe",
-                Arguments = "-jar " + DexterPath + " -s -x",
-                WorkingDirectory = Path.GetDirectoryName(DexterPath),
+                Arguments = "-jar " + configuration.dexterExecutorPath + " -s -x " + configFlag,
+                WorkingDirectory = Path.GetDirectoryName(configuration.dexterExecutorPath),
                 CreateNoWindow = true,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
@@ -101,8 +104,7 @@ namespace dexter_vs.Analysis
         /// <returns></returns>
         private Result GetAnalysisResult()
         {
-       
-            string resultFile = Path.GetDirectoryName(DexterPath) + "\\dexter-result.xml";
+            string resultFile = Path.GetDirectoryName(configuration.dexterExecutorPath) + "\\dexter-result.xml";
 
             if (!File.Exists(resultFile)) throw new FileNotFoundException("Cannot find result file: " + resultFile, resultFile);
 

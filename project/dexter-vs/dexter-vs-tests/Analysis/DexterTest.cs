@@ -13,7 +13,19 @@ namespace dexter_vs.Analysis
         [SetUp]
         public void Init()
         {
-            dexter = new Dexter("D:/Applications/dexter/0.9.2/dexter-cli_0.9.2_32/bin/dexter-executor.jar");
+            var config = new Configuration()
+            {
+                dexterHome = "D:/Applications/dexter/0.9.2/dexter-cli_0.9.2_32/",
+                projectName = "TestData",
+                type = "PROJECT",
+                sourceDir = { AppDomain.CurrentDomain.BaseDirectory + "../../TestData/SampleCppProject/SampleCppProject" },
+                headerDir = { AppDomain.CurrentDomain.BaseDirectory + "../../TestData/SampleCppProject/SampleCppProject" },
+                projectFullPath = AppDomain.CurrentDomain.BaseDirectory + "../../TestData/",
+                dexterServerPort = "0000", 
+                dexterServerIp = "dexter-server"
+            };
+
+            dexter = new Dexter(config);
         }
 
         /// <summary>
@@ -33,6 +45,7 @@ namespace dexter_vs.Analysis
         {
             Result result = dexter.Analyse();
             Assert.IsNotNull(result);
+            Assert.IsNotNull(result.FileDefects);
             Assert.IsNotEmpty(result.FileDefects);
         }
 
@@ -56,7 +69,7 @@ namespace dexter_vs.Analysis
         {
             var dataReceived = false;
             dexter.ErrorDataReceived += (s, e) => { Console.WriteLine(e.Data); dataReceived = true; };
-            dexter.Analyse("");
+            dexter.Analyse();
             Assert.IsTrue(dataReceived);
         }
 

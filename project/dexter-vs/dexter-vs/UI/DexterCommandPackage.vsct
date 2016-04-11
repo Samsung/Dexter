@@ -78,6 +78,7 @@
       <Button guid="guidDexterCommandPackageCmdSet" id="DexterSolutionAnalysisCommand" priority="0x0100" type="Button">
         <Parent guid="guidDexterCommandPackageCmdSet" id="DexterAnalysisSubMenuGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>On Solution</ButtonText>
         </Strings>
@@ -86,6 +87,7 @@
       <Button guid="guidDexterCommandPackageCmdSet" id="DexterProjectAnalysisCommand" priority="0x0000" type="Button">
         <Parent guid="guidDexterCommandPackageCmdSet" id="DexterAnalysisSubMenuGroup" />
         <Icon guid="guidImages" id="bmpPic2" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <CommandName>On project</CommandName>
           <ButtonText>On project</ButtonText>

@@ -1,0 +1,14 @@
+{
+  "dexterHome": "TestPath",
+  "dexterServerIp": "",
+  "dexterServerPort": "0",
+  "projectName": "",
+  "projectFullPath": "",
+  "sourceDir": [],
+  "headerDir": [],
+  "binDir": "",
+  "libDir": [],
+  "sourceEncoding": "UTF-8",
+  "type": "PROJECT",
+  "dexterExecutorPath": "TestPath\\bin\\dexter-executor.jar"
+}

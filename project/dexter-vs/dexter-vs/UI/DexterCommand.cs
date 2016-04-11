@@ -12,13 +12,15 @@ using EnvDTE80;
 using EnvDTE;
 using System.Diagnostics;
 using dexter_vs.Defects;
+using Microsoft.VisualStudio.Shell.Interop;
+using System.Windows.Forms;
 
 namespace dexter_vs.UI
 {
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class DexterCommand
+    internal sealed class DexterCommand: VsSolutionEvents
     {
         /// <summary>
         /// Command ID.
@@ -34,6 +36,16 @@ namespace dexter_vs.UI
         /// VS Package that provides this command, not null.
         /// </summary>
         private readonly Package package;
+
+        /// <summary>
+        /// Menu item associated with this command
+        /// </summary>
+        private MenuCommand menuItem;
+        
+        /// <summary>
+        /// List of opened projects
+        /// </summary>
+        private Projects projects;
 
         /// <summary>
         /// Dexter task provider
@@ -54,14 +66,21 @@ namespace dexter_vs.UI
 
             this.package = package;
 
+            DTE dte = (DTE)this.ServiceProvider.GetService(typeof(DTE));
+            projects = dte.Solution.Projects;
+
             OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService != null)
             {
                 var menuCommandID = new CommandID(CommandSet, CommandId);
-                var menuItem = new MenuCommand(this.MenuItemCallback, menuCommandID);
+                menuItem = new MenuCommand(this.MenuItemCallback, menuCommandID);
+                menuItem.Enabled = projects.Count > 0;
                 commandService.AddCommand(menuItem);
             }
 
+            IVsSolution solution = ServiceProvider.GetService(typeof(SVsSolution)) as IVsSolution;
+            uint cookie = 0;
+            solution.AdviseSolutionEvents(this, out cookie);
         }
 
         /// <summary>
@@ -102,7 +121,11 @@ namespace dexter_vs.UI
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            Dexter dexter = new Dexter("D:/Applications/dexter/0.9.2/dexter-cli_0.9.2_32/bin/dexter-executor.jar");
+            Analysis.Configuration config = new Analysis.Configuration()
+            {
+                dexterHome = "D:/Applications/dexter/0.9.2/dexter-cli_0.9.2_32/"
+            };
+            Dexter dexter = new Dexter(config);
 
             OutputWindowPane outputPane = CreatePane("Dexter");
             outputPane.Activate();
@@ -160,5 +183,18 @@ namespace dexter_vs.UI
                 return panes.Add(title);
             }
         }
+
+        public override int OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded)
+        {
+            menuItem.Enabled = true;
+            return base.OnAfterOpenProject(pHierarchy, fAdded);
+        }
+
+        public override int OnBeforeCloseProject(IVsHierarchy pHierarchy, int fRemoved)
+        {
+            menuItem.Enabled = false;
+            return base.OnBeforeCloseProject(pHierarchy, fRemoved);
+        }
+
     }
 }
