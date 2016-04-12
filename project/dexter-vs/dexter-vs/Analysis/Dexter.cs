@@ -105,8 +105,14 @@ namespace dexter_vs.Analysis
         private Result GetAnalysisResult()
         {
             string resultFile = Path.GetDirectoryName(configuration.dexterExecutorPath) + "\\dexter-result.xml";
+            var resultFileInfo = new FileInfo(resultFile);
 
-            if (!File.Exists(resultFile)) throw new FileNotFoundException("Cannot find result file: " + resultFile, resultFile);
+            if (!resultFileInfo.Exists) throw new FileNotFoundException("Cannot find result file: " + resultFile, resultFile);
+
+            if (resultFileInfo.Length == 0)
+            {
+                return new Result();
+            }
 
             Result result;
             using (XmlReader reader = XmlReader.Create(resultFile))

@@ -73,7 +73,7 @@ namespace dexter_vs.UI
         /// </summary>
         protected override void Initialize()
         {
-            DexterCommand.Initialize(this);
+            DexterCommand analysisCommand = new DexterCommand(this, 0x0100, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
             base.Initialize();
         }
 

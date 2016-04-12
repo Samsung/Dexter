@@ -57,6 +57,8 @@
     <Compile Include="Analysis\Dexter.cs" />
     <Compile Include="Defects\FileDefects.cs" />
     <Compile Include="Defects\Occurence.cs" />
+    <Compile Include="UI\Config\ConfigurationProvider.cs" />
+    <Compile Include="UI\Config\IConfigurationProvider.cs" />
     <Compile Include="UI\DexterCommand.cs" />
     <Compile Include="UI\DexterCommandPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
