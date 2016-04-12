@@ -26,9 +26,12 @@
 package com.samsung.sec.dexter.eclipse;
 
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
@@ -37,7 +40,10 @@ import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.exception.DexterException;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.plugin.DexterPluginManager;
+import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.core.util.DexterUtil;
+import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 import com.samsung.sec.dexter.executor.DexterAnalyzer;
 
 public class EclipseAnalysis {
@@ -65,6 +71,45 @@ public class EclipseAnalysis {
 			DexterEclipseActivator.LOG.error(e.getMessage(), e);
 		}
 		
+	}
+	
+	public static void analysis(final IResource resource) {
+		// can analyze without login because there can be network problem.
+		if (DexterPluginManager.getInstance().getPluginList().size() < 1) {
+			return;
+		}
+		
+		final Stopwatch s = Stopwatch.createStarted();
+		
+		final IFile file = (IFile) resource;
+		try {
+			EclipseAnalysis.analysis(file, -1, -1);
+			DexterEclipseActivator.LOG.info("Analysis Elapsed : " + s.elapsed(TimeUnit.MILLISECONDS) + " ms >> "
+					+ file.getFullPath().toOSString());
+		} catch (DexterException e) {
+			DexterEclipseActivator.LOG.error("Analysis Failed: " + file.getFullPath().toOSString() + " : " + e.getMessage(), e);
+		}
+	}
+	
+	public static void deleteDefect(final IResource resource){
+		if (DexterPluginManager.getInstance().getPluginList().size() < 1) 
+			return;
+		
+		if (DexterClient.getInstance().isServerAlive() == false)
+			return;
+
+		final IFile file = (IFile) resource;
+		
+		try {
+			// TODO 다형성 적용할 것
+			if (EclipseUtil.isValidJavaResource(resource)) {
+				DexterClient.getInstance().deleteDefects(DexterEclipseActivator.getJDTUtil().getModulePath(file), file.getName());
+			} else if (EclipseUtil.isValidCAndCppResource(resource)) {
+				DexterClient.getInstance().deleteDefects(DexterEclipseActivator.getCDTUtil().getModulePath(file), file.getName());
+			}
+		} catch (DexterRuntimeException e) {
+			DexterEclipseActivator.LOG.error(e.getMessage(), e);
+		}
 	}
 	
 	/**

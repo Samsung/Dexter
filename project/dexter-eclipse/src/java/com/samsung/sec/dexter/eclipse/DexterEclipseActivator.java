@@ -41,6 +41,7 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.IDexterStandaloneListener;
 import com.samsung.sec.dexter.core.job.DexterJobFacade;
+import com.samsung.sec.dexter.eclipse.builder.DexterResourceChangeHandler;
 import com.samsung.sec.dexter.eclipse.ui.login.LoginDialog;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseLog;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
@@ -100,6 +101,8 @@ public class DexterEclipseActivator extends AbstractUIPlugin implements IDexterS
 		
 		if (!DexterConfig.getInstance().isStandalone())
 			startLoginScheduler();
+		
+		DexterResourceChangeHandler.start();
 	}
 	
 	private void startLoginScheduler() {

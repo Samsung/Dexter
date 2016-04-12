@@ -77,7 +77,7 @@ public class DexterConfig {
 	public static final String FILTER_DELETE_FALSE_ALARM = "/api/v1/filter/delete-false-alarm";
 	public static final String GET_FALSE_ALARM_VERSION = "/api/v1/version/false-alarm";
 	public static final String POST_GLOBAL_DID = "/api/v1/defect/gid";
-	public static final String DEFECT_DELETE = "/api/v1/defect/deleteAll";
+	public static final String DEFECT_DELETE = "/api/v2/defect/deleteAll";
 	public static final String DEFECT_GROUP = "/api/v1/config/defect-group";
 	public static final String CODE = "/api/v1/config/code";
 	public static final String POST_SNAPSHOT_SOURCECODE = "/api/v1/analysis/snapshot/source";

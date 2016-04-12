@@ -28,6 +28,7 @@ package com.samsung.sec.dexter.eclipse;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.swt.widgets.Display;
 
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.EndOfAnalysisHandler;
@@ -49,6 +50,20 @@ class ARHandler implements EndOfAnalysisHandler {
 	 */
 	@Override
 	public void handleAnalysisResult(final List<AnalysisResult> resultList) {
+		if(Display.getCurrent() != null){
+			addDefectMarkers(resultList);
+			return;
+		}
+		
+		Display.getDefault().asyncExec(new Runnable() {
+			@Override
+			public void run() {
+				addDefectMarkers(resultList);
+			}
+		});
+	}
+
+	private void addDefectMarkers(final List<AnalysisResult> resultList) {
 		DexterMarker.deleteMarkers(targetFile);
 		
 		List<Defect> allDefectList = DexterAnalyzer.getAllDefectList(resultList);

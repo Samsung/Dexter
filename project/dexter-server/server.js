@@ -311,6 +311,7 @@ function initRestAPI(){
 
     /* Defect */
     app.post('/api/v1/defect/gid', auth, analysis.getGlobalDid);
+    app.post('/api/v1/defect/deleteAll', auth, analysis.deleteDefect);
     app.delete('/api/v1/defect/deleteAll', auth, analysis.deleteDefect);
     app.post('/api/v1/defect/dismiss', auth, analysis.changeDefectStatus);
     app.get('/api/v1/defect/moduleAndFile', auth, analysis.getModuleAndFileName);
@@ -384,6 +385,7 @@ function initRestAPI(){
     app.get('/api/v2/snapshot/showSnapshotDefectPage',analysis.getDefectListInSnapshotV2);
 
     app.get('/api/v2/defect/security', analysis.getDefectForSecurity);
+    app.post('/api/v2/defect/deleteAll', auth, analysis.deleteDefect);
 
     app.get('/api/v2/functionMetrics/', functionMetrics.getTotalFunctionMetrics);
     app.get('/api/v2/functionMetrics/All', functionMetrics.getAllFunctionMetrics);

@@ -26,30 +26,21 @@
 package com.samsung.sec.dexter.eclipse.builder;
 
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
-import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceDelta;
 import org.eclipse.core.resources.IResourceDeltaVisitor;
-import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.IncrementalProjectBuilder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 
-import com.google.common.base.Stopwatch;
-import com.samsung.sec.dexter.core.exception.DexterException;
-import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
-import com.samsung.sec.dexter.core.plugin.DexterPluginManager;
-import com.samsung.sec.dexter.core.util.DexterClient;
-import com.samsung.sec.dexter.core.util.DexterUtil;
-import com.samsung.sec.dexter.eclipse.DexterEclipseActivator;
 import com.samsung.sec.dexter.eclipse.EclipseAnalysis;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 
 public class DexterBuilder extends IncrementalProjectBuilder{
-	DexterDeltaVisitor dexterDeltaVisitor;
+	public static final String BUILDER_ID = "dexter-eclipse.dexterBuilder";
+	private DexterDeltaVisitor dexterDeltaVisitor;
 	
 	public DexterBuilder(){
 		dexterDeltaVisitor = new DexterDeltaVisitor();
@@ -57,7 +48,7 @@ public class DexterBuilder extends IncrementalProjectBuilder{
 	
 	class DexterDeltaVisitor implements IResourceDeltaVisitor {
 		/*
-		 * (non-Javadoc)
+		 * return true to continue visiting children.
 		 * 
 		 * @see
 		 * org.eclipse.core.resources.IResourceDeltaVisitor#visit(org.eclipse
@@ -67,34 +58,33 @@ public class DexterBuilder extends IncrementalProjectBuilder{
 			final IResource resource = delta.getResource();
 			
 			switch (delta.getKind()) {
-			case IResourceDelta.ADDED: // handle added resource
-			case IResourceDelta.CHANGED: // handle changed resource
-				analysis(resource);
-				break;
-			case IResourceDelta.REMOVED: // handle removed resource
-				deleteDefect(resource);
-				break;
-//			case IResourceDelta.OPEN:
-//				break;
+				case IResourceDelta.ADDED: 
+				case IResourceDelta.CHANGED:
+					analysis(resource);
+					break;
+				case IResourceDelta.REMOVED:
+					if (EclipseUtil.isValidJavaResource(resource)) {
+						EclipseAnalysis.deleteDefect(resource);
+					}
+					break;
+				case IResourceDelta.OPEN:
+				default:
+					break;
 			}
-			// return true to continue visiting children.
+			
 			return true;
 		}
 	}
-
-	class JavaResourceVisitor implements IResourceVisitor {
-		public boolean visit(final IResource resource) {
-			analysis(resource);
-
-			return true;
+	
+	private void analysis(final IResource resource) {
+		if (EclipseUtil.isValidJavaResource(resource) == false) {
+			return;
 		}
+		
+		EclipseAnalysis.analysis(resource);
 	}
-
-	public static final String BUILDER_ID = "dexter-eclipse.dexterBuilder";
 
 	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see org.eclipse.core.internal.events.InternalBuilder#build(int,
 	 * java.util.Map, org.eclipse.core.runtime.IProgressMonitor)
 	 */
@@ -114,51 +104,6 @@ public class DexterBuilder extends IncrementalProjectBuilder{
 		
 		return new IProject[0];
 	}
-
-	void analysis(final IResource resource) {
-		// can analyze without login because there can be network problem.
-		if (DexterPluginManager.getInstance().getPluginList().size() < 1) {
-			return;
-		}
-		
-		if (EclipseUtil.isValidJavaResource(resource) || EclipseUtil.isValidCAndCppResource(resource)) {
-			final Stopwatch s = Stopwatch.createStarted();
-			
-			final IFile file = (IFile) resource;
-			try {
-				EclipseAnalysis.analysis(file, -1, -1);
-				DexterEclipseActivator.LOG.info("Analysis Elapsed : " + s.elapsed(TimeUnit.MILLISECONDS) + " ms >> "
-						+ file.getFullPath().toOSString());
-			} catch (DexterException e) {
-				DexterEclipseActivator.LOG.error("Analysis Failed: " + file.getFullPath().toOSString() + " : " + e.getMessage(), e);
-			}
-		}
-	}
-
-	private void deleteDefect(final IResource resource){
-		if (DexterPluginManager.getInstance().getPluginList().size() < 1) {
-			return;
-		}
-
-		if (!(resource instanceof IFile) || !resource.getName().endsWith(".java")) {
-			return;
-		}
-		
-		final IFile file = (IFile) resource;
-		
-		try {
-			// TODO 다형성 적용할 것
-			if(resource.getName().endsWith(".java")){
-				DexterClient.getInstance().deleteDefects(DexterEclipseActivator.getJDTUtil().getModulePath(file), file.getName());
-			} else if(resource.getName().endsWith(".c") || resource.getName().endsWith(".h")
-					|| resource.getName().endsWith(".cpp") || resource.getName().endsWith(".hpp")){
-				DexterClient.getInstance().deleteDefects(DexterEclipseActivator.getCDTUtil().getModulePath(file), file.getName());
-			}
-		} catch (DexterRuntimeException e) {
-			DexterEclipseActivator.LOG.error(e.getMessage(), e);
-		}
-	}
-	
 
 	protected void fullBuild(final IProgressMonitor monitor) throws CoreException {
 	}

@@ -28,7 +28,6 @@ package com.samsung.sec.dexter.eclipse.builder;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,7 +37,6 @@ import java.nio.charset.Charset;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 
 import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;

@@ -1485,7 +1485,7 @@ function updateAllCodeMetricsNoLast(){
 
 function addFunctionMetrics(fileName, modulePath, userNo, snapshotId, functionMetric){
 
-    // ÀÏ´Ü ¾÷µ¥ÀÌÆ®
+    // ï¿½Ï´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
     var sql = "UPDATE FunctionMetrics SET"
         + " lastYn = 'N' "
         + " WHERE "
@@ -2271,7 +2271,7 @@ function updateDefect(defect, userNo, snapshotId, did) {
 function updateDefectV2(defect, userNo, snapshotId, did) {
     var sql = "UPDATE Defect SET "
         + " severityCode = " + database.toSqlValue(defect.severityCode)
-        + " , statusCode = CASE WHEN statusCode='FIX' THEN 'NEW' ELSE statusCode END"
+        + " , statusCode = CASE WHEN statusCode = 'EXC' THEN statusCode ELSE 'NEW' END"
         + " , message = " + database.toSqlValue(defect.message)
         + " , modifiedDateTime = now()"
         + " , modifierNo = " + userNo
@@ -2405,19 +2405,15 @@ exports.deleteDefect = function(req, res) {
 
     var modulePath = req.body.modulePath;
     var fileName = req.body.fileName;
-    var userNo = req.currentUserId;
+    var userNo = account.getUserNo(req.currentUserId);
 
     var sql = "UPDATE Defect SET "
         + " statusCode = 'EFD'"
         + " , modifiedDateTime = now()"
         + " , modifierNo = " + userNo
         + " WHERE "
-        + "     toolName = " + database.toSqlValue(defect.toolName)
-        + "     and language = " + database.toSqlValue(defect.language)
-        + "     and fileName = " + database.toSqlValue(defect.fileName)
-        + "     and modulePath " + database.compareEqual(defect.modulePath)
-        + "     and className " + database.compareEqual(defect.className)
-        + "     and methodName " + database.compareEqual(defect.methodName);
+        + "     fileName = " + database.toSqlValue(fileName)
+        + "     and modulePath " + database.compareEqual(modulePath);
 
     database.exec(sql, function (err, result){
         if(err){
