@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using dexter_vs.Analysis.Config;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,12 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace dexter_vs.Analysis
+namespace dexter_vs.Analysis.Config
 {
     /// <summary>
     /// Dexter configuration
     /// </summary>
-    public class Configuration
+    public sealed class Configuration
     {
         /// <summary>
         /// Dexter Home path
@@ -61,7 +62,7 @@ namespace dexter_vs.Analysis
         /// Source code encoding
         /// </summary>
         public string sourceEncoding { get; set; }
-        
+
         /// <summary>
         /// Type of analysis (PROJECT, FILE or SNAPSHOT) 
         /// </summary>
@@ -73,23 +74,34 @@ namespace dexter_vs.Analysis
         public string dexterExecutorPath { get { return dexterHome + "\\bin\\dexter-executor.jar"; } }
 
         /// <summary>
-        /// Creates new Configuration instance
+        /// Creates new instance of Configuration with default values
         /// </summary>
-        public Configuration()
+        public Configuration() : this(new ProjectInfo(), new DexterInfo())
         {
-            dexterHome = "";
-            dexterServerIp = "";
-            dexterServerPort = "0";
-            projectName = "";
-            projectFullPath = "";
-            sourceDir = new List<string>();
-            headerDir = new List<string>();
-            binDir = "";
-            libDir = new List<string>();
-            sourceEncoding = "UTF-8";
-            type = "PROJECT";
         }
-        
+
+        /// <summary>
+        /// Creates new instance of Configuration from ProjectInfo and DexterInfo 
+        /// </summary>
+        /// <param name="projectInfo">information about project</param>
+        /// <param name="dexterInfo">information about Dexter</param>
+        public Configuration(ProjectInfo projectInfo, DexterInfo dexterInfo)
+        {
+            projectName = projectInfo.projectName;
+            projectFullPath = projectInfo.projectFullPath;
+            sourceDir = projectInfo.sourceDir;
+            binDir = projectInfo.binDir;
+            headerDir = projectInfo.headerDir;
+            libDir = projectInfo.libDir;
+            type = projectInfo.type;
+            sourceEncoding = projectInfo.sourceEncoding;
+
+            dexterHome = dexterInfo.dexterHome;
+            dexterServerIp = dexterInfo.dexterServerIp;
+            dexterServerPort = dexterInfo.dexterServerPort;
+        }
+
+
         /// <summary>
         /// Saves configuration to json file
         /// </summary>
@@ -110,6 +122,5 @@ namespace dexter_vs.Analysis
             string json = File.ReadAllText(fileName);
             return JsonConvert.DeserializeObject<Configuration>(json);
         }
-        
     }
 }

@@ -18,6 +18,7 @@ using Microsoft.Win32;
 using EnvDTE;
 using System.IO;
 using System.Windows.Forms;
+using dexter_vs.UI.Config;
 
 namespace dexter_vs.UI
 {
@@ -73,7 +74,16 @@ namespace dexter_vs.UI
         /// </summary>
         protected override void Initialize()
         {
-            DexterCommand analysisCommand = new DexterCommand(this, 0x0100, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
+            IProjectInfoProvider solutionInfoProvider = new SolutionInfoProvider(this);
+            IProjectInfoProvider projectInfoProvider = new ProjectInfoProvider(this);
+            IDexterInfoProvider dexterInfoProvider = new DexterInfoProvider(this);
+
+            ConfigurationProvider solutionConfigProvider = new ConfigurationProvider(solutionInfoProvider, dexterInfoProvider);
+            ConfigurationProvider projectConfigProvider = new ConfigurationProvider(projectInfoProvider, dexterInfoProvider);
+
+            DexterCommand solutionAnalysisCommand = new DexterCommand(this, solutionConfigProvider, 0x0100, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
+            DexterCommand projectAnalysisCommand = new DexterCommand(this, projectConfigProvider, 0x0101, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
+
             base.Initialize();
         }
 

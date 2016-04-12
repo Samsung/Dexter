@@ -13,8 +13,8 @@ using EnvDTE;
 using System.Diagnostics;
 using dexter_vs.Defects;
 using Microsoft.VisualStudio.Shell.Interop;
-using System.Windows.Forms;
 using dexter_vs.UI.Config;
+using Configuration = dexter_vs.Analysis.Config.Configuration;
 
 namespace dexter_vs.UI
 {
@@ -37,7 +37,7 @@ namespace dexter_vs.UI
         /// Dexter task provider
         /// </summary>
         private DexterTaskProvider taskProvider;
-
+          
         /// <summary>
         /// Initializes a new instance of the <see cref="DexterCommand"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
@@ -45,7 +45,7 @@ namespace dexter_vs.UI
         /// <param name="package">Owner package, not null.</param>
         /// <param name="commandId">Command ID.</param>
         /// <param name="commandSet">Command menu group (command set GUID).</param>
-        public DexterCommand(Package package, int commandId, Guid commandSet)
+        public DexterCommand(Package package, ConfigurationProvider configurationProvider, int commandId, Guid commandSet)
         {
             if (package == null)
             {
@@ -53,15 +53,16 @@ namespace dexter_vs.UI
             }
 
             ServiceProvider = package;
+            ConfigurationProvider = configurationProvider;
 
-            DTE dte = (DTE)this.ServiceProvider.GetService(typeof(DTE));
+            DTE dte = (DTE)ServiceProvider.GetService(typeof(DTE));
             projects = dte.Solution.Projects;
 
-            OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+            OleMenuCommandService commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService != null)
             {
                 var menuCommandID = new CommandID(commandSet, commandId);
-                menuItem = new MenuCommand(this.MenuItemCallback, menuCommandID);
+                menuItem = new MenuCommand(MenuItemCallback, menuCommandID);
                 menuItem.Enabled = projects.Count > 0;
                 commandService.AddCommand(menuItem);
             }
@@ -76,7 +77,15 @@ namespace dexter_vs.UI
         /// </summary>
         private IServiceProvider ServiceProvider
         {
-            get; set;
+            get; 
+        }
+
+        /// <summary>
+        /// Configuration provider
+        /// </summary>
+        private ConfigurationProvider ConfigurationProvider
+        {
+            get; 
         }
 
         /// <summary>
@@ -88,7 +97,7 @@ namespace dexter_vs.UI
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            Analysis.Configuration config = new ConfigurationProvider(ServiceProvider).Create();
+            Configuration config = ConfigurationProvider.Create();
             Dexter dexter = new Dexter(config);
 
             OutputWindowPane outputPane = CreatePane("Dexter");
@@ -159,6 +168,5 @@ namespace dexter_vs.UI
             menuItem.Enabled = false;
             return base.OnBeforeCloseProject(pHierarchy, fRemoved);
         }
-
     }
 }

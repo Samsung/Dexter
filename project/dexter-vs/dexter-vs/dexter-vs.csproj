@@ -51,14 +51,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Analysis\Configuration.cs" />
+    <Compile Include="Analysis\Config\Configuration.cs" />
     <Compile Include="Defects\Defect.cs" />
     <Compile Include="Defects\Result.cs" />
     <Compile Include="Analysis\Dexter.cs" />
     <Compile Include="Defects\FileDefects.cs" />
     <Compile Include="Defects\Occurence.cs" />
+    <Compile Include="UI\Config\IDexterInfoProvider.cs" />
+    <Compile Include="UI\Config\DexterInfoProvider.cs" />
+    <Compile Include="UI\Config\ProjectInfoProvider.cs" />
+    <Compile Include="UI\Config\SolutionInfoProvider.cs" />
     <Compile Include="UI\Config\ConfigurationProvider.cs" />
+    <Compile Include="Analysis\Config\DexterInfo.cs" />
+    <Compile Include="UI\Config\IProjectInfoProvider.cs" />
     <Compile Include="UI\Config\IConfigurationProvider.cs" />
+    <Compile Include="Analysis\Config\ProjectInfo.cs" />
     <Compile Include="UI\DexterCommand.cs" />
     <Compile Include="UI\DexterCommandPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

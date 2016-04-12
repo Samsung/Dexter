@@ -1,9 +1,9 @@
-﻿using dexter_vs.Analysis;
+﻿using dexter_vs.Analysis.Config;
 
 namespace dexter_vs.UI.Config
 {
     /// <summary>
-    /// Provider Dexter configuration
+    /// Provides Dexter configuration
     /// </summary>
     internal interface IConfigurationProvider
     {

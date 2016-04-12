@@ -1,6 +1,4 @@
-﻿using EnvDTE;
-using System;
-using System.IO;
+﻿using Configuration = dexter_vs.Analysis.Config.Configuration;
 
 namespace dexter_vs.UI.Config
 {
@@ -8,58 +6,35 @@ namespace dexter_vs.UI.Config
     /// Provides configuration object for Dexter based on user preferences.
     /// Sets analysis scope to whole solution.  
     /// </summary>
-    internal sealed class ConfigurationProvider : IConfigurationProvider
+    internal class ConfigurationProvider : IConfigurationProvider
     {
         /// <summary>
-        /// Gets the service provider from the owner package.
+        /// ProjectInfo provider
         /// </summary>
-        private readonly IServiceProvider serviceProvider;
+        protected readonly IProjectInfoProvider projectInfoProvider;
 
         /// <summary>
-        /// DTE object
+        /// DexterInfo provider
         /// </summary>
-        private readonly DTE dte;
+        protected readonly IDexterInfoProvider dexterInfoProvider;
 
         /// <summary>
         /// Creates new ConfigurationProvider
         /// </summary>
         /// <param name="serviceProvider"> service provider from the owner package</param>
-        public ConfigurationProvider(IServiceProvider serviceProvider)
+        public ConfigurationProvider(IProjectInfoProvider projectInfoProvider, IDexterInfoProvider dexterInfoProvider)
         {
-            this.serviceProvider = serviceProvider;
-            this.dte = (DTE)serviceProvider.GetService(typeof(DTE));
+            this.projectInfoProvider = projectInfoProvider;
+            this.dexterInfoProvider = dexterInfoProvider;
         }
 
         /// <summary>
         /// Creates new configuration 
         /// </summary>
         /// <returns>new configuration</returns>
-        public Analysis.Configuration Create()
-        {
-            Solution solution = dte.Solution;
-        
-            var projectName = Path.GetFileNameWithoutExtension(solution.FullName);
-            var projectFullPath = Path.GetDirectoryName(solution.FullName);
-            var sourceDir =  projectFullPath ;
-            var headerDir =  projectFullPath ;
-
-            //TODO: Add configuration of these properties
-            var dexterHome = "D:/Applications/dexter/0.9.2/dexter-cli_0.9.2_32/";
-            var dexterServerIp = "dexter-server";
-            var dexterServerPort = "0000";
-            var type = "PROJECT";
-
-            return new Analysis.Configuration()
-            {
-                dexterHome = dexterHome,
-                dexterServerIp = dexterServerIp,
-                dexterServerPort = dexterServerPort,
-                projectName = projectName,
-                type = type,
-                projectFullPath = projectFullPath,
-                sourceDir = { sourceDir },
-                headerDir = { headerDir }, 
-            };
-        } 
+        public Configuration Create()
+        {   
+            return new Configuration(projectInfoProvider.Create() , dexterInfoProvider.Create());
+        }
     }
 }

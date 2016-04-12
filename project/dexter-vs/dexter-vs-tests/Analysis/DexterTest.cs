@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
-using System.Collections.Generic;
 using dexter_vs.Defects;
+using dexter_vs.Analysis.Config;
 
 namespace dexter_vs.Analysis
 {
