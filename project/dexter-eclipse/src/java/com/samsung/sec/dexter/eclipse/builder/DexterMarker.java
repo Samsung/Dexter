@@ -127,8 +127,6 @@ public class DexterMarker {
 			} else if(severity != IMarker.SEVERITY_INFO && isDismissed == false){
 				setLineAttribute(file, marker, startLine);
 			}
-		} catch (CoreException e) {
-			DexterEclipseActivator.LOG.error(e.getMessage(), e);
         } catch (Exception e) {
         	DexterEclipseActivator.LOG.error(e.getMessage(), e);
         } finally {
@@ -146,7 +144,7 @@ public class DexterMarker {
 	        		toggleMarkerDismissed(marker);
 	        	}
 	        }
-        } catch (CoreException e) {
+        } catch (Exception e) {
         	DexterEclipseActivator.LOG.error(e.getMessage(), e);
         }
     }
@@ -193,8 +191,6 @@ public class DexterMarker {
 			newMarker.setAttribute(IMarker.CHAR_END, oldMarker.getAttribute(IMarker.CHAR_END, ""));
 			
 			oldMarker.delete();
-		} catch (CoreException e) {
-			DexterEclipseActivator.LOG.error(e.getMessage(), e);
         } catch (Exception e) {
         	DexterEclipseActivator.LOG.error(e.getMessage(), e);
         }
@@ -217,9 +213,8 @@ public class DexterMarker {
 	        	DexterEclipseActivator.LOG.error("File can't read to mark defects : " + fileFullPath + ", encode:" + charset);
 	        	return;
 	        }
-        } catch (CoreException e) {
+        } catch (Exception e) {
         	DexterEclipseActivator.LOG.error(e.getMessage(), e);
-        	
         	return;
         }
 	    
@@ -238,7 +233,7 @@ public class DexterMarker {
 	    		newLineSize = 1;
 	    	}
 	    	
-	    } catch (IOException e){
+	    } catch (Exception e){
 	    	DexterEclipseActivator.LOG.error(e.getMessage(), e);
 	    	newLineSize = 2;
 	    } finally {
@@ -246,7 +241,7 @@ public class DexterMarker {
 	    		if(reader != null)
 	    			reader.close();
             } catch (IOException e) {
-            	// Intentionally
+            	DexterEclipseActivator.LOG.error(e.getMessage(), e);
             }
 	    }
 	    
@@ -282,11 +277,7 @@ public class DexterMarker {
 	        
 	        marker.setAttribute(IMarker.CHAR_START, sOffset);
 	        marker.setAttribute(IMarker.CHAR_END, eOffset);
-        } catch (FileNotFoundException e) {
-        	DexterEclipseActivator.LOG.error(e.getMessage(), e);
-        } catch (CoreException e) {
-        	DexterEclipseActivator.LOG.error(e.getMessage(), e);
-        } catch (IOException e) {
+        } catch (Exception e) {
         	DexterEclipseActivator.LOG.error(e.getMessage(), e);
         } finally {
         	try {
@@ -297,7 +288,7 @@ public class DexterMarker {
         			fis.close();
         		}
         	} catch (IOException e) {
-        		// Intentionally
+        		DexterEclipseActivator.LOG.error(e.getMessage(), e);
         	}
         }
     }
@@ -320,7 +311,7 @@ public class DexterMarker {
 		try {
 			file.deleteMarkers(DEFECT_MARKER_TYPE, false, IResource.DEPTH_ZERO);
 			file.deleteMarkers(DEFECT_DISMISSED_MARKER_TYPE, false, IResource.DEPTH_ZERO);
-		} catch (CoreException ce) {
+		} catch (Exception ce) {
 			DexterEclipseActivator.LOG.error(ce.getMessage(), ce);
 		}
 	}
@@ -356,10 +347,6 @@ public class DexterMarker {
 	        o.setEndLine(marker.getAttribute(ResultFileConstant.END_LINE) == null ? 1 : (Integer) marker.getAttribute(ResultFileConstant.END_LINE));
 	        
 	        defect.addOccurence(o);
-        } catch (NumberFormatException e) {
-        	throw new DexterRuntimeException(e.getMessage(), e);
-        } catch (CoreException e) {
-        	throw new DexterRuntimeException(e.getMessage(), e);
         } catch (Exception e){
         	throw new DexterRuntimeException(e.getMessage(), e);
         }

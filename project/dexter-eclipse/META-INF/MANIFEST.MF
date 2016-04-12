@@ -7,11 +7,10 @@ Bundle-Activator: com.samsung.sec.dexter.eclipse.DexterEclipseActivator
 Bundle-Vendor: %Bundle-Vendor
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
- org.eclipse.platform,
  org.eclipse.ui,
+ org.eclipse.ui.ide,
  dexter-core,
  dexter-executor,
- org.eclipse.ui.ide,
  dexter-eclipse-ui
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .,

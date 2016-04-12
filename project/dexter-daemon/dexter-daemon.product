@@ -7,7 +7,8 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-clean</programArgs>
+      <programArgs>-clean
+      </programArgs>
       <vmArgs>-Xms64m
 -Xmx128m
 -XX:MaxPermSize=128m

@@ -81,7 +81,7 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 		DexterConfig.getInstance().addDexterStandaloneListener(DexterClient.getInstance());
 		
 		initDexterClient();
-		DexterPluginManager.getInstance().initDexterPlugins();
+		//DexterPluginManager.getInstance().initDexterPlugins();
 	}
 	
 	void initDexterClient(){

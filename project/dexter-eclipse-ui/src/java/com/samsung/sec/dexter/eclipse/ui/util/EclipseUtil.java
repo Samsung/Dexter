@@ -282,6 +282,8 @@ public class EclipseUtil {
 			if(configs.length != 1){
 				DexterUIActivator.LOG.warn(errorMessage);
 				return EmptyReplaceClass.newInstance();
+			} else if(configs.length == 0){
+				System.out.println("configs.lengths == 0");
 			}
 			
 			return configs[0].createExecutableExtension("class");

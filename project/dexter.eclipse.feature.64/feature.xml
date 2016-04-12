@@ -1431,4 +1431,25 @@ Public License instead of this License.  But first, please read
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="dexter-eclipse-cdt"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="dexter-eclipse-jdt"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="dexter-vd-cpp"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>

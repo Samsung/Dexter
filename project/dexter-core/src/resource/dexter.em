@@ -148,7 +148,6 @@ event DocumentOpen(sFile)
 event DocumentSaveComplete(sFile) // synchronously 
 //event DocumentChanged(sFile)  // asynchronously
 {
-
 	runDexter(sFile);
 	stop;
 }
