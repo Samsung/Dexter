@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html ng-app="classInfoApp">
+<head>
+    <meta charset="UTF-8">
+    <title id = "indexAdminTitle">classInfoApp</title>
+    <link href="../css/jq/jquery-ui-1.9.2.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ng/ng-table.min.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ng/ng-table.css" />
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
+
+    <link rel="stylesheet" type="text/css" href="../css/jq/layout-default.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ng/ng-grid.min.css" />
+
+    <script src="../js/jq/jquery-1.11.1.min.js"></script>
+    <script src="../js/jq/jquery-ui-1.9.2.min.js"></script>
+    <script src="../js/jq/jquery.layout-latest.js"></script>
+    <script src="../js/ng/angular.min.js"></script>
+    <script src="../js/ng/angular-animate.min.js"></script>
+    <script src="../js/ng/angular-route.min.js"></script>
+    <script src="../js/ng/angular-resource.min.js"></script>
+    <script src="../js/ng/angular-sanitize.min.js"></script>
+    <script src="../js/ng/ng-grid-2.0.11.min.js"></script>
+    <script src="../js/ng/ui-bootstrap-tpls-0.11.0.min.js"></script>
+    <script src="../js/common.js"></script>
+    <script src="../js/bootstrap-button.js"></script>
+    <script src="../../util/dexter-util.js"></script>
+
+    <!--
+    * Sets this component properties.
+    *
+    * @public
+    * @function : checkBrowser
+    * @author min.ho.kim@samsung.com
+    *
+    * @detail description
+    * Dexter Web is supported below browser : [opera|chrome|safari|firefox|msie]
+    * If the developers are use another browser, we need to show the "/error/NotSupportedBrowser.html" page.
+    * @since 1.11.19
+    -->
+    <script>
+        checkBrowser();
+        $(document).ready(function(){
+        });
+    </script>
+</head>
+<body>
+    <div ng-include="'../header.html'"></div>
+    <div ng-view=""></div>
+    <div ng-include="'../footer.html'"></div>
+
+    <script src="classInfoApp.js"></script>
+    <script src="classInfoCtrl.js"></script>
+</body>
+</html>

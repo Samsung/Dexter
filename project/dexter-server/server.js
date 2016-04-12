@@ -36,6 +36,8 @@ var authUtil = require('./util/auth-util');
 var account = require("./routes/account");
 var analysis = require("./routes/analysis");
 var config = require("./routes/config");
+var codeMetrics = require("./routes/codeMetrics");
+var functionMetrics = require("./routes/functionMetrics");
 
 var app = express();
 
@@ -138,7 +140,8 @@ function setAppConfigure(){
 
 function initModules(){
     log.init();
-    database.init().then(account.init());
+    database.init();
+    account.init();
 }
 
 function setCurrentUserIdAndNoOnRequest(req, res){
@@ -358,6 +361,35 @@ function initRestAPI(){
     /* Get Latest Checekr Config Json File */
     app.post('/api/v1/config/:pluginName', config.getCheckerConfigJsonFile);
 
+    /* Code Metrics For Dexter Client*/
+    app.get('/api/v1/codeMetrics/total', codeMetrics.getTotalCodeMetrics);
+    app.get('/api/v1/codeMetrics/', codeMetrics.getCodeMetricsFromClient);
+    app.get('/api/v1/codeMetrics/ccList', codeMetrics.getCodeMetricsForCC);
+    app.get('/api/v1/codeMetrics/sloc', codeMetrics.getFunctionMetricsForSloc);
+
+    app.post('/api/v1/codeMetrics/topCodeMetrics', codeMetrics.getTopCodeMetrics);
+
+    app.get('/api/v1/codeMetrics/topCC', codeMetrics.getTopCCForCodeMetrics);
+    app.get('/api/v1/codeMetrics/topMethod', codeMetrics.getTopMethodForCodeMetrics);
+    app.get('/api/v1/codeMetrics/topClass', codeMetrics.getTopClassForCodeMetrics);
+    app.get('/api/v1/codeMetrics/topSloc', codeMetrics.getTopSLOCForCodeMetrics);
+
+    app.get('/api/v1/codeMetrics/threshold', codeMetrics.getCodeMetricsThreshold);
+    app.get('/api/v1/codeMetrics/quantity', codeMetrics.getCodeMetricsQuantity);
+
+
+    /** API VERSION 2 **/
+    app.post('/api/v2/analysis/result', auth, analysis.addV2);
+    app.get('/api/v2/defect', analysis.getDefectsByModuleAndFileV2);
+    app.get('/api/v2/snapshot/showSnapshotDefectPage',analysis.getDefectListInSnapshotV2);
+
+    app.get('/api/v2/defect/security', analysis.getDefectForSecurity);
+
+    app.get('/api/v2/functionMetrics/', functionMetrics.getTotalFunctionMetrics);
+    app.get('/api/v2/functionMetrics/All', functionMetrics.getAllFunctionMetrics);
+    app.post('/api/v2/functionMetrics', functionMetrics.getFunctionMetrics);
+
+    app.get('/api/2/codeMetrics/slocList', codeMetrics.getCodeMetricsForSloc);
 
 }
 

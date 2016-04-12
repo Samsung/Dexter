@@ -152,7 +152,7 @@ describe('RESTful API Test Suite', function() {
         stub.getCliOptions = function (){
             return {
                 options: {},
-                getValue : function(key, defaultValue){
+                getCliValue : function(key, defaultValue){
                     if(defaultValue) return defaultValue;
                     else return "";
                 }
