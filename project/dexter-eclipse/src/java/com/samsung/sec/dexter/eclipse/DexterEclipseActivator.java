@@ -63,7 +63,8 @@ public class DexterEclipseActivator extends AbstractUIPlugin implements IDexterS
 	private static ICDTUtil cdtUtil;
 	
 	static {
-		DexterConfig.getInstance().setRunMode(DexterConfig.RunMode.ECLIPSE);
+		if(DexterConfig.getInstance().getRunMode() != DexterConfig.RunMode.DAEMON)
+			DexterConfig.getInstance().setRunMode(DexterConfig.RunMode.ECLIPSE);
 	}
 	
 	/**
