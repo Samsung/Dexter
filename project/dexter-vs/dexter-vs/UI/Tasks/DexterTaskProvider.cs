@@ -6,7 +6,7 @@ using System;
 using System.Runtime.InteropServices;
 
 
-namespace dexter_vs.UI
+namespace dexter_vs.UI.Tasks
 {
     /// <summary>
     /// This class provides task items based on Dexter analysis result
@@ -14,10 +14,13 @@ namespace dexter_vs.UI
     [Guid("72de1eAD-a00c-4f57-bff7-57edb162d0be")]
     public class DexterTaskProvider : ErrorListProvider
     {
+        private event EventHandler navigateEventHandler;
+
         /// <inheritDoc/>
         public DexterTaskProvider(IServiceProvider sp) : base(sp)
         {
             ProviderName = "Dexter";
+            navigateEventHandler = new NavigateTaskEventHandler(sp).Navigate;
         }
 
         /// <summary>
@@ -45,7 +48,7 @@ namespace dexter_vs.UI
         /// <param name="occurence"> occurence of defect</param>
         /// <param name="fileName">file name of occurence</param>
         /// <returns></returns>
-        static Task CreateTask(Occurence occurence, string fileName)
+        Task CreateTask(Occurence occurence, string fileName)
         {
             var defectTask = new ErrorTask()
             {
@@ -56,6 +59,7 @@ namespace dexter_vs.UI
                 Document = fileName,
                 Line = int.Parse(occurence.StartLine)
             };
+            defectTask.Navigate += navigateEventHandler;
             return defectTask;
         }
     }

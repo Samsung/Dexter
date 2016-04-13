@@ -81,7 +81,7 @@ namespace dexter_vs.UI
 
             ConfigurationProvider solutionConfigProvider = new ConfigurationProvider(solutionInfoProvider, dexterInfoProvider);
             ConfigurationProvider projectConfigProvider = new ConfigurationProvider(projectInfoProvider, dexterInfoProvider);
-            ConfigurationProvider fileConfigProvider = new ConfigurationProvider(projectInfoProvider, dexterInfoProvider);
+            ConfigurationProvider fileConfigProvider = new ConfigurationProvider(fileInfoProvider, dexterInfoProvider);
 
             DexterCommand fileAnalysisCommand = new DexterFileCommand(this, fileConfigProvider, 0x0102, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
             DexterCommand projectAnalysisCommand = new DexterCommand(this, projectConfigProvider, 0x0101, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));

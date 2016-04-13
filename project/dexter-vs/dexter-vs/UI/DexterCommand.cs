@@ -15,6 +15,7 @@ using dexter_vs.Defects;
 using Microsoft.VisualStudio.Shell.Interop;
 using dexter_vs.UI.Config;
 using Configuration = dexter_vs.Analysis.Config.Configuration;
+using dexter_vs.UI.Tasks;
 
 namespace dexter_vs.UI
 {
@@ -100,6 +101,7 @@ namespace dexter_vs.UI
             Dexter dexter = new Dexter(config);
 
             OutputWindowPane outputPane = CreatePane("Dexter");
+            outputPane.Clear();
             outputPane.Activate();
 
             DataReceivedEventHandler writeToOutputPane = (s, e1) => outputPane.OutputString(e1.Data + Environment.NewLine);
@@ -156,15 +158,6 @@ namespace dexter_vs.UI
             }
         }
 
-        public override int OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded)
-        {
-            Project activeProject = getActiveProject();
-
-            menuItem.Text = "On " + activeProject.Name;
-            menuItem.Enabled = true;
-            return base.OnAfterOpenProject(pHierarchy, fAdded);
-        }
-
         private Project getActiveProject()
         {
             Array projects = (Array)dte.ActiveSolutionProjects;
@@ -184,6 +177,15 @@ namespace dexter_vs.UI
                 return projs.Item(1);
             }
             return null;
+        }
+
+        public override int OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded)
+        {
+            Project activeProject = getActiveProject();
+
+            menuItem.Text = "On " + activeProject.Name;
+            menuItem.Enabled = true;
+            return base.OnAfterOpenProject(pHierarchy, fAdded);
         }
         
         public override int OnBeforeCloseProject(IVsHierarchy pHierarchy, int fRemoved)

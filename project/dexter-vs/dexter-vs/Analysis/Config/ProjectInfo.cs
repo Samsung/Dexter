@@ -37,6 +37,16 @@ namespace dexter_vs.Analysis.Config
         public List<string> libDir { get; set; }
 
         /// <summary>
+        /// File names (use only with FILE analysis type)
+        /// </summary>
+        public List<string> fileName { get; set; }
+
+        /// <summary>
+        /// Module path (use only with FILE analysis type)
+        /// </summary>
+        public string modulePath { get; set; }
+
+        /// <summary>
         /// Source code encoding
         /// </summary>
         public string sourceEncoding { get; set; }
@@ -55,7 +65,9 @@ namespace dexter_vs.Analysis.Config
             projectFullPath = "";
             sourceDir = new List<string>();
             headerDir = new List<string>();
+            fileName = new List<string>();
             binDir = "";
+            modulePath = "";
             libDir = new List<string>();
             sourceEncoding = "UTF-8";
             type = "PROJECT";

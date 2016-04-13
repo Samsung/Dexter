@@ -39,6 +39,7 @@ namespace dexter_vs.UI.Config
                 projectFullPath = Path.GetDirectoryName(doc.FullName),
                 sourceDir = { Path.GetDirectoryName(doc.FullName) },
                 headerDir = { Path.GetDirectoryName(doc.FullName) },
+                fileName = { Path.GetFileName(doc.FullName) },
                 type = "FILE"
             };
         }
