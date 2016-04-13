@@ -21,23 +21,23 @@ namespace dexter_vs.UI
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class DexterCommand : VsSolutionEvents
+    internal class DexterCommand : VsSolutionEvents
     {
         /// <summary>
         /// Menu item associated with this command
         /// </summary>
-        private MenuCommand menuItem;
-
-        /// <summary>
-        /// List of opened projects
-        /// </summary>
-        private Projects projects;
+        protected readonly OleMenuCommand menuItem;
 
         /// <summary>
         /// Dexter task provider
         /// </summary>
         private DexterTaskProvider taskProvider;
-          
+        
+        /// <summary>
+        /// DTE object
+        /// </summary>
+        private readonly DTE dte;  
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DexterCommand"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
@@ -55,15 +55,14 @@ namespace dexter_vs.UI
             ServiceProvider = package;
             ConfigurationProvider = configurationProvider;
 
-            DTE dte = (DTE)ServiceProvider.GetService(typeof(DTE));
-            projects = dte.Solution.Projects;
-
+            dte = (DTE)ServiceProvider.GetService(typeof(DTE));
+        
             OleMenuCommandService commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService != null)
             {
                 var menuCommandID = new CommandID(commandSet, commandId);
-                menuItem = new MenuCommand(MenuItemCallback, menuCommandID);
-                menuItem.Enabled = projects.Count > 0;
+                menuItem = new OleMenuCommand(MenuItemCallback, menuCommandID);
+                menuItem.Enabled = dte.Solution.Projects.Count > 0;
                 commandService.AddCommand(menuItem);
             }
 
@@ -75,7 +74,7 @@ namespace dexter_vs.UI
         /// <summary>
         /// Gets the service provider from the owner package.
         /// </summary>
-        private IServiceProvider ServiceProvider
+        protected IServiceProvider ServiceProvider
         {
             get; 
         }
@@ -83,7 +82,7 @@ namespace dexter_vs.UI
         /// <summary>
         /// Configuration provider
         /// </summary>
-        private ConfigurationProvider ConfigurationProvider
+        protected IConfigurationProvider ConfigurationProvider
         {
             get; 
         }
@@ -159,10 +158,34 @@ namespace dexter_vs.UI
 
         public override int OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded)
         {
+            Project activeProject = getActiveProject();
+
+            menuItem.Text = "On " + activeProject.Name;
             menuItem.Enabled = true;
             return base.OnAfterOpenProject(pHierarchy, fAdded);
         }
 
+        private Project getActiveProject()
+        {
+            Array projects = (Array)dte.ActiveSolutionProjects;
+            if (projects != null && projects.Length > 0)
+            {
+                return projects.GetValue(0) as Project;
+            }
+            projects = (Array)dte.Solution.SolutionBuild.StartupProjects;
+            if (projects != null && projects.Length >= 1)
+            {
+                return projects.GetValue(0) as Project;
+            }
+
+            Projects projs = dte.Solution.Projects;
+            if (projs != null && projs.Count > 0)
+            {
+                return projs.Item(1);
+            }
+            return null;
+        }
+        
         public override int OnBeforeCloseProject(IVsHierarchy pHierarchy, int fRemoved)
         {
             menuItem.Enabled = false;

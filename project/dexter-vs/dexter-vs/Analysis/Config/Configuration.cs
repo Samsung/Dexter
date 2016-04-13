@@ -71,6 +71,7 @@ namespace dexter_vs.Analysis.Config
         /// <summary>
         /// Default path to dexter executable: dexterHome + "\bin\dexter-executor.jar"
         /// </summary>
+        [JsonIgnore]
         public string dexterExecutorPath { get { return dexterHome + "\\bin\\dexter-executor.jar"; } }
 
         /// <summary>

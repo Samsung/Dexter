@@ -30,6 +30,7 @@
     called "command set" and is used to group different command inside a logically related
     group; your package should define its own command set in order to avoid collisions
     with command ids defined by other packages. -->
+    
 
     <Menus>
       <Menu guid="guidDexterCommandPackageCmdSet" id="DexterMenu" priority="0x700" type="Menu">
@@ -48,6 +49,14 @@
         </Strings>
       </Menu>
 
+      <Menu guid="guidDexterCommandPackageCmdSet" id="DexterToolbar" type="Toolbar" >
+        <CommandFlag>DefaultDocked</CommandFlag>
+        <Strings>
+          <ButtonText>Dexter</ButtonText>
+          <CommandName>Dexter</CommandName>
+        </Strings>
+      </Menu>
+
     </Menus>
 
     <!-- In this section you can define new menu groups. A menu group is a container for
@@ -62,6 +71,10 @@
       <Group guid="guidDexterCommandPackageCmdSet" id="DexterAnalysisSubMenuGroup" priority="0x0000">
         <Parent guid="guidDexterCommandPackageCmdSet" id="DexterAnalysisSubMenu"/>
       </Group>
+
+      <Group guid="guidDexterCommandPackageCmdSet" id="DexterToolbarGroup" priority="0x0000">
+        <Parent guid="guidDexterCommandPackageCmdSet" id="DexterToolbar"/>
+      </Group>
     </Groups>
 
     <!--Buttons section. -->
@@ -75,7 +88,7 @@
               <CommandFlag>DefaultInvisible</CommandFlag>
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
-      <Button guid="guidDexterCommandPackageCmdSet" id="DexterSolutionAnalysisCommand" priority="0x0100" type="Button">
+      <Button guid="guidDexterCommandPackageCmdSet" id="DexterSolutionAnalysisCommand" priority="0x001" type="Button">
         <Parent guid="guidDexterCommandPackageCmdSet" id="DexterAnalysisSubMenuGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
         <CommandFlag>DefaultDisabled</CommandFlag>
@@ -84,13 +97,31 @@
         </Strings>
       </Button>
 
-      <Button guid="guidDexterCommandPackageCmdSet" id="DexterProjectAnalysisCommand" priority="0x0000" type="Button">
+      <Button guid="guidDexterCommandPackageCmdSet" id="DexterProjectAnalysisCommand" priority="0x0010" type="Button">
         <Parent guid="guidDexterCommandPackageCmdSet" id="DexterAnalysisSubMenuGroup" />
         <Icon guid="guidImages" id="bmpPic2" />
+        <CommandFlag>TextChanges</CommandFlag>
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
-          <CommandName>On project</CommandName>
-          <ButtonText>On project</ButtonText>
+          <ButtonText>On Project</ButtonText>
+        </Strings>
+      </Button>
+      
+      <Button guid="guidDexterCommandPackageCmdSet" id="DexterFileAnalysisCommand" priority="0x0100" type="Button">
+        <Parent guid="guidDexterCommandPackageCmdSet" id="DexterAnalysisSubMenuGroup" />
+        <Icon guid="guidImages" id="bmpPicSearch" />
+        <CommandFlag>TextChanges</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>On File</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidDexterCommandPackageCmdSet" id="DexterSolutionAnalysisToolbarCommand" priority="0x0100" type="Button">
+        <Parent guid= "guidDexterCommandPackageCmdSet" id="DexterToolbarGroup" />
+        <Icon guid="guidImages" id="bmpPicSearch" />
+        <Strings>
+          <ButtonText>Run Dexter Analysis on Solution</ButtonText>
         </Strings>
       </Button>
       
@@ -107,6 +138,10 @@
     </Bitmaps>
   </Commands>
 
+  <VisibilityConstraints>
+    <VisibilityItem guid="guidDexterCommandPackageCmdSet" id="DexterToolbar" context="GUID_TextEditorFactory" />
+  </VisibilityConstraints>
+  
   <Symbols>
     <!-- This is the package guid. -->
     <GuidSymbol name="guidDexterCommandPackage" value="{0a9fa7af-84c6-4922-8734-38772fcd67b1}" />
@@ -117,10 +152,16 @@
       <IDSymbol name="DexterMenuGroup" value="0x1020" />
       <IDSymbol name="DexterSolutionAnalysisCommand" value="0x0100" />
       <IDSymbol name="DexterProjectAnalysisCommand" value="0x0101" />
+      <IDSymbol name="DexterFileAnalysisCommand" value="0x0102" />
 
       <IDSymbol name="DexterAnalysisSubMenu" value="0x1100"/>
       <IDSymbol name="DexterAnalysisSubMenuGroup" value="0x1150"/>
       <IDSymbol name="cmdidTestSubCommand" value="0x0105"/>
+
+      <IDSymbol name="DexterToolbar" value="0x2000" />
+      <IDSymbol name="DexterToolbarGroup" value="0x2050" />
+      <IDSymbol name="DexterSolutionAnalysisToolbarCommand" value="0x0200" />
+
     </GuidSymbol>
 
     <GuidSymbol name="guidImages" value="{c8e0f973-6a99-49b7-a925-75eb816d851c}" >

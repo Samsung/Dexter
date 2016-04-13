@@ -76,13 +76,18 @@ namespace dexter_vs.UI
         {
             IProjectInfoProvider solutionInfoProvider = new SolutionInfoProvider(this);
             IProjectInfoProvider projectInfoProvider = new ProjectInfoProvider(this);
+            IProjectInfoProvider fileInfoProvider = new FileInfoProvider(this);
             IDexterInfoProvider dexterInfoProvider = new DexterInfoProvider(this);
 
             ConfigurationProvider solutionConfigProvider = new ConfigurationProvider(solutionInfoProvider, dexterInfoProvider);
             ConfigurationProvider projectConfigProvider = new ConfigurationProvider(projectInfoProvider, dexterInfoProvider);
+            ConfigurationProvider fileConfigProvider = new ConfigurationProvider(projectInfoProvider, dexterInfoProvider);
 
-            DexterCommand solutionAnalysisCommand = new DexterCommand(this, solutionConfigProvider, 0x0100, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
+            DexterCommand fileAnalysisCommand = new DexterFileCommand(this, fileConfigProvider, 0x0102, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
             DexterCommand projectAnalysisCommand = new DexterCommand(this, projectConfigProvider, 0x0101, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
+            DexterCommand solutionAnalysisCommand = new DexterCommand(this, solutionConfigProvider, 0x0100, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
+
+            DexterCommand solutionAnalysisToolbarCommand = new DexterCommand(this, solutionConfigProvider, 0x0200, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
 
             base.Initialize();
         }
