@@ -117,6 +117,15 @@
         </Strings>
       </Button>
 
+      <Button guid="guidDexterCommandPackageCmdSet" id="DexterSettingsCommand" priority="0x0103" type="Button">
+        <Parent guid= "guidDexterCommandPackageCmdSet" id="DexterMenuGroup" />
+        <Icon guid="guidImages" id="bmpPicSearch" />
+        <Strings>
+          <ButtonText>Settings...</ButtonText>
+        </Strings>
+      </Button>
+
+
       <Button guid="guidDexterCommandPackageCmdSet" id="DexterSolutionAnalysisToolbarCommand" priority="0x0100" type="Button">
         <Parent guid= "guidDexterCommandPackageCmdSet" id="DexterToolbarGroup" />
         <Icon guid="guidImages" id="bmpPicSearch" />
@@ -124,7 +133,7 @@
           <ButtonText>Run Dexter Analysis on Solution</ButtonText>
         </Strings>
       </Button>
-      
+
     </Buttons>
 
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
@@ -153,10 +162,10 @@
       <IDSymbol name="DexterSolutionAnalysisCommand" value="0x0100" />
       <IDSymbol name="DexterProjectAnalysisCommand" value="0x0101" />
       <IDSymbol name="DexterFileAnalysisCommand" value="0x0102" />
+      <IDSymbol name="DexterSettingsCommand" value="0x0103" />
 
       <IDSymbol name="DexterAnalysisSubMenu" value="0x1100"/>
       <IDSymbol name="DexterAnalysisSubMenuGroup" value="0x1150"/>
-      <IDSymbol name="cmdidTestSubCommand" value="0x0105"/>
 
       <IDSymbol name="DexterToolbar" value="0x2000" />
       <IDSymbol name="DexterToolbarGroup" value="0x2050" />
