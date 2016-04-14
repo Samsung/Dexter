@@ -48,6 +48,11 @@
             id="dexter-eclipse-ui.commands.OpenDexterFunctionMetrics"
             name="%command.name.5">
       </command>
+      <command
+            categoryId="dexter-eclipse-ui.commands.category.dexter"
+            id="dexter-eclipse-ui.commands.OpenPlatzView"
+            name="%command.name.6">
+      </command>
    </extension>
    <extension
          point="org.eclipse.ui.handlers">
@@ -78,6 +83,10 @@
       <handler
             class="com.samsung.sec.dexter.eclipse.ui.OpenFunctionMetricsViewHandler"
             commandId="dexter-eclipse-ui.commands.OpenDexterFunctionMetrics">
+      </handler>
+      <handler
+            class="com.samsung.sec.dexter.eclipse.ui.OpenPlatzViewHandler"
+            commandId="dexter-eclipse-ui.commands.OpenPlatzView">
       </handler>
    </extension>
    <extension
@@ -150,6 +159,21 @@
                   style="push"
                   tooltip="%command.tooltip.10">
             </command>
+            <command
+                  commandId="dexter-eclipse-ui.commands.OpenPlatzView"
+                  icon="icons/platz.gif"
+                  id="dexter-eclipse-ui.commands.OpenPlatzView"
+                  mnemonic="H"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <systemTest
+                        property="isPlatzAlive"
+                        value="true">
+                  </systemTest>
+               </visibleWhen>
+            </command>
+            
          </menu>
       </menuContribution>
       <menuContribution
@@ -209,6 +233,21 @@
                   mnemonic="%command.mnemonic.11"
                   style="push">
             </command>
+            <command
+                  commandId="dexter-eclipse-ui.commands.OpenPlatzView"
+                  icon="icons/platz.gif"
+                  id="dexter-eclipse-ui.commands.OpenPlatzView"
+                  mnemonic="H"
+                  tooltip="%command.tooltip.9"
+                  style="push">
+               <visibleWhen
+                     checkEnabled="false">
+                  <systemTest
+                        property="isPlatzAlive"
+                        value="true">
+                  </systemTest>
+               </visibleWhen>
+            </command>
          </toolbar>
       </menuContribution>
    </extension>
@@ -250,6 +289,14 @@
              name="%view.name.2"
              restorable="true">
        </view>
+        <view
+            category="com.samsung.sec.dexter.category"
+            class="com.samsung.sec.dexter.eclipse.ui.view.PlatzView"
+            icon="icons/platz.gif"
+            id="dexter-eclipse.platz"
+            name="Platz"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
