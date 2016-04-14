@@ -1,0 +1,5 @@
+package com.samsung.sec.dexter.daemon.job;
+
+public class MonitorForPlatzKeywordFile {
+
+}
