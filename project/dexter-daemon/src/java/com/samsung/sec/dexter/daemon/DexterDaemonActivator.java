@@ -117,7 +117,7 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
 		if(Strings.isNullOrEmpty(DexterConfig.getInstance().getDexterHome())){
 			return;
 		}
-		
+		CheckPlatzServer();
 		unzipDexterCliZipFile();
 		setWindowTitleWithLoginInformation();
 		initializeSourceInsightEnvironment();
