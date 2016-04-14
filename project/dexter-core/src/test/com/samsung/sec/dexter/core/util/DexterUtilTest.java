@@ -27,23 +27,83 @@ package com.samsung.sec.dexter.core.util;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.junit.Test;
 
 public class DexterUtilTest {
-
 	@Test
-	public void test() {
-		String s1 = "abcdefg";
-		String s2 = "123456";
+	public void test_createDirectoryIfNotExist(){
+		final String folderName = "./test-folder";
+		assertFalse(new File(folderName).exists());
 		
-		String regex1 = "[a-z]+";
-		String regex2 = "[0-9]+";
+		DexterUtil.createDirectoryIfNotExist(folderName);
+		assertTrue(new File(folderName).exists());
 		
-		assertTrue(s1.matches(regex1));
-		assertFalse(s1.matches(regex2));
-		
-		assertTrue(s2.matches(regex2));
-		assertFalse(s2.matches(regex1));
+		assertTrue(new File(folderName).delete());
 	}
-
+	
+	@Test
+	public void test_createEmptyFileIfNotExist(){
+		final String filePath = "./test-file.txt";
+		assertFalse(new File(filePath).exists());
+		
+		DexterUtil.createEmptyFileIfNotExist(filePath);
+		assertTrue(new File(filePath).exists());
+		
+		assertTrue(new File(filePath).delete());
+	}
+	
+	@Test
+	public void test_getFileNameWithoutExtension() {
+		assertEquals("filename", DexterUtil.getFileNameWithoutExtension("filename.txt"));
+		assertEquals("file.name", DexterUtil.getFileNameWithoutExtension("file.name.txt"));
+		assertEquals("f.ile.name", DexterUtil.getFileNameWithoutExtension("f.ile.name.txt"));
+		assertEquals("file_name", DexterUtil.getFileNameWithoutExtension("file_name.txt"));
+		assertEquals("f", DexterUtil.getFileNameWithoutExtension("f.txt"));
+		assertEquals("f", DexterUtil.getFileNameWithoutExtension("f.t"));
+		assertEquals("filename", DexterUtil.getFileNameWithoutExtension("filename"));
+		assertEquals("", DexterUtil.getFileNameWithoutExtension(".txt"));
+	}
+	
+	@Test
+	public void test_getSubFiles(){
+		final String folder = "./result";
+		final String fileName = "filename_";
+		final String oldFileName1 =  fileName + "1234.json";
+		final String oldFileName2 = fileName + "1235.json";
+		final String oldFileName3 = fileName + "1236.json";
+		final String noOldFileName1 = "file1name" + "0000.json";
+		final String noOldFileName2 = "1" + fileName + "1111.json";
+		
+		DexterUtil.createDirectoryIfNotExist(folder);
+		DexterUtil.createEmptyFileIfNotExist(folder + "/" +oldFileName1);
+		DexterUtil.createEmptyFileIfNotExist(folder + "/" +oldFileName2);
+		DexterUtil.createEmptyFileIfNotExist(folder + "/" +oldFileName3);
+		DexterUtil.createEmptyFileIfNotExist(folder + "/" +noOldFileName1);
+		DexterUtil.createEmptyFileIfNotExist(folder + "/" +noOldFileName2);
+		
+		File files[] = DexterUtil.getSubFiles(new File(folder), fileName);
+		
+		for(File file : files){
+			final String name = file.getName();
+			
+			if(!name.equals(oldFileName1) && !name.equals(oldFileName2) && !name.equals(oldFileName3)){
+				System.out.println(name);
+				fail();
+			}
+			
+			if(name.equals(noOldFileName1) || name.equals(noOldFileName2)){
+				fail();
+			}
+		}
+		
+		try {
+			DexterUtil.deleteDirectory(new File(folder));
+		} catch (IOException e) {
+			fail();
+			e.printStackTrace();
+		}
+	}
 }

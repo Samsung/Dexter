@@ -28,6 +28,8 @@ package com.samsung.sec.dexter.core.analyzer;
 import java.io.File;
 import java.util.List;
 
+import javax.swing.filechooser.FileFilter;
+
 import org.apache.log4j.Logger;
 
 import com.google.common.base.Strings;
@@ -59,15 +61,31 @@ public class AnalysisResultFileManager {
 		if(resultList.size() == 0) return;
 		
 		final String resultFolderStr = DexterConfig.getInstance().getDexterHome() + "/" + DexterConfig.RESULT_FOLDER_NAME;
+		DexterUtil.createDirectoryIfNotExist(resultFolderStr);
 		
 		final IAnalysisEntityFactory factory = new AnalysisEntityFactory();
 		AnalysisResult baseResult = factory.createAnalysisResult(resultList);
+		removeOldResultFile(baseResult, resultFolderStr);
 		writeJsonResult(baseResult, resultFolderStr);
 	}
 
-	private void writeJsonResult(final AnalysisResult result, final String resultFolderStr) {
-		DexterUtil.createDirectoryIfNotExist(resultFolderStr);
+	private void removeOldResultFile(final AnalysisResult baseResult, final String resultFolderStr) {
+		final File resultFolder = new File(resultFolderStr);
+		
+		final String resultFileName = ResultFileConstant.RESULF_FILE_PREFIX 
+				+ baseResult.getFileName() + "_";
+		File[] oldResultFiles = DexterUtil.getSubFiles(resultFolder, resultFileName);
+		if(oldResultFiles == null || oldResultFiles.length == 0)
+			return;
+		
+		for(int i=0; i<oldResultFiles.length; i++){
+			if(oldResultFiles[i].delete() == false){
+				LOG.warn("cannot delete the old result file : " + oldResultFiles[i].getAbsolutePath());
+			}
+		}
+	}
 
+	private void writeJsonResult(final AnalysisResult result, final String resultFolderStr) {
 		final StringBuilder contents = createJson(result);
 		final File resultFile = getResultFilePath(result, resultFolderStr);
 		DexterUtil.writeFileContents(contents.toString(), resultFile);

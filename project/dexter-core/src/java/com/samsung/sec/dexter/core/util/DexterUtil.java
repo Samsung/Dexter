@@ -29,6 +29,7 @@ import java.awt.FileDialog;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -1097,5 +1098,21 @@ public class DexterUtil {
 		} catch (Exception e) {
 			throw new DexterRuntimeException(e.getMessage(), e);
 		}	
+	}
+
+	public static String getFileNameWithoutExtension(String fileName) {
+		return Files.getNameWithoutExtension(fileName);
+	}
+
+	public static File[] getSubFiles(final File parentFolder, final String fileNamePrefix) {
+		return parentFolder.listFiles(new FileFilter(){
+			@Override
+			public boolean accept(File pathname) {
+				if(pathname.getName().startsWith(fileNamePrefix))
+					return true;
+				else
+					return false;
+			}
+		});
 	}
 }
