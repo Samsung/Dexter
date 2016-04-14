@@ -1,9 +1,12 @@
-﻿namespace dexter_vs.Analysis.Config
+﻿using Newtonsoft.Json;
+using System.IO;
+
+namespace dexter_vs.Analysis.Config
 {
     /// <summary>
     /// Information about Dexter 
     /// </summary>
-    public sealed class DexterInfo
+    public class DexterInfo
     {
         /// <summary>
         /// Dexter Home path
@@ -21,6 +24,39 @@
         public string dexterServerPort { get; set; }
 
         /// <summary>
+        /// Dexter Server user name 
+        /// </summary>
+        public string userName { get; set; }
+
+        /// <summary>
+        /// Dexter Server user password 
+        /// </summary>
+        public string userPassword { get; set; }
+
+        /// <summary>
+        /// Whether analysis result should be standalone or sent to a server
+        /// </summary>
+        public bool standalone { get; set; }
+
+        /// <summary>
+        /// Default path to dexter executable: dexterHome + "\bin\dexter-executor.jar"
+        /// </summary>
+        [JsonIgnore]
+        public string DexterExecutorPath { get { return dexterHome + "\\bin\\dexter-executor.jar"; } }
+
+        /// <summary>
+        /// Checks if dexter-executor.jar is found under dexterExecutorPath
+        /// </summary>
+        [JsonIgnore]
+        public bool IsDexterFound
+        {
+            get
+            {
+                return File.Exists(DexterExecutorPath);
+            }
+        }
+        
+        /// <summary>
         /// Creates new DexterInfo instance with default values
         /// </summary>
         public DexterInfo()
@@ -28,6 +64,40 @@
             dexterHome = "";
             dexterServerIp = "";
             dexterServerPort = "0";
+            userName = "";
+            userPassword = "";
+            standalone = true;
+        }
+
+        /// <summary>
+        /// Loads DexterInfo from json file
+        /// </summary>
+        /// <param name="fileName">json file name</param>
+        /// <returns>DexterInfo</returns>
+        public static DexterInfo Load(string fileName)
+        {
+            string json = File.ReadAllText(fileName);
+            Configuration configuration = JsonConvert.DeserializeObject<Configuration>(json);
+
+            return fromConfiguration(configuration);
+        }
+
+        /// <summary>
+        /// Dreates DexterInfo from Configuration
+        /// </summary>
+        /// <param name="configuration">Dexter configuration</param>
+        /// <returns>DexterInfo</returns>
+        public static DexterInfo fromConfiguration(Configuration configuration)
+        {
+            return new DexterInfo()
+            {
+                dexterHome = configuration.dexterHome,
+                dexterServerIp = configuration.dexterServerIp,
+                dexterServerPort = configuration.dexterServerPort,
+                userName = configuration.userName,
+                userPassword = configuration.userPassword,
+                standalone = configuration.standalone
+            };
         }
     }
 }

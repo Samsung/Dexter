@@ -5,7 +5,7 @@ namespace dexter_vs.Analysis.Config
     /// <summary>
     /// Information about project to analyse
     /// </summary>
-    public sealed class ProjectInfo
+    public class ProjectInfo
     {
         /// <summary>
         /// Project name

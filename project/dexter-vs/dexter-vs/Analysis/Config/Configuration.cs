@@ -28,6 +28,16 @@ namespace dexter_vs.Analysis.Config
         /// Port of Dexter server
         /// </summary>
         public string dexterServerPort { get; set; }
+        
+        /// <summary>
+        /// Dexter Server user name 
+        /// </summary>
+        public string userName { get; set; }
+
+        /// <summary>
+        /// Dexter Server user password 
+        /// </summary>
+        public string userPassword { get; set; }
 
         /// <summary>
         /// Project name
@@ -78,11 +88,35 @@ namespace dexter_vs.Analysis.Config
         /// </summary>
         public string type { get; set; }
 
+
+        /// <summary>
+        /// Whether analysis result should be standalone or sent to a server
+        /// </summary>
+        public bool standalone { get; set; }
+
         /// <summary>
         /// Default path to dexter executable: dexterHome + "\bin\dexter-executor.jar"
         /// </summary>
         [JsonIgnore]
-        public string dexterExecutorPath { get { return dexterHome + "\\bin\\dexter-executor.jar"; } }
+        public string DexterExecutorPath { get { return dexterHome + "\\bin\\dexter-executor.jar"; } }
+
+        /// <summary>
+        /// Default path to dexter configuration file: "\dexter-config-vsplugin.json"
+        /// </summary>
+        [JsonIgnore]
+        public static string DefaultConfigurationPath { get { return "\\dexter-config-vsplugin.json"; } }
+
+        /// <summary>
+        /// Checks if dexter-executor.jar is found under dexterExecutorPath
+        /// </summary>
+        [JsonIgnore]
+        public bool IsDexterFound
+        {
+            get
+            {
+                return File.Exists(DexterExecutorPath);
+            }
+        }
 
         /// <summary>
         /// Creates new instance of Configuration with default values
@@ -112,6 +146,9 @@ namespace dexter_vs.Analysis.Config
             dexterHome = dexterInfo.dexterHome;
             dexterServerIp = dexterInfo.dexterServerIp;
             dexterServerPort = dexterInfo.dexterServerPort;
+            userName = dexterInfo.userName;
+            userPassword = dexterInfo.userPassword;
+            standalone = dexterInfo.standalone;
         }
 
 
@@ -126,14 +163,31 @@ namespace dexter_vs.Analysis.Config
         }
 
         /// <summary>
+        /// Saves configuration to json file under default path
+        /// </summary>
+        public void Save()
+        {
+            Save(DefaultConfigurationPath);
+        }
+
+        /// <summary>
         /// Loads configuration from json file
         /// </summary>
         /// <param name="fileName">json file name</param>
-        /// <returns></returns>
+        /// <returns>Configuration</returns>
         public static Configuration Load(string fileName)
         {
             string json = File.ReadAllText(fileName);
             return JsonConvert.DeserializeObject<Configuration>(json);
+        }
+
+        /// <summary>
+        /// Loads configuration from json file from default path
+        /// </summary>
+        /// <returns>Configuration</returns>
+        public static Configuration Load()
+        {
+            return Load(DefaultConfigurationPath);
         }
     }
 }

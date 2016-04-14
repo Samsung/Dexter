@@ -29,15 +29,6 @@ namespace dexter_vs.Analysis
         }
 
         /// <summary>
-        /// Dexter should be found in proper path
-        /// </summary>
-        [Test]
-        public void TestDexterFound()
-        {
-            Assert.IsTrue(dexter.IsDexterFound);
-        }
-
-        /// <summary>
         /// Analysis should gather list of defects 
         /// </summary>
         [Test]

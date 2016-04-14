@@ -62,8 +62,13 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\Config\DexterInfoValidator.cs" />
+    <Compile Include="UI\Config\FileDexterInfoProvider.cs" />
     <Compile Include="UI\Config\IDexterInfoProvider.cs" />
     <Compile Include="UI\Config\DexterInfoProvider.cs" />
+    <Compile Include="UI\Config\PlaceholderTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\Config\ProjectInfoProvider.cs" />
     <Compile Include="UI\Config\FileInfoProvider.cs" />
     <Compile Include="UI\Config\SettingsWindow.cs">
@@ -78,6 +83,9 @@
     <Compile Include="UI\Config\IProjectInfoProvider.cs" />
     <Compile Include="UI\Config\IConfigurationProvider.cs" />
     <Compile Include="Analysis\Config\ProjectInfo.cs" />
+    <Compile Include="UI\Config\ValidationPicture.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\DexterCommand.cs" />
     <Compile Include="UI\DexterCommandPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -19,6 +19,7 @@ using EnvDTE;
 using System.IO;
 using System.Windows.Forms;
 using dexter_vs.UI.Config;
+using Configuration = dexter_vs.Analysis.Config.Configuration;
 
 namespace dexter_vs.UI
 {
@@ -77,7 +78,7 @@ namespace dexter_vs.UI
             IProjectInfoProvider solutionInfoProvider = new SolutionInfoProvider(this);
             IProjectInfoProvider projectInfoProvider = new ProjectInfoProvider(this);
             IProjectInfoProvider fileInfoProvider = new FileInfoProvider(this);
-            IDexterInfoProvider dexterInfoProvider = new DexterInfoProvider(this);
+            IDexterInfoProvider dexterInfoProvider = new FileDexterInfoProvider(Configuration.DefaultConfigurationPath);
 
             ConfigurationProvider solutionConfigProvider = new ConfigurationProvider(solutionInfoProvider, dexterInfoProvider);
             ConfigurationProvider projectConfigProvider = new ConfigurationProvider(projectInfoProvider, dexterInfoProvider);
@@ -89,6 +90,7 @@ namespace dexter_vs.UI
             SettingsCommand settingsCommand = new SettingsCommand(this, 0x0103, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
 
             DexterCommand solutionAnalysisToolbarCommand = new DexterCommand(this, solutionConfigProvider, 0x0200, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
+            SettingsCommand settingsToolbarCommand = new SettingsCommand(this, 0x0203, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
 
             base.Initialize();
         }

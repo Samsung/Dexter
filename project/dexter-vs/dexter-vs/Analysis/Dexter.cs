@@ -24,11 +24,6 @@ namespace dexter_vs.Analysis
         /// </summary>   
         public event DataReceivedEventHandler ErrorDataReceived;
 
-        /// <summary>
-        /// Path to configuration file
-        /// </summary>
-        private string configPath;
-
         private Configuration configuration;
 
         /// <summary>
@@ -39,22 +34,10 @@ namespace dexter_vs.Analysis
         public Dexter(Configuration configuration) 
         {
             this.configuration = configuration;
-            if (!IsDexterFound) throw new FileNotFoundException("Cannot find dexter in specified path", configuration.dexterExecutorPath);
-            configPath = configuration.dexterHome + "\\bin\\dexter-config-vsplugin.json";
-            configuration.Save(configPath);
+            if (!configuration.IsDexterFound) throw new FileNotFoundException("Cannot find dexter in specified path", configuration.DexterExecutorPath);
+            configuration.Save();
         }
-
-        /// <summary>
-        /// Checks if dexter-executor.jar is found under DexerPath
-        /// </summary>
-        public bool IsDexterFound
-        {
-            get
-            {
-                return File.Exists(configuration.dexterExecutorPath);
-            }
-        }
-
+        
         /// <summary>
         /// Performs analysis of files in given path
         /// </summary>
@@ -80,14 +63,15 @@ namespace dexter_vs.Analysis
         /// <returns>new dexter process</returns>
         private Process CreateDexterProcess()
         {
-            string configFlag = File.Exists(configPath) ? "-f" + configPath : "";
-
+            string configFlag = File.Exists(Configuration.DefaultConfigurationPath) ? " -f " + Configuration.DefaultConfigurationPath : "";
+            string credentialsParams = configuration.standalone ? " -s " : " -u " + configuration.userName + " -p " + configuration.userPassword;
+                 
             Process dexterProcess = new Process();
             dexterProcess.StartInfo = new ProcessStartInfo()
             {
                 FileName = "java.exe",
-                Arguments = "-jar " + configuration.dexterExecutorPath + " -s -x " + configFlag,
-                WorkingDirectory = Path.GetDirectoryName(configuration.dexterExecutorPath),
+                Arguments = "-jar " + configuration.DexterExecutorPath + " -x " + configFlag + credentialsParams,
+                WorkingDirectory = Path.GetDirectoryName(configuration.DexterExecutorPath),
                 CreateNoWindow = true,
                 UseShellExecute = false,
                 RedirectStandardOutput = true,
@@ -105,7 +89,7 @@ namespace dexter_vs.Analysis
         /// <returns></returns>
         private Result GetAnalysisResult()
         {
-            string resultFile = Path.GetDirectoryName(configuration.dexterExecutorPath) + "\\dexter-result.xml";
+            string resultFile = Path.GetDirectoryName(configuration.DexterExecutorPath) + "\\dexter-result.xml";
             var resultFileInfo = new FileInfo(resultFile);
 
             if (!resultFileInfo.Exists) throw new FileNotFoundException("Cannot find result file: " + resultFile, resultFile);

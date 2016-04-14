@@ -99,7 +99,7 @@
 
       <Button guid="guidDexterCommandPackageCmdSet" id="DexterProjectAnalysisCommand" priority="0x0010" type="Button">
         <Parent guid="guidDexterCommandPackageCmdSet" id="DexterAnalysisSubMenuGroup" />
-        <Icon guid="guidImages" id="bmpPic2" />
+        <Icon guid="guidImages" id="bmpPic1" />
         <CommandFlag>TextChanges</CommandFlag>
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
@@ -109,7 +109,7 @@
       
       <Button guid="guidDexterCommandPackageCmdSet" id="DexterFileAnalysisCommand" priority="0x0100" type="Button">
         <Parent guid="guidDexterCommandPackageCmdSet" id="DexterAnalysisSubMenuGroup" />
-        <Icon guid="guidImages" id="bmpPicSearch" />
+        <Icon guid="guidImages" id="bmpPic1" />
         <CommandFlag>TextChanges</CommandFlag>
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
@@ -119,7 +119,7 @@
 
       <Button guid="guidDexterCommandPackageCmdSet" id="DexterSettingsCommand" priority="0x0103" type="Button">
         <Parent guid= "guidDexterCommandPackageCmdSet" id="DexterMenuGroup" />
-        <Icon guid="guidImages" id="bmpPicSearch" />
+        <Icon guid="guidImages" id="bmpPic2" />
         <Strings>
           <ButtonText>Settings...</ButtonText>
         </Strings>
@@ -128,11 +128,20 @@
 
       <Button guid="guidDexterCommandPackageCmdSet" id="DexterSolutionAnalysisToolbarCommand" priority="0x0100" type="Button">
         <Parent guid= "guidDexterCommandPackageCmdSet" id="DexterToolbarGroup" />
-        <Icon guid="guidImages" id="bmpPicSearch" />
+        <Icon guid="guidImages" id="bmpPic1" />
         <Strings>
           <ButtonText>Run Dexter Analysis on Solution</ButtonText>
         </Strings>
       </Button>
+
+      <Button guid="guidDexterCommandPackageCmdSet" id="DexterSettingsToolbarCommand" priority="0x0100" type="Button">
+        <Parent guid= "guidDexterCommandPackageCmdSet" id="DexterToolbarGroup" />
+        <Icon guid="guidImages" id="bmpPic2" />
+        <Strings>
+          <ButtonText>Settings</ButtonText>
+        </Strings>
+      </Button>
+
 
     </Buttons>
 
@@ -169,6 +178,7 @@
 
       <IDSymbol name="DexterToolbar" value="0x2000" />
       <IDSymbol name="DexterToolbarGroup" value="0x2050" />
+      <IDSymbol name="DexterSettingsToolbarCommand" value="0x0203" />
       <IDSymbol name="DexterSolutionAnalysisToolbarCommand" value="0x0200" />
 
     </GuidSymbol>

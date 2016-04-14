@@ -29,8 +29,6 @@ namespace dexter_vs.UI.Config
         /// <returns>new DexterInfo</returns>
         public virtual DexterInfo Create()
         {   
-            Solution solution = dte.Solution;
-
             return new DexterInfo()
             {
                 //TODO: Add configuration of these properties
