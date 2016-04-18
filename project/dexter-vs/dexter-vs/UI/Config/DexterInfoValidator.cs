@@ -8,9 +8,17 @@ namespace dexter_vs.UI.Config
     /// <summary>
     /// Validates correctness of DexterInfo
     /// </summary>
-    internal class DexterInfoValidator
+    internal sealed class DexterInfoValidator
     {
- 
+        /// <summary>
+        /// Dexter path validation
+        /// </summary>
+        /// <returns>true, if dexter was found in given path</returns>
+        public bool ValidateDexterPath(DexterInfo dexterInfo)
+        {
+            return dexterInfo.IsDexterFound;
+        }
+
         /// <summary>
         /// Server settings validation
         /// </summary>
@@ -25,18 +33,25 @@ namespace dexter_vs.UI.Config
 
             if (!uriValid)
             {
-                validationResult = "Error: Server address is in wrong format";
-                return false;
+                return handleWrongServerAddress(out validationResult);
             }
 
             WebRequest request = WebRequest.Create(uri);
             request.Timeout = 5000;
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
+            HttpWebResponse response;
+            
+            try
+            {
+                response = (HttpWebResponse)request.GetResponse();
+            }
+            catch (WebException e)
+            {
+                return handleWebException(e, out validationResult);
+            }
+            
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                validationResult = "Error: server returned code: " + response.StatusCode;
-                return false;
+                return handleWrongServerResponse(response, out validationResult);
             }
 
             string html = string.Empty;
@@ -49,13 +64,11 @@ namespace dexter_vs.UI.Config
 
             if (html == "ok")
             {
-                validationResult = "Connection ok!";
-                return true;
+                return handleServerOk(out validationResult);
             }
             else
             {
-                validationResult = "Error: server returned message: " + html;
-                return false;
+                return handleWrongServerMessage(html, out validationResult);
             }
         }
 
@@ -73,8 +86,7 @@ namespace dexter_vs.UI.Config
 
             if (!uriValid)
             {
-                validationResult = "Error: Server address is in wrong format";
-                return false;
+                return handleWrongServerAddress(out validationResult);
             }
 
             WebRequest request = WebRequest.Create(uri);
@@ -90,31 +102,60 @@ namespace dexter_vs.UI.Config
             }
             catch (WebException e)
             {
-                HttpWebResponse errorResponse = (HttpWebResponse)e.Response;
-
-                if (errorResponse.StatusCode == HttpStatusCode.Unauthorized)
-                {
-                    validationResult = "Error: Wrong user name or password";
-                    return false;
-                }
-                else
-                {
-                    validationResult = "Error: server returned code: " + errorResponse.StatusCode;
-                    return false;
-                }
+                return handleWebException(e, out validationResult);
             }
 
-            validationResult = "Connection ok!";
-            return true;
+            return handleServerOk(out validationResult);
         }
 
-        /// <summary>
-        /// Dexter path validation
-        /// </summary>
-        /// <returns>true, if dexter was found in given path</returns>
-        public bool ValidateDexterPath(DexterInfo dexterInfo)
+        private bool handleWebException(WebException e, out string validationResult)
         {
-            return dexterInfo.IsDexterFound;
+            HttpWebResponse errorResponse = (HttpWebResponse)e.Response;
+
+            if (errorResponse == null)
+            {
+                return handleWrongServerMessage(e.Message, out validationResult);
+            }
+            else if (errorResponse.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return handleWrongCredentials(out validationResult);
+            }
+            else
+            {
+                return handleWrongServerResponse(errorResponse, out validationResult);
+            }
+        }
+
+        private bool handleWrongServerAddress(out string validationResult)
+        {
+            validationResult = "Error: Wrong server address";
+            return false;
+        }
+
+        private bool handleWrongServerResponse(HttpWebResponse response, out string validationResult)
+        {
+            int statusCode = (int) response.StatusCode;
+            string statusMessage = response.StatusCode.ToString();
+            validationResult = string.Format("Error: server returned code {0} ({1})", statusCode, statusMessage);
+            return false;
+        }
+
+        private bool handleWrongServerMessage(string message, out string validationResult)
+        {
+            validationResult = string.Format("Error: {0}", message);
+            return false;
+        }
+
+        private bool handleWrongCredentials(out string validationResult)
+        {
+            validationResult = "Error: Wrong user name or password";
+            return false;
+        }
+
+        private bool handleServerOk(out string validationResult)
+        {
+            validationResult = "Connection ok!";
+            return true;
         }
     }
 }

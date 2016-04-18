@@ -25,9 +25,9 @@ namespace dexter_vs.UI.Config
             PlaceholderColor = ForeColor;
             normalFont = Font;
             normalColor = ForeColor;
-            Validating += updatePlaceholder;
-            GotFocus += clearPlaceholder;
-            VisibleChanged += updatePlaceholder;
+            Validating += (o, p) => updatePlaceholder();
+            GotFocus += (o, p) => clearPlaceholder();
+            VisibleChanged += (o, p) => updatePlaceholder();
         }
 
         /// <summary>
@@ -71,14 +71,29 @@ namespace dexter_vs.UI.Config
             }
         }
 
+        /// <inheritDoc/>
+        public override string Text
+        {
+            get
+            {
+                return base.Text;
+            }
+
+            set
+            {
+                base.Text = value;
+                updatePlaceholder();
+            }
+        }
+
         /// <summary>
         /// Updates placeholder. If text is empty, then sets placeholder text
         /// </summary>
-        public void UpdatePlaceholder()
+        private void updatePlaceholder()
         {
             if (Text.Length == 0 || Text == PlaceholderText)
             {
-                Text = PlaceholderText;
+                base.Text = PlaceholderText;
                 Font = PlaceholderFont;
                 ForeColor = PlaceholderColor;
             }
@@ -92,26 +107,14 @@ namespace dexter_vs.UI.Config
         /// <summary>
         /// Clears placeholder 
         /// </summary>
-        public void ClearPlaceholder()
+        private void clearPlaceholder()
         {
-            if (Text == PlaceholderText)
+            if (base.Text == PlaceholderText)
             {
-                Text = "";
+                base.Text = "";
                 Font = normalFont;
                 ForeColor = normalColor;
             }
         }
-
-
-        private void updatePlaceholder(object sender, EventArgs e)
-        {
-            UpdatePlaceholder();
-        }
-
-        private void clearPlaceholder(object sender, EventArgs e)
-        {
-            ClearPlaceholder();
-        }
-        
     }
 }

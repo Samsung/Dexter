@@ -45,9 +45,6 @@ namespace dexter_vs.UI.Config
                 userNameTextBox.Text = configuration.userName;
                 userPasswordTextBox.Text = configuration.userPassword;
                 standaloneCheckBox.Checked = configuration.standalone;
-
-                userNameTextBox.UpdatePlaceholder();
-                userPasswordTextBox.UpdatePlaceholder();
             }
         }
 
@@ -143,7 +140,6 @@ namespace dexter_vs.UI.Config
             {
                 string dexterPath = fbd.SelectedPath;
                 dexterPathTextBox.Text = dexterPath;
-                dexterPathTextBox.UpdatePlaceholder();
             }
         }
 
