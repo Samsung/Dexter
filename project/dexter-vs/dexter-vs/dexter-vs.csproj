@@ -62,35 +62,38 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="UI\Config\DexterInfoValidator.cs" />
-    <Compile Include="UI\Config\FileDexterInfoProvider.cs" />
-    <Compile Include="UI\Config\IDexterInfoProvider.cs" />
-    <Compile Include="UI\Config\DexterInfoProvider.cs" />
-    <Compile Include="UI\Config\PlaceholderTextBox.cs">
+    <Compile Include="Config\DexterInfoValidator.cs" />
+    <Compile Include="Config\FileDexterInfoProvider.cs" />
+    <Compile Include="Config\IDexterInfoProvider.cs" />
+    <Compile Include="Config\DexterInfoProvider.cs" />
+    <Compile Include="UI\Settings\SettingsPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UI\Config\ProjectInfoProvider.cs" />
-    <Compile Include="UI\Config\FileInfoProvider.cs" />
-    <Compile Include="UI\Config\SettingsWindow.cs">
-      <SubType>Form</SubType>
+    <Compile Include="UI\Settings\PlaceholderTextBox.cs">
+      <SubType>Component</SubType>
     </Compile>
-    <Compile Include="UI\Config\SettingsWindow.Designer.cs">
-      <DependentUpon>SettingsWindow.cs</DependentUpon>
+    <Compile Include="Config\ProjectInfoProvider.cs" />
+    <Compile Include="Config\FileInfoProvider.cs" />
+    <Compile Include="UI\Settings\SettingsControl.cs">
+      <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UI\Config\SolutionInfoProvider.cs" />
-    <Compile Include="UI\Config\ConfigurationProvider.cs" />
+    <Compile Include="UI\Settings\SettingsControl.Designer.cs">
+      <DependentUpon>SettingsControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Config\SolutionInfoProvider.cs" />
+    <Compile Include="Config\ConfigurationProvider.cs" />
     <Compile Include="Analysis\Config\DexterInfo.cs" />
-    <Compile Include="UI\Config\IProjectInfoProvider.cs" />
-    <Compile Include="UI\Config\IConfigurationProvider.cs" />
+    <Compile Include="Config\IProjectInfoProvider.cs" />
+    <Compile Include="Config\IConfigurationProvider.cs" />
     <Compile Include="Analysis\Config\ProjectInfo.cs" />
-    <Compile Include="UI\Config\ValidationPicture.cs">
+    <Compile Include="UI\Settings\ValidationPicture.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI\DexterCommand.cs" />
     <Compile Include="UI\DexterCommandPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\DexterFileCommand.cs" />
-    <Compile Include="UI\SettingsCommand.cs" />
+    <Compile Include="UI\Settings\SettingsCommand.cs" />
     <Compile Include="UI\Tasks\NavigateTaskEventHandler.cs" />
     <Compile Include="UI\VsSolutionEvents.cs" />
     <Compile Include="UI\Tasks\DexterTaskProvider.cs" />
@@ -104,15 +107,19 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="index.html" />
     <Content Include="UI\Resources\ok.png" />
-    <Content Include="UI\Resources\wrong.png" />
+    <Content Include="UI\Resources\wrong.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <VSCTCompile Include="UI\DexterCommandPackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
-    <Content Include="UI\Resources\DexterCommand.png" />
+    <Content Include="UI\Resources\DexterCommand.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="UI\Resources\DexterCommandPackage.ico" />
-    <Content Include="stylesheet.css" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -211,6 +218,7 @@
       <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="PresentationFramework" />
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
@@ -226,8 +234,8 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="UI\Config\SettingsWindow.resx">
-      <DependentUpon>SettingsWindow.cs</DependentUpon>
+    <EmbeddedResource Include="UI\Settings\SettingsControl.resx">
+      <DependentUpon>SettingsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>

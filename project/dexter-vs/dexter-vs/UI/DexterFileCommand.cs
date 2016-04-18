@@ -1,14 +1,10 @@
-﻿using dexter_vs.UI.Config;
+﻿using dexter_vs.Config;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace dexter_vs.UI
 {

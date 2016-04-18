@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace dexter_vs.UI.Config
+namespace dexter_vs.UI.Settings
 {
     /// <summary>
     /// TextBox with default value 

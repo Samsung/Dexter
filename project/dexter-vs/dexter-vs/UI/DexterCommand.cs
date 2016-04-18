@@ -7,17 +7,17 @@
 using System;
 using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
-using dexter_vs.Analysis;
 using EnvDTE80;
 using EnvDTE;
 using System.Diagnostics;
-using dexter_vs.Defects;
-using Microsoft.VisualStudio.Shell.Interop;
-using dexter_vs.UI.Config;
-using Configuration = dexter_vs.Analysis.Config.Configuration;
-using dexter_vs.UI.Tasks;
 using System.Windows.Forms;
+using Microsoft.VisualStudio.Shell.Interop;
+using dexter_vs.UI.Tasks;
 using dexter_vs.Analysis.Config;
+using dexter_vs.Config;
+using dexter_vs.Defects;
+using dexter_vs.Analysis;
+using Configuration = dexter_vs.Analysis.Config.Configuration;
 
 namespace dexter_vs.UI
 {

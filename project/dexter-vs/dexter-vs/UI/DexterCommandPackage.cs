@@ -18,8 +18,9 @@ using Microsoft.Win32;
 using EnvDTE;
 using System.IO;
 using System.Windows.Forms;
-using dexter_vs.UI.Config;
+using dexter_vs.UI.Settings;
 using Configuration = dexter_vs.Analysis.Config.Configuration;
+using dexter_vs.Config;
 
 namespace dexter_vs.UI
 {
@@ -47,6 +48,7 @@ namespace dexter_vs.UI
     [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExists_string)]
     [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionHasMultipleProjects_string)]
     [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionHasSingleProject_string)]
+    [ProvideOptionPage(typeof(SettingsPage),"Dexter", "Dexter options", 0, 0, true)]
     [Guid(DexterCommandPackage.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     public sealed class DexterCommandPackage : Package

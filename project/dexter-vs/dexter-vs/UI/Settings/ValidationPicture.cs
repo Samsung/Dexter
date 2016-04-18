@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace dexter_vs.UI.Config
+namespace dexter_vs.UI.Settings
 {
     /// <summary>
     /// Picture with two states "valid" and "wrong"

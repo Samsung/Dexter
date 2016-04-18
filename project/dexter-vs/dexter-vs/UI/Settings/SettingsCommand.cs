@@ -1,13 +1,10 @@
-﻿using dexter_vs.UI.Config;
+﻿
 using Microsoft.VisualStudio.Shell;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Design;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows;
 
-namespace dexter_vs.UI
+namespace dexter_vs.UI.Settings
 {
     /// <summary>
     /// Command handler - for Dexter Settings
@@ -49,9 +46,7 @@ namespace dexter_vs.UI
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-           var settings = new SettingsWindow();
-
-           settings.Show();
+            (ServiceProvider as Package).ShowOptionPage(typeof(SettingsPage));
         }
     }
 }

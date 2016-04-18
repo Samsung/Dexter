@@ -1,41 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using dexter_vs.Analysis.Config;
-using System.Net;
 using System.IO;
+using dexter_vs.Config;
+using EnvDTE;
+using Configuration = dexter_vs.Analysis.Config.Configuration;
 
-namespace dexter_vs.UI.Config
+namespace dexter_vs.UI.Settings
 {
-    public partial class SettingsWindow : Form, IDexterInfoProvider
+
+    public partial class SettingsControl : UserControl, IDexterInfoProvider
     {
         /// <summary>
         /// DexterInfo validator
         /// </summary>
         private readonly DexterInfoValidator validator = new DexterInfoValidator();
 
-        public SettingsWindow()
+        public SettingsControl()
         {
             InitializeComponent();
-            Shown += SettingsWindow_Shown;
+           // Shown += SettingsWindow_Shown;
         }
-
-
-        private void SettingsWindow_Shown(object sender, EventArgs e)
-        {
-            loadConfiguration();
-        }
-
+        
         /// <summary>
         /// Load configuration values from file 
         /// </summary>
-        private void loadConfiguration()
+        public void LoadConfiguration()
         {
             if (File.Exists(Configuration.DefaultConfigurationPath))
             {
@@ -75,11 +66,6 @@ namespace dexter_vs.UI.Config
             testConnectionButton.Enabled = !standaloneAnalysis;
         }
 
-        private void cancelButton_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
-
         private void dexterPathTextBox_Validating(object sender, CancelEventArgs e)
         {
             dexterPathIndicator.Valid =  validator.ValidateDexterPath(Create());
@@ -108,6 +94,17 @@ namespace dexter_vs.UI.Config
             connectionStatusLabel.Text = message;
         }
 
+        private void dexterPathButton_Click(object sender, EventArgs e)
+        {
+            FolderBrowserDialog fbd = new FolderBrowserDialog();
+            DialogResult result = fbd.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                string dexterPath = fbd.SelectedPath;
+                dexterPathTextBox.Text = dexterPath;
+            }
+        }
+
         /// <summary>
         /// Creates DexterInfo object from user settings 
         /// </summary>
@@ -115,7 +112,7 @@ namespace dexter_vs.UI.Config
         public DexterInfo Create()
         {
             Uri serverAddress;
-            
+
             bool uriCreated = Uri.TryCreate(serverTextBox.Text, UriKind.Absolute, out serverAddress);
 
             string username = userNameTextBox.IsPlaceholderUsed ? "" : userNameTextBox.Text;
@@ -132,18 +129,11 @@ namespace dexter_vs.UI.Config
             };
         }
 
-        private void dexterPathButton_Click(object sender, EventArgs e)
-        {
-            FolderBrowserDialog fbd = new FolderBrowserDialog();
-            DialogResult result = fbd.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                string dexterPath = fbd.SelectedPath;
-                dexterPathTextBox.Text = dexterPath;
-            }
-        }
-
-        private void okButton_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Validates and saves user settings 
+        /// </summary>
+        /// <returns>true, if settings were saved</returns>
+        public bool ValidateAndSave()
         {
             string result;
             DexterInfo dexterInfo = Create();
@@ -151,9 +141,9 @@ namespace dexter_vs.UI.Config
             if (!validator.ValidateDexterPath(dexterInfo))
             {
                 MessageBox.Show("Dexter wasn't found in given path. You cannot perform analysis until you set a proper path.", "Dexter error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                return false;
             }
-            
+
             if (!standaloneCheckBox.Checked && !validator.ValidateServerConnection(dexterInfo, out result))
             {
                 MessageBox.Show("Couldn't connect to Dexter server. Setting analysis mode to standalone", "Dexter warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -168,7 +158,7 @@ namespace dexter_vs.UI.Config
                 }
             }
             saveConfiguration();
-            Close();
+            return true;
         }
 
     }

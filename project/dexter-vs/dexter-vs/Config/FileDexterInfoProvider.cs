@@ -1,7 +1,7 @@
 ﻿using dexter_vs.Analysis.Config;
 using System.IO;
 
-namespace dexter_vs.UI.Config
+namespace dexter_vs.Config
 {
     /// <summary>
     /// Provides DexterInfo from given configuration file

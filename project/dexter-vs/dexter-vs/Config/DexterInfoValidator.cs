@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Net;
 
-namespace dexter_vs.UI.Config
+namespace dexter_vs.Config
 {
     /// <summary>
     /// Validates correctness of DexterInfo

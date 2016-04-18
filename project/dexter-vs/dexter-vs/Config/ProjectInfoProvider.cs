@@ -3,13 +3,13 @@ using EnvDTE;
 using System;
 using System.IO;
 
-namespace dexter_vs.UI.Config
+namespace dexter_vs.Config
 {
     /// <summary>
     /// Provides project info based on user preferences.
-    /// Sets analysis scope to currently opened file.  
+    /// Sets analysis scope to whole project.  
     /// </summary>
-    internal class FileInfoProvider : IProjectInfoProvider
+    internal class ProjectInfoProvider : IProjectInfoProvider
     {
         /// <summary>
         /// DTE object
@@ -20,27 +20,28 @@ namespace dexter_vs.UI.Config
         /// Creates new ProjectInfoProvider
         /// </summary>
         /// <param name="serviceProvider"> service provider from the owner package</param>
-        public FileInfoProvider(IServiceProvider serviceProvider)
+        public ProjectInfoProvider(IServiceProvider serviceProvider)
         {
             dte = (DTE)serviceProvider.GetService(typeof(DTE));
         }
 
         /// <summary>
-        /// Creates new ProjectInfo based on currently opened file
+        /// Creates new ProjectInfo based on user preferences 
         /// </summary>
         /// <returns>new ProjectInfo</returns>
         public virtual ProjectInfo Create()
-        {
-            Document doc = dte.ActiveDocument;
-            
+        {   
+            Solution solution = dte.Solution;
+            Projects projects = solution.Projects;
+            Project project = projects.Item(1);
+
             return new ProjectInfo()
             {
-                projectName = Path.GetFileNameWithoutExtension(doc.FullName),
-                projectFullPath = Path.GetDirectoryName(doc.FullName),
-                sourceDir = { Path.GetDirectoryName(doc.FullName) },
-                headerDir = { Path.GetDirectoryName(doc.FullName) },
-                fileName = { Path.GetFileName(doc.FullName) },
-                type = "FILE"
+                projectName = Path.GetFileNameWithoutExtension(project.FullName),
+                projectFullPath = Path.GetDirectoryName(project.FullName),
+                sourceDir = { Path.GetDirectoryName(project.FullName) },
+                headerDir = { Path.GetDirectoryName(project.FullName) },
+                type = "PROJECT"
             };
         }
     }

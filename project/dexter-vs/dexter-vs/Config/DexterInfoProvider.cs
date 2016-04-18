@@ -2,7 +2,7 @@
 using EnvDTE;
 using System;
 
-namespace dexter_vs.UI.Config
+namespace dexter_vs.Config
 {
     /// <summary>
     /// Provides Dexter info based on user preferences.
