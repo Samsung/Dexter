@@ -62,7 +62,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="Analysis\Config\ConfigurationTest.cs" />
+    <Compile Include="Config\ConfigurationTest.cs" />
     <Compile Include="Analysis\DexterTest.cs" />
     <Compile Include="Defect\ResultTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

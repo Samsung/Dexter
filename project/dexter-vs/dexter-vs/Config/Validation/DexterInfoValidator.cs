@@ -1,9 +1,8 @@
-﻿using dexter_vs.Analysis.Config;
-using System;
+﻿using System;
 using System.IO;
 using System.Net;
 
-namespace dexter_vs.Config
+namespace dexter_vs.Config.Validation
 {
     /// <summary>
     /// Validates correctness of DexterInfo

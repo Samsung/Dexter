@@ -1,4 +1,4 @@
-﻿using dexter_vs.Analysis.Config;
+﻿using dexter_vs.Config;
 using dexter_vs.Defects;
 using System;
 using System.Diagnostics;

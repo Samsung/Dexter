@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using System;
 
-namespace dexter_vs.Analysis.Config
+namespace dexter_vs.Config
 {
     [TestFixture]
     public class ConfigurationTest

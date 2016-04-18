@@ -1,6 +1,4 @@
-﻿using dexter_vs.Analysis.Config;
-
-namespace dexter_vs.Config
+﻿namespace dexter_vs.Config.Providers
 {
     /// <summary>
     /// Provides ProjectInfo 

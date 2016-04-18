@@ -1,11 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using dexter_vs.Analysis.Config;
 using System.IO;
 using dexter_vs.Config;
-using EnvDTE;
-using Configuration = dexter_vs.Analysis.Config.Configuration;
+using Configuration = dexter_vs.Config.Configuration;
+using dexter_vs.Config.Providers;
+using dexter_vs.Config.Validation;
 
 namespace dexter_vs.UI.Settings
 {

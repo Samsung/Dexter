@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace dexter_vs.Analysis.Config
+namespace dexter_vs.Config
 {
     /// <summary>
     /// Information about project to analyse

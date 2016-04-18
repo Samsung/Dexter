@@ -1,13 +1,8 @@
-﻿using dexter_vs.Analysis.Config;
-using Newtonsoft.Json;
-using System;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace dexter_vs.Analysis.Config
+namespace dexter_vs.Config
 {
     /// <summary>
     /// Dexter configuration

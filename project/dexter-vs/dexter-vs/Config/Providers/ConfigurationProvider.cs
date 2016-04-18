@@ -1,6 +1,4 @@
-﻿using Configuration = dexter_vs.Analysis.Config.Configuration;
-
-namespace dexter_vs.Config
+﻿namespace dexter_vs.Config.Providers
 {
     /// <summary>
     /// Provides configuration object for Dexter based on user preferences.

@@ -1,4 +1,4 @@
-﻿using dexter_vs.Config;
+﻿using dexter_vs.Config.Providers;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio;

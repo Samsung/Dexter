@@ -13,11 +13,12 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using Microsoft.VisualStudio.Shell.Interop;
 using dexter_vs.UI.Tasks;
-using dexter_vs.Analysis.Config;
 using dexter_vs.Config;
 using dexter_vs.Defects;
 using dexter_vs.Analysis;
-using Configuration = dexter_vs.Analysis.Config.Configuration;
+using Configuration = dexter_vs.Config.Configuration;
+using dexter_vs.Config.Validation;
+using dexter_vs.Config.Providers;
 
 namespace dexter_vs.UI
 {

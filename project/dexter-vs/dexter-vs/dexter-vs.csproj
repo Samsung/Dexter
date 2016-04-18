@@ -51,7 +51,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Analysis\Config\Configuration.cs" />
+    <Compile Include="Config\Configuration.cs" />
     <Compile Include="Defects\Defect.cs" />
     <Compile Include="Defects\Result.cs" />
     <Compile Include="Analysis\Dexter.cs" />
@@ -62,30 +62,29 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Config\DexterInfoValidator.cs" />
-    <Compile Include="Config\FileDexterInfoProvider.cs" />
-    <Compile Include="Config\IDexterInfoProvider.cs" />
-    <Compile Include="Config\DexterInfoProvider.cs" />
+    <Compile Include="Config\Validation\DexterInfoValidator.cs" />
+    <Compile Include="Config\Providers\FileDexterInfoProvider.cs" />
+    <Compile Include="Config\Providers\IDexterInfoProvider.cs" />
     <Compile Include="UI\Settings\SettingsPage.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UI\Settings\PlaceholderTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Config\ProjectInfoProvider.cs" />
-    <Compile Include="Config\FileInfoProvider.cs" />
+    <Compile Include="Config\Providers\ProjectInfoProvider.cs" />
+    <Compile Include="Config\Providers\FileInfoProvider.cs" />
     <Compile Include="UI\Settings\SettingsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UI\Settings\SettingsControl.Designer.cs">
       <DependentUpon>SettingsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Config\SolutionInfoProvider.cs" />
-    <Compile Include="Config\ConfigurationProvider.cs" />
-    <Compile Include="Analysis\Config\DexterInfo.cs" />
-    <Compile Include="Config\IProjectInfoProvider.cs" />
-    <Compile Include="Config\IConfigurationProvider.cs" />
-    <Compile Include="Analysis\Config\ProjectInfo.cs" />
+    <Compile Include="Config\Providers\SolutionInfoProvider.cs" />
+    <Compile Include="Config\Providers\ConfigurationProvider.cs" />
+    <Compile Include="Config\DexterInfo.cs" />
+    <Compile Include="Config\Providers\IProjectInfoProvider.cs" />
+    <Compile Include="Config\Providers\IConfigurationProvider.cs" />
+    <Compile Include="Config\ProjectInfo.cs" />
     <Compile Include="UI\Settings\ValidationPicture.cs">
       <SubType>Component</SubType>
     </Compile>

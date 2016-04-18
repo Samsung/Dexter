@@ -1,9 +1,8 @@
-﻿using dexter_vs.Analysis.Config;
-using EnvDTE;
+﻿using EnvDTE;
 using System;
 using System.IO;
 
-namespace dexter_vs.Config
+namespace dexter_vs.Config.Providers
 {
     /// <summary>
     /// Provides project info based on user preferences.
