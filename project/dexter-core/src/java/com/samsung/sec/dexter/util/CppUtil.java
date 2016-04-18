@@ -86,6 +86,29 @@ public class CppUtil {
 
 		return mapModuleName;
 	}
+	
+	public static synchronized Map<String, String> extractModuleName(final IASTTranslationUnit translationUnit, final String fileExtension, final int lineNumber) {
+		Map<String, String> mapModuleName = null;
+
+		ASTVisitor visitor = new ASTVisitor() {
+			public int visit(IASTDeclaration declaration) {
+				
+				boolean visitStatus = DexterUtilHelper.visitFunction(declaration, lineNumber, fileExtension);
+
+				if (visitStatus) {
+					return ASTVisitor.PROCESS_ABORT;
+				}
+
+				return ASTVisitor.PROCESS_CONTINUE;
+
+			}
+		};
+		visitor.shouldVisitDeclarations = true;
+		translationUnit.accept(visitor);
+		mapModuleName = DexterUtilHelper.getMapData();
+
+		return mapModuleName;
+	}
 
 	/**
 	 * GeneratorCodeMetrics(String sourceFilePath) method is responsible for

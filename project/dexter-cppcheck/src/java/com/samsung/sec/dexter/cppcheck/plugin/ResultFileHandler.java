@@ -29,11 +29,15 @@ package com.samsung.sec.dexter.cppcheck.plugin;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
+import org.eclipse.cdt.core.parser.ParserLanguage;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
+import com.google.common.io.Files;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
@@ -46,12 +50,16 @@ import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.plugin.PluginVersion;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.util.CppUtil;
+import com.samsung.sec.dexter.util.TranslationUnitFactory;
 
 public class ResultFileHandler extends DefaultHandler {
 	private PreOccurence currentOccurence;
 	private AnalysisResult result;
 	private AnalysisConfig config;
 	private CheckerConfig checkerConfig;
+	private String sourcecode;
+	private IASTTranslationUnit translationUnit;
+	private String fileExtension;
 	
 	private final static Logger logger = Logger.getLogger(ResultFileHandler.class);
 	
@@ -59,6 +67,12 @@ public class ResultFileHandler extends DefaultHandler {
 		this.config = config;
 		this.checkerConfig = checkerConfig;
 		this.result = result;
+		
+		sourcecode = config.getSourcecodeThatReadIfNotExist();
+		translationUnit = TranslationUnitFactory.getASTTranslationUnit(sourcecode, ParserLanguage.CPP,
+				config.getSourceFileFullPath());
+
+		fileExtension = Files.getFileExtension(config.getFileName());//sourceFilePath.substring(sourceFilePath.indexOf('.'));
 	}
 	
 	/* (non-Javadoc)
@@ -138,7 +152,13 @@ public class ResultFileHandler extends DefaultHandler {
 	    		currentOccurence.setMessage(currentOccurence.getMessage() + " " + localName);
 	    	}
 	    	
-            Map<String, String> nameMap = CppUtil.extractModuleName(config.getSourceFileFullPath(), currentOccurence.getStartLine());
+            
+	    	
+	    	Map<String, String> nameMap = CppUtil.extractModuleName(translationUnit, sourcecode, currentOccurence.getStartLine());
+            
+            
+            
+            
             if(Strings.isNullOrEmpty(nameMap.get(ResultFileConstant.CLASS_NAME)) == false){
             	currentOccurence.setClassName(nameMap.get(ResultFileConstant.CLASS_NAME));
             }

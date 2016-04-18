@@ -73,7 +73,7 @@ public class AnalysisResultFileManager {
 		final File resultFolder = new File(resultFolderStr);
 		
 		final String resultFileName = ResultFileConstant.RESULF_FILE_PREFIX 
-				+ baseResult.getFileName() + "_";
+				+ baseResult.getFileName() + "_"; 
 		File[] oldResultFiles = DexterUtil.getSubFiles(resultFolder, resultFileName);
 		if(oldResultFiles == null || oldResultFiles.length == 0)
 			return;
