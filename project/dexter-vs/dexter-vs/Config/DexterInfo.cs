@@ -21,7 +21,7 @@ namespace dexter_vs.Config
         /// <summary>
         /// Port of Dexter server
         /// </summary>
-        public string dexterServerPort { get; set; }
+        public int dexterServerPort { get; set; }
 
         /// <summary>
         /// Dexter Server user name 
@@ -63,7 +63,7 @@ namespace dexter_vs.Config
         {
             dexterHome = "";
             dexterServerIp = "";
-            dexterServerPort = "0";
+            dexterServerPort = 0;
             userName = "";
             userPassword = "";
             standalone = true;

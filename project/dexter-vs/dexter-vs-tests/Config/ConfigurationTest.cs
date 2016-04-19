@@ -12,7 +12,7 @@ namespace dexter_vs.Config
         [SetUp]
         public void Init()
         {
-            var configuration = new Configuration()
+            configuration = new Configuration()
             {
                 dexterHome = "D:/Applications/dexter/0.9.2/dexter-cli_0.9.2_32/",
                 projectName = "TestData",
@@ -20,7 +20,7 @@ namespace dexter_vs.Config
                 sourceDir = { AppDomain.CurrentDomain.BaseDirectory + "../../TestData/SampleCppProject/" },
                 headerDir = { AppDomain.CurrentDomain.BaseDirectory + "../../TestData/SampleCppProject/" },
                 projectFullPath = AppDomain.CurrentDomain.BaseDirectory + "../../TestData/SampleCppProject/",
-                dexterServerPort = "0000",
+                dexterServerPort = 0,
                 dexterServerIp = "dexter-server"
             };
         }

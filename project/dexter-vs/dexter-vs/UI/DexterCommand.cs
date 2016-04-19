@@ -106,7 +106,7 @@ namespace dexter_vs.UI
         /// <param name="e">Event args.</param>
         private void MenuItemCallback(object sender, EventArgs e)
         {
-            Configuration config = ConfigurationProvider.Create();
+            Configuration config = ConfigurationProvider.Load();
             DexterInfo dexterInfo = DexterInfo.fromConfiguration(config);
             string validationResult;
              

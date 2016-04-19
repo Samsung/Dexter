@@ -52,6 +52,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Config\Configuration.cs" />
+    <Compile Include="Config\Providers\SettingsStoreDexterInfoProvider.cs" />
     <Compile Include="Defects\Defect.cs" />
     <Compile Include="Defects\Result.cs" />
     <Compile Include="Analysis\Dexter.cs" />

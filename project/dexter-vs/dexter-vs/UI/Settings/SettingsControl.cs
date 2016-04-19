@@ -1,52 +1,32 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using System.IO;
 using dexter_vs.Config;
-using Configuration = dexter_vs.Config.Configuration;
 using dexter_vs.Config.Providers;
 using dexter_vs.Config.Validation;
 
 namespace dexter_vs.UI.Settings
 {
-
+    /// <summary>
+    /// Control for loading and saving Dexter settings by user
+    /// </summary>
     public partial class SettingsControl : UserControl, IDexterInfoProvider
     {
+        private readonly IDexterInfoProvider dexterInfoProvider;
+
         /// <summary>
         /// DexterInfo validator
         /// </summary>
         private readonly DexterInfoValidator validator = new DexterInfoValidator();
 
-        public SettingsControl()
+        /// <summary>
+        /// Creates new SettingsControl
+        /// </summary>
+        /// <param name="dexterInfoProvider">object to load and save Dexter settings </param>
+        public SettingsControl(IDexterInfoProvider dexterInfoProvider) : base()
         {
+            this.dexterInfoProvider = dexterInfoProvider;
             InitializeComponent();
-           // Shown += SettingsWindow_Shown;
-        }
-        
-        /// <summary>
-        /// Load configuration values from file 
-        /// </summary>
-        public void LoadConfiguration()
-        {
-            if (File.Exists(Configuration.DefaultConfigurationPath))
-            {
-                Configuration configuration = Configuration.Load();
-                dexterPathTextBox.Text = configuration.dexterHome;
-                serverTextBox.Text = string.Format("http://{0}:{1}",configuration.dexterServerIp, configuration.dexterServerPort);
-                userNameTextBox.Text = configuration.userName;
-                userPasswordTextBox.Text = configuration.userPassword;
-                standaloneCheckBox.Checked = configuration.standalone;
-            }
-        }
-
-        /// <summary>
-        /// Saves configuration to file
-        /// </summary>
-        private void saveConfiguration()
-        {
-            DexterInfo dexterInfo = Create();
-            Configuration configuration = new Configuration(new ProjectInfo(), dexterInfo);
-            configuration.Save();
         }
 
         /// <summary>
@@ -68,17 +48,17 @@ namespace dexter_vs.UI.Settings
 
         private void dexterPathTextBox_Validating(object sender, CancelEventArgs e)
         {
-            dexterPathIndicator.Valid =  validator.ValidateDexterPath(Create());
+            dexterPathIndicator.Valid =  validator.ValidateDexterPath(GetDexterInfoFromSettings());
         }
 
         private void dexterPathTextBox_TextChanged(object sender, EventArgs e)
         {
-            dexterPathIndicator.Valid = validator.ValidateDexterPath(Create());
+            dexterPathIndicator.Valid = validator.ValidateDexterPath(GetDexterInfoFromSettings());
         }
         
         private void testConnectionButton_Click(object sender, EventArgs e)
         {
-            DexterInfo dexterInfo = Create();
+            DexterInfo dexterInfo = GetDexterInfoFromSettings();
             string message;
 
             bool serverValid = validator.ValidateServerConnection(dexterInfo, out message);
@@ -109,20 +89,20 @@ namespace dexter_vs.UI.Settings
         /// Creates DexterInfo object from user settings 
         /// </summary>
         /// <returns></returns>
-        public DexterInfo Create()
+        DexterInfo GetDexterInfoFromSettings()
         {
             Uri serverAddress;
 
             bool uriCreated = Uri.TryCreate(serverTextBox.Text, UriKind.Absolute, out serverAddress);
 
             string username = userNameTextBox.IsPlaceholderUsed ? "" : userNameTextBox.Text;
-            string password = userPasswordTextBox.IsPlaceholderUsed ? " " : userPasswordTextBox.Text;
+            string password = userPasswordTextBox.IsPlaceholderUsed ? "" : userPasswordTextBox.Text;
 
             return new DexterInfo()
             {
                 dexterHome = dexterPathTextBox.Text,
-                dexterServerIp = uriCreated ? serverAddress.Host : "http:\\dexter-server",
-                dexterServerPort = uriCreated ? serverAddress.Port.ToString() : "0000",
+                dexterServerIp = uriCreated ? serverAddress.Host : "",
+                dexterServerPort = uriCreated ? serverAddress.Port : 0,
                 userName = username,
                 userPassword = password,
                 standalone = standaloneCheckBox.Checked
@@ -136,7 +116,7 @@ namespace dexter_vs.UI.Settings
         public bool ValidateAndSave()
         {
             string result;
-            DexterInfo dexterInfo = Create();
+            DexterInfo dexterInfo = GetDexterInfoFromSettings();
 
             if (!validator.ValidateDexterPath(dexterInfo))
             {
@@ -144,22 +124,41 @@ namespace dexter_vs.UI.Settings
                 return false;
             }
 
-            if (!standaloneCheckBox.Checked && !validator.ValidateServerConnection(dexterInfo, out result))
+            if (!standaloneCheckBox.Checked)
             {
-                MessageBox.Show("Couldn't connect to Dexter server. Setting analysis mode to standalone", "Dexter warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                standaloneCheckBox.Checked = true;
-            }
-            else
-            {
-                if (!validator.ValidateUserCredentials(dexterInfo, out result))
+                if (!validator.ValidateServerConnection(dexterInfo, out result))
+                {
+                    MessageBox.Show("Couldn't connect to Dexter server. Setting analysis mode to standalone", "Dexter warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    standaloneCheckBox.Checked = true;
+                    dexterInfo.standalone = true;
+                }
+                else if (!validator.ValidateUserCredentials(dexterInfo, out result))
                 {
                     MessageBox.Show("Couldn't login to Dexter server. Setting analysis mode to standalone", "Dexter warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     standaloneCheckBox.Checked = true;
+                    dexterInfo.standalone = true;
                 }
             }
-            saveConfiguration();
+            Save(dexterInfo);
             return true;
         }
 
+        public void Save(DexterInfo dexterInfo)
+        {
+            dexterInfoProvider.Save(dexterInfo);
+        }
+
+        DexterInfo IDexterInfoProvider.Load()
+        {
+            DexterInfo dexterInfo = dexterInfoProvider.Load();
+
+            dexterPathTextBox.Text = dexterInfo.dexterHome;
+            serverTextBox.Text = string.IsNullOrEmpty(dexterInfo.dexterServerIp) ? "" : string.Format("{0}:{1}", dexterInfo.dexterServerIp, dexterInfo.dexterServerPort);
+            userNameTextBox.Text = dexterInfo.userName;
+            userPasswordTextBox.Text = dexterInfo.userPassword;
+            standaloneCheckBox.Checked = dexterInfo.standalone;
+
+            return dexterInfo;
+        }
     }
 }

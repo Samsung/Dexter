@@ -28,7 +28,7 @@ namespace dexter_vs.Config.Providers
         /// Creates new ProjectInfo based on currently opened file
         /// </summary>
         /// <returns>new ProjectInfo</returns>
-        public virtual ProjectInfo Create()
+        public virtual ProjectInfo Load()
         {
             Document doc = dte.ActiveDocument;
             

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="dexter_vs.Company.255fba20-4ada-4977-aabf-37ce58ff8d7a" Version="0.4.1" Language="en-US" Publisher="Samsung Electronics" />
+    <Identity Id="dexter_vs.Company.255fba20-4ada-4977-aabf-37ce58ff8d7a" Version="0.1" Language="en-US" Publisher="Samsung Electronics" />
     <DisplayName>Dexter</DisplayName>
     <Description xml:space="preserve">Dexter helps you to improve coding skills. Whenever you save a source file, Dexter analyzes it and shows its improvements point on your editor in real-time.
 </Description>

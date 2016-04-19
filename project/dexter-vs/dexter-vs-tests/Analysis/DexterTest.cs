@@ -21,7 +21,7 @@ namespace dexter_vs.Analysis
                 sourceDir = { AppDomain.CurrentDomain.BaseDirectory + "../../TestData/SampleCppProject/" },
                 headerDir = { AppDomain.CurrentDomain.BaseDirectory + "../../TestData/SampleCppProject/" },
                 projectFullPath = AppDomain.CurrentDomain.BaseDirectory + "../../TestData/SampleCppProject/",
-                dexterServerPort = "0000", 
+                dexterServerPort = 0, 
                 dexterServerIp = "dexter-server"
             };
 

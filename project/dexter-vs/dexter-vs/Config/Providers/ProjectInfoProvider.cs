@@ -28,7 +28,7 @@ namespace dexter_vs.Config.Providers
         /// Creates new ProjectInfo based on user preferences 
         /// </summary>
         /// <returns>new ProjectInfo</returns>
-        public virtual ProjectInfo Create()
+        public virtual ProjectInfo Load()
         {   
             Solution solution = dte.Solution;
             Projects projects = solution.Projects;

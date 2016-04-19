@@ -71,7 +71,7 @@ namespace dexter_vs.UI
             IProjectInfoProvider solutionInfoProvider = new SolutionInfoProvider(this);
             IProjectInfoProvider projectInfoProvider = new ProjectInfoProvider(this);
             IProjectInfoProvider fileInfoProvider = new FileInfoProvider(this);
-            IDexterInfoProvider dexterInfoProvider = new FileDexterInfoProvider(Configuration.DefaultConfigurationPath);
+            IDexterInfoProvider dexterInfoProvider = new SettingsStoreDexterInfoProvider(this);
 
             ConfigurationProvider solutionConfigProvider = new ConfigurationProvider(solutionInfoProvider, dexterInfoProvider);
             ConfigurationProvider projectConfigProvider = new ConfigurationProvider(projectInfoProvider, dexterInfoProvider);

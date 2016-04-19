@@ -6,9 +6,9 @@
     internal interface IConfigurationProvider
     {
         /// <summary>
-        /// Creates new Configuration object
+        /// Loads new Configuration object
         /// </summary>
         /// <returns>new Configuration</returns>
-        Configuration Create();
+        Configuration Load();
     }
 }

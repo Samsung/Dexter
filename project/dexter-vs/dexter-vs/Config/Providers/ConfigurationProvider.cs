@@ -1,8 +1,7 @@
 ﻿namespace dexter_vs.Config.Providers
 {
     /// <summary>
-    /// Provides configuration object for Dexter based on user preferences.
-    /// Sets analysis scope to whole solution.  
+    /// Provides configuration object for Dexter based on info providers
     /// </summary>
     internal class ConfigurationProvider : IConfigurationProvider
     {
@@ -19,7 +18,8 @@
         /// <summary>
         /// Creates new ConfigurationProvider
         /// </summary>
-        /// <param name="serviceProvider"> service provider from the owner package</param>
+        /// <param name="projectInfoProvider"> provides info about project to analyze </param>
+        /// <param name="dexterInfoProvider"> provides info about Dexter configuration </param>
         public ConfigurationProvider(IProjectInfoProvider projectInfoProvider, IDexterInfoProvider dexterInfoProvider)
         {
             this.projectInfoProvider = projectInfoProvider;
@@ -27,12 +27,12 @@
         }
 
         /// <summary>
-        /// Creates new configuration 
+        /// Loads new configuration 
         /// </summary>
         /// <returns>new configuration</returns>
-        public Configuration Create()
+        public Configuration Load()
         {   
-            return new Configuration(projectInfoProvider.Create() , dexterInfoProvider.Create());
+            return new Configuration(projectInfoProvider.Load() , dexterInfoProvider.Load());
         }
     }
 }

@@ -3,12 +3,18 @@
     /// <summary>
     /// Provides DexterInfo 
     /// </summary>
-    internal interface IDexterInfoProvider
+    public interface IDexterInfoProvider
     {
         /// <summary>
-        /// Creates new DexterInfo
+        /// Loads new DexterInfo
         /// </summary>
         /// <returns>new DexterInfo</returns>
-        DexterInfo Create();
+        DexterInfo Load();
+
+        /// <summary>
+        /// Saves DexterInfo
+        /// </summary>
+        /// <param name="dexterInfo">DexterInfo to save</param>
+        void Save(DexterInfo dexterInfo); 
     }
 }

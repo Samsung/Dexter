@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace dexter_vs.Config.Providers
 {
@@ -21,9 +22,15 @@ namespace dexter_vs.Config.Providers
             Path = path;
         }
 
-        public DexterInfo Create()
+        public DexterInfo Load()
         {
             return File.Exists(Path) ? DexterInfo.Load(Path) : new DexterInfo();
+        }
+
+        public void Save(DexterInfo dexterInfo)
+        {
+            Configuration configuration = new Configuration(new ProjectInfo(), dexterInfo);
+            configuration.Save(Path);
         }
     }
 }

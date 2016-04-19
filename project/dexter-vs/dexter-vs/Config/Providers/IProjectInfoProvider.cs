@@ -6,9 +6,9 @@
     internal interface IProjectInfoProvider
     {
         /// <summary>
-        /// Creates new ProjectInfo
+        /// Loads new ProjectInfo
         /// </summary>
         /// <returns>new ProjectInfo</returns>
-        ProjectInfo Create();
+        ProjectInfo Load();
     }
 }

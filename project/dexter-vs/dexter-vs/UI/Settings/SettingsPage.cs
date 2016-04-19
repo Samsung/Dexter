@@ -1,4 +1,8 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using dexter_vs.Config;
+using dexter_vs.Config.Providers;
+using EnvDTE;
+using EnvDTE80;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
@@ -18,14 +22,15 @@ namespace dexter_vs.UI.Settings
         {
             get
             {
-                settingControl = new SettingsControl();
+                IDexterInfoProvider dexterInfoProvider = new SettingsStoreDexterInfoProvider(ServiceProvider.GlobalProvider);
+                settingControl = new SettingsControl(dexterInfoProvider);
                 return settingControl;
             }
         }
 
         protected override void OnActivate(CancelEventArgs e)
         {
-            settingControl.LoadConfiguration();
+            ((IDexterInfoProvider)settingControl).Load();
         }
 
         protected override void OnApply(PageApplyEventArgs e)
