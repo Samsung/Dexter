@@ -32,7 +32,6 @@ Dexter helps you to improve coding skills. Whenever you save a source file, Dext
 - Eclipse IDE for Java language (Juno 4.2+)
 - Source Insight for C/C++ (3.50.0072+)
 - CLI for executing by a script (Jenkins, other editors)
-- Node.js for Dexter Server & Monitor (4.2.1+)
 
 ## Concepts 
 Dexter is a static analysis platform to find and remove defects efficiently and immediately during the coding-time.  In addition, Dexter saves your learning cost because it contains multiple static analysis tools as a plug-in type.
@@ -46,7 +45,7 @@ Dexter is a static analysis platform to find and remove defects efficiently and 
 ## Prerequisites
 - Install JDK 7 update 40+
 - Install Gradle (http://gradle.org)
-- Install NodeJS (https://nodejs.org)
+- Install NodeJS v4.2.1+ (https://nodejs.org) 
 - Download Eclipse RCP/RAP Juno + (http://www.eclipse.org/downloads/packages/release/juno/sr2)
 - Download Dexter Source Codes (https://github.com/Samsung/Dexter)
 
