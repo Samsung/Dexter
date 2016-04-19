@@ -76,7 +76,7 @@ public class CppcheckWrapper {
     	 * cmd.append(" --library=").append(cfgFile).append(" ");
     	 * cmd.append(" 2> ").append(resultFile);
     	 * 
-    	 * -rp=<path>  --rule=<rule>,  --rule-file=<file>,  --template,  -D�뷀뙆�� -U�몃뵒�뚯씤
+    	 * -rp=<path>  --rule=<rule>,  --rule-file=<file>,  --template,  -D占쎈��놅옙占�-U占쎈챶逾믭옙��뵥
 	 * 
 	 * @param result void
 	 * @throws Exception 
@@ -94,7 +94,9 @@ public class CppcheckWrapper {
     	final StringBuilder cmd = new StringBuilder(500);
     	
     	setCppcheckCommand(cmd);
-    	setCustomRuleOption(cmd);
+    	if(DexterUtil.getOsBit() == DexterUtil.OS_BIT.WIN32 || DexterUtil.getOsBit() == DexterUtil.OS_BIT.WIN64){
+    		setCustomRuleOption(cmd);
+    	}
     	cmd.append(" --inconclusive "); // for unreachableCode
     	cmd.append(" --enable=all --xml --xml-version=2 --report-progress -v ");
     	cmd.append(" --std=posix --std=c++03 "); // posix | c89 | c99 | c11 | c++03 | c++11 => VD - C++98

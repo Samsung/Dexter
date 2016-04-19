@@ -28,7 +28,7 @@ public class MetricUtilTest {
 	"} \n"  +
     "}";
 		
-	MetricUtil.getFunctionLOCArray(source, 0, 14);
+	//MetricUtil.getFunctionLOCArray(source, 0, 14);
 	}
 
 }
