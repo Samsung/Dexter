@@ -18,6 +18,11 @@ namespace dexter_vs.UI.Settings
     {
         private SettingsControl settingControl;
 
+        /// <summary>
+        /// Called when the settings are changed.
+        /// </summary>
+        public event EventHandler SettingsChanged;
+
         protected override IWin32Window Window
         {
             get
@@ -28,16 +33,27 @@ namespace dexter_vs.UI.Settings
             }
         }
 
+        protected virtual void OnSettingsChanged(EventArgs e)
+        {
+            if (SettingsChanged != null)
+                SettingsChanged(this, e);
+        }
+
         protected override void OnActivate(CancelEventArgs e)
         {
             ((IDexterInfoProvider)settingControl).Load();
+            OnSettingsChanged(EventArgs.Empty);
         }
 
         protected override void OnApply(PageApplyEventArgs e)
         {
             bool saved = settingControl.ValidateAndSave();
 
-            if (!saved)
+            if (saved)
+            {
+                OnSettingsChanged(EventArgs.Empty);
+            }
+            else
             {
                 e.ApplyBehavior = ApplyKind.CancelNoNavigate;
             }

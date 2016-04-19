@@ -153,7 +153,7 @@ namespace dexter_vs.UI.Settings
             DexterInfo dexterInfo = dexterInfoProvider.Load();
 
             dexterPathTextBox.Text = dexterInfo.dexterHome;
-            serverTextBox.Text = string.IsNullOrEmpty(dexterInfo.dexterServerIp) ? "" : string.Format("{0}:{1}", dexterInfo.dexterServerIp, dexterInfo.dexterServerPort);
+            serverTextBox.Text = string.IsNullOrEmpty(dexterInfo.dexterServerIp) ? "" : string.Format("http://{0}:{1}", dexterInfo.dexterServerIp, dexterInfo.dexterServerPort);
             userNameTextBox.Text = dexterInfo.userName;
             userPasswordTextBox.Text = dexterInfo.userPassword;
             standaloneCheckBox.Checked = dexterInfo.standalone;

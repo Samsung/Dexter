@@ -12,6 +12,8 @@ using Microsoft.VisualStudio.Shell;
 using dexter_vs.UI.Settings;
 using Configuration = dexter_vs.Config.Configuration;
 using dexter_vs.Config.Providers;
+using dexter_vs.UI.Dashboard;
+using EnvDTE;
 
 namespace dexter_vs.UI
 {
@@ -81,10 +83,14 @@ namespace dexter_vs.UI
             DexterCommand projectAnalysisCommand = new DexterCommand(this, projectConfigProvider, 0x0101, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
             DexterCommand solutionAnalysisCommand = new DexterCommand(this, solutionConfigProvider, 0x0100, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
             SettingsCommand settingsCommand = new SettingsCommand(this, 0x0103, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
+            DashboardCommand dashboardCommand = new DashboardCommand(this, 0x0104, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"), dexterInfoProvider);
 
             DexterCommand solutionAnalysisToolbarCommand = new DexterCommand(this, solutionConfigProvider, 0x0200, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
             SettingsCommand settingsToolbarCommand = new SettingsCommand(this, 0x0203, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
+            DashboardCommand dashboardToolbarCommand = new DashboardCommand(this, 0x0204, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"), dexterInfoProvider);
 
+            SettingsPage settingsPage = (SettingsPage)GetDialogPage(typeof(SettingsPage));
+            settingsPage.SettingsChanged += (s,a) => { dashboardToolbarCommand.Refresh(); dashboardCommand.Refresh(); };
             base.Initialize();
         }
 

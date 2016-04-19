@@ -66,6 +66,7 @@
     <Compile Include="Config\Validation\DexterInfoValidator.cs" />
     <Compile Include="Config\Providers\FileDexterInfoProvider.cs" />
     <Compile Include="Config\Providers\IDexterInfoProvider.cs" />
+    <Compile Include="UI\Dashboard\DashboardCommand.cs" />
     <Compile Include="UI\Settings\SettingsPage.cs">
       <SubType>Component</SubType>
     </Compile>
