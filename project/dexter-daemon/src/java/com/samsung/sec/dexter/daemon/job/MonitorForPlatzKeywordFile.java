@@ -23,21 +23,12 @@ import org.eclipse.ui.progress.UIJob;
 public class MonitorForPlatzKeywordFile extends Job implements IDexterHomeListener {
 	public static long LAST_CONF_CHANAGED_TIME = -1;
 	private final static int MONITOR_DELAY = 500;
-	private final static int SERVER_TIMEOUT = 500;
 	private File keywordFile;
 
 	public MonitorForPlatzKeywordFile() {
 		super("Monitoring target keyword in sourceinsight");
-		try {
-			if (!InetAddress.getByName(DexterConfig.PLATZ_DOMAIN).isReachable(SERVER_TIMEOUT)) {
-				initPlatzKeywordFile();
-				DexterConfig.getInstance().addDexterHomeListener(this);
-			}
-		} catch (UnknownHostException e) {
-			DexterDaemonActivator.LOG.info(e.getMessage());
-		} catch (IOException e) {
-			DexterDaemonActivator.LOG.error(e.getMessage(), e);
-		}
+		initPlatzKeywordFile();
+		DexterConfig.getInstance().addDexterHomeListener(this);
 	}
 
 	private void initPlatzKeywordFile() {
@@ -82,26 +73,24 @@ public class MonitorForPlatzKeywordFile extends Job implements IDexterHomeListen
 	}
 
 	private void handleKeywordFileChanged(final String keyword) {
-		if (java.lang.System.getProperty("isPlatzAlive") == "true") {
-			new UIJob("Switching perspectives") {
-				@Override
-				public IStatus runInUIThread(IProgressMonitor monitor) {
+		new UIJob("Switching perspectives") {
+			@Override
+			public IStatus runInUIThread(IProgressMonitor monitor) {
 
-					try {
-						final PlatzView platzView = (PlatzView) EclipseUtil.findView(PlatzView.ID);
-						StringBuilder url = new StringBuilder();
-						url.append(DexterConfig.PLATZ_SEARCH_API_URL).append(keyword).append("?dexterId=")
-								.append(DexterClient.getInstance().getCurrentUserId());
-						platzView.setUrl(url.toString());
-						return Status.OK_STATUS;
-					} catch (DexterRuntimeException e) {
-						EclipseUtil.errorMessageBox("Open Error",
-								"Fail to open PLATZ View. Please report this to Dexter Developer Team.");
-						return Status.CANCEL_STATUS;
-					}
+				try {
+					final PlatzView platzView = (PlatzView) EclipseUtil.findView(PlatzView.ID);
+					StringBuilder url = new StringBuilder();
+					url.append(DexterConfig.PLATZ_SEARCH_API_URL).append(keyword).append("?dexterId=")
+							.append(DexterClient.getInstance().getCurrentUserId());
+					platzView.setUrl(url.toString());
+					return Status.OK_STATUS;
+				} catch (DexterRuntimeException e) {
+					EclipseUtil.errorMessageBox("Open Error",
+							"Fail to open PLATZ View. Please report this to Dexter Developer Team.");
+					return Status.CANCEL_STATUS;
 				}
-			}.run(new NullProgressMonitor());
-		}
+			}
+		}.run(new NullProgressMonitor());
 	}
 
 	private void delayMonitor() {
