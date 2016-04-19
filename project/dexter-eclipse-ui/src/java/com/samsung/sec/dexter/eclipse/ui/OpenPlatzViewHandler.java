@@ -5,6 +5,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPart;
 import com.samsung.sec.dexter.core.config.DexterConfig;
@@ -13,8 +14,6 @@ import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 import com.samsung.sec.dexter.eclipse.ui.view.PlatzView;
 
 public class OpenPlatzViewHandler extends AbstractHandler implements IHandler {
-
-	private IWorkbenchPart part;
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -25,11 +24,10 @@ public class OpenPlatzViewHandler extends AbstractHandler implements IHandler {
 			url.append(DexterConfig.PLATZ_API_URL);
 			platzview.setUrl(url.toString());
 			EclipseUtil.showView(PlatzView.ID);
-
 		} catch (DexterRuntimeException e) {
-			MessageDialog.openError(part.getSite().getShell(), "PLATZ Error", "Cannot open the PLATZ View");
+			MessageDialog.openError(Display.getDefault().getActiveShell(), "PLATZ Error", "Cannot open the PLATZ View");
+			throw e;
 		}
-
 		return null;
 	}
 
