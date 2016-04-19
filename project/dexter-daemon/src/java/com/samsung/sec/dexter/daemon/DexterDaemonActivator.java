@@ -25,7 +25,10 @@
 */
 package com.samsung.sec.dexter.daemon;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -44,6 +47,7 @@ import com.samsung.sec.dexter.core.util.IDexterClient;
 import com.samsung.sec.dexter.core.util.IDexterLoginInfoListener;
 import com.samsung.sec.dexter.core.util.PersistenceProperty;
 import com.samsung.sec.dexter.daemon.job.MonitorForDexterConfigFile;
+import com.samsung.sec.dexter.daemon.job.MonitorForPlatzKeywordFile;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseLog;
 
 /**
@@ -55,12 +59,13 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
 	public static final String PLUGIN_ID = "dexter-daemon"; //$NON-NLS-1$
 	public static final String APP_NAME = "Dexter Daemon";
 	public final static EclipseLog LOG = new EclipseLog(PLUGIN_ID);
-	
+	private static final int SERVER_TIMEOUT = 500;
 	private static final String SOURCE_INSIGHT_EXE_KEY = "sourceInsightExe";
 	private String sourceInsiteExe;
 	
 	MonitorForDexterConfigFile monitorJob;
-
+	MonitorForPlatzKeywordFile monitorKeywordJob;
+	
 	private static DexterDaemonActivator plugin;
 
 	static {
@@ -82,7 +87,7 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
 		plugin = this;
 		LOG.setPlugin(this);
 		checkOS();
-		
+		CheckPlatzServer();
 		initializeAfterSettingDexterHome();
 		DexterConfig.getInstance().addDexterHomeListener(this);
 		DexterClient.getInstance().addLoginInfoListener(this);
@@ -117,7 +122,9 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
 		setWindowTitleWithLoginInformation();
 		initializeSourceInsightEnvironment();
 		startMonitorForDexterConfigFile();
-		
+		if(java.lang.System.getProperty("isPlatzAlive") == "true"){
+			startMonitorForPlatzKeywordFile();
+		}
 		setSourceInsightStatusRegistryAsRunning();
 	}
 	
@@ -209,6 +216,14 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
 		monitorJob.schedule();
 	}
 	
+	private void startMonitorForPlatzKeywordFile() {
+		monitorKeywordJob = new MonitorForPlatzKeywordFile();
+		monitorKeywordJob.setUser(false);
+		monitorKeywordJob.setPriority(Job.LONG);
+		monitorKeywordJob.setSystem(true);
+		monitorKeywordJob.schedule();
+	}
+	
 	private void setSourceInsightStatusRegistryAsRunning() {
 		Job job = new Job("set registry for sourceinsight"){
 			@Override
@@ -262,5 +277,17 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
 	 */
 	public static DexterDaemonActivator getDefault() {
 		return plugin;
+	}
+	
+	private void CheckPlatzServer(){
+		try{
+			if (!InetAddress.getByName(DexterConfig.PLATZ_DOMAIN).isReachable(SERVER_TIMEOUT)) {
+				java.lang.System.setProperty("isPlatzAlive", "true");
+		}
+		} catch (UnknownHostException e) {
+			java.lang.System.setProperty("isPlatzAlive", "False");
+		} catch (IOException e) {
+			java.lang.System.setProperty("isPlatzAlive", "False");
+		}
 	}
 }
