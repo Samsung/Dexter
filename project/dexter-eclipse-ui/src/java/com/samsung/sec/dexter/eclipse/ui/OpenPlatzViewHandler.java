@@ -7,7 +7,6 @@ import org.eclipse.core.commands.IHandler;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewPart;
-import org.eclipse.ui.IWorkbenchPart;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
@@ -26,7 +25,7 @@ public class OpenPlatzViewHandler extends AbstractHandler implements IHandler {
 			EclipseUtil.showView(PlatzView.ID);
 		} catch (DexterRuntimeException e) {
 			MessageDialog.openError(Display.getDefault().getActiveShell(), "PLATZ Error", "Cannot open the PLATZ View");
-			throw e;
+			DexterUIActivator.LOG.error(e.getMessage(), e);
 		}
 		return null;
 	}
