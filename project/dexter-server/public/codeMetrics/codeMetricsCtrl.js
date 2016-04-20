@@ -37,6 +37,7 @@ codeMetricsApp.controller('codeMetricsCtrl', function($scope, $http, $location ,
     function AddComma(data_value) {
         return Number(data_value).toLocaleString('en').split(".")[0];
     }
+
     var getCodeMetricsThreshold = function(callback){
         $http.get('/api/v1/codeMetrics/threshold', {
         }).then(function(result){
@@ -85,7 +86,6 @@ codeMetricsApp.controller('codeMetricsCtrl', function($scope, $http, $location ,
                     codeMetricsViewHidden();
                 }else{
                     var tempResult = result.data.result[0];
-                   // console.log(tempResult);
                     setTitle(DEFUALTCODEMETRICSMSGForFile + $scope.fileName, DEFAULTCODEMETRICSMSGForModule+$scope.modulePath );
                     var tempThreshold = setTotalThreshold(tempResult, tempResult.fileCount);
                     var totalResult = setTotalResult(tempResult);
@@ -150,7 +150,6 @@ codeMetricsApp.controller('codeMetricsCtrl', function($scope, $http, $location ,
     };
 
     function setTitle(fileName, modulePath){
-       // console.log(msg);
         $('#titleFileName').html(fileName);
         $('#titleModulePath').html(modulePath);
     }

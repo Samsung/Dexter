@@ -34,9 +34,11 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
+import org.xml.sax.InputSource;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
+import com.google.gson.Gson;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.ConfigurationLoader;
 import com.puppycrawl.tools.checkstyle.PropertiesExpander;
@@ -138,14 +140,14 @@ public class CodeMetricsGenerator {
 		Checker c = null;
         
 		try {
-	        configForDefect = ConfigurationLoader.loadConfiguration(stream, 
-	        		new PropertiesExpander(System.getProperties()), true);
-	        final List<File> files = new ArrayList<File>();
+			configForDefect = ConfigurationLoader.loadConfiguration(stream, new PropertiesExpander(System.getProperties()), true);
+	        
+			final List<File> files = new ArrayList<File>();
 	        final File src = new File(javaFilePath);
+	        
 			files.add(src);
+			
 			c = new Checker();
-			
-			
 			final ClassLoader moduleClassLoader = Check.class.getClassLoader();
 			c.setModuleClassLoader(moduleClassLoader);
 			c.configure(configForDefect);
@@ -167,7 +169,7 @@ public class CodeMetricsGenerator {
 }
 
 class QualityAuditListener implements AuditListener {
-	private CodeMetrics codeMetrics;
+	private CodeMetrics codeMetrics = new CodeMetrics();
 	
 	public QualityAuditListener(final CodeMetrics codeMetrics){
 		this.codeMetrics = codeMetrics;

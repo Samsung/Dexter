@@ -106,6 +106,7 @@ exports.getTotalFunctionMetrics = function(req, res){
 exports.getFunctionMetrics = function(req, res){
     var fileName = req.body.params.fileName;
     var modulePath = req.body.params.modulePath;
+
     var functionList = req.body.params.functionList;
 
     sql = "SELECT"
