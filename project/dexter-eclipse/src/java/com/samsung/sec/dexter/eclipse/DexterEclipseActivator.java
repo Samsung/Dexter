@@ -58,6 +58,7 @@ import com.samsung.sec.dexter.eclipse.util.IJDTUtil;
  */
 public class DexterEclipseActivator extends AbstractUIPlugin implements IDexterStandaloneListener {
 	public static final String PLUGIN_ID = "dexter-eclipse";
+	private static final int SERVER_TIMEOUT = 500;
 	private final LoadingCache<String, AnalysisConfig> configCache;
 	private static final int SERVER_TIMEOUT = 500;
 	private ScheduledFuture<?> loginFuture = null;
@@ -101,7 +102,7 @@ public class DexterEclipseActivator extends AbstractUIPlugin implements IDexterS
 		CheckPlatzServer();
 		LOG = new EclipseLog(PLUGIN_ID);
 		LOG.setPlugin(this);
-		
+		CheckPlatzServer();
 		DexterConfig.getInstance().addDexterStandaloneListener(this);
 		
 		if (!DexterConfig.getInstance().isStandalone())

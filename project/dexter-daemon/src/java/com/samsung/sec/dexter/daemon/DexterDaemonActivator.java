@@ -122,7 +122,7 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
 		setWindowTitleWithLoginInformation();
 		initializeSourceInsightEnvironment();
 		startMonitorForDexterConfigFile();
-		if(java.lang.System.getProperty("isPlatzAlive") == "true"){
+		if(java.lang.System.getProperty("isPlatzAlive").equals("true")){
 			startMonitorForPlatzKeywordFile();
 		}
 		setSourceInsightStatusRegistryAsRunning();
