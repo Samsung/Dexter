@@ -72,7 +72,15 @@
         <Parent guid="guidDexterCommandPackageCmdSet" id="DexterAnalysisSubMenu"/>
       </Group>
 
+      <Group guid="guidDexterCommandPackageCmdSet" id="DexterCancelMenuGroup" priority="0x0800">
+        <Parent guid="guidDexterCommandPackageCmdSet" id="DexterMenu"/>
+      </Group>
+
       <Group guid="guidDexterCommandPackageCmdSet" id="DexterToolbarGroup" priority="0x0000">
+        <Parent guid="guidDexterCommandPackageCmdSet" id="DexterToolbar"/>
+      </Group>
+      
+      <Group guid="guidDexterCommandPackageCmdSet" id="DexterCancelToolbarGroup" priority="0x0000">
         <Parent guid="guidDexterCommandPackageCmdSet" id="DexterToolbar"/>
       </Group>
     </Groups>
@@ -133,6 +141,16 @@
         </Strings>
       </Button>
 
+      <Button guid="guidDexterCommandPackageCmdSet" id="DexterCancelCommand" priority="0x0103" type="Button">
+        <Parent guid= "guidDexterCommandPackageCmdSet" id="DexterCancelMenuGroup" />
+        <Icon guid="guidImages" id="bmpPic4" />
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Cancel</ButtonText>
+        </Strings>
+      </Button>
+
       <Button guid="guidDexterCommandPackageCmdSet" id="DexterSolutionAnalysisToolbarCommand" priority="0x0100" type="Button">
         <Parent guid= "guidDexterCommandPackageCmdSet" id="DexterToolbarGroup" />
         <Icon guid="guidImages" id="bmpPic1" />
@@ -157,6 +175,16 @@
         </Strings>
       </Button>
 
+      <Button guid="guidDexterCommandPackageCmdSet" id="DexterCancelToolbarCommand" priority="0x0100" type="Button">
+        <Parent guid= "guidDexterCommandPackageCmdSet" id="DexterCancelToolbarGroup" />
+        <Icon guid="guidImages" id="bmpPic4" />
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Cancel</ButtonText>
+        </Strings>
+      </Button>
+
     </Buttons>
 
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
@@ -166,12 +194,13 @@
             bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
             inside a button definition. An important aspect of this declaration is that the element id
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-      <Bitmap guid="guidImages" href="Resources\DexterCommand.png" usedList="bmpPic1, bmpPic2, bmpPic3"/>
+      <Bitmap guid="guidImages" href="Resources\DexterCommand.png" usedList="bmpPic1, bmpPic2, bmpPic3, bmpPic4"/>
     </Bitmaps>
   </Commands>
 
   <VisibilityConstraints>
-    <VisibilityItem guid="guidDexterCommandPackageCmdSet" id="DexterToolbar" context="GUID_TextEditorFactory" />
+    <VisibilityItem guid="guidDexterCommandPackageCmdSet" id="DexterToolbar" context="UICONTEXT_NoSolution" />
+    <VisibilityItem guid="guidDexterCommandPackageCmdSet" id="DexterToolbar" context="UICONTEXT_SolutionExists" />
   </VisibilityConstraints>
   
   <Symbols>
@@ -182,27 +211,33 @@
     <GuidSymbol name="guidDexterCommandPackageCmdSet" value="{2ed6d891-bce1-414d-8251-80a0800a831f}">
       <IDSymbol name="DexterMenu" value="0x1021"/>
       <IDSymbol name="DexterMenuGroup" value="0x1020" />
+      <IDSymbol name="DexterCancelMenuGroup" value="0x1022" />
+      
       <IDSymbol name="DexterSolutionAnalysisCommand" value="0x0100" />
       <IDSymbol name="DexterProjectAnalysisCommand" value="0x0101" />
       <IDSymbol name="DexterFileAnalysisCommand" value="0x0102" />
       <IDSymbol name="DexterSettingsCommand" value="0x0103" />
       <IDSymbol name="DexterDashboardCommand" value="0x0104" />
+      <IDSymbol name="DexterCancelCommand" value="0x0105" />
       
       <IDSymbol name="DexterAnalysisSubMenu" value="0x1100"/>
       <IDSymbol name="DexterAnalysisSubMenuGroup" value="0x1150"/>
 
       <IDSymbol name="DexterToolbar" value="0x2000" />
       <IDSymbol name="DexterToolbarGroup" value="0x2050" />
+      <IDSymbol name="DexterCancelToolbarGroup" value="0x2051" />
       <IDSymbol name="DexterSettingsToolbarCommand" value="0x0203" />
       <IDSymbol name="DexterDashboardToolbarCommand" value="0x0204" />
+      <IDSymbol name="DexterCancelToolbarCommand" value="0x0205" />
       <IDSymbol name="DexterSolutionAnalysisToolbarCommand" value="0x0200" />
-
+      
     </GuidSymbol>
 
     <GuidSymbol name="guidImages" value="{c8e0f973-6a99-49b7-a925-75eb816d851c}" >
       <IDSymbol name="bmpPic1" value="1" />
       <IDSymbol name="bmpPic2" value="2" />
       <IDSymbol name="bmpPic3" value="3" />
+      <IDSymbol name="bmpPic4" value="4" />
     </GuidSymbol>
   </Symbols>
 </CommandTable>

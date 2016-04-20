@@ -24,6 +24,14 @@ namespace dexter_vs.Analysis
         /// </summary>   
         public event DataReceivedEventHandler ErrorDataReceived;
 
+        /// <summary>
+        /// external process running Dexter
+        /// </summary>
+        private Process dexterProcess;
+
+        /// <summary>
+        /// Configuration
+        /// </summary>
         private Configuration configuration;
 
         /// <summary>
@@ -45,28 +53,39 @@ namespace dexter_vs.Analysis
         /// <returns>List of found defects</returns>
         public Result Analyse()
         {
-            Process dexterProcess = CreateDexterProcess();
+            CreateDexterProcess();
 
             dexterProcess.Start();
             dexterProcess.BeginErrorReadLine();
             dexterProcess.BeginOutputReadLine();
             dexterProcess.WaitForExit();
-
+            
             Result result = GetAnalysisResult();
 
             return result;
         }
 
         /// <summary>
+        /// Cancels current analysis
+        /// </summary>
+        public void Cancel()
+        {
+            if (dexterProcess!=null && !dexterProcess.HasExited)
+            {
+                dexterProcess.Kill();
+            }
+        }
+
+        /// <summary>
         /// Creates (but doesn't start) new Dexter process
         /// </summary>
         /// <returns>new dexter process</returns>
-        private Process CreateDexterProcess()
+        private void CreateDexterProcess()
         {
             string configFlag = File.Exists(Configuration.DefaultConfigurationPath) ? " -f " + Configuration.DefaultConfigurationPath : "";
             string credentialsParams = configuration.standalone ? " -s " : " -u " + configuration.userName + " -p " + configuration.userPassword;
                  
-            Process dexterProcess = new Process();
+            dexterProcess = new Process();
             dexterProcess.StartInfo = new ProcessStartInfo()
             {
                 FileName = "java.exe",
@@ -80,7 +99,6 @@ namespace dexter_vs.Analysis
             
             dexterProcess.OutputDataReceived += OutputDataReceived;
             dexterProcess.ErrorDataReceived += ErrorDataReceived;
-            return dexterProcess;
         }
         
         /// <summary>
@@ -103,7 +121,15 @@ namespace dexter_vs.Analysis
             using (XmlReader reader = XmlReader.Create(resultFile))
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(Result));
-                result = (Result)serializer.Deserialize(reader);
+
+                try
+                {
+                    result = (Result)serializer.Deserialize(reader);
+                }
+                catch (InvalidOperationException)
+                {
+                    result = new Result();
+                }  
             }
 
             return result;

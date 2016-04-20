@@ -57,6 +57,10 @@ namespace dexter_vs.UI
         /// </summary>
         public event EventHandler AnalysisFinished;
 
+        /// <summary>
+        /// Dexter instance 
+        /// </summary>
+        private Dexter dexter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DexterCommand"/> class.
@@ -187,7 +191,7 @@ namespace dexter_vs.UI
                 }
             }
             
-            Dexter dexter = new Dexter(config);
+            dexter = new Dexter(config);
 
             OutputWindowPane outputPane = CreatePane("Dexter");
             outputPane.Clear();
@@ -204,6 +208,18 @@ namespace dexter_vs.UI
                 OnAnalysisFinished(EventArgs.Empty);
                 ReportResult(result);
             });
+        }
+
+        /// <summary>
+        /// Cancels analysis
+        /// </summary>
+        public void Cancel()
+        {
+            if (dexter!=null)
+            {
+                dexter.Cancel();
+                OnAnalysisFinished(EventArgs.Empty);
+            }
         }
         
         /// <summary>

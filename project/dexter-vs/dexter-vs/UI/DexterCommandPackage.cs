@@ -56,10 +56,12 @@ namespace dexter_vs.UI
         DexterCommand solutionAnalysisCommand;
         SettingsCommand settingsCommand;
         DashboardCommand dashboardCommand;
+        CancelCommand cancelCommand;
 
         DexterCommand solutionAnalysisToolbarCommand;
         SettingsCommand settingsToolbarCommand;
         DashboardCommand dashboardToolbarCommand;
+        CancelCommand cancelToolbarCommand;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DexterCommand"/> class.
@@ -94,10 +96,12 @@ namespace dexter_vs.UI
             solutionAnalysisCommand = new DexterCommand(this, solutionConfigProvider, 0x0100, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
             settingsCommand = new SettingsCommand(this, 0x0103, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
             dashboardCommand = new DashboardCommand(this, 0x0104, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"), dexterInfoProvider);
+            cancelCommand = new CancelCommand(this, 0x0105, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
 
             solutionAnalysisToolbarCommand = new DexterCommand(this, solutionConfigProvider, 0x0200, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
             settingsToolbarCommand = new SettingsCommand(this, 0x0203, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
             dashboardToolbarCommand = new DashboardCommand(this, 0x0204, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"), dexterInfoProvider);
+            cancelToolbarCommand = new CancelCommand(this, 0x0205, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
 
             fileAnalysisCommand.AnalysisStarted += onAnalysisStarted;
             projectAnalysisCommand.AnalysisStarted += onAnalysisStarted;
@@ -111,8 +115,7 @@ namespace dexter_vs.UI
 
             SettingsPage settingsPage = (SettingsPage)GetDialogPage(typeof(SettingsPage));
             settingsPage.SettingsChanged += onSettingsChanged;
-
-           
+                       
             base.Initialize();
         }
 
@@ -122,6 +125,11 @@ namespace dexter_vs.UI
             projectAnalysisCommand.Enabled = false;
             solutionAnalysisCommand.Enabled = false;
             solutionAnalysisToolbarCommand.Enabled = false;
+
+            cancelCommand.AnalysisCommand = sender as DexterCommand;
+            cancelToolbarCommand.AnalysisCommand = sender as DexterCommand;
+            cancelCommand.Visible = true;
+            cancelToolbarCommand.Visible = true;
         }
 
         private void onAnalysisFinished(object sender, EventArgs args)
@@ -130,6 +138,8 @@ namespace dexter_vs.UI
             projectAnalysisCommand.Enabled = true;
             solutionAnalysisCommand.Enabled = true;
             solutionAnalysisToolbarCommand.Enabled = true;
+            cancelCommand.Visible = false;
+            cancelToolbarCommand.Visible = false;
         }
         
         private void onSettingsChanged(object sender, EventArgs args)
