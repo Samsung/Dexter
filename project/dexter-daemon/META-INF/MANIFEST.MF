@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dexter-daemon
 Bundle-SymbolicName: dexter-daemon;singleton:=true
-Bundle-Version: 0.9.4
+Bundle-Version: 0.10.0
 Bundle-Activator: com.samsung.sec.dexter.daemon.DexterDaemonActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
@@ -17,7 +17,7 @@ Require-Bundle: org.eclipse.core.runtime,
  dexter-cppcheck,
  dexter-opensource,
  dexter-vd-cpp,
- dexter-eclipse-cdt;bundle-version="0.9.4"
+ dexter-eclipse-cdt
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .,

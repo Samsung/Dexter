@@ -25,6 +25,9 @@
 */
 package com.samsung.sec.dexter.eclipse;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -56,6 +59,7 @@ import com.samsung.sec.dexter.eclipse.util.IJDTUtil;
 public class DexterEclipseActivator extends AbstractUIPlugin implements IDexterStandaloneListener {
 	public static final String PLUGIN_ID = "dexter-eclipse";
 	private final LoadingCache<String, AnalysisConfig> configCache;
+	private static final int SERVER_TIMEOUT = 500;
 	private ScheduledFuture<?> loginFuture = null;
 	private static DexterEclipseActivator plugin;
 	public final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
@@ -94,6 +98,7 @@ public class DexterEclipseActivator extends AbstractUIPlugin implements IDexterS
 		super.start(context);
 		setPlugin(this);
 
+		CheckPlatzServer();
 		LOG = new EclipseLog(PLUGIN_ID);
 		LOG.setPlugin(this);
 		
@@ -113,7 +118,9 @@ public class DexterEclipseActivator extends AbstractUIPlugin implements IDexterS
 					Display.getDefault().asyncExec(new Runnable() {
 						@Override
 						public void run() {
-							LoginDialog.loginJob(null);
+							if(DexterConfig.getInstance().getRunMode() != DexterConfig.RunMode.DAEMON){
+								LoginDialog.loginJob(null);
+							}
 						}
 					});
 				}
@@ -174,5 +181,17 @@ public class DexterEclipseActivator extends AbstractUIPlugin implements IDexterS
 		}
 		
 		return cdtUtil;
+	}
+	
+	private void CheckPlatzServer(){
+		try{
+			if (!InetAddress.getByName(DexterConfig.PLATZ_DOMAIN).isReachable(SERVER_TIMEOUT)) {
+				java.lang.System.setProperty("isPlatzAlive", "true");
+		}
+		} catch (UnknownHostException e) {
+			java.lang.System.setProperty("isPlatzAlive", "False");
+		} catch (IOException e) {
+			java.lang.System.setProperty("isPlatzAlive", "False");
+		}
 	}
 }

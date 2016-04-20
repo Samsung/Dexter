@@ -1285,6 +1285,7 @@ exports.addV2 = function(req, res) {
     params.snapshotId = defectObject.snapshotId;
     params.groupId = defectObject.groupId;
     params.modulePath = defectObject.modulePath;
+
     params.fileName = defectObject.fileName;
     params.userNo = account.getUserNo(req.currentUserId);
 
@@ -2399,7 +2400,7 @@ exports.getGlobalDid = function(req, res) {
 exports.deleteDefect = function(req, res) {
     if(req == undefined || req.body == undefined || req.body.modulePath == undefined
         || req.body.fileName == undefined || req.currentUserId == undefined){
-        res.send({status:"fail", errorMessage: "No Data or No currentUserId"})
+        res.send({status:"fail", errorMessage: "No Data or No currentUserId"});
 		return;
     }
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project default="deploy" name="Create Runnable Jar for Dexter CLI">
-	<property name="version" value="0.9.4" />
+	<property name="version" value="0.10.0" />
 	<property name="install" location="install" />
 	<property name="dist" location="dist" />
 	<property name="dist-bin" location="dist/bin" />

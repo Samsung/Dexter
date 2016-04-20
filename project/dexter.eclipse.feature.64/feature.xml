@@ -2,7 +2,7 @@
 <feature
       id="dexter.eclipse.feature.64"
       label="Dexter Eclipse Feature 64bit"
-      version="0.9.4"
+      version="0.10.0"
       provider-name="Samsung Electronics VD SE Lab">
 
    <description url="http://www.example.com/description">
