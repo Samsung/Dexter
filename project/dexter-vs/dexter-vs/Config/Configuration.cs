@@ -22,16 +22,18 @@ namespace dexter_vs.Config
         /// <summary>
         /// Port of Dexter server
         /// </summary>
-        public int dexterServerPort { get; set; }
-        
+        public string dexterServerPort { get; set; }
+
         /// <summary>
         /// Dexter Server user name 
         /// </summary>
+        [JsonIgnore]
         public string userName { get; set; }
 
         /// <summary>
         /// Dexter Server user password 
         /// </summary>
+        [JsonIgnore]
         public string userPassword { get; set; }
 
         /// <summary>
@@ -140,7 +142,7 @@ namespace dexter_vs.Config
 
             dexterHome = dexterInfo.dexterHome;
             dexterServerIp = dexterInfo.dexterServerIp;
-            dexterServerPort = dexterInfo.dexterServerPort;
+            dexterServerPort = dexterInfo.dexterServerPort.ToString();
             userName = dexterInfo.userName;
             userPassword = dexterInfo.userPassword;
             standalone = dexterInfo.standalone;

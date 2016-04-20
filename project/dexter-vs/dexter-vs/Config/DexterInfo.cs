@@ -93,7 +93,7 @@ namespace dexter_vs.Config
             {
                 dexterHome = configuration.dexterHome,
                 dexterServerIp = configuration.dexterServerIp,
-                dexterServerPort = configuration.dexterServerPort,
+                dexterServerPort = int.Parse(configuration.dexterServerPort),
                 userName = configuration.userName,
                 userPassword = configuration.userPassword,
                 standalone = configuration.standalone

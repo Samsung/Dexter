@@ -51,6 +51,16 @@ namespace dexter_vs.UI
         /// </summary>
         public const string PackageGuidString = "0a9fa7af-84c6-4922-8734-38772fcd67b1";
 
+        DexterCommand fileAnalysisCommand;
+        DexterCommand projectAnalysisCommand;
+        DexterCommand solutionAnalysisCommand;
+        SettingsCommand settingsCommand;
+        DashboardCommand dashboardCommand;
+
+        DexterCommand solutionAnalysisToolbarCommand;
+        SettingsCommand settingsToolbarCommand;
+        DashboardCommand dashboardToolbarCommand;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DexterCommand"/> class.
         /// </summary>
@@ -79,20 +89,56 @@ namespace dexter_vs.UI
             ConfigurationProvider projectConfigProvider = new ConfigurationProvider(projectInfoProvider, dexterInfoProvider);
             ConfigurationProvider fileConfigProvider = new ConfigurationProvider(fileInfoProvider, dexterInfoProvider);
 
-            DexterCommand fileAnalysisCommand = new DexterFileCommand(this, fileConfigProvider, 0x0102, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
-            DexterCommand projectAnalysisCommand = new DexterCommand(this, projectConfigProvider, 0x0101, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
-            DexterCommand solutionAnalysisCommand = new DexterCommand(this, solutionConfigProvider, 0x0100, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
-            SettingsCommand settingsCommand = new SettingsCommand(this, 0x0103, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
-            DashboardCommand dashboardCommand = new DashboardCommand(this, 0x0104, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"), dexterInfoProvider);
+            fileAnalysisCommand = new DexterFileCommand(this, fileConfigProvider, 0x0102, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
+            projectAnalysisCommand = new DexterCommand(this, projectConfigProvider, 0x0101, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
+            solutionAnalysisCommand = new DexterCommand(this, solutionConfigProvider, 0x0100, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
+            settingsCommand = new SettingsCommand(this, 0x0103, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
+            dashboardCommand = new DashboardCommand(this, 0x0104, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"), dexterInfoProvider);
 
-            DexterCommand solutionAnalysisToolbarCommand = new DexterCommand(this, solutionConfigProvider, 0x0200, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
-            SettingsCommand settingsToolbarCommand = new SettingsCommand(this, 0x0203, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
-            DashboardCommand dashboardToolbarCommand = new DashboardCommand(this, 0x0204, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"), dexterInfoProvider);
+            solutionAnalysisToolbarCommand = new DexterCommand(this, solutionConfigProvider, 0x0200, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
+            settingsToolbarCommand = new SettingsCommand(this, 0x0203, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
+            dashboardToolbarCommand = new DashboardCommand(this, 0x0204, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"), dexterInfoProvider);
+
+            fileAnalysisCommand.AnalysisStarted += onAnalysisStarted;
+            projectAnalysisCommand.AnalysisStarted += onAnalysisStarted;
+            solutionAnalysisCommand.AnalysisStarted += onAnalysisStarted;
+            solutionAnalysisToolbarCommand.AnalysisStarted += onAnalysisStarted;
+
+            fileAnalysisCommand.AnalysisFinished += onAnalysisFinished;
+            projectAnalysisCommand.AnalysisFinished += onAnalysisFinished;
+            solutionAnalysisCommand.AnalysisFinished += onAnalysisFinished;
+            solutionAnalysisToolbarCommand.AnalysisFinished += onAnalysisFinished;
 
             SettingsPage settingsPage = (SettingsPage)GetDialogPage(typeof(SettingsPage));
-            settingsPage.SettingsChanged += (s,a) => { dashboardToolbarCommand.Refresh(); dashboardCommand.Refresh(); };
+            settingsPage.SettingsChanged += onSettingsChanged;
+
+           
             base.Initialize();
         }
+
+        private void onAnalysisStarted(object sender, EventArgs args)
+        {
+            fileAnalysisCommand.Enabled = false;
+            projectAnalysisCommand.Enabled = false;
+            solutionAnalysisCommand.Enabled = false;
+            solutionAnalysisToolbarCommand.Enabled = false;
+        }
+
+        private void onAnalysisFinished(object sender, EventArgs args)
+        {
+            fileAnalysisCommand.Enabled = true;
+            projectAnalysisCommand.Enabled = true;
+            solutionAnalysisCommand.Enabled = true;
+            solutionAnalysisToolbarCommand.Enabled = true;
+        }
+        
+        private void onSettingsChanged(object sender, EventArgs args)
+        {
+            dashboardToolbarCommand.Refresh();
+            dashboardCommand.Refresh();
+        }
+
+        
 
         #endregion
     }

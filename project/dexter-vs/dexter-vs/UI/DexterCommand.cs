@@ -48,6 +48,17 @@ namespace dexter_vs.UI
         private readonly DexterInfoValidator validator;
 
         /// <summary>
+        /// Invoked when analysis is started
+        /// </summary>
+        public event EventHandler AnalysisStarted;
+
+        /// <summary>
+        /// Invoked when analysis is finished
+        /// </summary>
+        public event EventHandler AnalysisFinished;
+
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="DexterCommand"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
@@ -82,6 +93,21 @@ namespace dexter_vs.UI
         }
 
         /// <summary>
+        /// Gets/sets the value indicating whether menu item associated with ths command is enabled
+        /// </summary>
+        public bool Enabled
+        {
+            get
+            {
+                return menuItem.Enabled;
+            }
+            set
+            {
+                menuItem.Enabled = value;
+            }
+        }
+
+        /// <summary>
         /// Gets the service provider from the owner package.
         /// </summary>
         protected IServiceProvider ServiceProvider
@@ -95,6 +121,24 @@ namespace dexter_vs.UI
         protected IConfigurationProvider ConfigurationProvider
         {
             get; 
+        }
+
+        /// <summary>
+        /// For event handling; invoked when analysis is started
+        /// </summary>
+        protected virtual void OnAnalysisStarted(EventArgs e)
+        {
+            if (AnalysisStarted != null)
+                AnalysisStarted(this,e);
+        }
+
+        /// <summary>
+        /// For event handling; invoked when analysis is finished
+        /// </summary>
+        protected virtual void OnAnalysisFinished(EventArgs e)
+        {
+            if (AnalysisFinished != null)
+                AnalysisFinished(this, e);
         }
 
         /// <summary>
@@ -155,7 +199,9 @@ namespace dexter_vs.UI
 
             System.Threading.Tasks.Task.Run(() => 
             {
+                OnAnalysisStarted(EventArgs.Empty);
                 Result result = dexter.Analyse();
+                OnAnalysisFinished(EventArgs.Empty);
                 ReportResult(result);
             });
         }
