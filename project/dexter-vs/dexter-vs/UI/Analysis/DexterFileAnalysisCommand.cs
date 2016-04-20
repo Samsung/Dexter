@@ -6,20 +6,18 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 
-namespace dexter_vs.UI
+namespace dexter_vs.UI.Analysis
 {
     /// <summary>
     /// Command handler - for single file analysis
     /// </summary>
-    internal class DexterFileCommand : DexterCommand
-    {
-        DocumentEvents events;
+    internal class DexterFileAnalysisCommand : DexterAnalysisCommand
+    {  
 
-        public DexterFileCommand(Package package, ConfigurationProvider configurationProvider, int commandId, Guid commandSet)
-           : base(package, configurationProvider, commandId, commandSet)
+        public DexterFileAnalysisCommand(Package package, int commandId, Guid commandSet, ConfigurationProvider configurationProvider)
+           : base(package, commandId, commandSet, configurationProvider)
         {
-            DTE dte = (DTE)ServiceProvider.GetService(typeof(DTE));
-            events = ((Events2)dte.Events).DocumentEvents;
+            DocumentEvents events = ((Events2)Dte.Events).DocumentEvents;
 
             events.DocumentOpened += OnDocumentOpened;
             events.DocumentClosing += OnDocumentClosed;
@@ -46,14 +44,11 @@ namespace dexter_vs.UI
             menuItem.Enabled = false;
         }
 
-        public override int OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded)
+        /// <summary>
+        /// Does nothing; we don't need to handle solution events for this class
+        /// </summary>
+        protected override void AdviseSolutionEvents()
         {
-            return VSConstants.S_OK;
-        }
-
-        public override int OnBeforeCloseProject(IVsHierarchy pHierarchy, int fRemoved)
-        {
-            return VSConstants.S_OK;
         }
     }
 }

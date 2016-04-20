@@ -10,10 +10,9 @@ using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using dexter_vs.UI.Settings;
-using Configuration = dexter_vs.Config.Configuration;
 using dexter_vs.Config.Providers;
 using dexter_vs.UI.Dashboard;
-using EnvDTE;
+using dexter_vs.UI.Analysis;
 
 namespace dexter_vs.UI
 {
@@ -51,20 +50,20 @@ namespace dexter_vs.UI
         /// </summary>
         public const string PackageGuidString = "0a9fa7af-84c6-4922-8734-38772fcd67b1";
 
-        DexterCommand fileAnalysisCommand;
-        DexterCommand projectAnalysisCommand;
-        DexterCommand solutionAnalysisCommand;
+        DexterAnalysisCommand fileAnalysisCommand;
+        DexterAnalysisCommand projectAnalysisCommand;
+        DexterAnalysisCommand solutionAnalysisCommand;
         SettingsCommand settingsCommand;
         DashboardCommand dashboardCommand;
         CancelCommand cancelCommand;
 
-        DexterCommand solutionAnalysisToolbarCommand;
+        DexterAnalysisCommand solutionAnalysisToolbarCommand;
         SettingsCommand settingsToolbarCommand;
         DashboardCommand dashboardToolbarCommand;
         CancelCommand cancelToolbarCommand;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DexterCommand"/> class.
+        /// Initializes a new instance of the <see cref="DexterAnalysisCommand"/> class.
         /// </summary>
         public DexterCommandPackage()
         {
@@ -91,17 +90,19 @@ namespace dexter_vs.UI
             ConfigurationProvider projectConfigProvider = new ConfigurationProvider(projectInfoProvider, dexterInfoProvider);
             ConfigurationProvider fileConfigProvider = new ConfigurationProvider(fileInfoProvider, dexterInfoProvider);
 
-            fileAnalysisCommand = new DexterFileCommand(this, fileConfigProvider, 0x0102, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
-            projectAnalysisCommand = new DexterCommand(this, projectConfigProvider, 0x0101, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
-            solutionAnalysisCommand = new DexterCommand(this, solutionConfigProvider, 0x0100, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
-            settingsCommand = new SettingsCommand(this, 0x0103, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
-            dashboardCommand = new DashboardCommand(this, 0x0104, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"), dexterInfoProvider);
-            cancelCommand = new CancelCommand(this, 0x0105, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
+            var commandSet = new Guid("2ed6d891-bce1-414d-8251-80a0800a831f");
 
-            solutionAnalysisToolbarCommand = new DexterCommand(this, solutionConfigProvider, 0x0200, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
-            settingsToolbarCommand = new SettingsCommand(this, 0x0203, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
-            dashboardToolbarCommand = new DashboardCommand(this, 0x0204, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"), dexterInfoProvider);
-            cancelToolbarCommand = new CancelCommand(this, 0x0205, new Guid("2ed6d891-bce1-414d-8251-80a0800a831f"));
+            fileAnalysisCommand = new DexterFileAnalysisCommand(this, 0x0102, commandSet, fileConfigProvider);
+            projectAnalysisCommand = new DexterAnalysisCommand(this, 0x0101, commandSet, projectConfigProvider);
+            solutionAnalysisCommand = new DexterAnalysisCommand(this, 0x0100, commandSet, solutionConfigProvider);
+            settingsCommand = new SettingsCommand(this, 0x0103, commandSet);
+            dashboardCommand = new DashboardCommand(this, 0x0104, commandSet, dexterInfoProvider);
+            cancelCommand = new CancelCommand(this, 0x0105, commandSet);
+
+            solutionAnalysisToolbarCommand = new DexterAnalysisCommand(this, 0x0200, commandSet, solutionConfigProvider);
+            settingsToolbarCommand = new SettingsCommand(this, 0x0203, commandSet);
+            dashboardToolbarCommand = new DashboardCommand(this, 0x0204, commandSet, dexterInfoProvider);
+            cancelToolbarCommand = new CancelCommand(this, 0x0205, commandSet);
 
             fileAnalysisCommand.AnalysisStarted += onAnalysisStarted;
             projectAnalysisCommand.AnalysisStarted += onAnalysisStarted;
@@ -126,10 +127,10 @@ namespace dexter_vs.UI
             solutionAnalysisCommand.Enabled = false;
             solutionAnalysisToolbarCommand.Enabled = false;
 
-            cancelCommand.AnalysisCommand = sender as DexterCommand;
-            cancelToolbarCommand.AnalysisCommand = sender as DexterCommand;
+            cancelCommand.AnalysisCommand = sender as DexterAnalysisCommand;
+            cancelToolbarCommand.AnalysisCommand = sender as DexterAnalysisCommand;
             cancelCommand.Visible = true;
-            cancelToolbarCommand.Visible = true;
+            cancelToolbarCommand.Enabled = true;
         }
 
         private void onAnalysisFinished(object sender, EventArgs args)
@@ -139,16 +140,14 @@ namespace dexter_vs.UI
             solutionAnalysisCommand.Enabled = true;
             solutionAnalysisToolbarCommand.Enabled = true;
             cancelCommand.Visible = false;
-            cancelToolbarCommand.Visible = false;
+            cancelToolbarCommand.Enabled = false;
         }
         
         private void onSettingsChanged(object sender, EventArgs args)
         {
             dashboardToolbarCommand.Refresh();
             dashboardCommand.Refresh();
-        }
-
-        
+        }       
 
         #endregion
     }

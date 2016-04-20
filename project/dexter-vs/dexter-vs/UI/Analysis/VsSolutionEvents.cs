@@ -1,13 +1,14 @@
 ﻿using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace dexter_vs.UI
+namespace dexter_vs.UI.Analysis
 {
 
     /// <summary>
-    /// Base implementation of IVsSolutionEvents
+    /// Base implementation of IVsSolutionEvents.
+    /// All methods are empty and return VSConstants.S_OK.
     /// </summary>
-    public abstract class VsSolutionEvents : IVsSolutionEvents3
+    public class VsSolutionEvents : IVsSolutionEvents3
     {
         public virtual int OnAfterCloseSolution(object pUnkReserved)
         {

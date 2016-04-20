@@ -178,8 +178,6 @@
       <Button guid="guidDexterCommandPackageCmdSet" id="DexterCancelToolbarCommand" priority="0x0100" type="Button">
         <Parent guid= "guidDexterCommandPackageCmdSet" id="DexterCancelToolbarGroup" />
         <Icon guid="guidImages" id="bmpPic4" />
-        <CommandFlag>DefaultInvisible</CommandFlag>
-        <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <ButtonText>Cancel</ButtonText>
         </Strings>
