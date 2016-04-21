@@ -243,4 +243,20 @@ public class JerseyDexterWebResource implements IDexterWebResource {
 		} 
 		
 	}
+
+	@Override
+	public String postWithBodyforCLI(String uri, String id, String pwd, String bodyJson) {
+		final WebResource resource = getPojoResource(uri, id, pwd);
+
+		try{
+			return resource.accept(APPLICATION_TYPE_JSON)
+	        .type(APPLICATION_TYPE_JSON)
+	        .header(AUTHORIZATION, getAuthorizationValue(id, pwd))
+	        .post(String.class, bodyJson);
+		} catch (ClientHandlerException e) {
+			throw new DexterRuntimeException(e.getMessage() + " : Connection refused connect. check your server is on > " + uri, e);
+		} catch (Exception e){
+			throw new DexterRuntimeException(e.getMessage(), e);
+		}
+	}
 }

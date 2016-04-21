@@ -181,7 +181,6 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
 	
 	private void checkResultOk(final String resultText){
 		final Map<String, String> result = getResultMap(resultText);
-		
 		if (!"ok".equals(result.get("result")) && !"ok".equals(result.get("status"))) {
 			DexterUtil.dumpAllStackTracesForCurrentThread(LOG);
 			throw new DexterRuntimeException(result.get("errorMessage") + "\nRESULT: " + resultText);
@@ -261,12 +260,19 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
 			        + DexterClient.getInstance().currentUserId + ") doesn't exist in Dexter Server.");
 		}
 
+		String resultText= "";
 		Map<String, Object> body = new HashMap<String, Object>();
 		body.put("result", resultJson);
 
-		String resultText = webResource.postWithBody(getServiceUrl(DexterConfig.PUT_ANALYSIS_RESULT_V2), 
+		if(DexterConfig.getInstance().getRunMode() == DexterConfig.RunMode.CLI){
+			Gson gson = new Gson();
+			String jsonBody = gson.toJson(body);
+			resultText = webResource.postWithBodyforCLI(getServiceUrl(DexterConfig.PUT_ANALYSIS_RESULT_V2),
+					this.currentUserId, this.currentUserPwd, jsonBody);
+		}else{
+			resultText = webResource.postWithBody(getServiceUrl(DexterConfig.PUT_ANALYSIS_RESULT_V2), 
 				this.currentUserId, this.currentUserPwd, body);
-
+		}	
 		checkResultOk(resultText);
 	}
 	
@@ -291,8 +297,17 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
 		body.put(ResultFileConstant.FILE_NAME, fileName);
 		body.put(ResultFileConstant.SOURCE_CODE, DexterUtil.getBase64String(sourceCode));
 		
-		String resultText = webResource.postWithBody(getServiceUrl(DexterConfig.POST_SNAPSHOT_SOURCECODE), 
+		String resultText = "";
+		
+		if(DexterConfig.getInstance().getRunMode().equals(DexterConfig.RunMode.CLI)){
+			Gson gson = new Gson();
+			String jsonBody = gson.toJson(body);
+			resultText = webResource.postWithBodyforCLI(getServiceUrl(DexterConfig.POST_SNAPSHOT_SOURCECODE), 
+					this.currentUserId, this.currentUserPwd, jsonBody);
+		}else{
+			resultText = webResource.postWithBody(getServiceUrl(DexterConfig.POST_SNAPSHOT_SOURCECODE), 
 				this.currentUserId, this.currentUserPwd, body);
+		}
 
 		checkResultOk(resultText);
 	}

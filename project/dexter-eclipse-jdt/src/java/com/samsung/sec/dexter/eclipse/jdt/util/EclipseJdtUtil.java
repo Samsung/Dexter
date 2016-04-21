@@ -148,12 +148,11 @@ public class EclipseJdtUtil {
 
 				final String srcDir = DexterUtil.refinePath(folder.getLocation().toFile().getAbsolutePath());
 				if(fileFullPath.indexOf(srcDir) != -1){
-					final String modulePath = fileFullPath.replace(srcDir, "").replace("/" + file.getName(), "");
+					String modulePath = fileFullPath.replace(srcDir, "").replace("/" + file.getName(), "");
 					if(modulePath.startsWith("/")){
-						modulePath.replace("/","");
+						modulePath = modulePath.substring(1, modulePath.length());
 					}
 					return modulePath;
-					//return fileFullPath.replace(srcDir, "").replace("/" + file.getName(), "");
 				}
 			}
 		}
