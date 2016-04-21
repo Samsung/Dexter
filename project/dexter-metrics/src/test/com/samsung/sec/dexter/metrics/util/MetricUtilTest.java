@@ -6,8 +6,6 @@ import org.junit.Test;
 
 import com.samsung.sec.dexter.metrics.util.MetricUtil;
 
-
-
 public class MetricUtilTest {
 
 	@Test

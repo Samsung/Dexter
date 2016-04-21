@@ -73,14 +73,14 @@ public class DefectHelpResolution implements IMarkerResolution2 {
 			if (incompleteDefect.getOccurences() != null && incompleteDefect.getOccurences().size() == 1) {
 				url.append("#").append(incompleteDefect.getFirstOccurence().getCode());
 			}
-			
+
 			if(DexterClient.getInstance().hasSupportedHelpHtmlFile(url) == false){
 				url.setLength(0);
 				url.append("http://").append(DexterClient.getInstance().getServerHost()).append(":") //$NON-NLS-1$ //$NON-NLS-2$
 				.append(DexterClient.getInstance().getServerPort()).append(DexterConfig.DEFECT_HELP_BASE).append("/") //$NON-NLS-1$
 				.append(DexterConfig.NOT_FOUND_CHECKER_DESCRIPTION).append("/").append(DexterConfig.EMPTY_HTML_FILE_NAME).append(".html"); //$NON-NLS-1$ //$NON-NLS-2$
 			}
-
+			
 			helpView.setUrl(url.toString());
 			EclipseUtil.showView(DefectHelpView.ID);
 		} catch (DexterRuntimeException e) {

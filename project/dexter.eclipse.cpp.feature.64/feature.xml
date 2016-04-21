@@ -2,7 +2,7 @@
 <feature
       id="dexter.eclipse.cpp.feature.64"
       label="Dexter Eclipse CPP Feature 64bit"
-      version="0.9.5">
+      version="0.10.0">
 
    <description url="http://www.example.com/description">
       Dexter Eclipse(Coding-time Static Analysis)
