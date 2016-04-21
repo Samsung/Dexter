@@ -37,5 +37,16 @@ namespace dexter_vs.Utils
             return filePath;
         }
 
+        /// <summary>
+        /// Compares two paths for equality
+        /// </summary>
+        /// <param name="path1">first path</param>
+        /// <param name="path2">second path</param>
+        /// <returns>true, if the paths points to the same file/directory</returns>
+        public static bool AreEquals(string path1, string path2)
+        {
+            return string.Equals(Path.GetFullPath(path1), Path.GetFullPath(path2));
+        }
+
     }
 }
