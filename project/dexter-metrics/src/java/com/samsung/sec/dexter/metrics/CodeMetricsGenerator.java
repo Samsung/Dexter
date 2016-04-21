@@ -34,11 +34,9 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
-import org.xml.sax.InputSource;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
-import com.google.gson.Gson;
 import com.puppycrawl.tools.checkstyle.Checker;
 import com.puppycrawl.tools.checkstyle.ConfigurationLoader;
 import com.puppycrawl.tools.checkstyle.PropertiesExpander;

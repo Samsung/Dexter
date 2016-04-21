@@ -25,7 +25,6 @@
 */
 package com.samsung.sec.dexter.core.util;
 
-import java.awt.FileDialog;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
