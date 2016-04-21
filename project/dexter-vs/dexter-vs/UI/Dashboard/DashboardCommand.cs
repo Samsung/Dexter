@@ -44,7 +44,7 @@ namespace dexter_vs.UI.Dashboard
         public void Refresh()
         {
             var uriString = getDashboardUri();
-            menuItem.Enabled = Uri.IsWellFormedUriString(uriString, UriKind.Absolute);
+            Enabled = Uri.IsWellFormedUriString(uriString, UriKind.Absolute);
         }
         
         private string getDashboardUri()

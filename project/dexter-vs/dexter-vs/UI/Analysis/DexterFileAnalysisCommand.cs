@@ -22,7 +22,7 @@ namespace dexter_vs.UI.Analysis
             events.WindowActivated += OnDocumentWindowActivated;
             events.WindowClosing += OnDocumentWindowClosed;
 
-            menuItem.Enabled = false;
+            Enabled = false;
         }
 
         private void OnDocumentWindowActivated(Window gotFocus, Window lostFocus)
@@ -31,8 +31,8 @@ namespace dexter_vs.UI.Analysis
 
             if (document ==null)
             {
-                menuItem.Text = "On File";
-                menuItem.Enabled = false;
+                Text = "On File";
+                Enabled = false;
                 return;
             }
 
@@ -43,14 +43,14 @@ namespace dexter_vs.UI.Analysis
                 docName.EndsWith("cc"))
             {
                 
-                menuItem.Text = "On " + document.Name;
-                menuItem.Enabled = true;
+                Text = "On " + document.Name;
+                Enabled = true;
             }
         }
 
         private void OnDocumentWindowClosed(Window window)
         {
-            menuItem.Enabled = false;
+            Enabled = false;
         }
 
         /// <summary>

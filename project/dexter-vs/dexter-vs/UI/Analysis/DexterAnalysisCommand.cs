@@ -69,7 +69,7 @@ namespace dexter_vs.UI.Analysis
         public DexterAnalysisCommand(Package package, int commandId, Guid commandSet, ConfigurationProvider configurationProvider)
             :base(package,commandId,commandSet)
         {
-            menuItem.Enabled = Dte.Solution.Projects.Count > 0;
+            Enabled = Dte.Solution.Projects.Count > 0;
             validator = new DexterInfoValidator();
             ConfigurationProvider = configurationProvider;
 
@@ -280,14 +280,14 @@ namespace dexter_vs.UI.Analysis
             {
                 Project activeProject = dexterCommand.getActiveProject();
 
-                dexterCommand.menuItem.Text = "On " + activeProject.Name;
-                dexterCommand.menuItem.Enabled = true;
+                dexterCommand.Text = "On " + activeProject.Name;
+                dexterCommand.Enabled = true;
                 return base.OnAfterOpenProject(pHierarchy, fAdded);
             }
 
             public override int OnBeforeCloseProject(IVsHierarchy pHierarchy, int fRemoved)
             {
-                dexterCommand.menuItem.Enabled = false;
+                dexterCommand.Enabled = false;
                 return base.OnBeforeCloseProject(pHierarchy, fRemoved);
             }
         }

@@ -13,6 +13,7 @@ using dexter_vs.UI.Settings;
 using dexter_vs.Config.Providers;
 using dexter_vs.UI.Dashboard;
 using dexter_vs.UI.Analysis;
+using System.Collections.Generic;
 
 namespace dexter_vs.UI
 {
@@ -50,18 +51,12 @@ namespace dexter_vs.UI
         /// </summary>
         public const string PackageGuidString = "0a9fa7af-84c6-4922-8734-38772fcd67b1";
 
-        DexterAnalysisCommand fileAnalysisCommand;
-        DexterAnalysisCommand projectAnalysisCommand;
-        DexterAnalysisCommand solutionAnalysisCommand;
-
-        DexterAnalysisCommand projectSnapshotCommand;
-        DexterAnalysisCommand solutionSnapshotCommand;
+        List<DexterAnalysisCommand> analysisCommands = new List<DexterAnalysisCommand>();
 
         SettingsCommand settingsCommand;
         DashboardCommand dashboardCommand;
         CancelCommand cancelCommand;
 
-        DexterAnalysisCommand solutionAnalysisToolbarCommand;
         SettingsCommand settingsToolbarCommand;
         DashboardCommand dashboardToolbarCommand;
         CancelCommand cancelToolbarCommand;
@@ -103,33 +98,33 @@ namespace dexter_vs.UI
 
             var commandSet = new Guid("2ed6d891-bce1-414d-8251-80a0800a831f");
 
-            fileAnalysisCommand = new DexterFileAnalysisCommand(this, 0x0102, commandSet, fileConfigProvider);
-            projectAnalysisCommand = new DexterAnalysisCommand(this, 0x0101, commandSet, projectConfigProvider);
-            solutionAnalysisCommand = new DexterAnalysisCommand(this, 0x0100, commandSet, solutionConfigProvider);
-            projectSnapshotCommand = new DexterAnalysisCommand(this, 0x0111, commandSet, projectSnapshotConfigProvider);
-            solutionSnapshotCommand = new DexterAnalysisCommand(this, 0x0110, commandSet, solutionSnapshotConfigProvider);
+            DexterAnalysisCommand fileAnalysisCommand = new DexterFileAnalysisCommand(this, 0x0102, commandSet, fileConfigProvider);
+            DexterAnalysisCommand projectAnalysisCommand = new DexterAnalysisCommand(this, 0x0101, commandSet, projectConfigProvider);
+            DexterAnalysisCommand solutionAnalysisCommand = new DexterAnalysisCommand(this, 0x0100, commandSet, solutionConfigProvider);
+            DexterAnalysisCommand projectSnapshotCommand = new DexterAnalysisCommand(this, 0x0111, commandSet, projectSnapshotConfigProvider);
+            DexterAnalysisCommand solutionSnapshotCommand = new DexterAnalysisCommand(this, 0x0110, commandSet, solutionSnapshotConfigProvider);
+
             settingsCommand = new SettingsCommand(this, 0x0103, commandSet);
             dashboardCommand = new DashboardCommand(this, 0x0104, commandSet, dexterInfoProvider);
             cancelCommand = new CancelCommand(this, 0x0105, commandSet);
 
-            solutionAnalysisToolbarCommand = new DexterAnalysisCommand(this, 0x0200, commandSet, solutionConfigProvider);
+            DexterAnalysisCommand solutionAnalysisToolbarCommand = new DexterAnalysisCommand(this, 0x0200, commandSet, solutionConfigProvider);
             settingsToolbarCommand = new SettingsCommand(this, 0x0203, commandSet);
             dashboardToolbarCommand = new DashboardCommand(this, 0x0204, commandSet, dexterInfoProvider);
             cancelToolbarCommand = new CancelCommand(this, 0x0205, commandSet);
 
-            fileAnalysisCommand.AnalysisStarted += onAnalysisStarted;
-            projectAnalysisCommand.AnalysisStarted += onAnalysisStarted;
-            solutionAnalysisCommand.AnalysisStarted += onAnalysisStarted;
-            projectSnapshotCommand.AnalysisStarted += onAnalysisStarted;
-            solutionSnapshotCommand.AnalysisStarted += onAnalysisStarted;
-            solutionAnalysisToolbarCommand.AnalysisStarted += onAnalysisStarted;
+            analysisCommands.Add(fileAnalysisCommand);
+            analysisCommands.Add(projectAnalysisCommand);
+            analysisCommands.Add(solutionAnalysisCommand);
+            analysisCommands.Add(projectSnapshotCommand);
+            analysisCommands.Add(solutionSnapshotCommand);
+            analysisCommands.Add(solutionAnalysisToolbarCommand);
 
-            fileAnalysisCommand.AnalysisFinished += onAnalysisFinished;
-            projectAnalysisCommand.AnalysisFinished += onAnalysisFinished;
-            solutionAnalysisCommand.AnalysisFinished += onAnalysisFinished;
-            projectSnapshotCommand.AnalysisFinished += onAnalysisFinished;
-            solutionSnapshotCommand.AnalysisFinished += onAnalysisFinished;
-            solutionAnalysisToolbarCommand.AnalysisFinished += onAnalysisFinished;
+            foreach(DexterAnalysisCommand analysisCommand in analysisCommands)
+            {
+                analysisCommand.AnalysisStarted += onAnalysisStarted;
+                analysisCommand.AnalysisFinished += onAnalysisFinished;
+            }         
 
             SettingsPage settingsPage = (SettingsPage)GetDialogPage(typeof(SettingsPage));
             settingsPage.SettingsChanged += onSettingsChanged;
@@ -139,12 +134,11 @@ namespace dexter_vs.UI
 
         private void onAnalysisStarted(object sender, EventArgs args)
         {
-            fileAnalysisCommand.Enabled = false;
-            projectAnalysisCommand.Enabled = false;
-            solutionAnalysisCommand.Enabled = false;
-            projectSnapshotCommand.Enabled = false;
-            solutionSnapshotCommand.Enabled = false;
-            solutionAnalysisToolbarCommand.Enabled = false;
+            foreach(DexterAnalysisCommand analysisCommand in analysisCommands)
+            {
+                analysisCommand.Enabled = false;
+                analysisCommand.AutoEnabled = false;
+            }
 
             cancelCommand.AnalysisCommand = sender as DexterAnalysisCommand;
             cancelToolbarCommand.AnalysisCommand = sender as DexterAnalysisCommand;
@@ -154,12 +148,12 @@ namespace dexter_vs.UI
 
         private void onAnalysisFinished(object sender, EventArgs args)
         {
-            fileAnalysisCommand.Enabled = true;
-            projectAnalysisCommand.Enabled = true;
-            solutionAnalysisCommand.Enabled = true;
-            projectSnapshotCommand.Enabled = true;
-            solutionSnapshotCommand.Enabled = true;
-            solutionAnalysisToolbarCommand.Enabled = true;
+            foreach (DexterAnalysisCommand analysisCommand in analysisCommands)
+            {
+                analysisCommand.AutoEnabled = true;
+                analysisCommand.Enabled = true;
+            }
+
             cancelCommand.Visible = false;
             cancelToolbarCommand.Enabled = false;
         }
