@@ -25,6 +25,9 @@
 */
 package com.samsung.sec.dexter.eclipse;
 
+import java.io.IOException;
+import java.net.InetAddress; 
+import java.net.UnknownHostException; 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -50,6 +53,8 @@ import com.samsung.sec.dexter.eclipse.util.EmptyJDTUtil;
 import com.samsung.sec.dexter.eclipse.util.ICDTUtil;
 import com.samsung.sec.dexter.eclipse.util.IJDTUtil;
 
+
+
 /**
  * The activator class controls the plug-in life cycle
  */
@@ -58,6 +63,7 @@ public class DexterEclipseActivator extends AbstractUIPlugin implements IDexterS
 	private final LoadingCache<String, AnalysisConfig> configCache;
 	private ScheduledFuture<?> loginFuture = null;
 	private static DexterEclipseActivator plugin;
+	private static final int SERVER_TIMEOUT = 500; 
 	public final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
 	public static EclipseLog LOG;
 	private static IJDTUtil jdtUtil;
@@ -96,6 +102,8 @@ public class DexterEclipseActivator extends AbstractUIPlugin implements IDexterS
 
 		LOG = new EclipseLog(PLUGIN_ID);
 		LOG.setPlugin(this);
+		
+		CheckPlatzServer(); 
 		
 		DexterConfig.getInstance().addDexterStandaloneListener(this);
 		
@@ -175,4 +183,17 @@ public class DexterEclipseActivator extends AbstractUIPlugin implements IDexterS
 		
 		return cdtUtil;
 	}
+	
+	private void CheckPlatzServer(){  
+		try{  
+			if (!InetAddress.getByName(DexterConfig.PLATZ_DOMAIN).isReachable(SERVER_TIMEOUT)) {  
+				java.lang.System.setProperty("isPlatzAlive", "true");  
+		}  
+		} catch (UnknownHostException e) {  
+			java.lang.System.setProperty("isPlatzAlive", "False");  
+		} catch (IOException e) {  
+			java.lang.System.setProperty("isPlatzAlive", "False");  
+		}  
+	}  
+
 }

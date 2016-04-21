@@ -2,14 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dexter Eclipse CDT
 Bundle-SymbolicName: dexter-eclipse-cdt;singleton:=true
-Bundle-Version: 0.9.4
+Bundle-Version: 0.10.0
 Bundle-Activator: com.samsung.sec.dexter.eclipse.cdt.DexterEclipseCDTActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
  org.eclipse.ui,
  org.eclipse.cdt.core,
  dexter-core,
- dexter-eclipse;bundle-version="0.9.4"
+ dexter-eclipse
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Samsung Electronics VD SE Lab
