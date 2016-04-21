@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using dexter_vs.Utils;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 
@@ -101,7 +102,7 @@ namespace dexter_vs.Config
         /// Default path to dexter configuration file: "\dexter-config-vsplugin.json"
         /// </summary>
         [JsonIgnore]
-        public static string DefaultConfigurationPath { get { return "\\dexter-config-vsplugin.json"; } }
+        public static string DefaultConfigurationPath { get { return PathUtils.GetAppDataPath("dexter-config-vsplugin.json"); } }
 
         /// <summary>
         /// Checks if dexter-executor.jar is found under dexterExecutorPath

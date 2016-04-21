@@ -103,40 +103,10 @@ namespace dexter_vs.UI.Analysis
         protected override void CommandClicked(object sender, EventArgs e)
         {
             Configuration config = ConfigurationProvider.Load();
-            DexterInfo dexterInfo = DexterInfo.fromConfiguration(config);
-            string validationResult;
-             
-            if (!validator.ValidateDexterPath(dexterInfo))
+
+            if (!ValidateConfiguration(config))
             {
-                MessageBox.Show("Dexter wasn't found in given path. You cannot perform analysis until you set a proper path.", "Dexter error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
-            }
-            if (!config.standalone && !validator.ValidateServerConnection(dexterInfo, out validationResult))
-            {
-               DialogResult result =  MessageBox.Show("Couldn't connect to Dexter server. Please check server address in Dexter/Settings window. Continue in standalone mode?", "Dexter warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-                if (result == DialogResult.OK)
-                {
-                    config.standalone = true;
-                }
-                else
-                {
-                    return;
-                }
-            }
-            else
-            {
-                if (!config.standalone && !validator.ValidateUserCredentials(dexterInfo, out validationResult))
-                {
-                    DialogResult result = MessageBox.Show("Couldn't login to Dexter server. Please check user credentials in Dexter/Settings window. Continue in standalone mode?", "Dexter warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
-                    if (result == DialogResult.OK)
-                    {
-                        config.standalone = true;
-                    }
-                    else
-                    {
-                        return;
-                    }
-                }
             }
             
             dexter = new Dexter(config);
@@ -144,7 +114,7 @@ namespace dexter_vs.UI.Analysis
             OutputWindowPane outputPane = CreatePane("Dexter");
             outputPane.Clear();
             outputPane.Activate();
-
+        
             DataReceivedEventHandler writeToOutputPane = (s, e1) => outputPane.OutputString(e1.Data + Environment.NewLine);
             dexter.OutputDataReceived += writeToOutputPane;
             dexter.ErrorDataReceived += writeToOutputPane;
@@ -168,6 +138,53 @@ namespace dexter_vs.UI.Analysis
                 dexter.Cancel();
                 OnAnalysisFinished(EventArgs.Empty);
             }
+        }
+
+        /// <summary>
+        /// Validates Dexter configuration
+        /// </summary>
+        /// <param name="config">configuration</param>
+        /// <returns>true, if validation was successfull </returns>
+        private bool ValidateConfiguration(Configuration config)
+        {
+            DexterInfo dexterInfo = DexterInfo.fromConfiguration(config);
+            string validationResult;
+
+            if (!validator.ValidateDexterPath(dexterInfo))
+            {
+                MessageBox.Show("Dexter wasn't found in given path. You cannot perform analysis until you set a proper path.", "Dexter error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            if (!config.standalone && !validator.ValidateServerConnection(dexterInfo, out validationResult))
+            {
+                DialogResult result = MessageBox.Show("Couldn't connect to Dexter server. Please check server address in Dexter/Settings window. Continue in standalone mode?", "Dexter warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                if (result == DialogResult.OK)
+                {
+                    config.standalone = true;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                if (!config.standalone && !validator.ValidateUserCredentials(dexterInfo, out validationResult))
+                {
+                    DialogResult result = MessageBox.Show("Couldn't login to Dexter server. Please check user credentials in Dexter/Settings window. Continue in standalone mode?", "Dexter warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                    if (result == DialogResult.OK)
+                    {
+                        config.standalone = true;
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
         
         /// <summary>
@@ -199,6 +216,7 @@ namespace dexter_vs.UI.Analysis
         private OutputWindowPane CreatePane(string title)
         {
             DTE2 dte = (DTE2)ServiceProvider.GetService(typeof(DTE));
+            dte.ExecuteCommand("View.Output");
             OutputWindowPanes panes = dte.ToolWindows.OutputWindow.OutputWindowPanes;
             
             try

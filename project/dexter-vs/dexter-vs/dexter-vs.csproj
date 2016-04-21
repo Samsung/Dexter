@@ -101,6 +101,7 @@
     <Compile Include="UI\Analysis\VsSolutionEvents.cs" />
     <Compile Include="UI\Tasks\DexterTaskProvider.cs" />
     <Compile Include="Utils\EnumerableExtensions.cs" />
+    <Compile Include="Utils\PathUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />
