@@ -17,16 +17,25 @@ namespace dexter_vs.UI.Analysis
         public DexterFileAnalysisCommand(Package package, int commandId, Guid commandSet, ConfigurationProvider configurationProvider)
            : base(package, commandId, commandSet, configurationProvider)
         {
-            DocumentEvents events = ((Events2)Dte.Events).DocumentEvents;
+            WindowEvents events = ((Events2)Dte.Events).WindowEvents;
 
-            events.DocumentOpened += OnDocumentOpened;
-            events.DocumentClosing += OnDocumentClosed;
+            events.WindowActivated += OnDocumentWindowActivated;
+            events.WindowClosing += OnDocumentWindowClosed;
 
             menuItem.Enabled = false;
         }
 
-        private void OnDocumentOpened(Document document)
+        private void OnDocumentWindowActivated(Window gotFocus, Window lostFocus)
         {
+            var document = gotFocus.Document;
+
+            if (document ==null)
+            {
+                menuItem.Text = "On File";
+                menuItem.Enabled = false;
+                return;
+            }
+
             var docName = document.Name.ToLower();
             if (docName.EndsWith("c") || docName.EndsWith("h") ||
                 docName.EndsWith("cpp") || docName.EndsWith("hpp") ||
@@ -39,7 +48,7 @@ namespace dexter_vs.UI.Analysis
             }
         }
 
-        private void OnDocumentClosed(Document document)
+        private void OnDocumentWindowClosed(Window window)
         {
             menuItem.Enabled = false;
         }

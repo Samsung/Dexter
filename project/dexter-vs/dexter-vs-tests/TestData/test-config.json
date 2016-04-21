@@ -1,9 +1,7 @@
 {
   "dexterHome": "TestPath",
   "dexterServerIp": "",
-  "dexterServerPort": 0,
-  "userName": "",
-  "userPassword": "",
+  "dexterServerPort": "0",
   "projectName": "",
   "projectFullPath": "",
   "sourceDir": [],

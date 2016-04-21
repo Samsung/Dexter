@@ -8,27 +8,22 @@ namespace dexter_vs.Config.Providers
     /// Provides project info based on user preferences.
     /// Sets analysis scope to whole solution.  
     /// </summary>
-    internal class SolutionInfoProvider : IProjectInfoProvider
+    internal class SolutionInfoProvider : ProjectInfoProvider
     {
-        /// <summary>
-        /// DTE object
-        /// </summary>
-        protected readonly DTE dte;
-
         /// <summary>
         /// Creates new ProjectInfoProvider
         /// </summary>
         /// <param name="serviceProvider"> service provider from the owner package</param>
-        public SolutionInfoProvider(IServiceProvider serviceProvider)
+        public SolutionInfoProvider(IServiceProvider serviceProvider, bool snapshot = false) 
+            : base(serviceProvider, snapshot)
         {
-            dte = (DTE)serviceProvider.GetService(typeof(DTE));
         }
 
         /// <summary>
         /// Creates new ProjectInfo based on user preferences 
         /// </summary>
         /// <returns>new ProjectInfo</returns>
-        public virtual ProjectInfo Load()
+        public override ProjectInfo Load()
         {   
             Solution solution = dte.Solution;
 
@@ -38,7 +33,7 @@ namespace dexter_vs.Config.Providers
                 projectFullPath = Path.GetDirectoryName(solution.FullName),
                 sourceDir = { Path.GetDirectoryName(solution.FullName) },
                 headerDir = { Path.GetDirectoryName(solution.FullName) },
-                type = "PROJECT"
+                type = Snapshot ? "SNAPSHOT" : "PROJECT"
             };
         }
     }

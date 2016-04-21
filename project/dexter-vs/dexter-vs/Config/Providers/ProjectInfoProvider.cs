@@ -16,12 +16,23 @@ namespace dexter_vs.Config.Providers
         protected readonly DTE dte;
 
         /// <summary>
+        /// Whether project type should be set to 'Snapshot'
+        /// </summary>
+        public bool Snapshot
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Creates new ProjectInfoProvider
         /// </summary>
         /// <param name="serviceProvider"> service provider from the owner package</param>
-        public ProjectInfoProvider(IServiceProvider serviceProvider)
+        /// <param name="serviceProvider"> whether analysis type should be set to 'Snapshot' </param>
+        public ProjectInfoProvider(IServiceProvider serviceProvider, bool snapshot = false)
         {
             dte = (DTE)serviceProvider.GetService(typeof(DTE));
+            Snapshot = snapshot;
         }
 
         /// <summary>
@@ -40,7 +51,7 @@ namespace dexter_vs.Config.Providers
                 projectFullPath = Path.GetDirectoryName(project.FullName),
                 sourceDir = { Path.GetDirectoryName(project.FullName) },
                 headerDir = { Path.GetDirectoryName(project.FullName) },
-                type = "PROJECT"
+                type = Snapshot ? "SNAPSHOT" : "PROJECT"
             };
         }
     }
