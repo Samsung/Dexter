@@ -64,4 +64,9 @@ public class DexterWebResourceAdapter implements IDexterWebResource {
 	public String getConnectionResult(String uri, String id, String pwd) {
 		return "";
 	}
+
+	@Override
+	public String postWithBodyforCLI(String uri, String id, String pwd, String bodyJson) {
+		return "";
+	}
 }

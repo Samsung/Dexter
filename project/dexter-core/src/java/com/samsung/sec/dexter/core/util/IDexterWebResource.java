@@ -82,6 +82,8 @@ public interface IDexterWebResource {
 	 * @return String
 	 */
 	public abstract String postWithBody(final String uri, final String id, final String pwd, final Map<String, Object> body);
+	
+	public abstract String postWithBodyforCLI(final String uri, final String id, final String pwd, final String bodyJson);
 
 
 	/**

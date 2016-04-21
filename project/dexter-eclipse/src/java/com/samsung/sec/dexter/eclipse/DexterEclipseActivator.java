@@ -121,6 +121,7 @@ public class DexterEclipseActivator extends AbstractUIPlugin implements IDexterS
 					Display.getDefault().asyncExec(new Runnable() {
 						@Override
 						public void run() {
+							if(!DexterConfig.getInstance().getRunMode().equals(DexterConfig.RunMode.DAEMON))
 							LoginDialog.loginJob(null);
 						}
 					});

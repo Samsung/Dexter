@@ -72,4 +72,9 @@ public class DummyDexterWebResource implements IDexterWebResource {
 		return result;
 	}
 
+	@Override
+	public String postWithBodyforCLI(String uri, String id, String pwd, String bodyJson) {
+		return result;
+	}
+
 }
