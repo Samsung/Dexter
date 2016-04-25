@@ -27,14 +27,21 @@ namespace dexter_vs.Config.Providers
         {   
             Solution solution = dte.Solution;
 
-            return new ProjectInfo()
+            if (solution == null || solution.Count==0)
             {
-                projectName = Path.GetFileNameWithoutExtension(solution.FullName),
-                projectFullPath = Path.GetDirectoryName(solution.FullName),
-                sourceDir = { Path.GetDirectoryName(solution.FullName) },
-                headerDir = { Path.GetDirectoryName(solution.FullName) },
-                type = Snapshot ? "SNAPSHOT" : "PROJECT"
-            };
+                return new ProjectInfo();
+            }
+            else
+            {
+                return new ProjectInfo()
+                {
+                    projectName = Path.GetFileNameWithoutExtension(solution.FullName),
+                    projectFullPath = Path.GetDirectoryName(solution.FullName),
+                    sourceDir = { Path.GetDirectoryName(solution.FullName) },
+                    headerDir = { Path.GetDirectoryName(solution.FullName) },
+                    type = Snapshot ? "SNAPSHOT" : "PROJECT"
+                };
+            }
         }
     }
 }

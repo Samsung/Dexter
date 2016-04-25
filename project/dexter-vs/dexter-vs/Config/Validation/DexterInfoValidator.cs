@@ -55,8 +55,7 @@ namespace dexter_vs.Config.Validation
 
             string html = string.Empty;
 
-            using (Stream stream = response.GetResponseStream())
-            using (StreamReader reader = new StreamReader(stream))
+            using (StreamReader reader = new StreamReader(response.GetResponseStream()))
             {
                 html = reader.ReadToEnd();
             }

@@ -10,7 +10,7 @@ namespace dexter_vs.UI.Settings
     /// <summary>
     /// Control for loading and saving Dexter settings by user
     /// </summary>
-    public partial class SettingsControl : UserControl, IDexterInfoProvider
+    public sealed partial class SettingsControl : UserControl, IDexterInfoProvider
     {
         private readonly IDexterInfoProvider dexterInfoProvider;
 

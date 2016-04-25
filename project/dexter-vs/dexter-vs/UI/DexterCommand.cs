@@ -13,7 +13,6 @@ namespace dexter_vs.UI
     {
         /// <summary>
         /// Gets/sets the value indicating whether menu item associated with ths command is enabled  or not.
-        /// Setting this value will work only if AutoEnabled is true
         /// </summary>
         public bool Enabled
         {
@@ -23,20 +22,8 @@ namespace dexter_vs.UI
             }
             set
             {
-                if (AutoEnabled)
-                {
-                    menuItem.Enabled = value;
-                }
+                menuItem.Enabled = value;
             }
-        }
-
-        /// <summary>
-        /// Gets/sets the value indicating whether menu item can automatically change enabled/disabled state
-        /// </summary>
-        public bool AutoEnabled
-        {
-            get;
-            set;
         }
 
         /// <summary>
@@ -107,8 +94,6 @@ namespace dexter_vs.UI
             ServiceProvider = package;
 
             Dte = (DTE)ServiceProvider.GetService(typeof(DTE));
-
-            AutoEnabled = true;
          
             OleMenuCommandService commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService != null)

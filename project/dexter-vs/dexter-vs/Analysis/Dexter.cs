@@ -55,11 +55,13 @@ namespace dexter_vs.Analysis
         {
             CreateDexterProcess();
 
-            dexterProcess.Start();
-            dexterProcess.BeginErrorReadLine();
-            dexterProcess.BeginOutputReadLine();
-            dexterProcess.WaitForExit();
-            
+            using (dexterProcess)
+            {
+                dexterProcess.Start();
+                dexterProcess.BeginErrorReadLine();
+                dexterProcess.BeginOutputReadLine();
+                dexterProcess.WaitForExit();
+            }
             Result result = GetAnalysisResult();
 
             return result;
@@ -79,7 +81,6 @@ namespace dexter_vs.Analysis
         /// <summary>
         /// Creates (but doesn't start) new Dexter process
         /// </summary>
-        /// <returns>new dexter process</returns>
         private void CreateDexterProcess()
         {
             string configFlag = File.Exists(Configuration.DefaultConfigurationPath) ? " -f " + Configuration.DefaultConfigurationPath : "";
@@ -99,8 +100,9 @@ namespace dexter_vs.Analysis
             
             dexterProcess.OutputDataReceived += OutputDataReceived;
             dexterProcess.ErrorDataReceived += ErrorDataReceived;
+            dexterProcess.Disposed += (s,e) => dexterProcess = null;
         }
-        
+
         /// <summary>
         /// Loads analysis result from generated file
         /// </summary>
@@ -134,5 +136,6 @@ namespace dexter_vs.Analysis
 
             return result;
         }
+
     }
 }

@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="Config\Configuration.cs" />
     <Compile Include="Config\Providers\SettingsStoreDexterInfoProvider.cs" />
+    <Compile Include="Config\Validation\ProjectInfoValidator.cs" />
     <Compile Include="Defects\Defect.cs" />
     <Compile Include="Defects\Result.cs" />
     <Compile Include="Analysis\Dexter.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Config\Providers\FileDexterInfoProvider.cs" />
     <Compile Include="Config\Providers\IDexterInfoProvider.cs" />
     <Compile Include="UI\Analysis\CancelCommand.cs" />
+    <Compile Include="UI\Analysis\DexterSolutionAnalysisCommand.cs" />
     <Compile Include="UI\Dashboard\DashboardCommand.cs" />
     <Compile Include="UI\DexterCommand.cs" />
     <Compile Include="UI\Settings\SettingsPage.cs">

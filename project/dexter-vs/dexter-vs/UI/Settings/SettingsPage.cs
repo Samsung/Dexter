@@ -42,7 +42,6 @@ namespace dexter_vs.UI.Settings
         protected override void OnActivate(CancelEventArgs e)
         {
             ((IDexterInfoProvider)settingControl).Load();
-            OnSettingsChanged(EventArgs.Empty);
         }
 
         protected override void OnApply(PageApplyEventArgs e)

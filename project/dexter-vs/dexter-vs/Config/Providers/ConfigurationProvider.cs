@@ -32,7 +32,25 @@
         /// <returns>new configuration</returns>
         public Configuration Load()
         {   
-            return new Configuration(projectInfoProvider.Load() , dexterInfoProvider.Load());
+            return new Configuration(LoadProjectInfo(), LoadDexterInfo());
+        }
+
+        /// <summary>
+        /// Loads new Dexter info from dexterInfoProvider
+        /// </summary>
+        /// <returns>new DexterInfo</returns>
+        public DexterInfo LoadDexterInfo()
+        {
+            return dexterInfoProvider.Load();
+        }
+
+        /// <summary>
+        /// Loads new Project info from projectInfoProvider
+        /// </summary>
+        /// <returns>new ProjectInfo</returns>
+        public ProjectInfo LoadProjectInfo()
+        {
+            return projectInfoProvider.Load();
         }
     }
 }

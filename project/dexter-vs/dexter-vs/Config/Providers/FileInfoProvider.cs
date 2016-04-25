@@ -31,8 +31,10 @@ namespace dexter_vs.Config.Providers
         public virtual ProjectInfo Load()
         {
             Document doc = dte.ActiveDocument;
-            
-            return new ProjectInfo()
+
+            return doc == null ?
+            new ProjectInfo() :
+            new ProjectInfo()
             {
                 projectName = Path.GetFileNameWithoutExtension(doc.FullName),
                 projectFullPath = Path.GetDirectoryName(doc.FullName),

@@ -42,6 +42,12 @@ namespace dexter_vs.Config.Providers
         public virtual ProjectInfo Load()
         {   
             Solution solution = dte.Solution;
+
+            if (solution==null || solution.Projects.Count == 0)
+            {
+                return new ProjectInfo();
+            }
+
             Projects projects = solution.Projects;
             Project project = projects.Item(1);
 

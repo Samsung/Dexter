@@ -1,15 +1,14 @@
 ﻿using dexter_vs.Config.Providers;
 using EnvDTE;
 using EnvDTE80;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using System;
 
 namespace dexter_vs.UI.Analysis
 {
     /// <summary>
-    /// Command handler - for single file analysis
+    /// Command handler - for single file analysis. 
+    /// Automatically sets menu text and Enabled property depending on currently opened file.
     /// </summary>
     internal class DexterFileAnalysisCommand : DexterAnalysisCommand
     {  
@@ -21,8 +20,6 @@ namespace dexter_vs.UI.Analysis
 
             events.WindowActivated += OnDocumentWindowActivated;
             events.WindowClosing += OnDocumentWindowClosed;
-
-            Enabled = false;
         }
 
         private void OnDocumentWindowActivated(Window gotFocus, Window lostFocus)
@@ -32,7 +29,7 @@ namespace dexter_vs.UI.Analysis
             if (document ==null)
             {
                 Text = "On File";
-                Enabled = false;
+                Refresh();
                 return;
             }
 
@@ -44,20 +41,13 @@ namespace dexter_vs.UI.Analysis
             {
                 
                 Text = "On " + document.Name;
-                Enabled = true;
+                Refresh();
             }
         }
 
         private void OnDocumentWindowClosed(Window window)
         {
-            Enabled = false;
-        }
-
-        /// <summary>
-        /// Does nothing; we don't need to handle solution events for this class
-        /// </summary>
-        protected override void AdviseSolutionEvents()
-        {
+            Refresh();
         }
     }
 }

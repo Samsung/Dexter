@@ -10,7 +10,6 @@ using EnvDTE80;
 using EnvDTE;
 using System.Diagnostics;
 using System.Windows.Forms;
-using Microsoft.VisualStudio.Shell.Interop;
 using dexter_vs.UI.Tasks;
 using dexter_vs.Config;
 using dexter_vs.Defects;
@@ -24,7 +23,7 @@ namespace dexter_vs.UI.Analysis
     /// <summary>
     /// Command handler - for analysis command
     /// </summary>
-    internal class DexterAnalysisCommand : DexterCommand
+    internal class DexterAnalysisCommand : DexterCommand, IDisposable 
     {
         /// <summary>
         /// Dexter task provider
@@ -34,7 +33,12 @@ namespace dexter_vs.UI.Analysis
         /// <summary>
         /// DexterInfo validator
         /// </summary>
-        private readonly DexterInfoValidator validator;
+        private readonly DexterInfoValidator dexterInfoValidator;
+
+        /// <summary>
+        /// ProjectInfo validator
+        /// </summary>
+        private readonly ProjectInfoValidator projectInfoValidator;
 
         /// <summary>
         /// Invoked when analysis is started
@@ -50,6 +54,16 @@ namespace dexter_vs.UI.Analysis
         /// Dexter instance 
         /// </summary>
         private Dexter dexter;
+
+        /// <summary>
+        /// Determines whether command item should automatically change Enabled state 
+        /// when project is open/closed
+        /// </summary>
+        public bool AutoEnabled
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Configuration provider
@@ -69,11 +83,11 @@ namespace dexter_vs.UI.Analysis
         public DexterAnalysisCommand(Package package, int commandId, Guid commandSet, ConfigurationProvider configurationProvider)
             :base(package,commandId,commandSet)
         {
-            Enabled = Dte.Solution.Projects.Count > 0;
-            validator = new DexterInfoValidator();
+            AutoEnabled = true;
+            dexterInfoValidator = new DexterInfoValidator();
+            projectInfoValidator = new ProjectInfoValidator();
             ConfigurationProvider = configurationProvider;
-
-            AdviseSolutionEvents();
+            Refresh();
         }
 
 
@@ -108,19 +122,17 @@ namespace dexter_vs.UI.Analysis
             {
                 return;
             }
-            
-            dexter = new Dexter(config);
 
             OutputWindowPane outputPane = CreatePane("Dexter");
             outputPane.Clear();
             outputPane.Activate();
-        
-            DataReceivedEventHandler writeToOutputPane = (s, e1) => outputPane.OutputString(e1.Data + Environment.NewLine);
-            dexter.OutputDataReceived += writeToOutputPane;
-            dexter.ErrorDataReceived += writeToOutputPane;
 
-            System.Threading.Tasks.Task.Run(() => 
+            System.Threading.Tasks.Task.Run(() =>
             {
+                dexter = new Dexter(config);
+                DataReceivedEventHandler writeToOutputPane = (s, e1) => outputPane.OutputString(e1.Data + Environment.NewLine);
+                dexter.OutputDataReceived += writeToOutputPane;
+                dexter.ErrorDataReceived += writeToOutputPane;
                 OnAnalysisStarted(EventArgs.Empty);
                 Result result = dexter.Analyse();
                 OnAnalysisFinished(EventArgs.Empty);
@@ -141,6 +153,21 @@ namespace dexter_vs.UI.Analysis
         }
 
         /// <summary>
+        /// Refreshes the state of menu item.
+        /// Works only, if AutoEnabled is true
+        /// </summary>
+        public void Refresh()
+        {
+            if (AutoEnabled)
+            {
+                DexterInfo dexterInfo = ConfigurationProvider.LoadDexterInfo();
+                ProjectInfo projectInfo = ConfigurationProvider.LoadProjectInfo();
+
+                Enabled = dexterInfoValidator.ValidateDexterPath(dexterInfo) && projectInfoValidator.ValidateProjectPath(projectInfo);
+            }
+        }
+
+        /// <summary>
         /// Validates Dexter configuration
         /// </summary>
         /// <param name="config">configuration</param>
@@ -150,12 +177,12 @@ namespace dexter_vs.UI.Analysis
             DexterInfo dexterInfo = DexterInfo.fromConfiguration(config);
             string validationResult;
 
-            if (!validator.ValidateDexterPath(dexterInfo))
+            if (!dexterInfoValidator.ValidateDexterPath(dexterInfo))
             {
                 MessageBox.Show("Dexter wasn't found in given path. You cannot perform analysis until you set a proper path.", "Dexter error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
-            if (!config.standalone && !validator.ValidateServerConnection(dexterInfo, out validationResult))
+            if (!config.standalone && !dexterInfoValidator.ValidateServerConnection(dexterInfo, out validationResult))
             {
                 DialogResult result = MessageBox.Show("Couldn't connect to Dexter server. Please check server address in Dexter/Settings window. Continue in standalone mode?", "Dexter warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
                 if (result == DialogResult.OK)
@@ -170,7 +197,7 @@ namespace dexter_vs.UI.Analysis
             }
             else
             {
-                if (!config.standalone && !validator.ValidateUserCredentials(dexterInfo, out validationResult))
+                if (!config.standalone && !dexterInfoValidator.ValidateUserCredentials(dexterInfo, out validationResult))
                 {
                     DialogResult result = MessageBox.Show("Couldn't login to Dexter server. Please check user credentials in Dexter/Settings window. Continue in standalone mode?", "Dexter warning", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
                     if (result == DialogResult.OK)
@@ -231,67 +258,16 @@ namespace dexter_vs.UI.Analysis
             }
         }
 
-        private Project getActiveProject()
-        {
-            Array projects = (Array)Dte.ActiveSolutionProjects;
-            if (projects != null && projects.Length > 0)
-            {
-                return projects.GetValue(0) as Project;
-            }
-            projects = (Array)Dte.Solution.SolutionBuild.StartupProjects;
-            if (projects != null && projects.Length >= 1)
-            {
-                return projects.GetValue(0) as Project;
-            }
-
-            Projects projs = Dte.Solution.Projects;
-            if (projs != null && projs.Count > 0)
-            {
-                return projs.Item(1);
-            }
-            return null;
-        }
-
         /// <summary>
-        /// Registers custom event handler for solution events
+        /// Disposes this command. 
         /// </summary>
-        protected virtual void AdviseSolutionEvents()
+        public void Dispose()
         {
-            IVsSolution solution = ServiceProvider.GetService(typeof(SVsSolution)) as IVsSolution;
-            var solutionEvents = new DexterAnalysisCommandSolutionEvents(this);
-            uint cookie = 0;
-            solution.AdviseSolutionEvents(solutionEvents, out cookie);
-        }
-        
-        /// <summary>
-        /// Event handler for solution events.
-        /// Sets the state and text of menu controls based on current project
-        /// </summary>
-        class DexterAnalysisCommandSolutionEvents : VsSolutionEvents
-        {
-            private DexterAnalysisCommand dexterCommand;
-
-            public DexterAnalysisCommandSolutionEvents(DexterAnalysisCommand dexterCommand)
+            if (taskProvider!=null)
             {
-                this.dexterCommand = dexterCommand;
-            }
-            
-            public override int OnAfterOpenProject(IVsHierarchy pHierarchy, int fAdded)
-            {
-                Project activeProject = dexterCommand.getActiveProject();
-
-                dexterCommand.Text = "On " + activeProject.Name;
-                dexterCommand.Enabled = true;
-                return base.OnAfterOpenProject(pHierarchy, fAdded);
-            }
-
-            public override int OnBeforeCloseProject(IVsHierarchy pHierarchy, int fRemoved)
-            {
-                dexterCommand.Enabled = false;
-                return base.OnBeforeCloseProject(pHierarchy, fRemoved);
+                taskProvider.Dispose();
             }
         }
-
     }
 
 

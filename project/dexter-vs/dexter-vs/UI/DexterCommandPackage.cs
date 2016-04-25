@@ -99,16 +99,16 @@ namespace dexter_vs.UI
             var commandSet = new Guid("2ed6d891-bce1-414d-8251-80a0800a831f");
 
             DexterAnalysisCommand fileAnalysisCommand = new DexterFileAnalysisCommand(this, 0x0102, commandSet, fileConfigProvider);
-            DexterAnalysisCommand projectAnalysisCommand = new DexterAnalysisCommand(this, 0x0101, commandSet, projectConfigProvider);
-            DexterAnalysisCommand solutionAnalysisCommand = new DexterAnalysisCommand(this, 0x0100, commandSet, solutionConfigProvider);
-            DexterAnalysisCommand projectSnapshotCommand = new DexterAnalysisCommand(this, 0x0111, commandSet, projectSnapshotConfigProvider);
-            DexterAnalysisCommand solutionSnapshotCommand = new DexterAnalysisCommand(this, 0x0110, commandSet, solutionSnapshotConfigProvider);
+            DexterAnalysisCommand projectAnalysisCommand = new DexterSolutionAnalysisCommand(this, 0x0101, commandSet, projectConfigProvider);
+            DexterAnalysisCommand solutionAnalysisCommand = new DexterSolutionAnalysisCommand(this, 0x0100, commandSet, solutionConfigProvider);
+            DexterAnalysisCommand projectSnapshotCommand = new DexterSolutionAnalysisCommand(this, 0x0111, commandSet, projectSnapshotConfigProvider);
+            DexterAnalysisCommand solutionSnapshotCommand = new DexterSolutionAnalysisCommand(this, 0x0110, commandSet, solutionSnapshotConfigProvider);
 
             settingsCommand = new SettingsCommand(this, 0x0103, commandSet);
             dashboardCommand = new DashboardCommand(this, 0x0104, commandSet, dexterInfoProvider);
             cancelCommand = new CancelCommand(this, 0x0105, commandSet);
 
-            DexterAnalysisCommand solutionAnalysisToolbarCommand = new DexterAnalysisCommand(this, 0x0200, commandSet, solutionConfigProvider);
+            DexterAnalysisCommand solutionAnalysisToolbarCommand = new DexterSolutionAnalysisCommand(this, 0x0200, commandSet, solutionConfigProvider);
             settingsToolbarCommand = new SettingsCommand(this, 0x0203, commandSet);
             dashboardToolbarCommand = new DashboardCommand(this, 0x0204, commandSet, dexterInfoProvider);
             cancelToolbarCommand = new CancelCommand(this, 0x0205, commandSet);
@@ -136,13 +136,14 @@ namespace dexter_vs.UI
         {
             foreach(DexterAnalysisCommand analysisCommand in analysisCommands)
             {
-                analysisCommand.Enabled = false;
                 analysisCommand.AutoEnabled = false;
+                analysisCommand.Enabled = false;
             }
 
             cancelCommand.AnalysisCommand = sender as DexterAnalysisCommand;
             cancelToolbarCommand.AnalysisCommand = sender as DexterAnalysisCommand;
             cancelCommand.Visible = true;
+            cancelCommand.Enabled = true;
             cancelToolbarCommand.Enabled = true;
         }
 
@@ -151,10 +152,11 @@ namespace dexter_vs.UI
             foreach (DexterAnalysisCommand analysisCommand in analysisCommands)
             {
                 analysisCommand.AutoEnabled = true;
-                analysisCommand.Enabled = true;
+                analysisCommand.Refresh();
             }
 
             cancelCommand.Visible = false;
+            cancelCommand.Enabled = false;
             cancelToolbarCommand.Enabled = false;
         }
         
@@ -162,6 +164,11 @@ namespace dexter_vs.UI
         {
             dashboardToolbarCommand.Refresh();
             dashboardCommand.Refresh();
+
+            foreach (DexterAnalysisCommand analysisCommand in analysisCommands)
+            {
+                analysisCommand.Refresh();
+            }
         }       
 
         #endregion
