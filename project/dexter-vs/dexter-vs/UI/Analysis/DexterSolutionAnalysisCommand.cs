@@ -30,17 +30,32 @@ namespace dexter_vs.UI.Analysis
             solution.AdviseSolutionEvents(solutionEvents, out cookie);
         }
 
+        /// <summary>
+        /// Saves currently opened project, validates configuration and performs analysis
+        /// </summary>
+        /// <param name="sender">Event sender.</param>
+        /// <param name="e">Event args.</param>
+        protected override void CommandClicked(object sender, EventArgs e)
+        {
+            Project project = getActiveProject();
+            if (project!=null && !project.Saved)
+            {
+                project.Save();
+            }
+            base.CommandClicked(sender, e);
+        }
+
         private Project getActiveProject()
         {
-            Array projects = (Array)Dte.ActiveSolutionProjects;
+            Array projects = (Array) (Dte.ActiveSolutionProjects ?? Dte.Solution.SolutionBuild.StartupProjects);
+
             if (projects != null && projects.Length > 0)
             {
-                return projects.GetValue(0) as Project;
-            }
-            projects = (Array)Dte.Solution.SolutionBuild.StartupProjects;
-            if (projects != null && projects.Length >= 1)
-            {
-                return projects.GetValue(0) as Project;
+                var project = projects.GetValue(0) as Project;
+                if (project != null)
+                {
+                    return project;
+                }
             }
 
             Projects projs = Dte.Solution.Projects;

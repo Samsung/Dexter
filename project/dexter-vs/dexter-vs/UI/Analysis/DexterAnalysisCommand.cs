@@ -110,7 +110,7 @@ namespace dexter_vs.UI.Analysis
         }
 
         /// <summary>
-        /// Validates configuration and perform analysis
+        /// Validates configuration and performs analysis
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="e">Event args.</param>

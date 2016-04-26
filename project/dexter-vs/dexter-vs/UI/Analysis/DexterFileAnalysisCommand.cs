@@ -22,6 +22,22 @@ namespace dexter_vs.UI.Analysis
             events.WindowClosing += OnDocumentWindowClosed;
         }
 
+        /// <summary>
+        /// Saves currently opened file, validates configuration and performs analysis
+        /// </summary>
+        /// <param name="sender">Event sender.</param>
+        /// <param name="e">Event args.</param>
+        protected override void CommandClicked(object sender, EventArgs e)
+        {
+            Document document = Dte.ActiveDocument;
+            if (document!=null && !document.Saved)
+            {
+                document.Save();
+            }
+
+            base.CommandClicked(sender, e);
+        }
+
         private void OnDocumentWindowActivated(Window gotFocus, Window lostFocus)
         {
             var document = gotFocus.Document;
