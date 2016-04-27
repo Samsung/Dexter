@@ -71,6 +71,7 @@ namespace dexter_vs.UI.Analysis
         protected IConfigurationProvider ConfigurationProvider
         {
             get;
+            private set;
         }
 
         /// <summary>

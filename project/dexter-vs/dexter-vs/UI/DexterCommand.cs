@@ -62,6 +62,7 @@ namespace dexter_vs.UI
         protected IServiceProvider ServiceProvider
         {
             get;
+            private set;
         }
 
         /// <summary>
@@ -70,6 +71,7 @@ namespace dexter_vs.UI
         protected DTE Dte
         {
             get;
+            private set;
         }
 
         /// <summary>

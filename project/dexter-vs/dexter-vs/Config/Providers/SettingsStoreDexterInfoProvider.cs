@@ -44,12 +44,12 @@ namespace dexter_vs.Config.Providers
             {
                 return new DexterInfo()
                 {
-                    dexterHome = settingsStore.GetString(DexterStoreName, nameof(DexterInfo.dexterHome)),
-                    dexterServerIp = settingsStore.GetString(DexterStoreName, nameof(DexterInfo.dexterServerIp)),
-                    dexterServerPort = settingsStore.GetInt32(DexterStoreName, nameof(DexterInfo.dexterServerPort)),
-                    userName = settingsStore.GetString(DexterStoreName, nameof(DexterInfo.userName)),
-                    userPassword = settingsStore.GetString(DexterStoreName, nameof(DexterInfo.userPassword)),
-                    standalone = settingsStore.GetBoolean(DexterStoreName, nameof(DexterInfo.standalone)),
+                    dexterHome = settingsStore.GetString(DexterStoreName, "dexterHome"),
+                    dexterServerIp = settingsStore.GetString(DexterStoreName, "dexterServerIp"),
+                    dexterServerPort = settingsStore.GetInt32(DexterStoreName, "dexterServerPort"),
+                    userName = settingsStore.GetString(DexterStoreName, "userName"),
+                    userPassword = settingsStore.GetString(DexterStoreName, "userPassword"),
+                    standalone = settingsStore.GetBoolean(DexterStoreName, "standalone")
                 };
             }
             
@@ -66,12 +66,12 @@ namespace dexter_vs.Config.Providers
                 settingsStore.CreateCollection(DexterStoreName);
             }
 
-            settingsStore.SetString(DexterStoreName, nameof(DexterInfo.dexterHome), dexterInfo.dexterHome);
-            settingsStore.SetString(DexterStoreName, nameof(DexterInfo.dexterServerIp), dexterInfo.dexterServerIp);
-            settingsStore.SetInt32(DexterStoreName, nameof(DexterInfo.dexterServerPort), dexterInfo.dexterServerPort);
-            settingsStore.SetString(DexterStoreName, nameof(DexterInfo.userName), dexterInfo.userName);
-            settingsStore.SetString(DexterStoreName, nameof(DexterInfo.userPassword), dexterInfo.userPassword);
-            settingsStore.SetBoolean(DexterStoreName, nameof(DexterInfo.standalone), dexterInfo.standalone);
+            settingsStore.SetString(DexterStoreName, "dexterHome", dexterInfo.dexterHome);
+            settingsStore.SetString(DexterStoreName, "dexterServerIp", dexterInfo.dexterServerIp);
+            settingsStore.SetInt32(DexterStoreName, "dexterServerPort", dexterInfo.dexterServerPort);
+            settingsStore.SetString(DexterStoreName, "userName", dexterInfo.userName);
+            settingsStore.SetString(DexterStoreName, "userPassword", dexterInfo.userPassword);
+            settingsStore.SetBoolean(DexterStoreName, "standalone", dexterInfo.standalone);
         }
     }
 }
