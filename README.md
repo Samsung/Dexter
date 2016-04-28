@@ -82,6 +82,26 @@ Dexter is a static analysis platform to find and remove defects efficiently and 
 - you can make a update site or just copy plugin folder into your new eclipse
 - then, you can use Dexter
 
+## Build Dexter Visual Studio Plugin
+In order to build a plugin for Visual Studio you need following prerequisites:
+- Microsoft Visual Studio 2013 or newer
+- Microsoft Visual Studio SDK (2013 or newer)
+- (Optionally) NUnit3 Test Adapter (Visual Studio Extension) - for executing unit tests
+
+To build a plugin:
+- open a solution file "dexter-vs.sln" located in project/dexter-vs directory. 
+- right click on "Build/Rebuild dexter-vs". NuGet will download all required dependencies and Visual Studio will rebuild you project.
+- after this, you should have a self-installing extension file "dexter.vsix" located in "dexter-vs/bin/{ConfigurationName}"
+- you can install an extension by double clicking it.  
+
+The most convenient way to debug this plugin is to use an Experimental Instance of Visual Studio. 
+- go to "Project/dexter-vs Properties..." and then go to "Debug" tab. 
+- select "Start external program:" and provide path to Visual Studio executable (devenv.exe). 
+- enter in "Command line arguments" value "/RootSuffix Exp". 
+- save your changes 
+- run a project (F5). 
+- it should start Visual Studio Experimental Instance with dexter-vs installed as an extension. 
+
 # Future Plan
 ## support more languages
 - JavaScript
@@ -97,7 +117,7 @@ Dexter is a static analysis platform to find and remove defects efficiently and 
 - JavaScript: Flow, JSHint
 - Custom Checkers
 
-## Dexter Web Monitor for organiztion(SE)
+## Dexter Web Monitor for organization(SE)
 - TBD 
 
 # License
