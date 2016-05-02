@@ -1,0 +1,16 @@
+{
+  "dexterHome": "TestPath",
+  "dexterServerIp": "",
+  "dexterServerPort": "0",
+  "projectName": "",
+  "projectFullPath": "",
+  "sourceDir": [],
+  "headerDir": [],
+  "binDir": "",
+  "libDir": [],
+  "fileName": [],
+  "modulePath": "",
+  "sourceEncoding": "UTF-8",
+  "type": "PROJECT",
+  "standalone": true
+}

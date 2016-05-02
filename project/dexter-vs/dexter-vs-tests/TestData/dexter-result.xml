@@ -1,0 +1,12 @@
+<dexter-result created="20160406144326">
+	<error filename="C:/Java8Test/src/DefaultInterface.java">
+	</error>
+	<error filename="C:/Java8Test/src/Lambda.java">
+		<defect checker="DLS_DEAD_LOCAL_STORE">
+			<occurence startLine="8" endLine="8"  message="DLS: Dead store to r2 in Lambda.doLambda()" />
+		</defect>
+		<defect checker="URF_UNREAD_FIELD">
+			<occurence startLine="4" endLine="4"  message="UrF: Unread field: Lambda.unusedVariable" />
+		</defect>
+	</error>
+</dexter-result>
