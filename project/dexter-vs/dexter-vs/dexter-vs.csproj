@@ -51,7 +51,6 @@
     <Compile Include="Config\DexterInfo.cs" />
     <Compile Include="Config\ProjectInfo.cs" />
     <Compile Include="Config\Providers\ConfigurationProvider.cs" />
-    <Compile Include="Config\Providers\FileDexterInfoProvider.cs" />
     <Compile Include="Config\Providers\FileInfoProvider.cs" />
     <Compile Include="Config\Providers\IConfigurationProvider.cs" />
     <Compile Include="Config\Providers\IDexterInfoProvider.cs" />

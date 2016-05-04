@@ -42,7 +42,10 @@ namespace dexter_vs.Analysis
         public Dexter(Configuration configuration) 
         {
             this.configuration = configuration;
-            if (!configuration.IsDexterFound) throw new FileNotFoundException("Cannot find dexter in specified path", configuration.DexterExecutorPath);
+            if (configuration == null)
+                throw new ArgumentNullException("configuration");
+            if (!configuration.IsDexterFound)
+                throw new FileNotFoundException("Cannot find dexter in specified path", configuration.DexterExecutorPath);
             configuration.Save();
         }
         

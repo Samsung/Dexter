@@ -48,5 +48,9 @@ namespace dexter_vs.Utils
             return string.Equals(Path.GetFullPath(path1), Path.GetFullPath(path2));
         }
 
+        /// <summary>
+        /// Private constructor - prevents from instantiating this class
+        /// </summary>
+        private PathUtils() {}
     }
 }

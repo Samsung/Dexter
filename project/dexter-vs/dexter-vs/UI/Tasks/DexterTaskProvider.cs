@@ -26,9 +26,12 @@ namespace dexter_vs.UI.Tasks
         /// <summary>
         /// Reports tasks from analysis result
         /// </summary>
-        /// <param name="result"></param>
+        /// <param name="result">Analysis result.</param>
         public void ReportResult(Result result)
         {
+            if (result == null)
+                throw new ArgumentNullException("result");
+
             foreach (FileDefects fileDefects in result.FileDefects.OrEmptyIfNull())
             {
                 foreach (Defect defect in fileDefects.Defects.OrEmptyIfNull())
