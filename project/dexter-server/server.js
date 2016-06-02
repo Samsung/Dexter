@@ -392,6 +392,9 @@ function initRestAPI(){
     app.post('/api/v2/functionMetrics', functionMetrics.getFunctionMetrics);
 
     app.get('/api/2/codeMetrics/slocList', codeMetrics.getCodeMetricsForSloc);
+    /* SnapshotDefectMap / SnapshotSourcecodeMap*/
+    app.get('/api/v2/snapshot/snapshotList', analysis.getAllSnapshotV2);
+    app.get('/api/v2/snapshot/security', analysis.getSnapshotDefectForSecurity);
 
 }
 

@@ -86,46 +86,89 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
             'Date': 'There is no defect in this project'
         });
     }
-    function pushDefectInSecurity(results){
 
+
+    function pushDefectInSecurity(defect){
+        $scope.csvSecurityContent.push({
+            'Did': defect.did,
+            'Checker': defect.checkerCode,
+            'Count': defect.occurenceCount,
+            'Line No': defect.occurenceLine,
+            'Severity': defect.severityCode,
+            'Category': defect.categoryName,
+            'Status': defect.statusCode,
+            'Module': defect.modulePath,
+            'File': defect.fileName,
+            'Class':defect.className,
+            'Method/Function': defect.methodName,
+            'Language': defect.language,
+            'Tool': defect.toolName,
+            'Author': defect.creatorId,
+            'Date': defect.modifiedDateTime
+        });
+    }
+
+    function pushSnapshotDefectInSecurity(snapshotDefect) {
+        $scope.csvSecurityContent.push({
+            'Did': snapshotDefect.did,
+            'Checker': snapshotDefect.checkerCode,
+            'Count': snapshotDefect.occurenceCount,
+            'Line No': snapshotDefect.occurenceLine,
+            'Severity': snapshotDefect.severityCode,
+            'Category': snapshotDefect.categoryName,
+            'Snapshot Status': snapshotDefect.statusCode,
+            'Current Status': snapshotDefect.currentStatusCode,
+            'Module': snapshotDefect.modulePath,
+            'File': snapshotDefect.fileName,
+            'Class': snapshotDefect.className,
+            'Method/Function': snapshotDefect.methodName,
+            'Language': snapshotDefect.language,
+            'Tool': snapshotDefect.toolName,
+            'Author': snapshotDefect.creatorId,
+            'Date': snapshotDefect.modifiedDateTime
+        });
     }
 
     function setSecurityCSVContent(format){
-        $http.get('/api/v2/defect/security', {
-        }).then(function (results) {// success
-            results = results.data;
-            $scope.csvSecurityContent = [];
+        var getSecurityDefectURL = '/api/v2/' + format + '/security';
+        if ($routeParams.snapshotId !== undefined) { // for Snapshot
+            var snapshotId = $routeParams.snapshotId;
+            $http.get(getSecurityDefectURL, {
+                params: {
+                    'snapshotId': snapshotId
+                }
+            }).then(function (results) {
+                results = results.data;
+                $scope.csvSecurityContent = [];
+                if(results.length === 0){
+                    pushNoDefectInSecurity();
+                    return ;
+                }
+                for (var i = 0; i < results.length; i++) {
+                    pushSnapshotDefectInSecurity(results[i]);
+                }
+            }, function (results) {
+                $log.error(results.status);
+            });
 
-            if(results.length === 0){
-                pushNoDefectInSecurity();
-            }
+        }else{  // for Defect
+            $http.get(getSecurityDefectURL, {
+            }).then(function (results) {// success
+                results = results.data;
+                $scope.csvSecurityContent = [];
+                if(results.length === 0){
+                    pushNoDefectInSecurity();
+                    return ;
+                }
+                for (var i = 0; i < results.length; i++) {
+                    pushDefectInSecurity(results[i]);
+                }
 
-            switch(format) {
-                case 'defect':
-                    for (var i = 0; i < results.length; i++) {
-                        $scope.csvSecurityContent.push({
-                            'Did': results[i].did,
-                            'Checker': results[i].checkerCode,
-                            'Count': results[i].occurenceCount,
-                            'Line No': results[i].occurenceLine,
-                            'Severity': results[i].severityCode,
-                            'Category': results[i].categoryName,
-                            'Status': results[i].statusCode,
-                            'Module': results[i].modulePath,
-                            'File': results[i].fileName,
-                            'Class':results[i].className,
-                            'Method/Function': results[i].methodName,
-                            'Language': results[i].language,
-                            'Tool': results[i].toolName,
-                            'Author': results[i].creatorId,
-                            'Date': results[i].modifiedDateTime
-                        });
-                    }
-                    break;
-            }
-        }, function (results) {
-            $log.error('Error: ' + results.data + '; ' + results.status);
-        });
+            }, function (results) {
+                $log.error('Error: ' + results.data + '; ' + results.status);
+            });
+        }
+
     }
 
 
@@ -638,7 +681,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
 
     $scope.isSecurity = function(value){
         return value == SECURITY_CHECKER;
-    }
+    };
 
     $scope.isTooLate = function(value){
         var valueDate = new Date(value);
@@ -686,14 +729,14 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
             $http.get('/api/v2/snapshot/showSnapshotDefectPage', {
                 params: {
                     'snapshotId': snapshotId
-    }
+                }
             }).then(function (results) {
                 if (results && results.data) {
                     $scope.defectList = results.data.defectInSnapshot;
                     $scope.totalServerItems = results.data.length;
                     angular.element('#showLoading').hide();
                     setCSVContent('snapshot', $scope.defectList);
-                    setSecurityContent('snapshot');
+                    setSecurityCSVContent('snapshot', $scope.defectList);
                 } else {
                     $log.debug(results);
                 }
@@ -702,7 +745,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
             });
         }
         else {
-			showDefectPage();
+            showDefectPage();
         }
     }
 
@@ -791,9 +834,9 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
             {field:'occurenceLine', displayName:'Line No.', width:70, resizable: true },
             {field:'severityCode', displayName:'Severity', width:70,resizable: true, cellClass:'textAlignCenter', cellTemplate: '<div ng-class="{redFG: isMajor(row.getProperty(col.field))}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>' },
             {field:'statusCode', displayName:'Status', width:80, resizable: true, cellClass:'textAlignCenter', cellTemplate: '<div ng-class="{redBG: isStatusNew(row.getProperty(col.field))}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>' },
-            {field:'categoryName', displayName:'Category', width:80, resizable: true, cellClass:'textAlignCenter', cellTemplate: '<div ng-class="{yellowBlackBG: isSecurity(row.getProperty(col.field))}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>',
-            cellFilter:'nullDataFilter'},
             {field:'currentStatusCode', visible:false, displayName:'cur.Status', width:82, resizable: true, cellClass:'textAlignCenter', cellTemplate: '<div class="ngCellText">{{row.getProperty(col.field)}}</div>' },
+            {field:'categoryName', displayName:'Category', width:80, resizable: true, cellClass:'textAlignCenter', cellTemplate: '<div ng-class="{yellowBlackBG: isSecurity(row.getProperty(col.field))}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>',
+                cellFilter:'nullDataFilter'},
             {field:'modulePath', displayName:'Module',width:250, resizable: true, cellTemplate: '<div class="ngCellText">{{row.getProperty(col.field)}}</div>'},
             {field:'fileName', displayName:'File', resizable: true, cellTemplate: '<div class="ngCellText">{{row.getProperty(col.field)}}</div>'},
             {field:'className', displayName:'Class', resizable: true, cellTemplate: '<div class="ngCellText">{{getOnlyClassName(row.getProperty(col.field))}}</div>'},
