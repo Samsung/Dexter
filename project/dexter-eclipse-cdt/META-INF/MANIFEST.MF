@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dexter Eclipse CDT
 Bundle-SymbolicName: dexter-eclipse-cdt;singleton:=true
-Bundle-Version: 0.10.0
+Bundle-Version: 0.10.1
 Bundle-Activator: com.samsung.sec.dexter.eclipse.cdt.DexterEclipseCDTActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
@@ -12,7 +12,7 @@ Require-Bundle: org.eclipse.core.runtime,
  dexter-eclipse
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
-Bundle-Vendor: Samsung Electronics VD SE Lab
+Bundle-Vendor: Samsung Electronics VD SE
 Bundle-ClassPath: .,
  lib/guava-16.0.1.jar
 Export-Package: com.samsung.sec.dexter.eclipse.cdt,

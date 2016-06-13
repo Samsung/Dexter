@@ -45,7 +45,7 @@
          <action
                class="com.samsung.sec.dexter.eclipse.builder.ToggleNatureAction"
                enablesFor="+"
-               icon="icons/addNature.gif"
+               icon="icon/addNature.gif"
                id="dexter-eclipse.addRemoveNatureAction"
                label="%ADD_DEXTER_NATURE"
                menubarPath="additions"

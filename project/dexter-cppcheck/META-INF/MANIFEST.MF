@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dexter Cppcheck
 Bundle-SymbolicName: dexter-cppcheck;singleton:=true
-Bundle-Version: 0.10.0
+Bundle-Version: 0.10.1
 Bundle-ClassPath: .,
  lib/gson-2.2.4.jar,
  lib/guava-16.0.1.jar,
@@ -22,5 +22,5 @@ Require-Bundle: org.eclipse.core.runtime,
  dexter-executor
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-Vendor: Samsung Electronics VD SE Lab
+Bundle-Vendor: Samsung Electronics VD SE
 Bundle-Activator: com.samsung.sec.dexter.cppcheck.CppcheckActivator

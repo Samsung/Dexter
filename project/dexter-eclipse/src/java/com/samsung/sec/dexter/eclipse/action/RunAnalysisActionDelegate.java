@@ -48,6 +48,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import com.samsung.sec.dexter.core.exception.DexterException;
 import com.samsung.sec.dexter.eclipse.DexterEclipseActivator;
 import com.samsung.sec.dexter.eclipse.EclipseAnalysis;
+import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 
 public class RunAnalysisActionDelegate implements IObjectActionDelegate {
 	ISelection selection;
@@ -113,11 +114,21 @@ public class RunAnalysisActionDelegate implements IObjectActionDelegate {
 		try {
         	if(resource instanceof IFile){
         		final IFile targetFile = (IFile) resource;
-				if(targetFile.getName().endsWith(".java")){
-					if(!targetFiles.contains(targetFile)){
-						targetFiles.add(targetFile);
-					}
-				}
+        		
+        		if(EclipseUtil.isValidJavaResource(resource)){
+        			if(targetFile.getName().endsWith(".java")){
+    					if(!targetFiles.contains(targetFile)){
+    						targetFiles.add(targetFile);
+    					}
+    				}
+        		}else if(EclipseUtil.isValidCAndCppResource(resource)){
+        			if(targetFile.getName().endsWith(".c") || targetFile.getName().endsWith(".cpp")
+        					|| targetFile.getName().endsWith(".h") || targetFile.getName().endsWith(".hpp")){
+    					if(!targetFiles.contains(targetFile)){
+    						targetFiles.add(targetFile);
+    					}
+    				}
+        		}
         	} else if(resource instanceof IFolder){
         		final IFolder folder = (IFolder) resource;
         		if(folder.members() == null || folder.members().length == 0){
