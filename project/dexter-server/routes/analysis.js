@@ -192,7 +192,6 @@ exports.getDefectForSecurity = function(req, res){
     });
 };
 
-
 exports.getDefectForCSV = function(req, res){
     var did = req.query.did;
     var modulePath = base64.decode(req.query.modulePath);
@@ -2740,8 +2739,6 @@ exports.getDefectListInSnapshotV2 = function (req, res){
         + "(select userId from Account where userNo = A.modifierNo) as modifierId, "
         + "ifnull(chargerNo,'') as chargerNo, ifnull(reviewerNo,'') as reviewerNo, ifnull(approvalNo,'') as approvalNo "
         + "From SnapshotDefectMap AS A WHERE snapshotId =" + database.toSqlValue(req.query.snapshotId);
-
-    console.log(sql);
 
     database.exec(sql, function (err, result) {
         if(err) {

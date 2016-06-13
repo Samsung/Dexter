@@ -11,22 +11,36 @@ Dexter helps you to improve coding skills. Whenever you save a source file, Dext
 - [Dexter Introduction Video(4min)](https://youtu.be/86exIHcwi6c)
 - [Dexter Wiki (How to install/Use)](https://dexter.atlassian.net)
 
-## Downloads (ver. 0.9.4, 2. Apr. 2016)
+## Downloads (ver. 0.10.0, 22. Apr. 2016)
 
 #### Eclipse Update Site
-- Win 32bit: http://dl.bintray.com/minho/dexter-eclipse-32/
-- Win 64bit: http://dl.bintray.com/minho/dexter-eclipse-64/
+##### Eclipse JAVA+CPP 
+- Win 32bit: http://dl.bintray.com/minho/dexter-eclipse-32
+- Win 64bit: http://dl.bintray.com/minho/dexter-eclipse-64
+
+#####Eclipse JAVA
+- Win 32bit: http://dl.bintray.com/minho/dexter-eclipse-java-64
+- Win 64bit: http://dl.bintray.com/minho/dexter-eclipse-java-64
+
+#####Eclipse C/C++
+- Win 32bit: http://dl.bintray.com/minho/dexter-eclipse-cpp-32
+- Win 64bit: http://dl.bintray.com/minho/dexter-eclipse-cpp-32
+
+#####Tizen SDK 
+- Win 32bit: http://dl.bintray.com/minho/dexter-tizen-sdk-32
+- Win 64bit: http://dl.bintray.com/minho/dexter-tizen-sdk-64
+
 
 #### Dexter Daemon for Source Insight
-- [Win 32bit](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-daemon_0.9.4_32.zip?api=v2)
-- [Win 64bit](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-daemon_0.9.4_64.zip?api=v2)
+- [Win 32bit](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-daemon_0.10.0_32.zip?api=v2)
+- [Win 64bit](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-daemon_0.10.0_64.zip?api=v2)
  
 #### Dexter CLI
-- [Win/Linux/Mac 32bit](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-cli_0.9.4_32.zip?api=v2)
-- [Win/Linux/Mac 64bit](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-cli_0.9.4_64.zip?api=v2)
+- [Win/Linux/Mac 32bit](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-cli_0.10.0_32.zip?api=v2)
+- [Win/Linux/Mac 64bit](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-cli_0.10.0_64.zip?api=v2)
 
 #### Dexter Server
-- [Win/Linux/Mac](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-server_0.9.4.zip?api=v2)
+- [Win/Linux/Mac](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-server_0.10.0.zip?api=v2)
  
 ## Supports
 - Eclipse IDE for Java language (Juno 4.2+)
@@ -82,6 +96,26 @@ Dexter is a static analysis platform to find and remove defects efficiently and 
 - you can make a update site or just copy plugin folder into your new eclipse
 - then, you can use Dexter
 
+## Build Dexter Visual Studio Plugin
+In order to build a plugin for Visual Studio you need following prerequisites:
+- Microsoft Visual Studio 2013 or newer
+- Microsoft Visual Studio SDK (2013 or newer)
+- (Optionally) NUnit3 Test Adapter (Visual Studio Extension) - for executing unit tests
+
+To build a plugin:
+- open a solution file "dexter-vs.sln" located in project/dexter-vs directory. 
+- right click on "Build/Rebuild dexter-vs". NuGet will download all required dependencies and Visual Studio will rebuild you project.
+- after this, you should have a self-installing extension file "dexter.vsix" located in "dexter-vs/bin/{ConfigurationName}"
+- you can install an extension by double clicking it.  
+
+The most convenient way to debug this plugin is to use an Experimental Instance of Visual Studio. 
+- go to "Project/dexter-vs Properties..." and then go to "Debug" tab. 
+- select "Start external program:" and provide path to Visual Studio executable (devenv.exe). 
+- enter in "Command line arguments" value "/RootSuffix Exp". 
+- save your changes 
+- run a project (F5). 
+- it should start Visual Studio Experimental Instance with dexter-vs installed as an extension. 
+
 # Future Plan
 ## support more languages
 - JavaScript
@@ -97,7 +131,7 @@ Dexter is a static analysis platform to find and remove defects efficiently and 
 - JavaScript: Flow, JSHint
 - Custom Checkers
 
-## Dexter Web Monitor for organiztion(SE)
+## Dexter Web Monitor for organization(SE)
 - TBD 
 
 # License

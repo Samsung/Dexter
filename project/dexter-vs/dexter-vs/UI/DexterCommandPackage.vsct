@@ -1,0 +1,288 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!--  This is the file that defines the actual layout and type of the commands.
+        It is divided in different sections (e.g. command definition, command
+        placement, ...), with each defining a specific set of properties.
+        See the comment before each section for more details about how to
+        use it. -->
+
+  <!--  The VSCT compiler (the tool that translates this file into the binary
+        format that VisualStudio will consume) has the ability to run a preprocessor
+        on the vsct file; this preprocessor is (usually) the C++ preprocessor, so
+        it is possible to define includes and macros with the same syntax used
+        in C++ files. Using this ability of the compiler here, we include some files
+        defining some of the constants that we will use inside the file. -->
+
+  <!--This is the file that defines the IDs for all the commands exposed by VisualStudio. -->
+  <Extern href="stdidcmd.h"/>
+
+  <!--This header contains the command ids for the menus provided by the shell. -->
+  <Extern href="vsshlids.h"/>
+
+  <!--The Commands section is where commands, menus, and menu groups are defined.
+      This section uses a Guid to identify the package that provides the command defined inside it. -->
+  <Commands package="guidDexterCommandPackage">
+    <!-- Inside this section we have different sub-sections: one for the menus, another
+    for the menu groups, one for the buttons (the actual commands), one for the combos
+    and the last one for the bitmaps used. Each element is identified by a command id that
+    is a unique pair of guid and numeric identifier; the guid part of the identifier is usually
+    called "command set" and is used to group different command inside a logically related
+    group; your package should define its own command set in order to avoid collisions
+    with command ids defined by other packages. -->
+    
+
+    <Menus>
+      <Menu guid="guidDexterCommandPackageCmdSet" id="DexterMenu" priority="0x700" type="Menu">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
+        <Strings>
+          <ButtonText>Dexter</ButtonText>
+          <CommandName>Dexter</CommandName>
+        </Strings>
+      </Menu>
+
+      <Menu guid="guidDexterCommandPackageCmdSet" id="DexterAnalysisSubMenu" priority="0x0100" type="Menu">
+        <Parent guid="guidDexterCommandPackageCmdSet" id="DexterMenuGroup"/>
+        <Strings>
+          <ButtonText>Run Static Analysis</ButtonText>
+          <CommandName>Run Static Analysis</CommandName>
+        </Strings>
+      </Menu>
+
+      <Menu guid="guidDexterCommandPackageCmdSet" id="DexterSnapshotSubMenu" priority="0x0100" type="Menu">
+        <Parent guid="guidDexterCommandPackageCmdSet" id="DexterMenuGroup"/>
+        <Strings>
+          <ButtonText>Run Static Analysis and Create Snapshot</ButtonText>
+          <CommandName>Run Static Analysis and Create Snapshot</CommandName>
+        </Strings>
+      </Menu>
+
+      <Menu guid="guidDexterCommandPackageCmdSet" id="DexterToolbar" type="Toolbar" >
+        <CommandFlag>DefaultDocked</CommandFlag>
+        <Strings>
+          <ButtonText>Dexter</ButtonText>
+          <CommandName>Dexter</CommandName>
+        </Strings>
+      </Menu>
+
+    </Menus>
+
+    <!-- In this section you can define new menu groups. A menu group is a container for
+         other menus or buttons (commands); from a visual point of view you can see the
+         group as the part of a menu contained between two lines. The parent of a group
+         must be a menu. -->
+    <Groups>
+      <Group guid="guidDexterCommandPackageCmdSet" id="DexterMenuGroup" priority="0x0600">
+        <Parent guid="guidDexterCommandPackageCmdSet" id="DexterMenu"/>
+      </Group>
+
+      <Group guid="guidDexterCommandPackageCmdSet" id="DexterSettingsMenuGroup" priority="0x0600">
+        <Parent guid="guidDexterCommandPackageCmdSet" id="DexterMenu"/>
+      </Group>
+
+      <Group guid="guidDexterCommandPackageCmdSet" id="DexterAnalysisSubMenuGroup" priority="0x0000">
+        <Parent guid="guidDexterCommandPackageCmdSet" id="DexterAnalysisSubMenu"/>
+      </Group>
+
+      <Group guid="guidDexterCommandPackageCmdSet" id="DexterSnapshotSubMenuGroup" priority="0x0000">
+        <Parent guid="guidDexterCommandPackageCmdSet" id="DexterSnapshotSubMenu"/>
+      </Group>
+
+      <Group guid="guidDexterCommandPackageCmdSet" id="DexterCancelMenuGroup" priority="0x0800">
+        <Parent guid="guidDexterCommandPackageCmdSet" id="DexterMenu"/>
+      </Group>
+
+      <Group guid="guidDexterCommandPackageCmdSet" id="DexterToolbarGroup" priority="0x0000">
+        <Parent guid="guidDexterCommandPackageCmdSet" id="DexterToolbar"/>
+      </Group>
+      
+      <Group guid="guidDexterCommandPackageCmdSet" id="DexterCancelToolbarGroup" priority="0x0000">
+        <Parent guid="guidDexterCommandPackageCmdSet" id="DexterToolbar"/>
+      </Group>
+
+      <Group guid="guidDexterCommandPackageCmdSet" id="DexterSettingsToolbarGroup" priority="0x0000">
+        <Parent guid="guidDexterCommandPackageCmdSet" id="DexterToolbar"/>
+      </Group>
+    </Groups>
+
+    <!--Buttons section. -->
+    <!--This section defines the elements the user can interact with, like a menu command or a button
+        or combo box in a toolbar. -->
+    <Buttons>
+      <!--To define a menu group you have to specify its ID, the parent menu and its display priority.
+          The command is visible and enabled by default. If you need to change the visibility, status, etc, you can use
+          the CommandFlag node.
+          You can add more than one CommandFlag node e.g.:
+              <CommandFlag>DefaultInvisible</CommandFlag>
+              <CommandFlag>DynamicVisibility</CommandFlag>
+          If you do not want an image next to your command, remove the Icon node /> -->
+      <Button guid="guidDexterCommandPackageCmdSet" id="DexterSolutionAnalysisCommand" priority="0x001" type="Button">
+        <Parent guid="guidDexterCommandPackageCmdSet" id="DexterAnalysisSubMenuGroup" />
+        <Icon guid="guidImages" id="bmpPic1" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>On Solution</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidDexterCommandPackageCmdSet" id="DexterProjectAnalysisCommand" priority="0x0010" type="Button">
+        <Parent guid="guidDexterCommandPackageCmdSet" id="DexterAnalysisSubMenuGroup" />
+        <Icon guid="guidImages" id="bmpPic1" />
+        <CommandFlag>TextChanges</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>On Project</ButtonText>
+        </Strings>
+      </Button>
+      
+      <Button guid="guidDexterCommandPackageCmdSet" id="DexterFileAnalysisCommand" priority="0x0100" type="Button">
+        <Parent guid="guidDexterCommandPackageCmdSet" id="DexterAnalysisSubMenuGroup" />
+        <Icon guid="guidImages" id="bmpPic1" />
+        <CommandFlag>TextChanges</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>On File</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidDexterCommandPackageCmdSet" id="DexterSolutionSnapshotCommand" priority="0x001" type="Button">
+        <Parent guid="guidDexterCommandPackageCmdSet" id="DexterSnapshotSubMenuGroup" />
+        <Icon guid="guidImages" id="bmpPic5" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>On Solution</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidDexterCommandPackageCmdSet" id="DexterProjectSnapshotCommand" priority="0x0010" type="Button">
+        <Parent guid="guidDexterCommandPackageCmdSet" id="DexterSnapshotSubMenuGroup" />
+        <Icon guid="guidImages" id="bmpPic5" />
+        <CommandFlag>TextChanges</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>On Project</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidDexterCommandPackageCmdSet" id="DexterSettingsCommand" priority="0x0103" type="Button">
+        <Parent guid= "guidDexterCommandPackageCmdSet" id="DexterSettingsMenuGroup" />
+        <Icon guid="guidImages" id="bmpPic2" />
+        <Strings>
+          <ButtonText>Settings...</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidDexterCommandPackageCmdSet" id="DexterDashboardCommand" priority="0x0100" type="Button">
+        <Parent guid= "guidDexterCommandPackageCmdSet" id="DexterMenuGroup" />
+        <Icon guid="guidImages" id="bmpPic3" />
+        <Strings>
+          <ButtonText>Open Dexter Dashboard</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidDexterCommandPackageCmdSet" id="DexterCancelCommand" priority="0x0103" type="Button">
+        <Parent guid= "guidDexterCommandPackageCmdSet" id="DexterCancelMenuGroup" />
+        <Icon guid="guidImages" id="bmpPic4" />
+        <CommandFlag>DefaultInvisible</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <Strings>
+          <ButtonText>Cancel</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidDexterCommandPackageCmdSet" id="DexterSolutionAnalysisToolbarCommand" priority="0x0100" type="Button">
+        <Parent guid= "guidDexterCommandPackageCmdSet" id="DexterToolbarGroup" />
+        <Icon guid="guidImages" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Run Dexter Analysis on Solution</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidDexterCommandPackageCmdSet" id="DexterSettingsToolbarCommand" priority="0x0100" type="Button">
+        <Parent guid= "guidDexterCommandPackageCmdSet" id="DexterSettingsToolbarGroup" />
+        <Icon guid="guidImages" id="bmpPic2" />
+        <Strings>
+          <ButtonText>Settings</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidDexterCommandPackageCmdSet" id="DexterDashboardToolbarCommand" priority="0x0100" type="Button">
+        <Parent guid= "guidDexterCommandPackageCmdSet" id="DexterToolbarGroup" />
+        <Icon guid="guidImages" id="bmpPic3" />
+        <Strings>
+          <ButtonText>Open Dexter Dashboard</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidDexterCommandPackageCmdSet" id="DexterCancelToolbarCommand" priority="0x0100" type="Button">
+        <Parent guid= "guidDexterCommandPackageCmdSet" id="DexterCancelToolbarGroup" />
+        <Icon guid="guidImages" id="bmpPic4" />
+        <Strings>
+          <ButtonText>Cancel</ButtonText>
+        </Strings>
+      </Button>
+
+    </Buttons>
+
+    <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
+    <Bitmaps>
+      <!--  The bitmap id is defined in a way that is a little bit different from the others:
+            the declaration starts with a guid for the bitmap strip, then there is the resource id of the
+            bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
+            inside a button definition. An important aspect of this declaration is that the element id
+            must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
+      <Bitmap guid="guidImages" href="Resources\DexterCommand.png" usedList="bmpPic1, bmpPic2, bmpPic3, bmpPic4, bmpPic5"/>
+    </Bitmaps>
+  </Commands>
+
+  <VisibilityConstraints>
+    <VisibilityItem guid="guidDexterCommandPackageCmdSet" id="DexterToolbar" context="UICONTEXT_NoSolution" />
+    <VisibilityItem guid="guidDexterCommandPackageCmdSet" id="DexterToolbar" context="UICONTEXT_SolutionExists" />
+  </VisibilityConstraints>
+  
+  <Symbols>
+    <!-- This is the package guid. -->
+    <GuidSymbol name="guidDexterCommandPackage" value="{0a9fa7af-84c6-4922-8734-38772fcd67b1}" />
+
+    <!-- This is the guid used to group the menu commands together -->
+    <GuidSymbol name="guidDexterCommandPackageCmdSet" value="{2ed6d891-bce1-414d-8251-80a0800a831f}">
+      <IDSymbol name="DexterMenu" value="0x1021"/>
+      <IDSymbol name="DexterMenuGroup" value="0x1020" />
+      <IDSymbol name="DexterCancelMenuGroup" value="0x1022" />
+      <IDSymbol name="DexterSettingsMenuGroup" value="0x1023"/>
+      
+      <IDSymbol name="DexterSolutionAnalysisCommand" value="0x0100" />
+      <IDSymbol name="DexterProjectAnalysisCommand" value="0x0101" />
+      <IDSymbol name="DexterFileAnalysisCommand" value="0x0102" />
+      <IDSymbol name="DexterSolutionSnapshotCommand" value="0x0110" />
+      <IDSymbol name="DexterProjectSnapshotCommand" value="0x0111" />
+      <IDSymbol name="DexterSettingsCommand" value="0x0103" />
+      <IDSymbol name="DexterDashboardCommand" value="0x0104" />
+      <IDSymbol name="DexterCancelCommand" value="0x0105" />
+      
+      <IDSymbol name="DexterAnalysisSubMenu" value="0x1100"/>
+      <IDSymbol name="DexterAnalysisSubMenuGroup" value="0x1150"/>
+      
+      <IDSymbol name="DexterSnapshotSubMenu" value="0x1200"/>
+      <IDSymbol name="DexterSnapshotSubMenuGroup" value="0x1250"/>
+
+      <IDSymbol name="DexterToolbar" value="0x2000" />
+      <IDSymbol name="DexterToolbarGroup" value="0x2050" />
+      <IDSymbol name="DexterSettingsToolbarGroup" value="0x2052" />
+      <IDSymbol name="DexterCancelToolbarGroup" value="0x2051" />
+      <IDSymbol name="DexterSettingsToolbarCommand" value="0x0203" />
+      <IDSymbol name="DexterDashboardToolbarCommand" value="0x0204" />
+      <IDSymbol name="DexterCancelToolbarCommand" value="0x0205" />
+      <IDSymbol name="DexterSolutionAnalysisToolbarCommand" value="0x0200" />
+      
+    </GuidSymbol>
+
+    <GuidSymbol name="guidImages" value="{c8e0f973-6a99-49b7-a925-75eb816d851c}" >
+      <IDSymbol name="bmpPic1" value="1" />
+      <IDSymbol name="bmpPic2" value="2" />
+      <IDSymbol name="bmpPic3" value="3" />
+      <IDSymbol name="bmpPic4" value="4" />
+      <IDSymbol name="bmpPic5" value="5" />
+    </GuidSymbol>
+  </Symbols>
+</CommandTable>
