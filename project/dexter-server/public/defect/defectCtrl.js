@@ -55,19 +55,24 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
     $scope.csvContent = [];
     $scope.csvSecurityContent =[];
 
+    var url = $location.absUrl().split('?');
+
     $scope.getCSVHeader = function () {
         if($routeParams.snapshotId === undefined){
             return ["Did","Checker","Count","Line No","Severity","Category","Status",
-                "Module","File","Class","Method/Function","Language","Tool","Author","Date"];
+                "Module","File","Class","Method/Function","Language","Tool","Author","Date", "" , "", "URL", url];
         }else{
             return ["Did","Checker","Count","Line No","Severity","Category","Snapshot Status","Current Status",
-                "Module","File","Class","Method/Function","Language","Tool","Author","Date"];
+                "Module","File","Class","Method/Function","Language","Tool","Author","Date" ,"" , "", "URL", url];
         }
     };
 
+
+
     var SECURITY_CHECKER = 'SECURITY';
 
-    function pushNoDefectInSecurity(){
+
+    function pushNoDefect(){
         $scope.csvSecurityContent.push({
             'Did': 0,
             'Checker': 'None',
@@ -88,7 +93,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
     }
 
 
-    function pushDefectInSecurity(defect){
+    function pushDefect(defect){
         $scope.csvSecurityContent.push({
             'Did': defect.did,
             'Checker': defect.checkerCode,
@@ -141,7 +146,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
                 results = results.data;
                 $scope.csvSecurityContent = [];
                 if(results.length === 0){
-                    pushNoDefectInSecurity();
+                    pushNoDefect();
                     return ;
                 }
                 for (var i = 0; i < results.length; i++) {
@@ -157,11 +162,11 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
                 results = results.data;
                 $scope.csvSecurityContent = [];
                 if(results.length === 0){
-                    pushNoDefectInSecurity();
+                    pushNoDefect();
                     return ;
                 }
                 for (var i = 0; i < results.length; i++) {
-                    pushDefectInSecurity(results[i]);
+                    pushDefect(results[i]);
                 }
 
             }, function (results) {
@@ -172,8 +177,34 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
     }
 
 
-    function setCSVContent(format, results){
-        $scope.csvContent = [];
+    function setCSVContent(format, defectParams){
+        var getDefectListURL = '/api/v2/'+format+'/All';
+        if ($routeParams.snapshotId !== undefined) { // for Snapshot
+            var snapshotId = $routeParams.snapshotId;
+        }else{
+            console.log(getDefectListURL);
+            $http.get(getDefectListURL, {
+                params: defectParams
+            }).then(function(results){
+                results = results.data;
+                $scope.csvContent= [];
+                console.log(results.length);
+                if(results.length === 0){
+                    pushNoDefect();
+                    return;
+                }
+                for(var i=0; i < results.length; i++){
+                    pushDefect(results[i]);
+                }
+
+            }, function(results){
+                $log.error('Error: ' + results.data + '; ' + results.status);
+            })
+        }  // for Defect
+
+
+
+        /*$scope.csvContent = [];
         switch(format) {
             case 'defect':
                 for (var i = 0; i < results.length; i++) {
@@ -218,7 +249,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
                     });
                 }
                 break;
-        }
+        }*/
     }
 
 
@@ -701,7 +732,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
     window.localStorage['currentPage'] = parseInt(window.localStorage['currentPage']) || 1;
 
     $scope.pagingOptions = {
-        pageSizes: [250, 500, 1000, 2500],
+        pageSizes: [250, 500, 1000, 2500,35000],
         pageSize: window.localStorage['pageSize'],
         currentPage: parseInt(window.localStorage['currentPage'])
     };
@@ -735,7 +766,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
                     $scope.defectList = results.data.defectInSnapshot;
                     $scope.totalServerItems = results.data.length;
                     angular.element('#showLoading').hide();
-                    setCSVContent('snapshot', $scope.defectList);
+                    setCSVContent('snapshot');
                     setSecurityCSVContent('snapshot', $scope.defectList);
                 } else {
                     $log.debug(results);
@@ -779,7 +810,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
 			if (results && results.data) {
 				$scope.defectList = results.data;
                 angular.element('#showLoading').hide();
-                setCSVContent('defect',$scope.defectList);
+              //  setCSVContent('defect', defectParams);
                 setSecurityCSVContent('defect');
 			}
 		}, function (results) { // error
