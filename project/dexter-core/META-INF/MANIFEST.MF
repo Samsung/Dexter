@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 BUndle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Name: Dexter Core
 Bundle-SymbolicName: dexter-core;singleton:=true
-Bundle-Version: 0.10.0
+Bundle-Version: 0.10.1
 Bundle-ClassPath: .,
  lib/jspf.core-1.0.2.jar,
  lib/jspf.remote-1.0.2.jar,
@@ -56,7 +56,7 @@ Export-Package: com.samsung.sec.dexter.core,
  org.eclipse.cdt.internal.core.dom.parser.c,
  org.eclipse.cdt.internal.core.dom.parser.cpp,
  org.eclipse.cdt.internal.core.parser.scanner
-Bundle-Vendor: Samsung Electronics VD SE Lab
+Bundle-Vendor: Samsung Electronics VD SE
 Bundle-Activator: com.samsung.sec.dexter.core.DexterCoreActivator
 Require-Bundle: org.eclipse.core.runtime,
  com.ibm.icu

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 BUndle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Name: Dexter Executor
 Bundle-SymbolicName: dexter-executor;singleton:=true
-Bundle-Version: 0.10.0
+Bundle-Version: 0.10.1
 Bundle-ClassPath: .,
  lib/log4j-1.2.17.jar,
  lib/guava-16.0.1.jar,
@@ -26,5 +26,5 @@ Require-Bundle: org.eclipse.core.runtime,
  dexter-core,
  dexter-metrics
 Bundle-Activator: com.samsung.sec.dexter.executor.DexterExecutorActivator
-Bundle-Vendor: Samsung Electronics VD SE Lab
+Bundle-Vendor: Samsung Electronics VD SE
 Bundle-ActivationPolicy: lazy

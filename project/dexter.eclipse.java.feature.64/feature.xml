@@ -1381,7 +1381,6 @@ Public License instead of this License.  But first, please read
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.junit"/>
       <import plugin="org.eclipse.mylyn.commons.ui"/>
-      <import plugin="org.eclipse.cdt.core"/>
    </requires>
 
    <plugin

@@ -82,6 +82,7 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
 	 * )
 	 */
 	public void start(BundleContext context) throws Exception {
+		
 		super.start(context);
 		plugin = this;
 		LOG.setPlugin(this);
@@ -121,7 +122,7 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
 		setWindowTitleWithLoginInformation();
 		initializeSourceInsightEnvironment();
 		startMonitorForDexterConfigFile();
-		if("true".equals(System.getProperty("isPlatzAlive"))){
+		if(java.lang.System.getProperty("isPlatzAlive") == "true"){
 			startMonitorForPlatzKeywordFile();
 		}
 		setSourceInsightStatusRegistryAsRunning();
@@ -151,6 +152,9 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
 		String serverString, userId, loginString;
 		
 		try {
+			serverString = getPreferenceStore().getString("serverAddress");
+			userId = getPreferenceStore().getString("userId");
+			
 			serverString = client.getServerHost() + ":" + client.getServerPort(); 
 			userId = client.getCurrentUserId();
 			loginString = "(" + serverString + " - " + userId + ")";

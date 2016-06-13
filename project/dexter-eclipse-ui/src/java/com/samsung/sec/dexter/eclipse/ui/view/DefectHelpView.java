@@ -55,7 +55,6 @@ public class DefectHelpView extends ViewPart {
 	
 	public void setSeverDeadStatus(){
 		final StringBuilder html = new StringBuilder();
-		
 		html.append("<b>Dexter Server</b> is not running.<br>Please, check Dexter server status");
 		browser.setText(html.toString());
 	}

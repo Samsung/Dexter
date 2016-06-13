@@ -40,11 +40,13 @@ import org.eclipse.core.resources.IResource;
 
 import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
+import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.defect.Occurence;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.eclipse.DexterEclipseActivator;
+import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 
 
 public class DexterMarker {
@@ -117,6 +119,12 @@ public class DexterMarker {
 			int startLine = occurence.getStartLine();
 			if (startLine <= 0) {
 				startLine = 1;
+			}
+			
+			if(EclipseUtil.isValidCAndCppResource(file)){
+				marker.setAttribute(IMarker.CHAR_START, -1);
+				marker.setAttribute(IMarker.CHAR_END, -1);
+		        return ;
 			}
 			
 			if(occurence.getCharStart() >= 0 && occurence.getCharEnd() >= 0){
@@ -194,10 +202,105 @@ public class DexterMarker {
         }
 	}
 
+	private static void setLineAttributeForCDT(final IFile file, final IMarker marker, final int startLine) {
+	   
+	    
+	    final String fileFullPath = DexterUtil.refinePath(file.getLocation().toFile().getAbsolutePath());
+	    final File f = new File(fileFullPath);
+	    
+	    String charset;
+        try {
+	        charset = file.getCharset().toUpperCase();
+	        
+	        if(f.exists() == false || !Charset.isSupported(charset)){
+	        	DexterEclipseActivator.LOG.error("File can't read to mark defects : " + fileFullPath + ", encode:" + charset);
+	        	return;
+	        }
+        } catch (Exception e) {
+        	DexterEclipseActivator.LOG.error(e.getMessage(), e);
+        	return;
+        }
+	    
+	    FileReader reader = null;
+	    int newLineSize = 0;
+	    try {
+	    	reader = new FileReader(f);
+	    	final char[] chars = new char[2048];
+	    	reader.read(chars);
+	    	
+	    	final String content = new String(chars);
+	    	if(Strings.isNullOrEmpty(content) == false && content.indexOf("\r\n") >= 0){
+	    		newLineSize = 2;
+	    	} else {
+	    		newLineSize = 1;
+	    	}
+	    	
+	    } catch (Exception e){
+	    	DexterEclipseActivator.LOG.error(e.getMessage(), e);
+	    	newLineSize = 2;
+	    } finally {
+	    	try {
+	    		if(reader != null)
+	    			reader.close();
+            } catch (IOException e) {
+            	DexterEclipseActivator.LOG.error(e.getMessage(), e);
+            }
+	    }
+	    
+	    
+	    String line;
+	    InputStream fis = null;
+	    BufferedReader br = null;
+	    
+	    try {
+	        fis = new FileInputStream(fileFullPath);
+	        br = new BufferedReader(new InputStreamReader(fis, Charset.forName(charset)));
+	        
+	        int curLine = 1;
+	        int offset = 0;
+	        int sOffset = -1;
+	        int eOffset = -1;
+	        
+			while ((line = br.readLine()) != null) {
+				if (curLine == startLine) {
+					final String trimStr = line.trim();
+					final int start = line.indexOf(trimStr);
+
+					sOffset = offset + start;
+					eOffset = offset + line.length();
+					br.close();
+					fis.close();
+					break;
+				}
+
+				if (line.length() != 0) {
+					offset += line.length();
+				}
+				offset += 1;
+				curLine++;
+			}
+	        
+	        marker.setAttribute(IMarker.CHAR_END, eOffset);
+	        marker.setAttribute(IMarker.CHAR_START, sOffset);
+	      
+        } catch (Exception e) {
+        	DexterEclipseActivator.LOG.error(e.getMessage(), e);
+        } finally {
+        	try {
+        		if(br != null){
+        			br.close();
+        		}
+        		if(fis != null){
+        			fis.close();
+        		}
+        	} catch (IOException e) {
+        		DexterEclipseActivator.LOG.error(e.getMessage(), e);
+        	}
+        }
+    }	
+	
 	private static void setLineAttribute(final IFile file, final IMarker marker, final int startLine) {
 	    int newLineSize = 0;
-	    
-	    //nal String workspacePath = ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
 	    
 	    final String fileFullPath = DexterUtil.refinePath(file.getLocation().toFile().getAbsolutePath());
 	    //final File f = new File(workspacePath + file.getFullPath().toOSString());
@@ -216,8 +319,7 @@ public class DexterMarker {
         	return;
         }
 	    
-	    // log : DexterEclipseActivator.error("for Marking: " + workspacePath + file.getFullPath().toOSString()	+ ", encode:" + charset);
-	    
+	    // log : DexterEclipseActivator.error("for Marking: " + workspacePath + file.getFullPath().toOSString()	+ ", encode:" + charset);	    
 	    FileReader reader = null;
 	    try {
 	    	reader = new FileReader(f);
