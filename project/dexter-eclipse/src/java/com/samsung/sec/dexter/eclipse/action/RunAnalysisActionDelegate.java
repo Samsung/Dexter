@@ -115,20 +115,11 @@ public class RunAnalysisActionDelegate implements IObjectActionDelegate {
         	if(resource instanceof IFile){
         		final IFile targetFile = (IFile) resource;
         		
-        		if(EclipseUtil.isValidJavaResource(resource)){
-        			if(targetFile.getName().endsWith(".java")){
-    					if(!targetFiles.contains(targetFile)){
-    						targetFiles.add(targetFile);
-    					}
-    				}
-        		}else if(EclipseUtil.isValidCAndCppResource(resource)){
-        			if(targetFile.getName().endsWith(".c") || targetFile.getName().endsWith(".cpp")
-        					|| targetFile.getName().endsWith(".h") || targetFile.getName().endsWith(".hpp")){
-    					if(!targetFiles.contains(targetFile)){
-    						targetFiles.add(targetFile);
-    					}
-    				}
-        		}
+        		if(EclipseUtil.isValidJavaResource(resource) || EclipseUtil.isValidCAndCppResource(resource)){
+					if (!targetFiles.contains(targetFile)) {
+						targetFiles.add(targetFile);
+					}
+				}
         	} else if(resource instanceof IFolder){
         		final IFolder folder = (IFolder) resource;
         		if(folder.members() == null || folder.members().length == 0){

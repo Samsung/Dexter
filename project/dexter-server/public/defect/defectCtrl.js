@@ -810,7 +810,6 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
 			if (results && results.data) {
 				$scope.defectList = results.data;
                 angular.element('#showLoading').hide();
-              //  setCSVContent('defect', defectParams);
                 setSecurityCSVContent('defect');
 			}
 		}, function (results) { // error

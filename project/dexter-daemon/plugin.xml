@@ -33,22 +33,6 @@
                name="appName"
                value="Dexter Daemon">
          </property>
-         <property
-               name="startupForegroundColor"
-               value="000000">
-         </property>
-         <property
-               name="startupMessageRect"
-               value="7,7,230,20">
-         </property>
-         <property
-               name="startupProgressRect"
-               value="5,20,230,15">
-         </property>
-         <property
-               name="preferenceCustomization"
-               value="plugin_customization.ini">
-         </property>
       </product>
    </extension>
 

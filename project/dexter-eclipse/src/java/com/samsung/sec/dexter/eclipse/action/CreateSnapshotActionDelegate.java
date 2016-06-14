@@ -51,6 +51,7 @@ import com.samsung.sec.dexter.core.exception.DexterException;
 import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.eclipse.DexterEclipseActivator;
 import com.samsung.sec.dexter.eclipse.EclipseAnalysis;
+import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 
 @SuppressWarnings("restriction")
 public class CreateSnapshotActionDelegate implements IObjectActionDelegate {
@@ -178,11 +179,15 @@ public class CreateSnapshotActionDelegate implements IObjectActionDelegate {
 		try {
         	if(resource instanceof IFile){
         		final IFile targetFile = (IFile) resource;
-				if(targetFile.getName().endsWith(".java")){
-					if(!targetFiles.contains(targetFile)){
-						targetFiles.add(targetFile);
-					}
+        
+				if (EclipseUtil.isValidJavaResource(resource) == false
+						&& EclipseUtil.isValidCAndCppResource(resource) == false) {
+					return;
 				}
+				if (!targetFiles.contains(targetFile)) {
+					targetFiles.add(targetFile);
+				}
+				
         	} else if(resource instanceof IFolder){
         		final IFolder folder = (IFolder) resource;
         		if(folder.members() == null || folder.members().length == 0){
