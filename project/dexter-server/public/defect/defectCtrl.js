@@ -809,9 +809,7 @@ defectApp.controller('DefectCtrl', function($scope, $http, $sce, $location, $anc
 		}).then(function (results) { // success
 			if (results && results.data) {
 				$scope.defectList = results.data;
-                console.log($scope.defectList.length);
                 angular.element('#showLoading').hide();
-              //  setCSVContent('defect', defectParams);
                 setSecurityCSVContent('defect');
 			}
 		}, function (results) { // error
