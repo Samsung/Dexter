@@ -177,15 +177,17 @@ public class CreateSnapshotActionDelegate implements IObjectActionDelegate {
 
 	private void addResourceAsTargetFile(final IResource resource){
 		try {
-        	if("false".equals(EclipseUtil.isValidCAndCppResource(resource)) && 
-					"false".equals(EclipseUtil.isValidJavaResource(resource)) ){
-				return ;				
-        	} 
-			
-			final IFile targetFile = (IFile) resource;
-			
-			if(!targetFiles.contains(targetFile)){
-        		targetFiles.add(targetFile);
+        	if(resource instanceof IFile){
+        		final IFile targetFile = (IFile) resource;
+        
+				if (EclipseUtil.isValidJavaResource(resource) == false
+						&& EclipseUtil.isValidCAndCppResource(resource) == false) {
+					return;
+				}
+				if (!targetFiles.contains(targetFile)) {
+					targetFiles.add(targetFile);
+				}
+				
         	} else if(resource instanceof IFolder){
         		final IFolder folder = (IFolder) resource;
         		if(folder.members() == null || folder.members().length == 0){
