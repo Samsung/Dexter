@@ -45,7 +45,7 @@
          <action
                class="com.samsung.sec.dexter.eclipse.builder.ToggleNatureAction"
                enablesFor="+"
-               icon="icon/addNature.gif"
+               icon="icons/addNature.gif"
                id="dexter-eclipse.addRemoveNatureAction"
                label="%ADD_DEXTER_NATURE"
                menubarPath="additions"
@@ -149,10 +149,6 @@
             id="dexter-eclipse.objectContribution.createSnapshot"
             nameFilter="*"
             objectClass="org.eclipse.core.resources.IProject">
-         <filter
-         	name="projectNature"
-         	value="org.eclipse.jdt.core.javanature">
-         </filter>
          <action
                class="com.samsung.sec.dexter.eclipse.action.CreateSnapshotActionDelegate"
                enablesFor="+"
