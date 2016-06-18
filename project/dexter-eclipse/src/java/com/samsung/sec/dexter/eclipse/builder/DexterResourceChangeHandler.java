@@ -100,7 +100,7 @@ public class DexterResourceChangeHandler implements IResourceChangeListener{
 				for(IMarkerDelta d : delta.getMarkerDeltas()){
 					if(d.getType().contains("dexter")){
 						try {
-							boolean hasDexter = (boolean) d.getMarker().getAttribute("dexter");
+							boolean hasDexter = (boolean) d.getMarker().getAttribute(DexterMarker.KEY_USED_ONCE);
 							if(hasDexter){
 								isDexterMarkerChanged = true;
 								d.getMarker().setAttribute(DexterMarker.KEY_USED_ONCE, false);
