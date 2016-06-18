@@ -53,6 +53,13 @@ public class DexterMarker {
 	public static final String DEFECT_MARKER_TYPE = "dexter-eclipse.defectProblem";
 	public static final String DEFECT_DISMISSED_MARKER_TYPE = "dexter-eclipse.defectDismissedProblem";
 	
+	/*
+	 * when marker is added, IResourceChangedEvent occured.
+	 * It makes dexter-analysis continuously.
+	 * So, this key will be checked by DexterResourceChangeHandler to stop analyze again
+	 */
+	public static final String KEY_USED_ONCE = "dexter_used_once";
+	
 	public static void addMarker(IFile file, Defect defect, Occurence occurence, boolean isDismissed) {
 		
 		final int severity = toEclipseMarkerSeverity(defect.getSeverityCode());
@@ -65,7 +72,6 @@ public class DexterMarker {
 			
 			if(isDismissed){
 				marker = file.createMarker(DEFECT_DISMISSED_MARKER_TYPE);
-				
 				msg.append(message).append(" ").append(DexterUtil.LINE_SEPARATOR)
 					.append("DID: To-Be-Defined").append(DexterUtil.LINE_SEPARATOR)
 					.append("Status: Dismissed").append(" ").append(DexterUtil.LINE_SEPARATOR);
@@ -86,6 +92,13 @@ public class DexterMarker {
 			
 			marker.setAttribute(IMarker.MESSAGE, msg.toString());
 			marker.setAttribute(IMarker.TRANSIENT, false); // persistence
+			
+			/*
+			 * when marker is added, IResourceChangedEvent occured.
+			 * It makes dexter-analysis continuously.
+			 * So, this key will be checked by DexterResourceChangeHandler to stop analyze again
+			 */
+			marker.setAttribute(KEY_USED_ONCE, true);
 			
 			if(occurence.getStartLine() <= 0) {
 				marker.setAttribute(IMarker.LINE_NUMBER, 1);

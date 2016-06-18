@@ -25,6 +25,7 @@
 */
 package com.samsung.sec.dexter.eclipse.builder;
 
+import org.eclipse.core.internal.resources.ResourceException;
 import org.eclipse.core.resources.IMarkerDelta;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.IResourceChangeListener;
@@ -86,7 +87,6 @@ public class DexterResourceChangeHandler implements IResourceChangeListener{
 					analysis(delta);
 					break;
 				default:
-					// do nothing
 			}
 			
 			return true;
@@ -95,10 +95,21 @@ public class DexterResourceChangeHandler implements IResourceChangeListener{
 		private void analysis(IResourceDelta delta) {
 			boolean isDexterMarkerChanged = false;
 			
+			
 			if(delta.getMarkerDeltas() != null){
 				for(IMarkerDelta d : delta.getMarkerDeltas()){
 					if(d.getType().contains("dexter")){
-						isDexterMarkerChanged = true;
+						try {
+							boolean hasDexter = (boolean) d.getMarker().getAttribute("dexter");
+							if(hasDexter){
+								isDexterMarkerChanged = true;
+								d.getMarker().setAttribute(DexterMarker.KEY_USED_ONCE, false);
+							}
+						} catch (ResourceException e) {
+							// do nothing
+						} catch (CoreException e){
+							DexterEclipseActivator.LOG.warn(e.getMessage(), e);
+						}
 					}
 				}
 			}
