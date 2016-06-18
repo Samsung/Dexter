@@ -73,7 +73,6 @@ public class DexterMarker {
 			if(isDismissed){
 				marker = file.createMarker(DEFECT_DISMISSED_MARKER_TYPE);
 				msg.append(message).append(" ").append(DexterUtil.LINE_SEPARATOR)
-					.append("DID: To-Be-Defined").append(DexterUtil.LINE_SEPARATOR)
 					.append("Status: Dismissed").append(" ").append(DexterUtil.LINE_SEPARATOR);
 				
 				marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_LOW);
@@ -81,7 +80,6 @@ public class DexterMarker {
 				marker = file.createMarker(DEFECT_MARKER_TYPE);
 				
 				msg.append(message).append(" ").append(DexterUtil.LINE_SEPARATOR)
-					.append("DID: To-Be-Defined").append(" ").append(DexterUtil.LINE_SEPARATOR)
 					.append("Status: New").append(" ").append(DexterUtil.LINE_SEPARATOR);
 				
 				marker.setAttribute(IMarker.SEVERITY, severity);
@@ -122,7 +120,6 @@ public class DexterMarker {
 			marker.setAttribute(ResultFileConstant.MODULE_PATH, defect.getModulePath());
 			marker.setAttribute(ResultFileConstant.SEVERITY_CODE, defect.getSeverityCode());
 			marker.setAttribute(ResultFileConstant.CATEGORY_NAME, defect.getCategoryName());
-			marker.setAttribute(ResultFileConstant.LOCAL_DID, defect.getLocalDid());
 			
 			marker.setAttribute(ResultFileConstant.CHAR_START, Integer.toString(occurence.getCharStart()));
 			marker.setAttribute(ResultFileConstant.CHAR_END, Integer.toString(occurence.getCharEnd()));
@@ -153,21 +150,6 @@ public class DexterMarker {
         }
 	}
 	
-	/**
-	 * @param attribute 
-	 */
-    public static void toggleMarkerDismissed(final IFile file, final String markerType, final String localDid) {
-    	try {
-	        for(final IMarker marker : file.findMarkers(markerType, true, IResource.DEPTH_INFINITE)){
-	        	if(marker.getAttribute(ResultFileConstant.LOCAL_DID, "").equals(localDid)){
-	        		toggleMarkerDismissed(marker);
-	        	}
-	        }
-        } catch (Exception e) {
-        	DexterEclipseActivator.LOG.error(e.getMessage(), e);
-        }
-    }
-    
 	private static void toggleMarkerDismissed(final IMarker oldMarker) {
 		try {
 			IMarker newMarker = null; 

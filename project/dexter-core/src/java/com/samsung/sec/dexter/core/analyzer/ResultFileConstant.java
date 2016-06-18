@@ -33,7 +33,6 @@ public class ResultFileConstant {
 	public static final String CHAR_END = "charEnd";
 	public static final String DEFECT_MESSAGE = "defectMessage";
 	public static final String OCCURENCE_CODE = "occurenceCode";
-	public static final String LOCAL_DID = "localDid";
 	public static final String START_LINE ="startLine";
 	public static final String END_LINE = "endLine";
 	public static final String OCCURENCES = "occurences";

@@ -105,7 +105,7 @@ public class DexterResourceChangeHandler implements IResourceChangeListener{
 								isDexterMarkerChanged = true;
 								d.getMarker().setAttribute(DexterMarker.KEY_USED_ONCE, false);
 							}
-						} catch (ResourceException e) {
+						} catch (ResourceException | NullPointerException e) {
 							// do nothing
 						} catch (CoreException e){
 							DexterEclipseActivator.LOG.warn(e.getMessage(), e);
