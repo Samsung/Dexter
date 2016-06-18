@@ -1005,11 +1005,8 @@ public class DexterUtil {
 			throw new DexterRuntimeException(message);
 		}
 
-		File[] files = directory.listFiles();
-		if (files == null) {  // null if security restricted
-			throw new DexterRuntimeException("Failed to list contents of " + directory);
-		}
-
+		File[] files = DexterUtil.getSubFiles(directory);
+		
 		IOException exception = null;
 		for (int i = 0; i < files.length; i++) {
 			File file = files[i];
@@ -1106,13 +1103,13 @@ public class DexterUtil {
 		});
 	}
 
-	public static String[] getSubFilenames(String parentDir) {
-		if(Strings.isNullOrEmpty(parentDir)){
+	public static String[] getSubFilenames(String baseDir) {
+		if(Strings.isNullOrEmpty(baseDir)){
 			throw new DexterRuntimeException("Parent Folder String is null or empty.");
 		}
 		
 		try{
-			File parentDirFile = new File(parentDir);
+			File parentDirFile = new File(baseDir);
 			String[] filenames = parentDirFile.list(); 
 			
 			if(filenames == null){
@@ -1122,26 +1119,30 @@ public class DexterUtil {
 			
 			return filenames;
 		} catch (SecurityException e){
-			throw new DexterRuntimeException("can't get sub folders or files:" + parentDir, e);
+			throw new DexterRuntimeException("can't get sub folders or files:" + baseDir, e);
 		}
 	}
 	
-	public static File[] getSubFiles(final File parentDir){
-		if(parentDir == null){
+	public static File[] getSubFiles(final File baseDir){
+		if(baseDir == null){
 			throw new DexterRuntimeException("Parent Folder is null.");
 		}
 		
 		try{
-			File[] files = parentDir.listFiles(); 
+			File[] files = baseDir.listFiles(); 
 			
 			if(files == null){
-				logger.warn("can't get sub folders or files(null) : " + parentDir.toString());
+				logger.warn("can't get sub folders or files(null) : " + baseDir.toString());
 				return new File[0];
 			}
 			
 			return files;
 		} catch (SecurityException e){
-			throw new DexterRuntimeException("can't get sub folders or files:" + parentDir.toString(), e);
+			throw new DexterRuntimeException("can't get sub folders or files:" + baseDir.toString(), e);
 		}
+	}
+
+	public static File[] getSubFiles(String baseDir) {
+		return getSubFiles(new File(baseDir));
 	}
 }

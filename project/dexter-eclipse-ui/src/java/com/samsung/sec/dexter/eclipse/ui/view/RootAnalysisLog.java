@@ -41,7 +41,7 @@ import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.IDexterHomeListener;
 import com.samsung.sec.dexter.core.defect.Defect;
-import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
 
 public class RootAnalysisLog implements IDexterHomeListener{
@@ -62,11 +62,7 @@ public class RootAnalysisLog implements IDexterHomeListener{
     		return;
     	}
     	
-    	File[] resultFiles = resultDir.listFiles();
-    	if(resultFiles == null){
-    		throw new DexterRuntimeException("the result file array is null");
-    	}
-    		
+    	File[] resultFiles = DexterUtil.getSubFiles(resultDir);
     	for(File sub : resultFiles){
     		if(sub.isFile()){
     			addAnalysisLogFromFile(sub);
@@ -82,12 +78,8 @@ public class RootAnalysisLog implements IDexterHomeListener{
     		return;
     	}
     	
-    	resultFiles = resultDir.listFiles();
-    	if(resultFiles == null){
-    		throw new DexterRuntimeException("the result file array is null");
-    	}
-    	
-    	for(final File subFile : resultOldDir.listFiles()){
+    	File[] subFiles = DexterUtil.getSubFiles(resultOldDir);
+    	for(final File subFile : subFiles){
     		if(subFile.isFile()){
     			addAnalysisLogFromFile(subFile);
     		}
@@ -126,8 +118,8 @@ public class RootAnalysisLog implements IDexterHomeListener{
 	        	resultLog.setDefectCount(Integer.parseInt((String)map.get(ResultFileConstant.DEFECT_COUNT)));
 	        	
 	        	final String fileStr = file.toString();
-	        	final int sp = fileStr.lastIndexOf("_") + 1;
-	        	final int ep = fileStr.lastIndexOf(".");
+	        	final int sp = fileStr.lastIndexOf('_') + 1;
+	        	final int ep = fileStr.lastIndexOf('.');
 	        	resultLog.setCreatedTimeStr(fileStr.substring(sp, ep));
 	        	
 	        	for(final LinkedTreeMap<String, Object> defectMap : defectList){

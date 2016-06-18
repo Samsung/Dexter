@@ -30,14 +30,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 
 import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.util.DexterUtil;
 
 public class DeleteResultLogJob implements Runnable {
 	private final static Logger logger = Logger.getLogger(DeleteResultLogJob.class);
-	private static int COUNT = DexterJobFacade.MAX_JOB_DELAY_COUNT;
+	private static AtomicInteger COUNT = new AtomicInteger(DexterJobFacade.MAX_JOB_DELAY_COUNT);
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Runnable#run()
@@ -46,8 +48,8 @@ public class DeleteResultLogJob implements Runnable {
     public void run() {
     	long freeMemSize = Runtime.getRuntime().freeMemory();
     	
-    	if(freeMemSize > DexterJobFacade.ALLOWED_FREE_MEMORY_SIZE_FOR_JOBS || COUNT > DexterJobFacade.MAX_JOB_DELAY_COUNT){
-    		COUNT = 0;
+    	if(freeMemSize > DexterJobFacade.ALLOWED_FREE_MEMORY_SIZE_FOR_JOBS || COUNT.get() > DexterJobFacade.MAX_JOB_DELAY_COUNT){
+    		COUNT.set(0);
     		DeleteResultLogJob.deleteOldLog();
     		
     		if (DexterConfig.getInstance().isStandalone()) {
@@ -55,7 +57,7 @@ public class DeleteResultLogJob implements Runnable {
     		}
     	}
     	
-    	COUNT ++;
+       	COUNT.addAndGet(1);
     }
 
     public static void deleteResultLog(){
@@ -82,7 +84,8 @@ public class DeleteResultLogJob implements Runnable {
 		
 		final List<File> oldResultFileList = new ArrayList<File>(150);
 		
-		for(File file : resultOldFolder.listFiles()){
+		final File[] resultOldFolders = DexterUtil.getSubFiles(resultOldFolder);
+		for(File file : resultOldFolders){
 			if(file.isFile() && file.getName().toLowerCase().endsWith(ext)){
 				oldResultFileList.add(file);
 			}

@@ -43,6 +43,7 @@ import com.samsung.sec.dexter.core.checker.Checker;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.util.DexterUtil;
 
 import edu.umd.cs.findbugs.BugRanker;
 import edu.umd.cs.findbugs.Detector;
@@ -158,11 +159,19 @@ public class FindBugsWrapper {
 	
 	private void addAuxClasspathEntry(final Project project, final String baseLibDir){
 		final File libDir = new File(baseLibDir);
-		if(libDir.isDirectory() == false || libDir.listFiles() == null || libDir.listFiles().length <= 0){
+		File[] libFiles = null;
+		
+		try{
+			if(libDir.isDirectory() == false)
+				return;
+			
+			libFiles = DexterUtil.getSubFiles(libDir);
+		} catch (DexterRuntimeException e){
+			LOG.warn(e.getMessage(), e);
 			return;
 		}
 		
-		for(final File libFile : libDir.listFiles()){
+		for(final File libFile : libFiles){
 			if(libFile.isFile() == false || libFile.getName().toLowerCase().endsWith(".jar") == false){
 				continue;
 			}

@@ -135,7 +135,8 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		
 		final Map<String, File> tempList = new HashMap<String, File>();
 
-		for (File pluginFile : pluginDir.listFiles()) {
+		File[] files = DexterUtil.getSubFiles(pluginDir);
+		for (File pluginFile : files) {
 			if (pluginFile.isDirectory())
 				continue;
 
@@ -172,7 +173,8 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 			throw new DexterRuntimeException("There is no features folder. The Dexter archive file might be invalid.");
 		}
 
-		for (File featureFile : featureDir.listFiles()) {
+		File[] files = DexterUtil.getSubFiles(featureDir);
+		for (File featureFile : files) {
 			final String featureFileName = featureFile.getName();
 			if (featureFileName.startsWith("dexter")) {
 				deleteDexterFeatureIfHasOldOne(tempFeatureList, featureFile, featureFileName);

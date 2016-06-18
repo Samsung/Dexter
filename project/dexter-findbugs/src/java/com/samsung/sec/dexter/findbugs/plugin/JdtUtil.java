@@ -70,7 +70,7 @@ public class JdtUtil {
 		final List<String> classFileList = new ArrayList<String>();
 		final List<String> typeNameList = getTypeNameList(sourceFileFullPath);
 		final String baseClassPath = DexterUtil.addPaths(binFullPath, modulePath);
-		final File[] subFileList = new File(baseClassPath).listFiles();
+		final File[] subFileList = DexterUtil.getSubFiles(baseClassPath);
 		
 		for (final String typeName : typeNameList) {
 			final String classFullPath = DexterUtil.addPaths(baseClassPath, typeName + ".class");

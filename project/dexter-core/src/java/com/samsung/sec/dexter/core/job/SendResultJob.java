@@ -28,6 +28,7 @@ package com.samsung.sec.dexter.core.job;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 
@@ -40,7 +41,7 @@ import com.samsung.sec.dexter.core.util.DexterUtil;
 
 public class SendResultJob implements Runnable {
 	private final static Logger logger = Logger.getLogger(SendResultJob.class);
-	private static int COUNT = DexterJobFacade.MAX_JOB_DELAY_COUNT;
+	private static AtomicInteger COUNT = new AtomicInteger(DexterJobFacade.MAX_JOB_DELAY_COUNT);
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Runnable#run()
@@ -49,8 +50,8 @@ public class SendResultJob implements Runnable {
     public void run() {
     	long freeMemSize = Runtime.getRuntime().freeMemory();
     	
-    	if(freeMemSize > DexterJobFacade.ALLOWED_FREE_MEMORY_SIZE_FOR_JOBS || COUNT > DexterJobFacade.MAX_JOB_DELAY_COUNT){
-    		COUNT = 0;
+    	if(freeMemSize > DexterJobFacade.ALLOWED_FREE_MEMORY_SIZE_FOR_JOBS || COUNT.get() > DexterJobFacade.MAX_JOB_DELAY_COUNT){
+    		COUNT.set(0);
     		try {
 	            SendResultJob.send();
 	            logger.debug("SendResultJob Executed");
@@ -59,13 +60,13 @@ public class SendResultJob implements Runnable {
             }
     	}
     	
-    	COUNT ++;
+    	COUNT.addAndGet(1);
     }
     
     public static void send() { 
     	final File resultFolder = new File(DexterConfig.getInstance().getResultPath());
     	
-		for(final File file : resultFolder.listFiles()){
+		for(final File file : DexterUtil.getSubFiles(resultFolder)){
 			if(file.isFile()){
 				sendResult(file);
 			}
