@@ -91,11 +91,7 @@ public class DexterAnalyzerThread extends Thread{
 			logger.info("analyzed " + config.getSourceFileFullPath());
 			config.getResultHandler().handleAnalysisResult(resultList);
 			analyzer.postRunStaticAnalysis(config, resultList);
-		} catch (DexterRuntimeException e){
-			e.printStackTrace();
-			logger.error("analyzed failed  : " 	+ config.getSourceFileFullPath());
-		} catch (NoClassDefFoundError e) {
-			e.printStackTrace();
+		} catch (DexterRuntimeException | NoClassDefFoundError e){
 			logger.error("analyzed failed  : " 	+ config.getSourceFileFullPath(), e);
 		}
 	}

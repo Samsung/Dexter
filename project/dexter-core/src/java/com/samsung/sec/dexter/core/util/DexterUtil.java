@@ -493,9 +493,10 @@ public class DexterUtil {
 			reader.join();
 
 			// Parse out the value
-			final String[] parsed = reader.getResult().split("\n");
+			final String[] parsed = reader.getResult().split("\n"); 
+		
 			
-			if (parsed.length > 3) {
+			if (parsed.length > 3) { 
 				return parsed[2].substring(parsed[2].indexOf("REG_SZ") + 6).trim();
 			}
 		} catch (IOException | InterruptedException e) {
@@ -633,7 +634,7 @@ public class DexterUtil {
 			return;
 		}
 		
-		for(final File sub : getSubFiles(dir)) {
+		for(final File sub : getSubFiles(dir)) { 
 			if (sub.isDirectory()) {
 				addSourceDir(sub, result);
 			}
@@ -679,16 +680,6 @@ public class DexterUtil {
 		}
 	}
 	
-	public static File[] getSubFiles(final File parentDir){
-		if(parentDir == null){
-			throw new DexterRuntimeException("parameter 'dir' is null");
-		}
-		
-		File[] files = parentDir.listFiles();
-		
-		return files == null ? new File[0] : files;
-	}
-
 	/**
 	 * @param items
 	 * @return
@@ -1113,5 +1104,44 @@ public class DexterUtil {
 					return false;
 			}
 		});
+	}
+
+	public static String[] getSubFilenames(String parentDir) {
+		if(Strings.isNullOrEmpty(parentDir)){
+			throw new DexterRuntimeException("Parent Folder String is null or empty.");
+		}
+		
+		try{
+			File parentDirFile = new File(parentDir);
+			String[] filenames = parentDirFile.list(); 
+			
+			if(filenames == null){
+				logger.warn("can't get names of sub folder or file(null) : " + parentDirFile.toString());
+				return new String[0];
+			}
+			
+			return filenames;
+		} catch (SecurityException e){
+			throw new DexterRuntimeException("can't get sub folders or files:" + parentDir, e);
+		}
+	}
+	
+	public static File[] getSubFiles(final File parentDir){
+		if(parentDir == null){
+			throw new DexterRuntimeException("Parent Folder is null.");
+		}
+		
+		try{
+			File[] files = parentDir.listFiles(); 
+			
+			if(files == null){
+				logger.warn("can't get sub folders or files(null) : " + parentDir.toString());
+				return new File[0];
+			}
+			
+			return files;
+		} catch (SecurityException e){
+			throw new DexterRuntimeException("can't get sub folders or files:" + parentDir.toString(), e);
+		}
 	}
 }

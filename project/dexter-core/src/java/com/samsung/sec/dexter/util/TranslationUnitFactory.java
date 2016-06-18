@@ -49,13 +49,19 @@ import org.eclipse.cdt.internal.core.dom.parser.c.GNUCSourceParser;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.GNUCPPSourceParser;
 import org.eclipse.cdt.internal.core.parser.scanner.CPreprocessor;
 
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+
 
 
 public class TranslationUnitFactory  {
 	public static IASTTranslationUnit getASTTranslationUnit(final String code, final ParserLanguage lang, 
 			final String filePath) 
 	{	
-		return getTranslationUnit(code, lang, filePath);
+		try{
+			return getTranslationUnit(code, lang, filePath);
+		} catch (Exception e){
+			throw new DexterRuntimeException(e.getMessage(), e);
+		}
 	}
 	
 	
