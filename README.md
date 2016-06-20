@@ -60,7 +60,7 @@ Dexter is a static analysis platform to find and remove defects efficiently and 
 - Install JDK 7 update 40+
 - Install Gradle (http://gradle.org)
 - Install NodeJS v4.2.1+ (https://nodejs.org) 
-- Download Eclipse RCP/RAP Juno + (http://www.eclipse.org/downloads/packages/release/juno/sr2)
+- Download Eclipse RCP/RAP Kepler + (http://www.eclipse.org/downloads/packages/release/Kepler/sr2)
 - Download Dexter Source Codes (https://github.com/Samsung/Dexter)
 
 ## Import Dexter Projects into Eclipse 
