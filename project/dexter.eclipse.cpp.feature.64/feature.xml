@@ -2,7 +2,7 @@
 <feature
       id="dexter.eclipse.cpp.feature.64"
       label="Dexter Eclipse CPP Feature 64bit"
-      version="0.10.0"
+      version="0.10.2"
       provider-name="Samsung Electronics VD SE">
 
    <description url="http://www.example.com/description">
@@ -1367,20 +1367,6 @@ the library.  If this is what you want to do, use the GNU Lesser General
 Public License instead of this License.  But first, please read
 [http://www.gnu.org/philosophy/why-not-lgpl.html].
    </license>
-
-   <requires>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="com.ibm.icu"/>
-      <import plugin="org.eclipse.core.resources"/>
-      <import plugin="org.eclipse.platform"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.cdt.core"/>
-      <import plugin="org.eclipse.core.filesystem"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.mylyn.commons.ui"/>
-   </requires>
 
    <plugin
          id="dexter-core"
