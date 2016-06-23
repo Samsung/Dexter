@@ -36,6 +36,7 @@ import org.apache.log4j.Logger;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 import com.samsung.sec.dexter.core.plugin.PluginDescription;
+import com.samsung.sec.dexter.core.util.DexterUtil;
 
 public class PluginInitializerForUT implements IDexterPluginInitializer {
 	static Logger logger = Logger.getLogger(PluginInitializerForUT.class);
@@ -54,11 +55,12 @@ public class PluginInitializerForUT implements IDexterPluginInitializer {
 			throw new DexterRuntimeException("there is no exist DEXTER_HOME : " + pluginBasePath);
 		}
 		
-		if(pluginBaseDir.listFiles() == null || pluginBaseDir.listFiles().length == 0){
+		File[] files = DexterUtil.getSubFiles(pluginBaseDir);
+		if(files.length == 0){
 			throw new DexterRuntimeException("there is no exist plug-in(s)");
 		}
 
-		for(File file : pluginBaseDir.listFiles()){
+		for(File file : files){
 			if(file.exists() == false || file.isFile() == false){
 				continue; 
 			}

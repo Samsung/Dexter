@@ -33,18 +33,18 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.ASTVisitor;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
-import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.parser.ParserLanguage;
 
 import com.google.common.base.Charsets;
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 
 public class CppUtil {
 
 	static Charset sourceEncoding = Charsets.UTF_8;
 	static Logger logger = Logger.getLogger(CppUtil.class);
 
-	private CppUtil() {
+	private CppUtil() { 
 	}
 
 	/**
@@ -129,8 +129,17 @@ public class CppUtil {
 		DexterUtilHelper.classCount = 0;
 
 		String code = DexterUtilHelper.getContentsFromFile(sourceFilePath, sourceEncoding);
-		IASTTranslationUnit translationUnit = TranslationUnitFactory.getASTTranslationUnit(code, ParserLanguage.CPP,
-				sourceFilePath);
+		
+		IASTTranslationUnit translationUnit = null;
+		
+		try{
+			translationUnit = TranslationUnitFactory.getASTTranslationUnit(code, ParserLanguage.CPP,
+					sourceFilePath);
+		} catch (DexterRuntimeException e){
+			logger.error("can't make a code metrics : " + sourceFilePath, e);
+			return new HashMap<String, Object>(0);
+		}
+		
 
 		ASTVisitor visitor = new ASTVisitor() {
 			public int visit(IASTDeclaration declaration) {

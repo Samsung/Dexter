@@ -84,7 +84,7 @@ public class DefectHelpResolution implements IMarkerResolution2 {
 			helpView.setUrl(url.toString());
 			EclipseUtil.showView(DefectHelpView.ID);
 		} catch (DexterRuntimeException e) {
-			DexterEclipseActivator.LOG.error(e.getMessage(), e);
+			DexterEclipseActivator.LOG.error(Messages.DefectHelpResolution_DEFECT_HELP_ERROR, e);
 			MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
 			        Messages.DefectHelpResolution_DEFECT_HELP_ERROR,
 			        Messages.DefectHelpResolution_DEFECT_HELP_ERROR_DESC);

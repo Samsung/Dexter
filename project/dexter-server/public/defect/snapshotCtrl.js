@@ -57,8 +57,9 @@ defectApp.controller('snapshotCtrl', function ($scope, $http, $location){
         columnDefs: [
             {field:"id", displayName:'Snapshot ID', width: 350, cellClass:'textAlignCenter'},
             {field:"defectCount", displayName:'Total Count', width :130, cellClass:'textAlignCenter'},
-            {field:"criCount", displayName:'CRI Defect Count', width :130, cellClass:'textAlignCenter'},
-            {field:"majCount", displayName:'MAJ Defect Count', width :130, cellClass:'textAlignCenter'},
+            {field:"criCount", displayName:'CRI Defect', width :130, cellClass:'textAlignCenter'},
+            {field:"majCount", displayName:'MAJ Defect', width :130, cellClass:'textAlignCenter'},
+            {field:"secCount", displayName:'SECURITY Defect', width :130, cellClass:'textAlignCenter'},
             {field:"userId", displayName:'Creator', cellClass:'textAlignCenter'},
             {field:"createdDateTime", displayName:'Date', cellClass:'textAlignCenter', cellTemplate: '<div><div class="ngCellText">{{row.getProperty(col.field) | date:"yyyy-MM-dd HH:mm:ss"}}</div></div>' },
             {field:"groupId", displayName:'Group ID',visible:false}
@@ -142,7 +143,7 @@ defectApp.controller('snapshotCtrl', function ($scope, $http, $location){
     $scope.loadSnapshotInformation = _loadSnapshotInformation();
 
     function _loadSnapshotInformation() {
-        $http.get('/api/v1/snapshot/snapshotList').then(function(results){
+        $http.get('/api/v2/snapshot/snapshotList').then(function(results){
             if(results && results.data) {
                 angular.element('#showLoading').hide();
                 $scope.allSnapshotCount = results.data.snapshotInfo.length;

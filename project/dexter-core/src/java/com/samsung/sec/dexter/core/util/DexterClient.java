@@ -472,22 +472,22 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
 		}
 	}
 	
-	public boolean hasSupportedHelpHtmlFile(final StringBuilder url){
+	public boolean hasSupportedHelpHtmlFile(final StringBuilder url) {
 		try {
-			final String text = webResource.getConnectionResult(url.toString(), this.currentUserId, this.currentUserPwd);
-			if("false".equals(text)) {
-				return false;
+			if ("true".equals(DexterConfig.getInstance().isStandalone())) {
+				throw new Exception();
+			} else {
+				final String text = webResource.getConnectionResult(url.toString(), this.currentUserId,	this.currentUserPwd);
+				if ("false".equals(text)) {
+					return false;
+				} else {
+					return true;
+				}
 			}
-			else {
-				return  true;
-			}
-		} catch(IllegalStateException e){
+		} catch (IllegalStateException | UniformInterfaceException e) {
 			LOG.debug(e.getMessage(), e);
 			return false;
-		} catch(UniformInterfaceException e){
-			LOG.debug(e.getMessage(), e);
-			return false;
-		} catch (Exception e){
+		} catch (Exception e) {
 			throw new DexterRuntimeException(e.getMessage(), e);
 		}
 	}

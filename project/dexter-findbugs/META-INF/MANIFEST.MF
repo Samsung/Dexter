@@ -2,9 +2,9 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dexter Findbugs
 Bundle-SymbolicName: dexter-findbugs;singleton:=true
-Bundle-Version: 0.10.0
+Bundle-Version: 0.10.2
 Bundle-Activator: com.samsung.sec.dexter.findbugs.FindBugsActivator
-Bundle-Vendor: Samsung Electronics VD SE Lab
+Bundle-Vendor: Samsung Electronics VD SE
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jdt.core,
  dexter-core,

@@ -40,16 +40,25 @@ import org.eclipse.core.resources.IResource;
 
 import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
+import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.defect.Occurence;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.eclipse.DexterEclipseActivator;
+import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 
 
 public class DexterMarker {
 	public static final String DEFECT_MARKER_TYPE = "dexter-eclipse.defectProblem";
 	public static final String DEFECT_DISMISSED_MARKER_TYPE = "dexter-eclipse.defectDismissedProblem";
+	
+	/*
+	 * when marker is added, IResourceChangedEvent occured.
+	 * It makes dexter-analysis continuously.
+	 * So, this key will be checked by DexterResourceChangeHandler to stop analyze again
+	 */
+	public static final String KEY_USED_ONCE = "dexter_used_once";
 	
 	public static void addMarker(IFile file, Defect defect, Occurence occurence, boolean isDismissed) {
 		
@@ -63,9 +72,7 @@ public class DexterMarker {
 			
 			if(isDismissed){
 				marker = file.createMarker(DEFECT_DISMISSED_MARKER_TYPE);
-				
 				msg.append(message).append(" ").append(DexterUtil.LINE_SEPARATOR)
-					.append("DID: To-Be-Defined").append(DexterUtil.LINE_SEPARATOR)
 					.append("Status: Dismissed").append(" ").append(DexterUtil.LINE_SEPARATOR);
 				
 				marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_LOW);
@@ -73,7 +80,6 @@ public class DexterMarker {
 				marker = file.createMarker(DEFECT_MARKER_TYPE);
 				
 				msg.append(message).append(" ").append(DexterUtil.LINE_SEPARATOR)
-					.append("DID: To-Be-Defined").append(" ").append(DexterUtil.LINE_SEPARATOR)
 					.append("Status: New").append(" ").append(DexterUtil.LINE_SEPARATOR);
 				
 				marker.setAttribute(IMarker.SEVERITY, severity);
@@ -84,6 +90,13 @@ public class DexterMarker {
 			
 			marker.setAttribute(IMarker.MESSAGE, msg.toString());
 			marker.setAttribute(IMarker.TRANSIENT, false); // persistence
+			
+			/*
+			 * when marker is added, IResourceChangedEvent occured.
+			 * It makes dexter-analysis continuously.
+			 * So, this key will be checked by DexterResourceChangeHandler to stop analyze again
+			 */
+			marker.setAttribute(KEY_USED_ONCE, true);
 			
 			if(occurence.getStartLine() <= 0) {
 				marker.setAttribute(IMarker.LINE_NUMBER, 1);
@@ -107,7 +120,6 @@ public class DexterMarker {
 			marker.setAttribute(ResultFileConstant.MODULE_PATH, defect.getModulePath());
 			marker.setAttribute(ResultFileConstant.SEVERITY_CODE, defect.getSeverityCode());
 			marker.setAttribute(ResultFileConstant.CATEGORY_NAME, defect.getCategoryName());
-			marker.setAttribute(ResultFileConstant.LOCAL_DID, defect.getLocalDid());
 			
 			marker.setAttribute(ResultFileConstant.CHAR_START, Integer.toString(occurence.getCharStart()));
 			marker.setAttribute(ResultFileConstant.CHAR_END, Integer.toString(occurence.getCharEnd()));
@@ -117,6 +129,12 @@ public class DexterMarker {
 			int startLine = occurence.getStartLine();
 			if (startLine <= 0) {
 				startLine = 1;
+			}
+			
+			if(EclipseUtil.isValidCAndCppResource(file)){
+				marker.setAttribute(IMarker.CHAR_START, -1);
+				marker.setAttribute(IMarker.CHAR_END, -1);
+		        return ;
 			}
 			
 			if(occurence.getCharStart() >= 0 && occurence.getCharEnd() >= 0){
@@ -132,21 +150,6 @@ public class DexterMarker {
         }
 	}
 	
-	/**
-	 * @param attribute 
-	 */
-    public static void toggleMarkerDismissed(final IFile file, final String markerType, final String localDid) {
-    	try {
-	        for(final IMarker marker : file.findMarkers(markerType, true, IResource.DEPTH_INFINITE)){
-	        	if(marker.getAttribute(ResultFileConstant.LOCAL_DID, "").equals(localDid)){
-	        		toggleMarkerDismissed(marker);
-	        	}
-	        }
-        } catch (Exception e) {
-        	DexterEclipseActivator.LOG.error(e.getMessage(), e);
-        }
-    }
-    
 	private static void toggleMarkerDismissed(final IMarker oldMarker) {
 		try {
 			IMarker newMarker = null; 
@@ -194,10 +197,105 @@ public class DexterMarker {
         }
 	}
 
+	private static void setLineAttributeForCDT(final IFile file, final IMarker marker, final int startLine) {
+	   
+	    
+	    final String fileFullPath = DexterUtil.refinePath(file.getLocation().toFile().getAbsolutePath());
+	    final File f = new File(fileFullPath);
+	    
+	    String charset;
+        try {
+	        charset = file.getCharset().toUpperCase();
+	        
+	        if(f.exists() == false || !Charset.isSupported(charset)){
+	        	DexterEclipseActivator.LOG.error("File can't read to mark defects : " + fileFullPath + ", encode:" + charset);
+	        	return;
+	        }
+        } catch (Exception e) {
+        	DexterEclipseActivator.LOG.error(e.getMessage(), e);
+        	return;
+        }
+	    
+	    FileReader reader = null;
+	    int newLineSize = 0;
+	    try {
+	    	reader = new FileReader(f);
+	    	final char[] chars = new char[2048];
+	    	reader.read(chars);
+	    	
+	    	final String content = new String(chars);
+	    	if(Strings.isNullOrEmpty(content) == false && content.indexOf("\r\n") >= 0){
+	    		newLineSize = 2;
+	    	} else {
+	    		newLineSize = 1;
+	    	}
+	    	
+	    } catch (Exception e){
+	    	DexterEclipseActivator.LOG.error(e.getMessage(), e);
+	    	newLineSize = 2;
+	    } finally {
+	    	try {
+	    		if(reader != null)
+	    			reader.close();
+            } catch (IOException e) {
+            	DexterEclipseActivator.LOG.error(e.getMessage(), e);
+            }
+	    }
+	    
+	    
+	    String line;
+	    InputStream fis = null;
+	    BufferedReader br = null;
+	    
+	    try {
+	        fis = new FileInputStream(fileFullPath);
+	        br = new BufferedReader(new InputStreamReader(fis, Charset.forName(charset)));
+	        
+	        int curLine = 1;
+	        int offset = 0;
+	        int sOffset = -1;
+	        int eOffset = -1;
+	        
+			while ((line = br.readLine()) != null) {
+				if (curLine == startLine) {
+					final String trimStr = line.trim();
+					final int start = line.indexOf(trimStr);
+
+					sOffset = offset + start;
+					eOffset = offset + line.length();
+					br.close();
+					fis.close();
+					break;
+				}
+
+				if (line.length() != 0) {
+					offset += line.length();
+				}
+				offset += 1;
+				curLine++;
+			}
+	        
+	        marker.setAttribute(IMarker.CHAR_END, eOffset);
+	        marker.setAttribute(IMarker.CHAR_START, sOffset);
+	      
+        } catch (Exception e) {
+        	DexterEclipseActivator.LOG.error(e.getMessage(), e);
+        } finally {
+        	try {
+        		if(br != null){
+        			br.close();
+        		}
+        		if(fis != null){
+        			fis.close();
+        		}
+        	} catch (IOException e) {
+        		DexterEclipseActivator.LOG.error(e.getMessage(), e);
+        	}
+        }
+    }	
+	
 	private static void setLineAttribute(final IFile file, final IMarker marker, final int startLine) {
 	    int newLineSize = 0;
-	    
-	    //nal String workspacePath = ResourcesPlugin.getWorkspace().getRoot().getLocation().toOSString();
 	    
 	    final String fileFullPath = DexterUtil.refinePath(file.getLocation().toFile().getAbsolutePath());
 	    //final File f = new File(workspacePath + file.getFullPath().toOSString());
@@ -216,8 +314,7 @@ public class DexterMarker {
         	return;
         }
 	    
-	    // log : DexterEclipseActivator.error("for Marking: " + workspacePath + file.getFullPath().toOSString()	+ ", encode:" + charset);
-	    
+	    // log : DexterEclipseActivator.error("for Marking: " + workspacePath + file.getFullPath().toOSString()	+ ", encode:" + charset);	    
 	    FileReader reader = null;
 	    try {
 	    	reader = new FileReader(f);

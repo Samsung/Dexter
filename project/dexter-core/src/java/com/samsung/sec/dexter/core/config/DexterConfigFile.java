@@ -99,7 +99,7 @@ public class DexterConfigFile {
 		try {
 			for (String content : Files.readLines(confFile, Charsets.UTF_8)) {
 				confJson.append(content.replace('\\', '/').replace("//", "/"));
-				if (content.indexOf("}") >= 0) {
+				if (content.indexOf('}') >= 0) {
 					break;
 				}
 			}
@@ -435,7 +435,8 @@ public class DexterConfigFile {
 		}
 		
 		List<String> sourceFileFullPathList = new ArrayList<String>(10);
-		for(String filePath : new File(moduleFullPath).list()){
+		
+		for(String filePath : DexterUtil.getSubFilenames(moduleFullPath)){
 			final File file = new File(filePath);
 			
 			if(file.isDirectory()){
@@ -477,7 +478,7 @@ public class DexterConfigFile {
 		if(baseFile.isFile()){
 			sourceFileFullPathList.add(DexterUtil.refinePath(baseFile.getAbsolutePath()));
 		} else {
-			for(File subFile : baseFile.listFiles()){
+			for(File subFile : DexterUtil.getSubFiles(baseFile)){ 
 				addSourceFileFullPathHierachy(subFile, sourceFileFullPathList);
 			}
 		}

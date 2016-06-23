@@ -11,7 +11,7 @@ Dexter helps you to improve coding skills. Whenever you save a source file, Dext
 - [Dexter Introduction Video(4min)](https://youtu.be/86exIHcwi6c)
 - [Dexter Wiki (How to install/Use)](https://dexter.atlassian.net)
 
-## Downloads (ver. 0.10.0, 22. Apr. 2016)
+## Downloads (ver. 0.10.2, 20. Jun. 2016)
 
 #### Eclipse Update Site
 ##### Eclipse JAVA+CPP 
@@ -32,18 +32,18 @@ Dexter helps you to improve coding skills. Whenever you save a source file, Dext
 
 
 #### Dexter Daemon for Source Insight
-- [Win 32bit](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-daemon_0.10.0_32.zip?api=v2)
-- [Win 64bit](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-daemon_0.10.0_64.zip?api=v2)
+- [Win 32bit](https://dexter.atlassian.net/wiki/download/attachments/6258746/dexter-daemon_0.10.2_32.zip?api=v2)
+- [Win 64bit](https://dexter.atlassian.net/wiki/download/attachments/6258746/dexter-daemon_0.10.2_64.zip?api=v2)
  
 #### Dexter CLI
-- [Win/Linux/Mac 32bit](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-cli_0.10.0_32.zip?api=v2)
-- [Win/Linux/Mac 64bit](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-cli_0.10.0_64.zip?api=v2)
+- [Win/Linux/Mac 32bit](https://dexter.atlassian.net/wiki/download/attachments/6258746/dexter-cli_0.10.2_32.zip?api=v2)
+- [Win/Linux/Mac 64bit](https://dexter.atlassian.net/wiki/download/attachments/6258746/dexter-cli_0.10.2_64.zip?api=v2)
 
 #### Dexter Server
-- [Win/Linux/Mac](https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-server_0.10.0.zip?api=v2)
+- [Win/Linux/Mac](https://dexter.atlassian.net/wiki/download/attachments/6258746/dexter-server_0.10.2.zip?api=v2)
  
 ## Supports
-- Eclipse IDE for Java language (Juno 4.2+)
+- Eclipse IDE for Java language (Kepler 4.3+)
 - Source Insight for C/C++ (3.50.0072+)
 - CLI for executing by a script (Jenkins, other editors)
 
@@ -60,7 +60,7 @@ Dexter is a static analysis platform to find and remove defects efficiently and 
 - Install JDK 7 update 40+
 - Install Gradle (http://gradle.org)
 - Install NodeJS v4.2.1+ (https://nodejs.org) 
-- Download Eclipse RCP/RAP Juno + (http://www.eclipse.org/downloads/packages/release/juno/sr2)
+- Download Eclipse RCP/RAP Kepler + (http://www.eclipse.org/downloads/packages/release/Kepler/sr2)
 - Download Dexter Source Codes (https://github.com/Samsung/Dexter)
 
 ## Import Dexter Projects into Eclipse 

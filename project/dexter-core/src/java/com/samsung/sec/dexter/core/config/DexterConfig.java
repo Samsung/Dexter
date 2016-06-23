@@ -124,7 +124,7 @@ public class DexterConfig {
 	private Charset sourceEncoding = Charsets.UTF_8;
 	private boolean doesSendResult = true;
 	private boolean isStandalone = false;
-	
+	private boolean isCheckerEnableOption = false;
 	private int serverConnectionTimeOut = 15000;	// ms
 	
 	public int getServerConnectionTimeOut() {
@@ -569,4 +569,13 @@ public class DexterConfig {
 	public String getDefaultDexterHome() {
 		return System.getProperty("user.home") + "/" + DexterConfig.DEXTER_DEFAULT_FOLDER_NAME;
 	}
+	
+	public boolean isCheckerEnableOption(){
+		return isCheckerEnableOption;
+	}
+	
+	public void setCheckerEnableOptionForCLI(boolean isCheckerEnableOption){
+		this.isCheckerEnableOption = isCheckerEnableOption;
+	}
+	
 }

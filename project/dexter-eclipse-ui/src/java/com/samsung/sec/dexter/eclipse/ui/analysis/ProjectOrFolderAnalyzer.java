@@ -113,7 +113,8 @@ public class ProjectOrFolderAnalyzer {
     
     private void addTargetFile(File file){
     	if(file.isDirectory()){
-    		for(final File sub : file.listFiles()){
+    		File[] files = DexterUtil.getSubFiles(file);
+    		for(final File sub : files){
     			addTargetFile(sub);
     		}
 		} else if(DexterConfig.getInstance().isAnalysisAllowedFile(file.getName())){

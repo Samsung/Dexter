@@ -1,15 +1,15 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Dexter VD C & CPP
+Bundle-Name: Dexter VD C CPP
 Bundle-SymbolicName: dexter-vd-cpp;singleton:=true
-Bundle-Version: 0.10.0
+Bundle-Version: 0.10.2
 Bundle-Activator: com.samsung.sec.dexter.vdcpp.DexterVdCppActivator
 Require-Bundle: org.eclipse.core.runtime,
  dexter-core,
  dexter-executor
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-Vendor: Samsung Electronics VD SE Lab
+Bundle-Vendor: Samsung Electronics VD SE
 Bundle-ClassPath: .,
  lib/gson-2.2.4.jar,
  lib/guava-16.0.1.jar,

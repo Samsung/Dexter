@@ -76,7 +76,6 @@ public class CheckerDescription implements IObjectActionDelegate {
 				}
 				
 				helpView.setUrl(url.toString());
-			
 	            EclipseUtil.showView(DefectHelpView.ID);
 		} catch (DexterRuntimeException e){
 			MessageDialog.openError(part.getSite().getShell(), "Checker Description Error", 

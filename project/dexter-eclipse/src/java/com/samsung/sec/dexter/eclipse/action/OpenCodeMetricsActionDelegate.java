@@ -35,37 +35,40 @@ public class OpenCodeMetricsActionDelegate implements IObjectActionDelegate {
 				final Object object = iter.next();
 				if (object instanceof IResource) {
 					final IResource resource = (IResource) object;
-					codeMetricsResource(resource);
+					showCodeMetricsView(resource);
 				}
 			}
-
 		}
 	}
 
-	private void codeMetricsResource(final IResource resource) {
+	private void showCodeMetricsView(final IResource resource) {
 		if (resource instanceof IFile) {
 			final IFile targetFile = (IFile) resource;
-			if (targetFile.getName().endsWith(".java")) {
-
-				StringBuilder makeCodeMetricsUrl = new StringBuilder();
-				try {
-					IViewPart view = EclipseUtil.findView(CodeMetricsView.ID);
-					final CodeMetricsView codeMetricsView = (CodeMetricsView) view;
-
-					
-					makeCodeMetricsUrl.append("http://").append(DexterClient.getInstance().getServerHost()).append(":") //$NON-NLS-1$ //$NON-NLS-2$
-							.append(DexterClient.getInstance().getServerPort()).append(DexterConfig.CODE_METRICS_BASE)//$NON-NLS-1$
-							.append("?").append(DexterConfig.CODE_METRICS_FILE_NAME).append("=").append(targetFile.getName())//$NON-NLS-1$
-							.append("&").append(DexterConfig.CODE_METRICS_MODULE_PATH).append("=").append(DexterEclipseActivator.getJDTUtil().getModulePath(targetFile));//$NON-NLS-1$
-					
-					codeMetricsView.setUrl(makeCodeMetricsUrl.toString());
-
-					EclipseUtil.showView(CodeMetricsView.ID);
-				} catch (DexterRuntimeException e) {
-					DexterEclipseActivator.LOG.error("Cannot open the Code Metrics Description View");
-					DexterEclipseActivator.LOG.error(e.getMessage(), e);
-				}
+			String modulePath = "";
+			if (EclipseUtil.isValidJavaResource(resource)) {
+				modulePath = DexterEclipseActivator.getJDTUtil().getModulePath(targetFile);
+			} else if (EclipseUtil.isValidCAndCppResource(resource)) {
+				modulePath = DexterEclipseActivator.getCDTUtil().getModulePath(targetFile);
 			}
+			
+			StringBuilder createCodeMetricsUrl = new StringBuilder();
+			try {
+				IViewPart view = EclipseUtil.findView(CodeMetricsView.ID);
+				final CodeMetricsView codeMetricsView = (CodeMetricsView) view;
+
+				createCodeMetricsUrl.append("http://").append(DexterClient.getInstance().getServerHost()).append(":") //$NON-NLS-1$ //$NON-NLS-2$
+						.append(DexterClient.getInstance().getServerPort()).append(DexterConfig.CODE_METRICS_BASE)// $NON-NLS-1$
+						.append("?").append(DexterConfig.CODE_METRICS_FILE_NAME).append("=") //$NON-NLS-1$
+						.append(targetFile.getName())
+						.append("&").append(DexterConfig.CODE_METRICS_MODULE_PATH).append("=").append(modulePath);//$NON-NLS-1$
+
+				codeMetricsView.setUrl(createCodeMetricsUrl.toString());
+				EclipseUtil.showView(CodeMetricsView.ID);
+			} catch (DexterRuntimeException e) {
+				DexterEclipseActivator.LOG.error("Cannot open the Code Metrics Description View");
+				DexterEclipseActivator.LOG.error(e.getMessage(), e);
+			}
+
 		}
 	}
 

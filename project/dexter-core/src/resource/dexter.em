@@ -24,7 +24,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * -------------------------------------------------------------------------------------------------------------------
- * Version : 0.10.0
+ * Version : 0.10.2
  * -------------------------------------------------------------------------------------------------------------------
  * Add Key Assignments :
  *   - markDexterDefectToFalseAlarm() : to mark defect status as a false alarm  (async: 3~5 sec)
@@ -148,6 +148,7 @@ event DocumentOpen(sFile)
 event DocumentSaveComplete(sFile) // synchronously 
 //event DocumentChanged(sFile)  // asynchronously
 {
+
 	runDexter(sFile);
 	stop;
 }
@@ -566,13 +567,21 @@ macro saveModifiedFunctionList(){
 	var changeCount;
 	var functionName;
 	var curSymbol;
+	
+	hwnd = GetCurrentWnd();
 	hbuf = GetCurrentBuf();
+
 	currentLine  = 0;
+
 	changeCount = 0;
 	firstRevisionLine = 0;
 
 	g_functionList= "";
-	
+	currentLn = GetWndSelLnFirst (hwnd);
+	currentIch =GetWndSelIchFirst(hwnd);
+	vert = GetWndVertScroll (hwnd);
+	wndsel = GetWndSel(hwnd);
+	//msg();
 	while(1){
 		Go_To_Next_Change;
 		if(changeCount == 0){
@@ -588,12 +597,16 @@ macro saveModifiedFunctionList(){
 			
 		}else if(symbolLocation.Type == "Function" || symbolLocation.Type == "Method"){
 			functionName = SymbolLeafName(symbolLocation);
+			
 			addFunctionNameIfNotExist(functionName);		
 		}
 	}
 	if(g_functionList !=""){
 	g_functionList = strtrunc(g_functionList,strlen(g_functionList)-1);	
 	}
+	SetBufIns(hbuf,currentLn,currentIch);	
+	ScrollWndToLine(hwnd,vert);
+	
 }
 macro isNavigatedLine(hbuf, count,firstRevisionLine){
 	

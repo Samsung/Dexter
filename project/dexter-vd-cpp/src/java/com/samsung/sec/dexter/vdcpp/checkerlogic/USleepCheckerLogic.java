@@ -260,7 +260,7 @@ public class USleepCheckerLogic implements ICheckerLogic{
 					{
 						outputDecimal = new BigDecimal(string).intValue();
 					}
-					else if(string.startsWith("0") && string.length()>1 )	//ex) 033 : octa-decimal
+					else if(string.startsWith("0") && string.length()>1 )							//ex) 033 : octa-decimal
 					{
 						string = string.replaceFirst("[0]", "");	
 						outputDecimal = Integer.parseInt(string, 8);

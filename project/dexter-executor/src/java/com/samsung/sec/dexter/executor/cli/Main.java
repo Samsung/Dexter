@@ -230,8 +230,11 @@ public class Main {
     }
 	
 	private void setEnabledCheckers(final CommandLine cmd) {
-	    if (cmd.hasOption("e")){
+	    if (cmd.hasOption("e")){	    	
 			this.enabledCheckers = cmd.getOptionValue("e").split(";");
+			DexterConfig.getInstance().setCheckerEnableOptionForCLI(true);
+		}else{
+			DexterConfig.getInstance().setCheckerEnableOptionForCLI(false);
 		}
     }
 

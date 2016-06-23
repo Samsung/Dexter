@@ -126,10 +126,10 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
 
 		if (DexterUtil.getOS() == DexterUtil.OS.WINDOWS) {
 			//zipFilePath += "/temp/cppcheck-windows_" + CppcheckDexterPlugin.version.getVersion() + ".zip";
-			zipFilePath += "/temp/cppcheck-windows_0.10.0.zip";
+			zipFilePath += "/temp/cppcheck-windows_0.10.2.zip";
 			cppcheckPath = "/cppcheck-windows.zip";
 		} else { // LINUX or MAC
-			zipFilePath += "/temp/cppcheck-linux_0.10.0.zip";
+			zipFilePath += "/temp/cppcheck-linux_0.10.2.zip";
 			cppcheckPath = "/cppcheck-linux.zip";
 		}
 

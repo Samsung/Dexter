@@ -2,7 +2,7 @@
 <feature
       id="dexter.eclipse.java.feature.64"
       label="Dexter Eclipse Java Feature 64bit"
-      version="0.10.0"
+      version="0.10.2"
       provider-name="Samsung Electronics VD SE">
 
    <description url="http://www.example.com/description">
@@ -1381,7 +1381,6 @@ Public License instead of this License.  But first, please read
       <import plugin="org.eclipse.jface.text"/>
       <import plugin="org.junit"/>
       <import plugin="org.eclipse.mylyn.commons.ui"/>
-      <import plugin="org.eclipse.cdt.core"/>
    </requires>
 
    <plugin

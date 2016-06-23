@@ -121,17 +121,21 @@ public class ResultFileHandler extends DefaultHandler {
 	    		
 	    	} catch (DexterRuntimeException e){
 	    		logger.info(e.getMessage());
-	    		Checker checker = new Checker(checkerCode, checkerCode, 
-	    				PluginVersion.fromImplementationVersion(CppcheckDexterPlugin.class).getVersion(), true);
-	    		
-	    		if("true".equals(attributes.getValue("inconclusive"))){
-	    			checker.setSeverityCode("ETC");
-	    			checker.setActive(false);
-	    		} else {
-	    			setSeverityForNewChecker(attributes, checker);
-	    		}
-	    		checkerConfig.addChecker(checker);
-	    		logger.info("Found new checker(" + checkerCode + ") in " + config.getSourceFileFullPath());
+				if (!(DexterConfig.getInstance().getRunMode().equals(DexterConfig.RunMode.CLI)
+						&& DexterConfig.getInstance().isCheckerEnableOption())) {
+					Checker checker = new Checker(checkerCode, checkerCode,
+							PluginVersion.fromImplementationVersion(CppcheckDexterPlugin.class).getVersion(), true);
+
+					if ("true".equals(attributes.getValue("inconclusive"))) {
+						checker.setSeverityCode("ETC");
+						checker.setActive(false);
+					} else {
+						setSeverityForNewChecker(attributes, checker);
+					}
+					checkerConfig.addChecker(checker);
+
+				}
+				logger.info("Found new checker(" + checkerCode + ") in " + config.getSourceFileFullPath());
 	    	}
 	    } else if("location".equals(qName)){
 	    	final String fileName = attributes.getValue("file");

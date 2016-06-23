@@ -149,10 +149,6 @@
             id="dexter-eclipse.objectContribution.createSnapshot"
             nameFilter="*"
             objectClass="org.eclipse.core.resources.IProject">
-         <filter
-         	name="projectNature"
-         	value="org.eclipse.jdt.core.javanature">
-         </filter>
          <action
                class="com.samsung.sec.dexter.eclipse.action.CreateSnapshotActionDelegate"
                enablesFor="+"

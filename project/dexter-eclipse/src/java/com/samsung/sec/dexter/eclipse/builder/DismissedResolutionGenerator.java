@@ -39,12 +39,12 @@ public class DismissedResolutionGenerator implements IMarkerResolutionGenerator2
 	 */
 	@Override
 	public IMarkerResolution[] getResolutions(final IMarker marker) {
-		final IMarkerResolution2[] resolutions = new IMarkerResolution2[3];
+		final IMarkerResolution2[] resolutions = new IMarkerResolution2[2];
 		try {
 	        if(marker.getType().equals(DexterMarker.DEFECT_MARKER_TYPE)) {
 	        	resolutions[0] = new DismissDefectResolution();
 	        	resolutions[1] = new DefectHelpResolution();
-	        	resolutions[2] = new GetGlobalIdResolution();
+	        	//resolutions[2] = new GetGlobalIdResolution();
 	        }
         } catch (CoreException e) {
         	DexterEclipseActivator.LOG.error(e.getMessage(), e);

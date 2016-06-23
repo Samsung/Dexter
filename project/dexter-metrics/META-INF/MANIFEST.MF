@@ -2,13 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dexter Metrics
 Bundle-SymbolicName: dexter-metrics;singleton:=true
-Bundle-Version: 0.10.0
+Bundle-Version: 0.10.2
 Bundle-Activator: DexterMetricsActivator
 Require-Bundle: org.eclipse.core.runtime,
- dexter-core
+ dexter-core,
+ org.eclipse.cdt.core
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Bundle-Vendor: Samsung Electronics VD SE Lab
+Bundle-Vendor: Samsung Electronics VD SE
 Bundle-ClassPath: .,
  lib/log4j-1.2.17.jar,
  lib/gson-2.2.4.jar,

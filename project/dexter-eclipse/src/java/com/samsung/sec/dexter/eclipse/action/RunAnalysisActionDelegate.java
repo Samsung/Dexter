@@ -48,6 +48,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import com.samsung.sec.dexter.core.exception.DexterException;
 import com.samsung.sec.dexter.eclipse.DexterEclipseActivator;
 import com.samsung.sec.dexter.eclipse.EclipseAnalysis;
+import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 
 public class RunAnalysisActionDelegate implements IObjectActionDelegate {
 	ISelection selection;
@@ -113,8 +114,9 @@ public class RunAnalysisActionDelegate implements IObjectActionDelegate {
 		try {
         	if(resource instanceof IFile){
         		final IFile targetFile = (IFile) resource;
-				if(targetFile.getName().endsWith(".java")){
-					if(!targetFiles.contains(targetFile)){
+        		
+        		if(EclipseUtil.isValidJavaResource(resource) || EclipseUtil.isValidCAndCppResource(resource)){
+					if (!targetFiles.contains(targetFile)) {
 						targetFiles.add(targetFile);
 					}
 				}
