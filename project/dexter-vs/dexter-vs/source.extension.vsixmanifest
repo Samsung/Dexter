@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="dexter_vs.Company.255fba20-4ada-4977-aabf-37ce58ff8d7a" Version="0.9.4" Language="en-US" Publisher="Samsung Electronics" />
+    <Identity Id="dexter_vs.Company.255fba20-4ada-4977-aabf-37ce58ff8d7a" Version="0.10.2" Language="en-US" Publisher="Samsung Electronics" />
     <DisplayName>Dexter</DisplayName>
     <Description xml:space="preserve">Dexter helps you to improve coding skills. Dexter analyzes your source code it and shows its improvements point on your editor.
 </Description>
     <MoreInfo>https://github.com/Samsung/Dexter</MoreInfo>
     <GettingStartedGuide>https://dexter.atlassian.net/wiki/display/DW/Getting+Started</GettingStartedGuide>
+    <ReleaseNotes>https://github.com/Samsung/Dexter/tree/master/project/README.md</ReleaseNotes>
     <Icon>UI\Resources\DEXTER.png</Icon>
     <PreviewImage>UI\Resources\preview.png</PreviewImage>
     <Tags>Dexter, Static Analysis, C++</Tags>
