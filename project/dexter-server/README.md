@@ -21,19 +21,18 @@ This guide is for developers who need to run the server in local environment.
 > git clone https://github.com/Samsung/Dexter.git
 > cd Dexter/dexter-server
 ```
-
 2. setup MySql and NodeJS using Vagrant
 ```
 > vagrant up
 ```
-Initially Vagrant will do provision process which will download os box image, install packages and set up Dexter DB.
+Initially Vagrant will do provision process which will download os box image, install packages and set up MySql DB & NodeJS automatically.
 You can check the detail provisioning sequence by **Vagrantfile** and shell scripts in **/provision** folder.
-
 3. Installation completed!
 
 ## Web Admin
-```
+
 http://localhost:4982/defect
+```
 - default admin : id:admin, pw:dex#0001
 - default user  : id:user, pw:dexter
 ```
