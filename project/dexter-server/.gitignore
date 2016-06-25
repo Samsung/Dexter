@@ -1,7 +1,9 @@
 node_module/
 public/plugin/
 **/*.log
+**/*.DS_Store
 **/workspace.xml
 .idea/workspace.xml
 log/
 .idea/
+.vagrant/
