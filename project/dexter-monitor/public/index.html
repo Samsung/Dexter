@@ -3,13 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport content="width=device-width, initial-scale=1">
-    <title>Dexter Server Monitor</title>
+    <title>Dexter Monitor</title>
 
     <link rel="stylesheet" href="js/angular-ui-grid/ui-grid.min.css" />
     <link rel="stylesheet" href="js/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="../css/navbar.css">
+    <link rel="stylesheet" href="../css/sidebar.css">
+    <link rel="stylesheet" href="../css/view.css">
 </head>
-<body ng-controller="MonitorCtrl as main">
-<div ng-view=""></div>
+<body ng-controller="CommonCtrl">
+    <div ng-include="'sidebar.html'"></div>
+    <div ng-include="'navbar.html'"></div>
+    <div ng-view=""></div>
+
     <script src="js/angular/angular.min.js"></script>
     <script src="js/angular-route/angular-route.min.js"></script>
     <script src="js/angular-touch/angular-touch.min.js"></script>
@@ -20,8 +26,10 @@
     <script src="js/jquery/dist/jquery.min.js"></script>
     <script src="js/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="js/lodash/dist/lodash.min.js"></script>
-    <script src="ctrl/dexterMonitorApp.js"></script>
-    <script src="ctrl/server-service.js"></script>
-    <script src="ctrl/monitorCtrl.js"></script>
+
+    <script src="dexterMonitorApp.js"></script>
+    <script src="ctrl/commonCtrl.js"></script>
+    <script src="ctrl/serverStatusCtrl.js"></script>
+    <script src="service/serverStatusSvc.js"></script>
 </body>
 </html>

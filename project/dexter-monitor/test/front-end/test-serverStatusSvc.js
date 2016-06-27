@@ -23,8 +23,8 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-describe('ServerService Test', function(){
-    var ServerService;
+describe('ServerStatusService Test', function(){
+    var ServerStatusSvc;
     var httpBackend;
 
     beforeEach(module('dexterMonitorApp')); // should be App Name
@@ -41,24 +41,24 @@ describe('ServerService Test', function(){
 
             httpBackend = $httpBackend;
 
-            ServerService = $injector.get('ServerService');     // should be Service Name
+            ServerStatusSvc = $injector.get('ServerStatusSvc');     // should be Service Name
         });
     });
 
     it('should return initialzed server list correctly', function(done){
-        ServerService.loadServerList(function(error){
+        ServerStatusSvc.loadServerList(function(error){
             if(error){
                 console.log(error);
                 assert.fail();
             }
 
-            var servers = ServerService.getInactiveServers();
-            assert.equal(2, ServerService.getInactiveServerCount());
+            var servers = ServerStatusSvc.getInactiveServers();
+            assert.equal(2, ServerStatusSvc.getInactiveServerCount());
             assert.equal(false, servers[0].active);
             assert.equal('abc', servers[1].name);
 
-            servers = ServerService.getActiveServers();
-            assert.equal(1, ServerService.getActiveServerCount());
+            servers = ServerStatusSvc.getActiveServers();
+            assert.equal(1, ServerStatusSvc.getActiveServerCount());
             assert.equal(true, servers[0].active);
             done();
         });
@@ -67,7 +67,7 @@ describe('ServerService Test', function(){
     });
 
     it('should call callback function without an error when called IsServerStatusChanged()', function(done){
-        ServerService.IsServerStatusChanged(function(error){
+        ServerStatusSvc.IsServerStatusChanged(function(error){
             if(error){
                 console.log(error);
                 assert.fail();
