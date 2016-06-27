@@ -8,6 +8,7 @@ CREATE TABLE Account (
   CONSTRAINT pk_Account PRIMARY KEY (userNo)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
 CREATE TABLE Defect (
 	did	 				bigint NOT NULL AUTO_INCREMENT,
 	toolName			varchar(100) NOT NULL,
@@ -17,6 +18,7 @@ CREATE TABLE Defect (
 	modulePath			varchar(255),
 	className			varchar(255),
 	methodName			varchar(255),
+  categoryName		varchar(255),
 	severityCode		char(3) /* MAJ, MIN, CRC, ETC */,
 	statusCode			char(3) /* NEW, ASN, REV, SLV, CLS, FIX, EXC */,
 	message				varchar(2014),
@@ -89,6 +91,7 @@ CREATE TABLE SnapshotDefectMap (
 	modulePath			varchar(255),
 	className			varchar(255),
 	methodName			varchar(255),
+  categoryName		varchar(255),
 	severityCode		char(3) /* MAJ, MIN, CRC, ETC */,
 	statusCode			char(3) /* NEW, ASN, REV, SLV, CLS, FIX, EXC */,
 	message				varchar(2014),
@@ -154,6 +157,22 @@ CREATE TABLE CodeMetrics (
 	lastYn				char(1) NOT NULL,
 
 	CONSTRAINT pk_CodeMetrics PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE FunctionMetrics (
+	id	bigint NOT NULL AUTO_INCREMENT,
+  snapshotId 	bigint,
+  fileName			varchar(255) NOT NULL,
+	modulePath			varchar(255),
+  functionName	 	varchar(255) NOT NULL,
+  cc					varchar(255) NOT NULL,
+  sloc				varchar(255) NOT NULL,
+  callDepth			varchar(255) NOT NULL,
+  createdDateTime		timestamp NOT NULL DEFAULT now(),
+  creatorNo			int Not NULL,
+  lastYn				char(1) NOT NULL,
+
+  CONSTRAINT pk_FunctionMetrics PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE AnalysisLog (
@@ -230,7 +249,7 @@ Insert INTO Account (userId, userPwd, adminYn, createdDateTime) VALUES ('admin',
 Insert INTO Account (userId, userPwd, adminYn, createdDateTime) VALUES ('user', 'dexter', 'N', now());
 
 /* Configure */
-INSERT INTO Configure (codeKey, codeValue, codeName) VALUES ('db-version', '1.1.0', 'Dexter DB Version');
+INSERT INTO Configure (codeKey, codeValue, codeName) VALUES ('db-version', '1.1.1', 'Dexter DB Version');
 
 INSERT INTO Configure (codeKey, codeValue, codeName) VALUES ('severity', 'CRI', 'Critical');
 INSERT INTO Configure (codeKey, codeValue, codeName) VALUES ('severity', 'MAJ', 'Major');
@@ -252,7 +271,6 @@ INSERT INTO Configure (codeKey, codeValue, codeName) VALUES ('group-type', 'COM'
 INSERT INTO Configure (codeKey, codeValue, codeName) VALUES ('group-type', 'PRD', 'Product');
 INSERT INTO Configure (codeKey, codeValue, codeName) VALUES ('group-type', 'PRJ', 'Project');
 
-INSERT INTO DefectGroup (id, groupName, groupType, description, createdDateTime, creatorNo) VALUES (1, 'default', 'PRJ', '', now(), 1);
 
 
 /* DROP TABLES
@@ -263,6 +281,7 @@ drop table DefectGroup;
 drop table AccessLog;
 drop table AnalysisLog;
 drop table CodeMetrics;
+drop table FunctionMetrics;
 drop table SourceCodeMap;
 drop table SnapshotOccurenceMap;
 drop table SnapshotDefectMap;
