@@ -50,9 +50,9 @@ Here is some essential commands what we will use.
 ### Dexter server
 User can control Dexter Server service
 ```
-vagrant> sudo service dexter-server start
-vagrant> sudo service dexter-server stop
-vagrant> sudo service dexter-server restart
+vagrant> sudo service dexter start
+vagrant> sudo service dexter stop
+vagrant> sudo service dexter restart
 ```
 Or
 ```
