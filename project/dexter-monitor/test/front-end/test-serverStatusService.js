@@ -24,7 +24,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 describe('ServerStatusService Test', function(){
-    var ServerStatusSvc;
+    var ServerStatusService;
     var httpBackend;
 
     beforeEach(module('dexterMonitorApp')); // should be App Name
@@ -41,24 +41,24 @@ describe('ServerStatusService Test', function(){
 
             httpBackend = $httpBackend;
 
-            ServerStatusSvc = $injector.get('ServerStatusSvc');     // should be Service Name
+            ServerStatusService = $injector.get('ServerStatusService');     // should be Service Name
         });
     });
 
     it('should return initialzed server list correctly', function(done){
-        ServerStatusSvc.loadServerList(function(error){
+        ServerStatusService.loadServerList(function(error){
             if(error){
                 console.log(error);
                 assert.fail();
             }
 
-            var servers = ServerStatusSvc.getInactiveServers();
-            assert.equal(2, ServerStatusSvc.getInactiveServerCount());
+            var servers = ServerStatusService.getInactiveServers();
+            assert.equal(2, ServerStatusService.getInactiveServerCount());
             assert.equal(false, servers[0].active);
             assert.equal('abc', servers[1].name);
 
-            servers = ServerStatusSvc.getActiveServers();
-            assert.equal(1, ServerStatusSvc.getActiveServerCount());
+            servers = ServerStatusService.getActiveServers();
+            assert.equal(1, ServerStatusService.getActiveServerCount());
             assert.equal(true, servers[0].active);
             done();
         });
@@ -67,7 +67,7 @@ describe('ServerStatusService Test', function(){
     });
 
     it('should call callback function without an error when called IsServerStatusChanged()', function(done){
-        ServerStatusSvc.IsServerStatusChanged(function(error){
+        ServerStatusService.IsServerStatusChanged(function(error){
             if(error){
                 console.log(error);
                 assert.fail();

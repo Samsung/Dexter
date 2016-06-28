@@ -25,7 +25,7 @@
  */
 "use strict";
 
-monitorApp.controller("ServerStatusCtrl", function ($interval, ServerStatusSvc, _) {
+monitorApp.controller("ServerStatusCtrl", function ($interval, ServerStatusService, _) {
     var main = this;
 
     var serverMonitor;
@@ -81,10 +81,10 @@ monitorApp.controller("ServerStatusCtrl", function ($interval, ServerStatusSvc, 
 
     function startMonitoringServers(){
         serverMonitor = $interval(function(){
-            ServerStatusSvc.IsServerStatusChanged(function(error){
+            ServerStatusService.IsServerStatusChanged(function(error){
                 if(error){
                     stopMonitoringServers();
-                    ServerStatusSvc.initServerList();
+                    ServerStatusService.initServerList();
                     main.errorMessage = "Fail to connect Dexter Monitor Server. After checking the server, refresh this page";
                 } else {
                     loadServerList();
@@ -98,18 +98,18 @@ monitorApp.controller("ServerStatusCtrl", function ($interval, ServerStatusSvc, 
     }
 
     function loadServerList(){
-        ServerStatusSvc.loadServerList(function(){
-            main.activeServerGridOptions.data = ServerStatusSvc.getActiveServers();
-            main.inactiveServerGridOptions.data = ServerStatusSvc.getInactiveServers();
+        ServerStatusService.loadServerList(function(){
+            main.activeServerGridOptions.data = ServerStatusService.getActiveServers();
+            main.inactiveServerGridOptions.data = ServerStatusService.getInactiveServers();
             resizeHeightOfServerTables();
         });
     }
 
     function resizeHeightOfServerTables(){
         angular.element(document.getElementById('activeTable'))
-            .css('height', (ServerStatusSvc.getActiveServerCount() * rowHeight + headerHeight) + 'px');
+            .css('height', (ServerStatusService.getActiveServerCount() * rowHeight + headerHeight) + 'px');
 
         angular.element(document.getElementById('inactiveTable'))
-            .css('height', (ServerStatusSvc.getInactiveServerCount() * rowHeight + headerHeight) + 'px');
+            .css('height', (ServerStatusService.getInactiveServerCount() * rowHeight + headerHeight) + 'px');
     }
 });

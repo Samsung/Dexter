@@ -48,17 +48,17 @@ monitorApp.config(function($routeProvider){
         })
         .when("/user/project/", {
             controller: "",
-            templateUrl: "view/userView.html",
+            templateUrl: "view/userByProjectView.html",
             controllerAs: ""
         })
         .when("/user/group/", {
             controller: "",
-            templateUrl: "view/userView.html",
+            templateUrl: "view/userByGroupView.html",
             controllerAs: ""
         })
-        .when("/user/rndcenter/", {
+        .when("/user/lab/", {
             controller: "",
-            templateUrl: "view/userView.html",
+            templateUrl: "view/userByLabView.html",
             controllerAs: ""
         })
         .when("/defect/", {
@@ -68,17 +68,17 @@ monitorApp.config(function($routeProvider){
         })
         .when("/defect/project/", {
             controller: "",
-            templateUrl: "view/defectView.html",
+            templateUrl: "view/defectByProjectView.html",
             controllerAs: ""
         })
         .when("/defect/group/", {
             controller: "",
-            templateUrl: "view/defectView.html",
+            templateUrl: "view/defectByGroupView.html",
             controllerAs: ""
         })
-        .when("/defect/rndcenter/", {
+        .when("/defect/lab/", {
             controller: "",
-            templateUrl: "view/defectView.html",
+            templateUrl: "view/defectByLabView.html",
             controllerAs: ""
         });
 

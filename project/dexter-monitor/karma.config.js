@@ -29,7 +29,7 @@ module.exports = function(config) {
         'public/js/lodash/dist/lodash.min.js',
         'public/dexterMonitorApp.js',
         'public/ctrl/commonCtrl.js',
-        'public/service/serverStatusSvc.js',
+        'public/service/serverStatusService.js',
         'public/js/angular-mocks/angular-mocks.js',
         {pattern: 'test/front-end/**/*.js'}
     ],

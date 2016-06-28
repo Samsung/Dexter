@@ -25,7 +25,7 @@
  */
 "use strict";
 
-monitorApp.service('ServerStatusSvc', function($http, $log) {
+monitorApp.service('ServerStatusService', function($http, $log) {
     var service = this;
     var activeServers = [];
     var inactiveServers = [];
