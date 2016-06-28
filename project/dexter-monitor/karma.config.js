@@ -27,9 +27,9 @@ module.exports = function(config) {
         'public/js/jquery/dist/jquery.min.js',
         'public/js/bootstrap/dist/js/bootstrap.min.js',
         'public/js/lodash/dist/lodash.min.js',
-        'public/ctrl/dexterMonitorApp.js',
-        'public/ctrl/monitorCtrl.js',
-        'public/ctrl/server-service.js',
+        'public/dexterMonitorApp.js',
+        'public/ctrl/commonCtrl.js',
+        'public/service/serverStatusService.js',
         'public/js/angular-mocks/angular-mocks.js',
         {pattern: 'test/front-end/**/*.js'}
     ],

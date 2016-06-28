@@ -23,8 +23,9 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-monitorApp.controller("MonitorCtrl",
-function ($interval, ServerService, _){
+"use strict";
+
+monitorApp.controller("ServerStatusCtrl", function ($interval, ServerStatusService, _) {
     var main = this;
 
     var serverMonitor;
@@ -80,10 +81,10 @@ function ($interval, ServerService, _){
 
     function startMonitoringServers(){
         serverMonitor = $interval(function(){
-            ServerService.IsServerStatusChanged(function(error){
+            ServerStatusService.IsServerStatusChanged(function(error){
                 if(error){
                     stopMonitoringServers();
-                    ServerService.initServerList();
+                    ServerStatusService.initServerList();
                     main.errorMessage = "Fail to connect Dexter Monitor Server. After checking the server, refresh this page";
                 } else {
                     loadServerList();
@@ -97,18 +98,18 @@ function ($interval, ServerService, _){
     }
 
     function loadServerList(){
-        ServerService.loadServerList(function(){
-            main.activeServerGridOptions.data = ServerService.getActiveServers();
-            main.inactiveServerGridOptions.data = ServerService.getInactiveServers();
+        ServerStatusService.loadServerList(function(){
+            main.activeServerGridOptions.data = ServerStatusService.getActiveServers();
+            main.inactiveServerGridOptions.data = ServerStatusService.getInactiveServers();
             resizeHeightOfServerTables();
         });
     }
 
     function resizeHeightOfServerTables(){
         angular.element(document.getElementById('activeTable'))
-            .css('height', (ServerService.getActiveServerCount() * rowHeight + headerHeight) + 'px');
+            .css('height', (ServerStatusService.getActiveServerCount() * rowHeight + headerHeight) + 'px');
 
         angular.element(document.getElementById('inactiveTable'))
-            .css('height', (ServerService.getInactiveServerCount() * rowHeight + headerHeight) + 'px');
+            .css('height', (ServerStatusService.getInactiveServerCount() * rowHeight + headerHeight) + 'px');
     }
 });

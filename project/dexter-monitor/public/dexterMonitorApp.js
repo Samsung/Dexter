@@ -30,10 +30,57 @@ var monitorApp = angular.module("dexterMonitorApp", ['ngRoute', 'ngAnimate', 'ng
     }]);
 
 monitorApp.config(function($routeProvider){
-    $routeProvider.when("/", {
-        controller: "MonitorCtrl",
-        templateUrl: "view/monitorView.html"
-    });
+    $routeProvider
+        .when("/", {
+            controller: "",
+            templateUrl: "view/mainView.html",
+            controllerAs: ""
+        })
+        .when("/serverstatus/", {
+            controller: "ServerStatusCtrl",
+            templateUrl: "view/serverStatusView.html",
+            controllerAs: "main"
+        })
+        .when("/user/", {
+            controller: "",
+            templateUrl: "view/userView.html",
+            controllerAs: ""
+        })
+        .when("/user/project/", {
+            controller: "",
+            templateUrl: "view/userByProjectView.html",
+            controllerAs: ""
+        })
+        .when("/user/group/", {
+            controller: "",
+            templateUrl: "view/userByGroupView.html",
+            controllerAs: ""
+        })
+        .when("/user/lab/", {
+            controller: "",
+            templateUrl: "view/userByLabView.html",
+            controllerAs: ""
+        })
+        .when("/defect/", {
+            controller: "",
+            templateUrl: "view/defectView.html",
+            controllerAs: ""
+        })
+        .when("/defect/project/", {
+            controller: "",
+            templateUrl: "view/defectByProjectView.html",
+            controllerAs: ""
+        })
+        .when("/defect/group/", {
+            controller: "",
+            templateUrl: "view/defectByGroupView.html",
+            controllerAs: ""
+        })
+        .when("/defect/lab/", {
+            controller: "",
+            templateUrl: "view/defectByLabView.html",
+            controllerAs: ""
+        });
 
     $routeProvider.otherwise({"redirectTo": "/"});
 });
