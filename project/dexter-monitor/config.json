@@ -9,5 +9,12 @@
         "apiUrl":"http://dexter_email:5003/api/v1/email",
         "defaultSenderEmail":"min.ho.kim@samsung.com",
         "defaultSenderName":"MinHo Kim"
+    },
+    "database":{
+        "host":"Database URL",
+        "port":Database Port Number,
+        "user":"Database User ID",
+        "password":"Database User Password",
+        "name":"Database Name"
     }
 }

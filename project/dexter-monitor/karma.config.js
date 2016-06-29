@@ -22,6 +22,7 @@ module.exports = function(config) {
         'public/js/angular-touch/angular-touch.min.js',
         'public/js/angular-animate/angular-animate.min.js',
         'public/js/angular-ui-grid/ui-grid.min.js',
+        'public/js/angular-bootstrap/ui-bootstrap-tpls.min.js',
         'public/js/pdfmake/build/pdfmake.min.js',
         'public/js/pdfmake/build/vfs_fonts.js',
         'public/js/jquery/dist/jquery.min.js',

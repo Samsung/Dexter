@@ -24,7 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 var monitorApp = angular.module("dexterMonitorApp", ['ngRoute', 'ngAnimate', 'ngTouch',
-        'ui.grid', 'ui.grid.resizeColumns', 'ui.grid.moveColumns', 'ui.grid.exporter', 'ui.grid.autoResize'])
+        'ui.grid', 'ui.grid.resizeColumns', 'ui.grid.moveColumns', 'ui.grid.exporter', 'ui.grid.autoResize',
+        'ui.bootstrap'])
     .factory('_', ['$window', function($window){
         return $window._;
     }]);
@@ -42,7 +43,7 @@ monitorApp.config(function($routeProvider){
             controllerAs: "main"
         })
         .when("/user/", {
-            controller: "",
+            controller: "UserCtrl",
             templateUrl: "view/userView.html",
             controllerAs: ""
         })
@@ -62,19 +63,19 @@ monitorApp.config(function($routeProvider){
             controllerAs: ""
         })
         .when("/defect/", {
-            controller: "",
+            controller: "DefectCtrl",
             templateUrl: "view/defectView.html",
-            controllerAs: ""
+            controllerAs: "defect"
         })
         .when("/defect/project/", {
-            controller: "",
+            controller: "DefectByProjectCtrl",
             templateUrl: "view/defectByProjectView.html",
-            controllerAs: ""
+            controllerAs: "defect"
         })
         .when("/defect/group/", {
-            controller: "",
+            controller: "DefectByGroupCtrl",
             templateUrl: "view/defectByGroupView.html",
-            controllerAs: ""
+            controllerAs: "defect"
         })
         .when("/defect/lab/", {
             controller: "",
