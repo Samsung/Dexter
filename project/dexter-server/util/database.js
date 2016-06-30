@@ -28,6 +28,7 @@
 var mysql = require("mysql");
 var logging = require('./logging');
 var util = require('./dexter-util');
+var Q= require('q');
 var _databasePool;
 
 
@@ -207,6 +208,35 @@ exports.exec = function (sql, callback){
         }
     });
 };
+
+exports.execV2 = function (sql, args){
+    var deferred = Q.defer();
+    _databasePool.getConnection(function(err, connection){
+        if(err){
+            logging.error(err.message);
+            deferred.reject(new Error());
+        } else {
+            if(connection.isClosed){
+                var con_err = {message : "Invalid DB Connection : closed"};
+                logging.error(con_err.message);
+                deferred.reject(new Error(con_err));
+            } else {
+                logging.debug(sql);
+                var query = connection.query(sql, args, function(err, rows){
+                    connection.release();
+                    if(err){
+                        logging.error(err.message);
+                        deferred.reject(new Error(err));
+                    } else {
+                        deferred.resolve(rows);
+                    }
+                })
+            }
+        }
+    });
+    return deferred.promise;
+};
+
 
 exports.execTx = function (connection, sql, callback){
     if(connection){
