@@ -12,7 +12,8 @@ module.exports = function(config) {
     plugins: [
         'karma-mocha',
         'karma-chrome-launcher',
-        'karma-chai'
+        'karma-chai',
+        'karma-babel-preprocessor'
     ],
 
     files: [
@@ -30,6 +31,7 @@ module.exports = function(config) {
         'public/js/lodash/dist/lodash.min.js',
         'public/dexterMonitorApp.js',
         'public/ctrl/commonCtrl.js',
+        'public/ctrl/defectByProjectCtrl.js',
         'public/service/serverStatusService.js',
         'public/js/angular-mocks/angular-mocks.js',
         {pattern: 'test/front-end/**/*.js'}
@@ -43,6 +45,13 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+        'public/ctrl/*.js'      :   ['babel'],
+        'public/service/*.js'   :   ['babel']
+    },
+    babelPreprocessor: {
+        options: {
+            presets: ['es2015']
+        }
     },
 
     // test results reporter to use
