@@ -29,7 +29,6 @@ monitorApp.controller("DefectByGroupCtrl", function($scope, $http, $log, $q, Def
     let defect = this;
     let minYear;
     let maxYear;
-    let maxWeekOfCurYear;
     defect.years = [];
 
     initialize();
@@ -39,7 +38,7 @@ monitorApp.controller("DefectByGroupCtrl", function($scope, $http, $log, $q, Def
         loadDateRange()
             .then(() => {
                 defect.curYear = maxYear;
-                defect.curWeek = maxWeekOfCurYear;
+                defect.curWeek = defect.maxWeekOfCurYear;
                 loadDefectListByGroup(defect.curYear, defect.curWeek);
                 changeExportingFileNames()
             });
@@ -73,13 +72,7 @@ monitorApp.controller("DefectByGroupCtrl", function($scope, $http, $log, $q, Def
             }
             return DefectService.getMaxWeek(maxYear)
                 .then((week) => {
-                    maxWeekOfCurYear = week;
-                })
-                .then(() => {
-                    defect.weeks = [];
-                    for(let i=1 ; i<=maxWeekOfCurYear ; i++) {
-                        defect.weeks.push(i);
-                    }
+                    defect.maxWeekOfCurYear = week;
                 });
         });
     }
@@ -88,14 +81,8 @@ monitorApp.controller("DefectByGroupCtrl", function($scope, $http, $log, $q, Def
         defect.curYear = year;
         DefectService.getMaxWeek(defect.curYear)
             .then((week) => {
-                maxWeekOfCurYear = week;
-                defect.curWeek = maxWeekOfCurYear;
-            })
-            .then(() => {
-                defect.weeks = [];
-                for(let i=1 ; i<=maxWeekOfCurYear ; i++) {
-                    defect.weeks.push(i);
-                }
+                defect.maxWeekOfCurYear = week;
+                defect.curWeek = defect.maxWeekOfCurYear;
             })
             .then(() => {
                 loadDefectListByGroup(defect.curYear, defect.curWeek);
