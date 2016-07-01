@@ -28,6 +28,8 @@
 const route = require('./route');
 
 exports.getProjectList = function(req, res) {
-    const sql = "SELECT * FROM projectInfo ORDER BY projectName ASC";
-    return route.executeSqlAndSendResponse(sql, res);
+    const sql = "SELECT projectName, projectType, groupName, language   "+
+                "FROM ProjectInfo                                       "+
+                "ORDER BY projectName ASC                               ";
+    return route.executeSqlAndSendResponseRows(sql, res);
 };

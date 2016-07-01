@@ -41,7 +41,7 @@ monitorApp.service('DefectService', function($http, $log, $q) {
                     return 2014;
                 }
 
-                minYear = res.data.rows[0].year;
+                minYear = res.data.value;
                 return minYear;
             })
             .catch(function (err) {
@@ -62,7 +62,7 @@ monitorApp.service('DefectService', function($http, $log, $q) {
                     return Date().getFullYear();
                 }
 
-                maxYear = res.data.rows[0].year;
+                maxYear = res.data.value;
                 return maxYear;
             })
             .catch(function (err) {
@@ -79,7 +79,7 @@ monitorApp.service('DefectService', function($http, $log, $q) {
                     return 1;
                 }
 
-                return res.data.rows[0].week;
+                return res.data.value;
             })
             .catch(function (err) {
                 $log.error(err);
@@ -92,14 +92,20 @@ monitorApp.service('DefectService', function($http, $log, $q) {
             .then(function (res) {
                 if (!isHttpResultOK(res)) {
                     $log.error('Failed to load max week');
-                    return 53;
+                    return getMaxWeekOfYear(year);
                 }
 
-                return res.data.rows[0].week;
+                return res.data.value;
             })
             .catch(function (err) {
                 $log.error(err);
-                return 53;
+                return getMaxWeekOfYear(year);
             });
+    };
+
+    function getMaxWeekOfYear(year) {
+        let lastDayOfYear = Date.parse('31-Dec-' + year);
+        let week = lastDayOfYear.getWeek();
+        return (week == 1 ? lastDayOfYear.last().week().getWeek() : week);
     }
 });

@@ -28,7 +28,7 @@
 const database = require("../util/database");
 const log = require('../util/logging');
 
-exports.executeSqlAndSendResponse = function(sql, res) {
+exports.executeSqlAndSendResponseRows = function(sql, res) {
     return database.exec(sql)
         .then(function(rows) {
             res.send({status:'ok', rows: rows});
