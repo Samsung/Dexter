@@ -24,9 +24,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Created by min.ho.kim on 2014-03-26.
- */
 "use strict";
 var mysql = require("mysql");
 var logging = require('./logging');
@@ -61,22 +58,6 @@ exports.getDBInfo = function() {
 
 function initDatabase(){
     return initDbPool();
-
-   /* _databasePool.query('SELECT 1 + 1 As solution', function(err) {
-        if(err){
-            if(err.code === "ER_BAD_DB_ERROR"){
-                logging.error(err);
-                installDexterDatabase();
-            } else if(err.code === "ECONNREFUSED"){
-                logging.error(err);
-                logging.error("There is no Mysql Instance. Please check your MySQL Connection : ");
-                throw err;
-            } else {
-                logging.error(err);
-                throw err;
-            }
-        }
-    });*/
 }
 
 function initDbPool(){
@@ -165,29 +146,6 @@ function execMysqlScript(scriptFilePath){
         initDbPool();
     });
 }
-
-/*
-function execMysqlCmd(script){
-    var cmd = "mysql -h " + _runOptions.databaseHost
-        + " -u " + _runOptions.databaseAdminUser
-        + " -p" + _runOptions.databaseAdminPassword
-        + " -e \"" + script + "\"";
-
-    var exec = require('child_process').exec;
-    exec(cmd, function(error, stdout, stderr){
-        if(error){
-            if(error.code != 1){
-                logging.error(error);
-                logging.error("Execute Failed: " + cmd);
-                return;
-            }
-        }
-
-        logging.info("Executed: " + cmd);
-    });
-}
-*/
-
 
 exports.getDatabaseName = function(){
     return _runOptions.databaseName;

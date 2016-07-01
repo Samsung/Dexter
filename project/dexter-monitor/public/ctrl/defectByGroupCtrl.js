@@ -31,16 +31,31 @@ monitorApp.controller("DefectByGroupCtrl", function($scope, $http, $log, $q, Def
     let maxYear;
     defect.years = [];
 
+    let currentFileName = function() {
+        return DEFECT_FILENAME_PREFIX + '-' + defect.curYear + '-' + defect.curWeek;
+    };
+
+    const columnDefs = [
+        {field:'year',              displayName:'Year',         width: 80,      headerTooltip: 'Year'},
+        {field:'week',              displayName:'Week',         width: 80,      headerTooltip: 'Week'},
+        {field:'groupName',         displayName:'Group',        width: 185,     headerTooltip: 'Group'},
+        {field:'accountCount',      displayName:'Accout',       width: 80,      headerTooltip: 'Number of accounts'},
+        {field:'projectCount',      displayName:'Project',      width: 80,      headerTooltip: 'Number of projects'},
+        {field:'allDefectCount',    displayName:'Total',        width: 160,     headerTooltip: 'Number of defects'},
+        {field:'allFix',            displayName:'Fixed',        width: 160,     headerTooltip: 'Number of fixed defects'},
+        {field:'allExc',            displayName:'Excluded',     width: 160,     headerTooltip: 'Number of excluded defects'}
+    ];
+
     initialize();
 
     function initialize() {
-        createDefectListTable();
+        defect.gridOptions = createGrid(columnDefs);
         loadDateRange()
             .then(() => {
                 defect.curYear = maxYear;
                 defect.curWeek = defect.maxWeekOfCurYear;
                 loadDefectListByGroup(defect.curYear, defect.curWeek);
-                changeExportingFileNames()
+                setGridExportingFileNames(defect.gridOptions, currentFileName());
             });
     }
 
@@ -86,55 +101,14 @@ monitorApp.controller("DefectByGroupCtrl", function($scope, $http, $log, $q, Def
             })
             .then(() => {
                 loadDefectListByGroup(defect.curYear, defect.curWeek);
-                changeExportingFileNames();
+                setGridExportingFileNames(defect.gridOptions, currentFileName());
             });
     };
 
     defect.weekChanged = function() {
         loadDefectListByGroup(defect.curYear, defect.curWeek);
-        changeExportingFileNames();
+        setGridExportingFileNames(defect.gridOptions, currentFileName());
     };
-
-    function createDefectListTable() {
-        defect.gridOptions = getCommonOptions();
-        defect.gridOptions.data = [];
-    }
-
-    function getCommonOptions() {
-        return {
-            enableSorting: true,
-            enableFiltering: true,
-            showGridFooter: true,
-            enableGridMenu: true,
-            enableSelectAll: true,
-            exporterCsvFilename: 'defect-list.csv',
-            exporterPdfFilename: 'defect-list.pdf',
-            exporterPdfDefaultStyle: {fontSize: 8},
-            exporterTableStyle: {margin: [5,5,5,5]},
-            exporterPdfTableHeaderStyle: {fontSize: 10, bold: true, italics: true, color: 'red'},
-            exporterPdfOrientation: 'landscape',
-            exporterPdfPageSize: 'A4',
-            columnDefs: getDefectGridColumnDefinitions()
-        };
-    }
-
-    function getDefectGridColumnDefinitions() {
-        return [
-            {field:'year',              displayName:'Year',         width: 80,      headerTooltip: 'Year'},
-            {field:'week',              displayName:'Week',         width: 80,      headerTooltip: 'Week'},
-            {field:'groupName',         displayName:'Group',        width: 185,     headerTooltip: 'Group'},
-            {field:'accountCount',      displayName:'Accout',       width: 80,      headerTooltip: 'Number of accounts'},
-            {field:'projectCount',      displayName:'Project',      width: 80,      headerTooltip: 'Number of projects'},
-            {field:'allDefectCount',    displayName:'Total',        width: 160,     headerTooltip: 'Number of defects'},
-            {field:'allFix',            displayName:'Fixed',        width: 160,     headerTooltip: 'Number of fixed defects'},
-            {field:'allExc',            displayName:'Excluded',     width: 160,     headerTooltip: 'Number of excluded defects'}
-        ];
-    }
-
-    function changeExportingFileNames() {
-        defect.gridOptions.exporterCsvFilename = defect.curYear + '-' + defect.curWeek + '-defect-list.csv';
-        defect.gridOptions.exporterPdfFilename = defect.curYear + '-' + defect.curWeek + '-defect-list.pdf';
-    }
 
     function loadDefectListByGroup(year, week) {
         $http.get('/api/v2/defect/group/' + year + '/' + week)

@@ -18,7 +18,7 @@ describe('DefectByProjectCtrl Test', function() {
         var PROJECT_GROUP = 'Samsung2';
         var PROJECT_LANGUAGE = 'JAVA';
 
-        it('should ...', function() {
+        it('should set current values to that of the selected project', function() {
             $httpBackend.whenGET('/api/v2/defect/project/').respond({status:'ok', rows:[]});
 
             defect.projects = [{
@@ -39,8 +39,8 @@ describe('DefectByProjectCtrl Test', function() {
             assert.equal(defect.curProjectType, PROJECT_TYPE);
             assert.equal(defect.curProjectGroup, PROJECT_GROUP);
             assert.equal(defect.curProjectLang, PROJECT_LANGUAGE);
-            assert.equal(defect.gridOptions.exporterCsvFilename, PROJECT_NAME + '-defect-list.csv');
-            assert.equal(defect.gridOptions.exporterPdfFilename, PROJECT_NAME + '-defect-list.pdf');
+            assert.equal(defect.gridOptions.exporterCsvFilename, DEFECT_FILENAME_PREFIX + '-' + PROJECT_NAME + '.csv');
+            assert.equal(defect.gridOptions.exporterPdfFilename, DEFECT_FILENAME_PREFIX + '-' + PROJECT_NAME + '.pdf');
         });
     });
 });

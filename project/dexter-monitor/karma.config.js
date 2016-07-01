@@ -30,6 +30,7 @@ module.exports = function(config) {
         'public/js/bootstrap/dist/js/bootstrap.min.js',
         'public/js/lodash/dist/lodash.min.js',
         'public/dexterMonitorApp.js',
+        'public/util/grid.js',
         'public/ctrl/commonCtrl.js',
         'public/ctrl/defectByProjectCtrl.js',
         'public/service/serverStatusService.js',
@@ -45,6 +46,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+        'public/util/*.js'      :   ['babel'],
         'public/ctrl/*.js'      :   ['babel'],
         'public/service/*.js'   :   ['babel']
     },

@@ -34,10 +34,19 @@ monitorApp.controller("DefectByProjectCtrl", function($scope, $http, $log) {
     defect.projects = [];
     defect.curProjectName = 'Select a project';
 
+    const columnDefs = [
+        {field:'year',              displayName:'Year',         width: 105,     headerTooltip: 'Year'},
+        {field:'week',              displayName:'Week',         width: 105,     headerTooltip: 'Week'},
+        {field:'accountCount',      displayName:'Accout',       width: 170,     headerTooltip: 'Number of accounts'},
+        {field:'allDefectCount',    displayName:'Total',        width: 170,     headerTooltip: 'Number of defects'},
+        {field:'allFix',            displayName:'Fixed',        width: 170,     headerTooltip: 'Number of fixed defects'},
+        {field:'allExc',            displayName:'Excluded',     width: 170,     headerTooltip: 'Number of excluded defects'}
+    ];
+
     initialize();
 
     function initialize() {
-        createDefectListTable();
+        defect.gridOptions = createGrid(columnDefs);
         loadProjectList();
     }
     
@@ -60,54 +69,16 @@ monitorApp.controller("DefectByProjectCtrl", function($scope, $http, $log) {
     defect.projectChanged = function(projectName) {
         loadDefectListByProject(projectName);
         defect.curProjectName = projectName;
-        defect.projects.forEach((project) => {
-            if (project.projectName === projectName) {
-                defect.curProjectType = project.projectType;
-                defect.curProjectGroup = project.groupName;
-                defect.curProjectLang = project.language;
-            }
+
+        let project = _.find(defect.projects, (project) => {
+            return project.projectName === projectName;
         });
-        changeExportingFileNames();
+        defect.curProjectType = project.projectType;
+        defect.curProjectGroup = project.groupName;
+        defect.curProjectLang = project.language;
+
+        setGridExportingFileNames(defect.gridOptions, DEFECT_FILENAME_PREFIX + '-' + defect.curProjectName);
     };
-
-    function createDefectListTable() {
-        defect.gridOptions = getCommonOptions();
-        defect.gridOptions.data = [];
-    }
-
-    function getCommonOptions() {
-        return {
-            enableSorting: true,
-            enableFiltering: true,
-            showGridFooter: true,
-            enableGridMenu: true,
-            enableSelectAll: true,
-            exporterCsvFilename: 'defect-list.csv',
-            exporterPdfFilename: 'defect-list.pdf',
-            exporterPdfDefaultStyle: {fontSize: 8},
-            exporterTableStyle: {margin: [5,5,5,5]},
-            exporterPdfTableHeaderStyle: {fontSize: 10, bold: true, italics: true, color: 'red'},
-            exporterPdfOrientation: 'landscape',
-            exporterPdfPageSize: 'A4',
-            columnDefs: getDefectGridColumnDefinitions()
-        };
-    }
-
-    function getDefectGridColumnDefinitions() {
-        return [
-            {field:'year',              displayName:'Year',         width: 105,     headerTooltip: 'Year'},
-            {field:'week',              displayName:'Week',         width: 105,     headerTooltip: 'Week'},
-            {field:'accountCount',      displayName:'Accout',       width: 170,     headerTooltip: 'Number of accounts'},
-            {field:'allDefectCount',    displayName:'Total',        width: 170,     headerTooltip: 'Number of defects'},
-            {field:'allFix',            displayName:'Fixed',        width: 170,     headerTooltip: 'Number of fixed defects'},
-            {field:'allExc',            displayName:'Excluded',     width: 170,     headerTooltip: 'Number of excluded defects'}
-        ];
-    }
-
-    function changeExportingFileNames() {
-        defect.gridOptions.exporterCsvFilename = defect.curProjectName + '-defect-list.csv';
-        defect.gridOptions.exporterPdfFilename = defect.curProjectName + '-defect-list.pdf';
-    }
 
     function loadDefectListByProject(projectName) {
         $http.get('/api/v2/defect/project/' + projectName)
