@@ -30,10 +30,13 @@ module.exports = function(config) {
         'public/js/bootstrap/dist/js/bootstrap.min.js',
         'public/js/lodash/dist/lodash.min.js',
         'public/dexterMonitorApp.js',
+        'public/common.js',
         'public/util/grid.js',
         'public/ctrl/commonCtrl.js',
         'public/ctrl/defectByProjectCtrl.js',
+        'public/ctrl/userByProjectCtrl.js',
         'public/service/serverStatusService.js',
+        'public/service/userService.js',
         'public/js/angular-mocks/angular-mocks.js',
         {pattern: 'test/front-end/**/*.js'}
     ],

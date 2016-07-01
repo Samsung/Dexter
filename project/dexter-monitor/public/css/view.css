@@ -28,6 +28,19 @@ body {
   height: 650px;
 }
 
+.grid-user-project {
+  width: 920px;
+  height: 650px;
+}
+
+.grid-user-id {
+  text-align: center;
+}
+
+.grid-align {
+  text-align: center;
+}
+
 .year-change {
   min-width: 80px;
   max-width: 80px;

@@ -48,9 +48,9 @@ monitorApp.config(function($routeProvider){
             controllerAs: ""
         })
         .when("/user/project/", {
-            controller: "",
+            controller: "UserByProjectCtrl",
             templateUrl: "view/userByProjectView.html",
-            controllerAs: ""
+            controllerAs: "user"
         })
         .when("/user/group/", {
             controller: "",

@@ -25,13 +25,30 @@
  */
 "use strict";
 
+const log = require('../util/logging');
+const route = require('./route');
+const project = require('./project');
+const http = require('http');
+const fs = require('fs');
+const Promise = require('bluebird');
+const rp = require('request-promise');
+const mysql = require("mysql");
 
 exports.getAll = function(req, res) {
 
 };
 
 exports.getByProject = function(req, res) {
-
+    let projectName = mysql.escape(req.params.projectName);
+    return project.getDatabaseNameByProjectName(projectName)
+        .then((dbName) => {
+            const sql = "SELECT userId FROM " + mysql.escapeId(dbName) + ".Account ORDER BY userId ASC";
+            return route.executeSqlAndSendResponseRows(sql, res);
+        })
+        .catch((err) => {
+            log.error('Failed to get the DB name of the ' + projectName + ' project: ' + err);
+            return null;
+        });
 };
 
 exports.getByGroup = function(req, res) {
@@ -41,3 +58,60 @@ exports.getByGroup = function(req, res) {
 exports.getByLab = function(req, res) {
 
 };
+
+function processReturnedData(data) {
+    return data.replace(/((\])|(\[))/g,'').replace(/(^\s*)|(\s*$)/g,'');
+}
+
+function loadUserInfo(userId, userInfoUrl, userInfoList) {
+    return rp(userInfoUrl + userId)
+        .then(function(data) {
+            data = processReturnedData(data);
+            if (!data || !validateUserInfoJson(data, userId)) {
+                log.error('Not found user data: ' + userId);
+                userInfoList.push({'userId':userId});
+            } else {
+                const infoJson = JSON.parse('' + data);
+                userInfoList.push({
+                    'userId':userId,
+                    'name':infoJson.cn,
+                    'department':infoJson.department,
+                    'title':infoJson.title,
+                    'employeeNumber':infoJson.employeenumber});
+            }
+        })
+        .catch(function(err) {
+            log.error(err);
+            userInfoList.push({'userId':userId});
+        });
+}
+
+exports.getMoreInfoByUserIdList = function(req, res) {
+    const configText = fs.readFileSync("./config.json", 'utf8');
+    const configJson = JSON.parse(configText);
+    const userInfoUrl = configJson.userInfoUrl;
+    const userIdList = req.params.userIdList.split(",");
+
+    let userInfoList = [];
+    let promises = [];
+    userIdList.forEach(function(userId) {
+        promises.push(loadUserInfo(userId, userInfoUrl, userInfoList));
+    });
+
+    return Promise.all(promises)
+        .then(function() {
+            res.send({status:'ok', rows: userInfoList});
+        })
+        .catch(function(err) {
+            console.error(err);
+            res.send({status:"fail", errorMessage: err.message});
+        });
+};
+
+function validateUserInfoJson(data, userid) {
+    if(data.indexOf("\"userid\":\"" + userid + "\"") < 0) {
+        log.error('Incorrect result from user info server');
+        return false;
+    }
+    return true;
+}

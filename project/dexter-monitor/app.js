@@ -147,9 +147,10 @@ function setWebApis(){
     app.get('/api/v1/server-detailed-status', getServerDetailedStatus);
 
     app.get('/api/v2/user', user.getAll);
-    app.get('/api/v2/user/project', user.getByProject);
+    app.get('/api/v2/user/project/:projectName', user.getByProject);
     app.get('/api/v2/user/group', user.getByGroup);
     app.get('/api/v2/user/lab', user.getByLab);
+    app.get('/api/v2/user/extra-info/:userIdList', user.getMoreInfoByUserIdList);
 
     app.get('/api/v2/defect/min-year', defect.getMinYear);
     app.get('/api/v2/defect/max-year', defect.getMaxYear);

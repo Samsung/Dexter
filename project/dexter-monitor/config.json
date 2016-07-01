@@ -16,5 +16,6 @@
         "user":"Database User ID",
         "password":"Database User Password",
         "name":"Database Name"
-    }
+    },
+    "userInfoUrl":"User info URL"
 }

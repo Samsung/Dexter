@@ -25,6 +25,8 @@
  */
 "use strict";
 
+const log = require('../util/logging');
+const database = require("../util/database");
 const route = require('./route');
 
 exports.getProjectList = function(req, res) {
@@ -32,4 +34,16 @@ exports.getProjectList = function(req, res) {
                 "FROM ProjectInfo                                       "+
                 "ORDER BY projectName ASC                               ";
     return route.executeSqlAndSendResponseRows(sql, res);
+};
+
+exports.getDatabaseNameByProjectName = function(projectName) {
+    const sql = "SELECT dbName FROM ProjectInfo WHERE projectName=" + projectName;
+    return database.exec(sql)
+        .then(function(rows) {
+            return rows[0].dbName;
+        })
+        .catch(function(err) {
+            log.error(err);
+            return null;
+        });
 };

@@ -7,6 +7,7 @@
     "test": "./node_modules/.bin/mocha -R spec test/**/*.js"
   },
   "dependencies": {
+    "bluebird": "^3.4.1",
     "express": "3.9.0",
     "lodash": "^3.10.1",
     "moment": "^2.9.0",
@@ -14,6 +15,7 @@
     "nodemailer": "^1.11.0",
     "q": "^1.4.1",
     "request": "^2.67.0",
+    "request-promise": "^3.0.0",
     "winston": "^0.9.0"
   },
   "devDependencies": {

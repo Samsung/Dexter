@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016 Samsung Electronics, Inc.,
+ * Copyright (c) 2015 Samsung Electronics, Inc.,
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,29 +25,24 @@
  */
 "use strict";
 
-const DEFECT_FILENAME_PREFIX = 'defect-list';
-const USER_FILENAME_PREFIX = 'user-list';
+monitorApp.service('UserService', function($http, $log, $q) {
 
-function createGrid(columnDefs) {
-    return {
-        enableSorting: true,
-        enableFiltering: true,
-        showGridFooter: true,
-        enableGridMenu: true,
-        enableSelectAll: true,
-        exporterCsvFilename: 'list.csv',
-        exporterPdfFilename: 'list.pdf',
-        exporterPdfDefaultStyle: {fontSize: 8},
-        exporterTableStyle: {margin: [5,5,5,5]},
-        exporterPdfTableHeaderStyle: {fontSize: 10, bold: true, italics: true, color: 'red'},
-        exporterPdfOrientation: 'landscape',
-        exporterPdfPageSize: 'A4',
-        columnDefs: columnDefs,
-        data: []
+    this.getExtraInfoByUserIdList = function(userIdList) {
+        if (!userIdList || userIdList.length == 0)
+            return $q.reject('User list is empty');
+
+        return $http.get('/api/v2/user/extra-info/' + userIdList)
+            .then((res) => {
+                if (!isHttpResultOK(res)) {
+                    $log.error('Failed to load extra user info');
+                    return null;
+                }
+
+                return res.data.rows;
+            })
+            .catch((err) => {
+                $log.error(err);
+                return null;
+            });
     };
-}
-
-function setGridExportingFileNames(gridOptions, fileName) {
-    gridOptions.exporterCsvFilename = fileName + '.csv';
-    gridOptions.exporterPdfFilename = fileName + '.pdf';
-}
+});
