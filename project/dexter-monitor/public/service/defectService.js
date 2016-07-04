@@ -59,7 +59,7 @@ monitorApp.service('DefectService', function($http, $log, $q) {
             .then(function (res) {
                 if (!isHttpResultOK(res)) {
                     $log.error('Failed to load max year');
-                    return Date().getFullYear();
+                    return new Date().getFullYear();
                 }
 
                 maxYear = res.data.value;
@@ -67,7 +67,7 @@ monitorApp.service('DefectService', function($http, $log, $q) {
             })
             .catch(function (err) {
                 $log.error(err);
-                return Date().getFullYear();
+                return new Date().getFullYear();
             });
     };
 

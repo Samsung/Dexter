@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node app.js",
-    "test": "./node_modules/.bin/mocha -R spec test/**/*.js"
+    "test": "./node_modules/.bin/gulp test"
   },
   "dependencies": {
     "bluebird": "^3.4.1",
@@ -33,9 +33,11 @@
     "karma-babel-preprocessor": "^6.0.1",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^0.1.8",
+    "karma-coverage": "^1.0.0",
     "karma-firefox-launcher": "^0.1.4",
     "karma-mocha": "^0.1.10",
     "karma-requirejs": "^0.2.2",
+    "karma-spec-reporter": "0.0.26",
     "mocha": "^2.2.1",
     "proxyquire": "^1.4.0",
     "requirejs": "^2.1.17",
