@@ -25,20 +25,38 @@
  */
 "use strict";
 
-var express = require('express');
-var http = require('http');
-var path = require('path');
-var log = require('./util/logging');
-var server = require('./routes/server');
-var util = require('./util/dexter-util');
+const express = require('express');
+const http = require('http');
+const path = require('path');
+const log = require('./util/logging');
+const database = require("./util/database");
+const server = require('./routes/server');
+const util = require('./util/dexter-util');
+const user = require('./routes/user');
+const defect = require('./routes/defect');
+const project = require('./routes/project');
 
-var app = express();
+const app = express();
+
+const runOptions = {
+    databaseHost:'localhost',
+    databasePort:3306,
+    databaseUser:'',
+    databasePassword:'',
+    databaseAdminUser:'',
+    databaseAdminPassword:'',
+    databaseName:'',
+    getDbUrl : function(){
+        return this.databaseName + "@" + this.databaseHost + ':' + this.databasePort;
+    }
+};
 
 initialize();
 
 function initialize(){
     initExcutionMode();
     initConfigFromFile();
+    setDatabaseOptionsByConfig();
     loadCliOptions();
     configureApp();
     initModules();
@@ -46,8 +64,8 @@ function initialize(){
 }
 
 function initConfigFromFile(){
-    var fs = require('fs');
-    var text = fs.readFileSync('./config.json', 'utf8');
+    const fs = require('fs');
+    const text = fs.readFileSync('./config.json', 'utf8');
     if(!text) {
         console.log("there is no %dexter-monitor-home%/config.json file.");
         process.exit(-1);
@@ -55,6 +73,15 @@ function initConfigFromFile(){
 
     global.config = JSON.parse(text);
     global.config.ip = util.getLocalIPAddress();
+}
+
+function setDatabaseOptionsByConfig(){
+    let dbConfig = global.config.database;
+    runOptions.databaseHost = dbConfig.host;
+    runOptions.databasePort = dbConfig.port;
+    runOptions.databaseUser = dbConfig.user;
+    runOptions.databasePassword = dbConfig.password;
+    runOptions.databaseName = dbConfig.name;
 }
 
 function initExcutionMode(){
@@ -66,7 +93,7 @@ function initExcutionMode(){
 }
 
 function loadCliOptions(){
-    var cliOptions = util.getCliOptions();
+    const cliOptions = util.getCliOptions();
     global.config.port = cliOptions.getValue("p", 4981);
 }
 
@@ -118,11 +145,29 @@ function setWebApis(){
     app.get('/api/v1/server', server.getServerList);
     app.get('/api/v1/server/last-modified-time', server.getServerListLastModifiedTime);
     app.get('/api/v1/server-detailed-status', getServerDetailedStatus);
+
+    app.get('/api/v2/user', user.getAll);
+    app.get('/api/v2/user/project/:projectName', user.getByProject);
+    app.get('/api/v2/user/group/:groupName', user.getByGroup);
+    app.get('/api/v2/user/lab', user.getByLab);
+    app.get('/api/v2/user/extra-info/:userIdList', user.getMoreInfoByUserIdList);
+
+    app.get('/api/v2/defect/min-year', defect.getMinYear);
+    app.get('/api/v2/defect/max-year', defect.getMaxYear);
+    app.get('/api/v2/defect/max-week/:year', defect.getMaxWeek);
+    app.get('/api/v2/defect', defect.getAll);
+    app.get('/api/v2/defect/project/:projectName', defect.getByProject);
+    app.get('/api/v2/defect/group/:year/:week', defect.getByGroup);
+    app.get('/api/v2/defect/lab/:year/:week', defect.getByLab);
+
+    app.get('/api/v2/project-list', project.getProjectList);
+    app.get('/api/v2/group-list', project.getGroupList);
 }
 
 function initModules(){
     log.init();
     server.init();
+    database.init(runOptions);
 }
 
 function startServer(){

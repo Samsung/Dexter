@@ -24,7 +24,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 var monitorApp = angular.module("dexterMonitorApp", ['ngRoute', 'ngAnimate', 'ngTouch',
-        'ui.grid', 'ui.grid.resizeColumns', 'ui.grid.moveColumns', 'ui.grid.exporter', 'ui.grid.autoResize'])
+        'ui.grid', 'ui.grid.resizeColumns', 'ui.grid.moveColumns', 'ui.grid.exporter', 'ui.grid.autoResize',
+        'ui.bootstrap'])
     .factory('_', ['$window', function($window){
         return $window._;
     }]);
@@ -32,9 +33,14 @@ var monitorApp = angular.module("dexterMonitorApp", ['ngRoute', 'ngAnimate', 'ng
 monitorApp.config(function($routeProvider){
     $routeProvider
         .when("/", {
-            controller: "",
-            templateUrl: "view/mainView.html",
-            controllerAs: ""
+            controller: "CurrentCtrl",
+            templateUrl: "view/currentView.html",
+            controllerAs: "current"
+        })
+        .when("/change", {
+            controller: "ChangeCtrl",
+            templateUrl: "view/changeView.html",
+            controllerAs: "change"
         })
         .when("/serverstatus/", {
             controller: "ServerStatusCtrl",
@@ -42,19 +48,19 @@ monitorApp.config(function($routeProvider){
             controllerAs: "main"
         })
         .when("/user/", {
-            controller: "",
+            controller: "UserCtrl",
             templateUrl: "view/userView.html",
-            controllerAs: ""
+            controllerAs: "user"
         })
         .when("/user/project/", {
-            controller: "",
+            controller: "UserByProjectCtrl",
             templateUrl: "view/userByProjectView.html",
-            controllerAs: ""
+            controllerAs: "user"
         })
         .when("/user/group/", {
-            controller: "",
+            controller: "UserByGroupCtrl",
             templateUrl: "view/userByGroupView.html",
-            controllerAs: ""
+            controllerAs: "user"
         })
         .when("/user/lab/", {
             controller: "",
@@ -62,19 +68,19 @@ monitorApp.config(function($routeProvider){
             controllerAs: ""
         })
         .when("/defect/", {
-            controller: "",
+            controller: "DefectCtrl",
             templateUrl: "view/defectView.html",
-            controllerAs: ""
+            controllerAs: "defect"
         })
         .when("/defect/project/", {
-            controller: "",
+            controller: "DefectByProjectCtrl",
             templateUrl: "view/defectByProjectView.html",
-            controllerAs: ""
+            controllerAs: "defect"
         })
         .when("/defect/group/", {
-            controller: "",
+            controller: "DefectByGroupCtrl",
             templateUrl: "view/defectByGroupView.html",
-            controllerAs: ""
+            controllerAs: "defect"
         })
         .when("/defect/lab/", {
             controller: "",

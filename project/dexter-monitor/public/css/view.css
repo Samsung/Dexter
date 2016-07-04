@@ -13,6 +13,63 @@ body {
   padding-left: 200px;
 }
 
+.grid-defect-all {
+  width: 1207px;
+  height: 650px;
+}
+
+.grid-defect-group {
+  width: 1010px;
+  height: 650px;
+}
+
+.grid-defect-project {
+  width: 920px;
+  height: 650px;
+}
+
+.grid-user-project {
+  width: 920px;
+  height: 650px;
+}
+
+.grid-user-group {
+  width: 920px;
+  height: 650px;
+}
+
+.grid-user-all {
+  width: 1090px;
+  height: 650px;
+}
+
+.grid-user-id {
+  text-align: center;
+}
+
+.grid-align {
+  text-align: center;
+}
+
+.year-change {
+  min-width: 80px;
+  max-width: 80px;
+}
+
+.project-change {
+  min-width: 170px;
+  max-width: 170px;
+}
+
+.group-change {
+  min-width: 170px;
+  max-width: 170px;
+}
+
+td.inner {
+  padding-right:10px;
+}
+
 /*
  * Placeholder dashboard ideas
  */

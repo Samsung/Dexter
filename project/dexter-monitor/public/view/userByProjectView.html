@@ -1,3 +1,33 @@
 <div class="view">
-    <h1 class="">User list by project</h1>
+    <div class="container">
+        <h3>User list by project</h3>
+        <br>
+        <table><tr>
+            <td class="inner">
+                <div class="dropdown" uib-dropdown>
+                    <button type="button" class="btn btn-primary project-change" data-toggle="dropdown" id="project-change">
+                        {{user.curProjectName}} <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu project-change" uib-dropdown-menu role="menu" aria-labelledby="project-change">
+                        <li ng-repeat="projectName in user.projectNames">
+                            <a ng-click="user.projectChanged(projectName)" href>{{projectName}}</a>
+                        </li>
+                    </ul>
+                </div>
+            </td>
+            <td>
+                <button type="button" class="btn btn-info" ng-click="user.getExtraInfo()">
+                    See extra user information <span class="glyphicon glyphicon-hand-down"></span>
+                </button>
+            </td>
+        </tr>
+            <tr>
+                <td>
+                </td>
+                <td><div class="grid-user-project" id='userByProjectGrid' ui-grid="user.gridOptions"
+                         ui-grid-resize-columns ui-grid-move-columns ui-grid-selection ui-grid-exporter ui-grid-auto-resize>
+                </div></td>
+            </tr>
+        </table>
+    </div>
 </div>

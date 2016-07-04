@@ -1,3 +1,10 @@
 <div class="view">
-    <h1 class="">User list</h1>
+    <div class="container">
+        <h3>User list</h3><button type="button" class="btn btn-info" ng-click="user.getExtraInfo()">
+        See extra user information <span class="glyphicon glyphicon-hand-down"></span>
+    </button>
+        <div class="grid-user-all" id='userGrid' ui-grid="user.gridOptions"
+             ui-grid-resize-columns ui-grid-move-columns ui-grid-selection ui-grid-exporter ui-grid-auto-resize>
+        </div>
+    </div>
 </div>

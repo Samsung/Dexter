@@ -12,7 +12,10 @@ module.exports = function(config) {
     plugins: [
         'karma-mocha',
         'karma-chrome-launcher',
-        'karma-chai'
+        'karma-chai',
+        'karma-babel-preprocessor',
+        'karma-spec-reporter',
+        'karma-coverage'
     ],
 
     files: [
@@ -22,15 +25,19 @@ module.exports = function(config) {
         'public/js/angular-touch/angular-touch.min.js',
         'public/js/angular-animate/angular-animate.min.js',
         'public/js/angular-ui-grid/ui-grid.min.js',
+        'public/js/angular-bootstrap/ui-bootstrap-tpls.min.js',
         'public/js/pdfmake/build/pdfmake.min.js',
         'public/js/pdfmake/build/vfs_fonts.js',
         'public/js/jquery/dist/jquery.min.js',
         'public/js/bootstrap/dist/js/bootstrap.min.js',
         'public/js/lodash/dist/lodash.min.js',
         'public/dexterMonitorApp.js',
-        'public/ctrl/commonCtrl.js',
-        'public/service/serverStatusService.js',
+        'public/common.js',
+        'public/util/*.js',
+        'public/ctrl/*.js',
+        'public/service/*.js',
         'public/js/angular-mocks/angular-mocks.js',
+        'public/js/DateJS/build/production/date.min.js',
         {pattern: 'test/front-end/**/*.js'}
     ],
 
@@ -42,12 +49,24 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+        'public/common.js'      :   ['babel','coverage'],
+        'public/util/*.js'      :   ['babel','coverage'],
+        'public/ctrl/*.js'      :   ['babel','coverage'],
+        'public/service/*.js'   :   ['babel','coverage']
+    },
+    babelPreprocessor: {
+        options: {
+            presets: ['es2015']
+        }
+    },
+    coverageReporter: {
+        dir: 'test/front-end/coverage'
     },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['dots'],
+    reporters: ['spec', 'coverage'],
 
     // web server port
     port: 9876,
