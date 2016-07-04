@@ -114,19 +114,6 @@ exports.getMaxYear = function(req, res) {
         });
 };
 
-exports.getMinWeek = function(req, res) {
-    const year = mysql.escape(req.params.year);
-    const sql = "SELECT week FROM WeeklyStatus WHERE year = " + year + " ORDER BY week ASC LIMIT 1";
-    return database.exec(sql)
-        .then(function(rows) {
-            res.send({status:'ok', value: rows[0].week});
-        })
-        .catch(function(err) {
-            log.error(err);
-            res.send({status:"fail", errorMessage: err.message});
-        });
-};
-
 exports.getMaxWeek = function(req, res) {
     const year = mysql.escape(req.params.year);
     const sql = "SELECT week FROM WeeklyStatus WHERE year = " + year + " ORDER BY week DESC LIMIT 1";

@@ -154,7 +154,6 @@ function setWebApis(){
 
     app.get('/api/v2/defect/min-year', defect.getMinYear);
     app.get('/api/v2/defect/max-year', defect.getMaxYear);
-    app.get('/api/v2/defect/min-week/:year', defect.getMinWeek);
     app.get('/api/v2/defect/max-week/:year', defect.getMaxWeek);
     app.get('/api/v2/defect', defect.getAll);
     app.get('/api/v2/defect/project/:projectName', defect.getByProject);

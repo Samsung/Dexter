@@ -66,8 +66,14 @@ monitorApp.controller("DefectByGroupCtrl", function($scope, $http, $log, $q, Def
             let deferred = $q.defer();
             DefectService.getMinYear()
                 .then((year) => {
-                    minYear = year;
-                    deferred.resolve();
+                    if (year < 0) {
+                        alert('Failed to load the minimum year value from server.\n' +
+                            'Please contact the system administrator.');
+                        deferred.reject();
+                    } else {
+                        minYear = year;
+                        deferred.resolve();
+                    }
                 });
             return deferred.promise;
         }());

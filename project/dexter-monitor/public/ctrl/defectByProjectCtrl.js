@@ -27,9 +27,6 @@
 
 monitorApp.controller("DefectByProjectCtrl", function($scope, $http, $log) {
     let defect = this;
-    let minYear;
-    let maxYear;
-    let maxWeekOfCurYear;
     defect.projectNames = [];
     defect.projects = [];
     defect.curProjectName = 'Select a project';

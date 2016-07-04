@@ -38,7 +38,7 @@ monitorApp.service('DefectService', function($http, $log, $q) {
             .then(function (res) {
                 if (!isHttpResultOK(res)) {
                     $log.error('Failed to load min year');
-                    return 2014;
+                    return -1;
                 }
 
                 minYear = res.data.value;
@@ -46,7 +46,7 @@ monitorApp.service('DefectService', function($http, $log, $q) {
             })
             .catch(function (err) {
                 $log.error(err);
-                return 2014;
+                return -1;
             });
     };
 
@@ -68,22 +68,6 @@ monitorApp.service('DefectService', function($http, $log, $q) {
             .catch(function (err) {
                 $log.error(err);
                 return new Date().getFullYear();
-            });
-    };
-
-    this.getMinWeek = function(year) {
-        return $http.get('/api/v2/defect/min-week/' + year)
-            .then(function (res) {
-                if (!isHttpResultOK(res)) {
-                    $log.error('Failed to load min week');
-                    return 1;
-                }
-
-                return res.data.value;
-            })
-            .catch(function (err) {
-                $log.error(err);
-                return 1;
             });
     };
 

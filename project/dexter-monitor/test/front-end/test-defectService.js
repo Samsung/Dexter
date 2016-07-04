@@ -38,7 +38,7 @@ describe('DefectService Test', function() {
 
     describe('getMinYear()', function() {
         var MIN_YEAR_SUCCESS_CASE = 2012;
-        var MIN_YEAR_FAILURE_CASE = 2014;
+        var MIN_YEAR_FAILURE_CASE = -1;
 
         it('should return the min year sent from server', function() {
             $httpBackend
@@ -52,7 +52,7 @@ describe('DefectService Test', function() {
             $httpBackend.flush();
         });
 
-        it('should return 2014 if server responds with \'fail\' status', function() {
+        it('should return -1 if server responds with \'fail\' status', function() {
             $httpBackend
                 .whenGET('/api/v2/defect/min-year')
                 .respond({status:'fail', errorMessage:''});
@@ -89,35 +89,6 @@ describe('DefectService Test', function() {
             DefectService.getMaxYear()
                 .then(function(year) {
                     assert.equal(year, MAX_YEAR_FAILURE_CASE);
-                });
-            $httpBackend.flush();
-        });
-    });
-
-    describe('getMinWeek()', function() {
-        var MIN_WEEK_SUCCESS_CASE = 35;
-        var MIN_WEEK_FAILURE_CASE = 1;
-
-        it('should return the min week sent from server', function() {
-            $httpBackend
-                .whenGET('/api/v2/defect/min-week/2016')
-                .respond({status:'ok', value:MIN_WEEK_SUCCESS_CASE});
-
-            DefectService.getMinWeek(2016)
-                .then(function(week) {
-                    assert.equal(week, MIN_WEEK_SUCCESS_CASE);
-                });
-            $httpBackend.flush();
-        });
-
-        it('should return 1 if server responds with \'fail\' status', function() {
-            $httpBackend
-                .whenGET('/api/v2/defect/min-week/2016')
-                .respond({status:'fail', errorMessage:''});
-
-            DefectService.getMinWeek(2016)
-                .then(function(week) {
-                    assert.equal(week, MIN_WEEK_FAILURE_CASE);
                 });
             $httpBackend.flush();
         });
