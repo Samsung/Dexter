@@ -23,48 +23,43 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-describe('DefectByProjectCtrl Test', function() {
+describe('UserByGroupCtrl Test', function() {
 
     beforeEach(module('dexterMonitorApp'));
 
-    var $controller, $httpBackend, defect;
+    var $controller, $httpBackend, user;
 
     beforeEach(inject(function(_$controller_, _$httpBackend_) {
         $controller = _$controller_;
         $httpBackend = _$httpBackend_;
-        defect = $controller('DefectByProjectCtrl', {$scope: {}});
+        user = $controller('UserByGroupCtrl', {$scope: {}});
     }));
 
     describe('projectChanged()', function() {
 
-        var PROJECT_NAME = '16_DexterMonitorProject';
-        var PROJECT_TYPE = 'Maintenance';
-        var PROJECT_GROUP = 'Samsung2';
-        var PROJECT_LANGUAGE = 'JAVA';
+        var GROUP_NAME = '16_DexterMonitorProject';
+        var USER_ID_1 = 'SamsungId1';
+        var USER_ID_2 = 'SamsungId2';
 
-        it('should set current values to that of the selected project', function() {
-            $httpBackend.whenGET('/api/v2/defect/project/').respond({status:'ok', rows:[]});
+        beforeEach(function() {
+            $httpBackend.whenGET('/api/v2/group-list').respond({status:'ok', rows:[
+                {'groupName':GROUP_NAME}
+            ]});
+        });
 
-            defect.projects = [{
-                'projectType' : 'Preceding',
-                'projectName' : 'SamsungProject',
-                'groupName' : 'Samsung1',
-                'language' : 'CPP'
-            },{
-                'projectType' : PROJECT_TYPE,
-                'projectName' : PROJECT_NAME,
-                'groupName' : PROJECT_GROUP,
-                'language' : PROJECT_LANGUAGE
-            }];
+        it('should set current values to that of the selected group', function() {
+            $httpBackend.whenGET('/api/v2/user/group/' + GROUP_NAME).respond({status:'ok', rows:[
+                {'userId':USER_ID_1},{'userId':USER_ID_2}
+            ]});
 
-            defect.projectChanged(PROJECT_NAME);
+            user.groupChanged(GROUP_NAME);
+            $httpBackend.flush();
 
-            assert.equal(defect.curProjectName, PROJECT_NAME);
-            assert.equal(defect.curProjectType, PROJECT_TYPE);
-            assert.equal(defect.curProjectGroup, PROJECT_GROUP);
-            assert.equal(defect.curProjectLang, PROJECT_LANGUAGE);
-            assert.equal(defect.gridOptions.exporterCsvFilename, DEFECT_FILENAME_PREFIX + '-' + PROJECT_NAME + '.csv');
-            assert.equal(defect.gridOptions.exporterPdfFilename, DEFECT_FILENAME_PREFIX + '-' + PROJECT_NAME + '.pdf');
+            assert.equal(user.curGroupName, GROUP_NAME);
+            assert.equal(user.gridOptions.exporterCsvFilename, USER_FILENAME_PREFIX + '-' + GROUP_NAME + '.csv');
+            assert.equal(user.gridOptions.exporterPdfFilename, USER_FILENAME_PREFIX + '-' + GROUP_NAME + '.pdf');
+            assert.equal(user.gridOptions.data[0].userId, USER_ID_1);
+            assert.equal(user.gridOptions.data[1].userId, USER_ID_2);
         });
     });
 });

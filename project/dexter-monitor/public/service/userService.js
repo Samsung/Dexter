@@ -27,6 +27,44 @@
 
 monitorApp.service('UserService', function($http, $log, $q) {
 
+    this.getUserListByProject = function(projectName) {
+        if (!projectName)
+            return $q.reject('Project name is null');
+
+        return $http.get('/api/v2/user/project/' + projectName)
+            .then((res) => {
+                if (!isHttpResultOK(res)) {
+                    $log.error('Failed to get user list');
+                    return;
+                }
+
+                return res.data.rows;
+            })
+            .catch((err) => {
+                $log.error(err);
+                return null;
+            });
+    };
+
+    this.getUserListByGroup = function(groupName) {
+        if (!groupName)
+            return $q.reject('Group name is null');
+
+        return $http.get('/api/v2/user/group/' + groupName)
+            .then((res) => {
+                if (!isHttpResultOK(res)) {
+                    $log.error('Failed to get user list');
+                    return;
+                }
+
+                return res.data.rows;
+            })
+            .catch((err) => {
+                $log.error(err);
+                return null;
+            });
+    };
+
     this.getExtraInfoByUserIdList = function(userIdList) {
         if (!userIdList || userIdList.length == 0)
             return $q.reject('User list is empty');

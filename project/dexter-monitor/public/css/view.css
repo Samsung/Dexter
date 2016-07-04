@@ -33,6 +33,16 @@ body {
   height: 650px;
 }
 
+.grid-user-group {
+  width: 920px;
+  height: 650px;
+}
+
+.grid-user-all {
+  width: 1090px;
+  height: 650px;
+}
+
 .grid-user-id {
   text-align: center;
 }
@@ -47,6 +57,11 @@ body {
 }
 
 .project-change {
+  min-width: 170px;
+  max-width: 170px;
+}
+
+.group-change {
   min-width: 170px;
   max-width: 170px;
 }

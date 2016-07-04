@@ -25,6 +25,7 @@
  */
 "use strict";
 
+const database = require("../util/database");
 const log = require('../util/logging');
 const route = require('./route');
 const project = require('./project');
@@ -33,26 +34,95 @@ const fs = require('fs');
 const Promise = require('bluebird');
 const rp = require('request-promise');
 const mysql = require("mysql");
+const _ = require("lodash");
+
+function getUserListByProjectDatabaseName(dbName) {
+    const sql = "SELECT userId FROM " + mysql.escapeId(dbName) + ".Account ORDER BY userId ASC";
+    return database.exec(sql)
+        .then((rows) => {
+            return rows;
+        })
+        .catch((err) => {
+            log.error(err);
+            return null;
+        });
+}
+
+function sendUserListInDatabaseNameList(dbNameList, res) {
+    let allRows = [];
+    let promises = [];
+
+    dbNameList.forEach((dbName) => {
+        promises.push(new Promise((resolve, reject) => {
+            getUserListByProjectDatabaseName(dbName)
+                .then((rows) => {
+                    allRows = _.union(allRows, rows);
+                    resolve();
+                })
+                .catch((err) => {
+                    log.error(err);
+                    reject();
+                })
+        }));
+    });
+
+    return Promise.all(promises)
+        .then(() => {
+            allRows = _.uniq(allRows, (row) => {
+                return row.userId;
+            });
+            allRows = _.sortBy(allRows, 'userId');
+            res.send({status:'ok', rows: allRows});
+        })
+        .catch((err) => {
+            log.error(err);
+            res.send({status:"fail", errorMessage: err.message});
+        });
+}
 
 exports.getAll = function(req, res) {
-
+   project.getDatabaseNameList()
+       .then((rows) => {
+           let dbNameList = _.map(rows, 'dbName');
+           sendUserListInDatabaseNameList(dbNameList, res);
+       })
+       .catch((err) => {
+           log.error('Failed to get the DB name list of the ' + groupName + ' group: ' + err);
+           res.send({status:"fail", errorMessage: err.message});
+       });
 };
 
 exports.getByProject = function(req, res) {
     let projectName = mysql.escape(req.params.projectName);
-    return project.getDatabaseNameByProjectName(projectName)
+    project.getDatabaseNameByProjectName(projectName)
         .then((dbName) => {
-            const sql = "SELECT userId FROM " + mysql.escapeId(dbName) + ".Account ORDER BY userId ASC";
-            return route.executeSqlAndSendResponseRows(sql, res);
+            getUserListByProjectDatabaseName(dbName)
+                .then((rows) => {
+                    res.send({status:'ok', rows: rows});
+                })
+                .catch((err) => {
+                    log.error(err);
+                    res.send({status:"fail", errorMessage: err.message});
+                });
         })
         .catch((err) => {
             log.error('Failed to get the DB name of the ' + projectName + ' project: ' + err);
-            return null;
+            res.send({status:"fail", errorMessage: err.message});
         });
 };
 
 exports.getByGroup = function(req, res) {
+    let groupName = mysql.escape(req.params.groupName);
 
+    project.getDatabaseNameListByGroupName(groupName)
+        .then((rows) => {
+            let dbNameList = _.map(rows, 'dbName');
+            sendUserListInDatabaseNameList(dbNameList, res);
+        })
+        .catch((err) => {
+            log.error('Failed to get the DB name list of the ' + groupName + ' group: ' + err);
+            res.send({status:"fail", errorMessage: err.message});
+        });
 };
 
 exports.getByLab = function(req, res) {
@@ -65,7 +135,7 @@ function processReturnedData(data) {
 
 function loadUserInfo(userId, userInfoUrl, userInfoList) {
     return rp(userInfoUrl + userId)
-        .then(function(data) {
+        .then((data) => {
             data = processReturnedData(data);
             if (!data || !validateUserInfoJson(data, userId)) {
                 log.error('Not found user data: ' + userId);
@@ -80,7 +150,7 @@ function loadUserInfo(userId, userInfoUrl, userInfoList) {
                     'employeeNumber':infoJson.employeenumber});
             }
         })
-        .catch(function(err) {
+        .catch((err) => {
             log.error(err);
             userInfoList.push({'userId':userId});
         });
@@ -94,16 +164,16 @@ exports.getMoreInfoByUserIdList = function(req, res) {
 
     let userInfoList = [];
     let promises = [];
-    userIdList.forEach(function(userId) {
+    userIdList.forEach((userId) => {
         promises.push(loadUserInfo(userId, userInfoUrl, userInfoList));
     });
 
     return Promise.all(promises)
-        .then(function() {
+        .then(() => {
             res.send({status:'ok', rows: userInfoList});
         })
-        .catch(function(err) {
-            console.error(err);
+        .catch((err) => {
+            log.error(err);
             res.send({status:"fail", errorMessage: err.message});
         });
 };

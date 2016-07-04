@@ -25,39 +25,56 @@
  */
 "use strict";
 
-monitorApp.controller("UserCtrl", function($scope, $http, $log, UserService) {
+monitorApp.controller("UserByGroupCtrl", function($scope, $http, $log, UserService) {
     let user = this;
+    user.groupNames = [];
+    user.curGroupName = 'Select a group';
 
     const columnDefs = [
-        {field:'userId',            displayName:'ID',       width: 194,     cellClass: 'grid-align',    headerTooltip: 'ID'},
-        {field:'name',              displayName:'Name',     width: 204,     cellClass: 'grid-align',    headerTooltip: 'Name'},
-        {field:'department',        displayName:'Group',    width: 284,     cellClass: 'grid-align',    headerTooltip: 'Group'},
-        {field:'title',             displayName:'Title',    width: 194,     cellClass: 'grid-align',    headerTooltip: 'Title'},
-        {field:'employeeNumber',    displayName:'Number',   width: 184,     cellClass: 'grid-align',    headerTooltip: 'Number'}
+        {field:'userId',            displayName:'ID',       width: 160,     cellClass: 'grid-align',    headerTooltip: 'ID'},
+        {field:'name',              displayName:'Name',     width: 170,     cellClass: 'grid-align',    headerTooltip: 'Name'},
+        {field:'department',        displayName:'Group',    width: 250,     cellClass: 'grid-align',    headerTooltip: 'Group'},
+        {field:'title',             displayName:'Title',    width: 160,     cellClass: 'grid-align',    headerTooltip: 'Title'},
+        {field:'employeeNumber',    displayName:'Number',   width: 150,     cellClass: 'grid-align',    headerTooltip: 'Number'}
     ];
 
     initialize();
 
     function initialize() {
         user.gridOptions = createGrid(columnDefs);
-        loadUserList();
-        setGridExportingFileNames(user.gridOptions, USER_FILENAME_PREFIX);
+        loadGroupList();
+        setGridExportingFileNames(user.gridOptions, USER_FILENAME_PREFIX + '-' + user.curGroupName);
     }
 
-    function loadUserList() {
-        $http.get('/api/v2/user')
-            .then(function (res) {
+    function loadGroupList() {
+        $http.get('/api/v2/group-list')
+            .then((res) => {
                 if (!isHttpResultOK(res)) {
-                    $log.error('Failed to load user list');
+                    $log.error('Failed to load group list');
                     return;
                 }
 
-                user.gridOptions.data = res.data.rows;
+                user.groupNames = _.map(res.data.rows, 'groupName');
             })
-            .catch(function (err) {
+            .catch((err) => {
                 $log.error(err);
             });
     }
+
+    user.groupChanged = function(groupName) {
+        if (user.curGroupName === groupName)
+            return;
+
+        UserService.getUserListByGroup(groupName)
+            .then((rows) => {
+                user.gridOptions.data = rows;
+            })
+            .catch((err) => {
+                $log.error(err);
+            });
+        user.curGroupName = groupName;
+        setGridExportingFileNames(user.gridOptions, USER_FILENAME_PREFIX + '-' + user.curGroupName);
+    };
 
     user.getExtraInfo = function() {
         const userIdList = _.map(user.gridOptions.data, 'userId');

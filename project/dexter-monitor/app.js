@@ -148,7 +148,7 @@ function setWebApis(){
 
     app.get('/api/v2/user', user.getAll);
     app.get('/api/v2/user/project/:projectName', user.getByProject);
-    app.get('/api/v2/user/group', user.getByGroup);
+    app.get('/api/v2/user/group/:groupName', user.getByGroup);
     app.get('/api/v2/user/lab', user.getByLab);
     app.get('/api/v2/user/extra-info/:userIdList', user.getMoreInfoByUserIdList);
 
@@ -161,6 +161,7 @@ function setWebApis(){
     app.get('/api/v2/defect/lab/:year/:week', defect.getByLab);
 
     app.get('/api/v2/project-list', project.getProjectList);
+    app.get('/api/v2/group-list', project.getGroupList);
 }
 
 function initModules(){

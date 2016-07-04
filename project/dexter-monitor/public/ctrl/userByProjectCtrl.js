@@ -64,7 +64,16 @@ monitorApp.controller("UserByProjectCtrl", function($scope, $http, $log, UserSer
     }
 
     user.projectChanged = function(projectName) {
-        loadUserListByProject(projectName);
+        if (user.curProjectName === projectName)
+            return;
+
+        UserService.getUserListByProject(projectName)
+            .then((rows) => {
+                user.gridOptions.data = rows;
+            })
+            .catch((err) => {
+                $log.error(err);
+            });
         user.curProjectName = projectName;
         setGridExportingFileNames(user.gridOptions, USER_FILENAME_PREFIX + '-' + user.curProjectName);
     };
@@ -81,19 +90,4 @@ monitorApp.controller("UserByProjectCtrl", function($scope, $http, $log, UserSer
                 $log.error(err);
             });
     };
-
-    function loadUserListByProject(projectName) {
-        $http.get('/api/v2/user/project/' + projectName)
-            .then((res) => {
-                if (!isHttpResultOK(res)) {
-                    $log.error('Failed to load user list');
-                    return;
-                }
-
-                user.gridOptions.data = res.data.rows;
-            })
-            .catch((err) => {
-                $log.error(err);
-            });
-    }
 });
