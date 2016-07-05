@@ -30,4 +30,8 @@ monitorApp.controller("CommonCtrl", function($scope, $location) {
     $scope.isActiveView = function(path) {
         return _.isEqual($location.path(), path);
     };
+
+    $scope.isActiveViewWithParam = function(path) {
+        return _.startsWith($location.path(), path);
+    };
 });

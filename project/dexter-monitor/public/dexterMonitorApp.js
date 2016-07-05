@@ -62,6 +62,11 @@ monitorApp.config(function($routeProvider){
             templateUrl: "view/userByGroupView.html",
             controllerAs: "user"
         })
+        .when("/user/group/:groupName", {
+            controller: "UserByGroupCtrl",
+            templateUrl: "view/userByGroupView.html",
+            controllerAs: "user"
+        })
         .when("/user/lab/", {
             controller: "",
             templateUrl: "view/userByLabView.html",
