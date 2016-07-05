@@ -93,7 +93,7 @@ exports.getAll = function(req, res) {
 };
 
 exports.getByProject = function(req, res) {
-    let projectName = mysql.escape(req.params.projectName);
+    const projectName = mysql.escape(req.params.projectName);
     project.getDatabaseNameByProjectName(projectName)
         .then((dbName) => {
             getUserListByProjectDatabaseName(dbName)
@@ -112,7 +112,7 @@ exports.getByProject = function(req, res) {
 };
 
 exports.getByGroup = function(req, res) {
-    let groupName = mysql.escape(req.params.groupName);
+    const groupName = mysql.escape(req.params.groupName);
 
     project.getDatabaseNameListByGroupName(groupName)
         .then((rows) => {
@@ -185,3 +185,16 @@ function validateUserInfoJson(data, userid) {
     }
     return true;
 }
+
+exports.getUserCountByDatabaseName = function(req, res) {
+    const dbName = mysql.escapeId(req.params.dbName);
+    const sql = "SELECT COUNT(userId) AS userCount FROM " + dbName + ".Account";
+    return database.exec(sql)
+        .then(function(rows) {
+            res.send({status:'ok', value: rows[0].userCount});
+        })
+        .catch(function(err) {
+            log.error(err);
+            res.send({status:"fail", errorMessage: err.message});
+        });
+};

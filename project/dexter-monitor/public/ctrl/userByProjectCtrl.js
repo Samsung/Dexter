@@ -25,7 +25,7 @@
  */
 "use strict";
 
-monitorApp.controller("UserByProjectCtrl", function($scope, $http, $log, UserService) {
+monitorApp.controller("UserByProjectCtrl", function($scope, $http, $log, UserService, ProjectService) {
     let user = this;
     user.projectNames = [];
     user.projects = [];
@@ -48,14 +48,9 @@ monitorApp.controller("UserByProjectCtrl", function($scope, $http, $log, UserSer
     }
 
     function loadProjectList() {
-        $http.get('/api/v2/project-list')
-            .then((res) => {
-                if (!isHttpResultOK(res)) {
-                    $log.error('Failed to load project list');
-                    return;
-                }
-
-                user.projects = res.data.rows;
+        ProjectService.getProjectList()
+            .then((rows) => {
+                user.projects = rows;
                 user.projectNames = _.map(user.projects, 'projectName');
             })
             .catch((err) => {

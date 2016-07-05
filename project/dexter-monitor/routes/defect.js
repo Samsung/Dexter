@@ -126,3 +126,20 @@ exports.getMaxWeek = function(req, res) {
             res.send({status:"fail", errorMessage: err.message});
         });
 };
+
+exports.getDefectCountByDatabaseName = function(req, res) {
+    const dbName = mysql.escapeId(req.params.dbName);
+    const sql =
+        "SELECT                                                                                         " +
+        "   (SELECT COUNT(did) FROM " + dbName + ".Defect) AS defectCountTotal,                         " +
+        "   (SELECT COUNT(did) FROM " + dbName + ".Defect WHERE statusCode='FIX') AS defectCountFixed,  " +
+        "   COUNT(did) AS defectCountExcluded FROM " + dbName + ".Defect WHERE statusCode='EXC'         ";
+    return database.exec(sql)
+        .then(function(rows) {
+            res.send({status:'ok', values: rows[0]});
+        })
+        .catch(function(err) {
+            log.error(err);
+            res.send({status:"fail", errorMessage: err.message});
+        });
+};

@@ -25,7 +25,7 @@
  */
 "use strict";
 
-monitorApp.controller("DefectByProjectCtrl", function($scope, $http, $log) {
+monitorApp.controller("DefectByProjectCtrl", function($scope, $http, $log, ProjectService) {
     let defect = this;
     defect.projectNames = [];
     defect.projects = [];
@@ -48,14 +48,9 @@ monitorApp.controller("DefectByProjectCtrl", function($scope, $http, $log) {
     }
     
     function loadProjectList() {
-        $http.get('/api/v2/project-list')
-            .then((res) => {
-                if (!isHttpResultOK(res)) {
-                    $log.error('Failed to load project list');
-                    return;
-                }
-
-                defect.projects = res.data.rows;
+        ProjectService.getProjectList()
+            .then((rows) => {
+                defect.projects = rows;
                 defect.projectNames = _.map(defect.projects, 'projectName');
             })
             .catch((err) => {

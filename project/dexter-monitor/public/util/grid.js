@@ -27,6 +27,7 @@
 
 const DEFECT_FILENAME_PREFIX = 'defect-list';
 const USER_FILENAME_PREFIX = 'user-list';
+const CURRENT_DETAIL_FILENAME_PREFIX = 'current-detail';
 
 function createGrid(columnDefs) {
     return {
