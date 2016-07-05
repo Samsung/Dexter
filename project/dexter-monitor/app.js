@@ -161,6 +161,7 @@ function setWebApis(){
     app.get('/api/v2/defect/group/:year/:week', defect.getByGroup);
     app.get('/api/v2/defect/lab/:year/:week', defect.getByLab);
     app.get('/api/v2/defect-status-count/:dbName', defect.getDefectCountByDatabaseName);
+    app.get('/api/v2/defect-weekly-change', defect.getWeeklyChange);
 
     app.get('/api/v2/project-list', project.getProjectList);
     app.get('/api/v2/group-list', project.getGroupList);

@@ -28,6 +28,7 @@
 const DEFECT_FILENAME_PREFIX = 'defect-list';
 const USER_FILENAME_PREFIX = 'user-list';
 const CURRENT_DETAIL_FILENAME_PREFIX = 'current-detail';
+const WEEKLY_CHANGE_FILENAME_PREFIX = 'weekly-change';
 
 function createGrid(columnDefs) {
     return {

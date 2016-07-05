@@ -25,6 +25,38 @@
  */
 "use strict";
 
-monitorApp.controller("ChangeCtrl", function() {
+monitorApp.controller("ChangeCtrl", function($scope, $http, $log) {
     let change = this;
+
+    const columnDefs = [
+        {field:'year',                  displayName:'Year',         width: 100,     cellClass: 'grid-align',    headerTooltip: 'Year'},
+        {field:'week',                  displayName:'Week',         width: 100,     cellClass: 'grid-align',    headerTooltip: 'Week'},
+        {field:'defectCountTotal',      displayName:'Defect(All)',  width: 170,     cellClass: 'grid-align',    headerTooltip: 'Number of all defects'},
+        {field:'defectCountFixed',      displayName:'Defect(Fix)',  width: 170,     cellClass: 'grid-align',    headerTooltip: 'Number of fixed defects'},
+        {field:'defectCountExcluded',   displayName:'Defect(Exc)',  width: 170,     cellClass: 'grid-align',    headerTooltip: 'Number of excluded defects'},
+        {field:'accountCount',          displayName:'Account',      width: 170,     cellClass: 'grid-align',    headerTooltip: 'Number of accounts'}
+    ];
+
+    initialize();
+
+    function initialize() {
+        change.gridOptions = createGrid(columnDefs);
+        loadDate();
+        setGridExportingFileNames(change.gridOptions, WEEKLY_CHANGE_FILENAME_PREFIX);
+    }
+
+    function loadDate() {
+        $http.get('/api/v2/defect-weekly-change')
+            .then((res) => {
+                if (!isHttpResultOK(res)) {
+                    $log.error('Failed to load weekly change status list');
+                    return;
+                }
+
+                change.gridOptions.data = res.data.rows;
+            })
+            .catch((err) => {
+                $log.error(err);
+            });
+    }
 });

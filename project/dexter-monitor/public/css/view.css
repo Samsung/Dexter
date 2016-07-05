@@ -53,6 +53,11 @@ body {
   height: 500px;
 }
 
+.grid-weekly-change {
+  width: 920px;
+  height: 650px;
+}
+
 .grid-user-id {
   text-align: center;
 }

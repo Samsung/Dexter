@@ -143,3 +143,19 @@ exports.getDefectCountByDatabaseName = function(req, res) {
             res.send({status:"fail", errorMessage: err.message});
         });
 };
+
+exports.getWeeklyChange = function(req, res) {
+    const sql =
+        "SELECT year, week,                                 " +
+        "       SUM(allDefectCount) AS defectCountTotal,    " +
+        "       SUM(allFix) AS defectCountFixed,            " +
+        "       SUM(allExc) AS defectCountExcluded,         " +
+        "       SUM(accountCount) AS accountCount           " +
+        "FROM WeeklyStatus                                  " +
+        "LEFT JOIN ProjectInfo                              " +
+        "ON WeeklyStatus.pid = ProjectInfo.pid              " +
+        "GROUP BY year, week                                " +
+        "ORDER BY year DESC, week DESC                      ";
+
+    return route.executeSqlAndSendResponseRows(sql, res);
+};
