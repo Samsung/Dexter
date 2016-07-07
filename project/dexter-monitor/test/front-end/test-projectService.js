@@ -35,7 +35,7 @@ describe('ProjectService Test', function() {
         ProjectService = _ProjectService_;
     }));
 
-    describe('getCurrentDetailList()', function() {
+    describe('getAllCurrentStatusList()', function() {
 
         it('should return the rows containing the current defect and account status sent from server', function(done) {
             $httpBackend
@@ -63,25 +63,25 @@ describe('ProjectService Test', function() {
                 ]});
 
             $httpBackend
-                .whenGET('/api/v2/user-count/' + 'Project1_Database')
+                .whenGET('/api/v2/user-count/' + 'SamsungProject1')
                 .respond({status:'ok', value:5});
             $httpBackend
-                .whenGET('/api/v2/user-count/' + 'Project2_Database')
+                .whenGET('/api/v2/user-count/' + 'SamsungProject2')
                 .respond({status:'ok', value:7});
             $httpBackend
-                .whenGET('/api/v2/user-count/' + 'Project3_Database')
+                .whenGET('/api/v2/user-count/' + 'SamsungProject3')
                 .respond({status:'ok', value:6});
             $httpBackend
-                .whenGET('/api/v2/defect-status-count/' + 'Project1_Database')
+                .whenGET('/api/v2/defect-status-count/' + 'SamsungProject1')
                 .respond({status:'ok', values:{defectCountTotal:10, defectCountFixed:1, defectCountExcluded:2}});
             $httpBackend
-                .whenGET('/api/v2/defect-status-count/' + 'Project2_Database')
+                .whenGET('/api/v2/defect-status-count/' + 'SamsungProject2')
                 .respond({status:'ok', values:{defectCountTotal:15, defectCountFixed:7, defectCountExcluded:3}});
             $httpBackend
-                .whenGET('/api/v2/defect-status-count/' + 'Project3_Database')
+                .whenGET('/api/v2/defect-status-count/' + 'SamsungProject3')
                 .respond({status:'ok', values:{defectCountTotal:20, defectCountFixed:5, defectCountExcluded:9}});
 
-            ProjectService.getCurrentDetailList()
+            ProjectService.getAllCurrentStatusList()
                 .then(function(rows) {
                     assert.equal(rows[0].projectName, 'SamsungProject1');
                     assert.equal(rows[0].accountCount, 5);

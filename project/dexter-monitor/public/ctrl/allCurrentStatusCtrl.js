@@ -25,14 +25,13 @@
  */
 "use strict";
 
-monitorApp.controller("CurrentCtrl", function($scope, $http, $log, ProjectService, uiGridConstants) {
-    let current = this;
+monitorApp.controller("AllCurrentStatusCtrl", function($scope, $http, $log, ProjectService, uiGridConstants) {
 
     const summaryColumnDefs = [
-        {field:'groupCountAll',     displayName:'Group',    width: 220,     cellClass: 'grid-align',    headerTooltip: 'Number of groups'},
-        {field:'projectCountAll',   displayName:'Project',  width: 220,     cellClass: 'grid-align',    headerTooltip: 'Number of projects'},
-        {field:'defectCountAll',    displayName:'Defect',   width: 220,     cellClass: 'grid-align',    headerTooltip: 'Number of defects'},
-        {field:'accountCountAll',   displayName:'Account',  width: 220,     cellClass: 'grid-align',    headerTooltip: 'Number of accounts'}
+        {field:'allGroupCount',     displayName:'Group',    width: 220,     cellClass: 'grid-align',    headerTooltip: 'Number of groups'},
+        {field:'allProjectCount',   displayName:'Project',  width: 220,     cellClass: 'grid-align',    headerTooltip: 'Number of projects'},
+        {field:'allDefectCount',    displayName:'Defect',   width: 220,     cellClass: 'grid-align',    headerTooltip: 'Number of defects'},
+        {field:'allAccountCount',   displayName:'Account',  width: 220,     cellClass: 'grid-align',    headerTooltip: 'Number of accounts'}
     ];
 
     const detailColumnDefs = [
@@ -53,13 +52,13 @@ monitorApp.controller("CurrentCtrl", function($scope, $http, $log, ProjectServic
     initialize();
 
     function initialize() {
-        current.summaryGridOptions = createGrid(summaryColumnDefs);
-        removeUselessGridOptions(current.summaryGridOptions);
-        current.detailGridOptions = createGrid(detailColumnDefs);
-        current.detailGridOptions.showColumnFooter = true;
+        $scope.summaryGridOptions = createGrid(summaryColumnDefs);
+        removeUselessGridOptions($scope.summaryGridOptions);
+        $scope.detailGridOptions = createGrid(detailColumnDefs);
+        $scope.detailGridOptions.showColumnFooter = true;
         loadDate();
-        current.time = new Date().toLocaleString();
-        setGridExportingFileNames(current.detailGridOptions, CURRENT_DETAIL_FILENAME_PREFIX + '-' + current.time);
+        $scope.time = new Date().toLocaleString();
+        setGridExportingFileNames($scope.detailGridOptions, CURRENT_STATUS_FILENAME_PREFIX + '-' + $scope.time);
     }
 
     function removeUselessGridOptions(gridOptions) {
@@ -70,14 +69,14 @@ monitorApp.controller("CurrentCtrl", function($scope, $http, $log, ProjectServic
     }
 
     function loadDate() {
-        ProjectService.getCurrentDetailList()
+        ProjectService.getAllCurrentStatusList()
             .then((rows) => {
-                current.detailGridOptions.data = rows;
-                current.summaryGridOptions.data = [{
-                    groupCountAll: _.uniq(_.map(rows, 'groupName')).length,
-                    projectCountAll: rows.length,
-                    defectCountAll: _.sum(_.map(rows, 'defectCountTotal')),
-                    accountCountAll: _.sum(_.map(rows, 'accountCount'))
+                $scope.detailGridOptions.data = rows;
+                $scope.summaryGridOptions.data = [{
+                    allGroupCount: _.uniq(_.map(rows, 'groupName')).length,
+                    allProjectCount: rows.length,
+                    allDefectCount: _.sum(_.map(rows, 'defectCountTotal')),
+                    allAccountCount: _.sum(_.map(rows, 'accountCount'))
                 }];
             })
             .catch((err) => {

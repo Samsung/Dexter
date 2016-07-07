@@ -26,6 +26,7 @@
 "use strict";
 
 const mysql = require("mysql");
+const project = require('./project');
 const database = require("../util/database");
 const route = require('./route');
 const log = require('../util/logging');
@@ -42,7 +43,7 @@ exports.getAll = function(req, res) {
         "ORDER BY year DESC, week DESC,                                         "+
         "         groupName ASC, projectName ASC                                ";
 
-    return route.executeSqlAndSendResponseRows(sql, res);
+    route.executeSqlAndSendResponseRows(sql, res);
 };
 
 exports.getByProject = function(req, res) {
@@ -56,7 +57,7 @@ exports.getByProject = function(req, res) {
         "WHERE ProjectInfo.projectName = " + projectName     +
         "ORDER BY year DESC, week DESC                      ";
 
-    return route.executeSqlAndSendResponseRows(sql, res);
+    route.executeSqlAndSendResponseRows(sql, res);
 };
 
 exports.getByGroup = function(req, res) {
@@ -82,7 +83,7 @@ exports.getByGroup = function(req, res) {
 
     sql += "GROUP BY groupName ORDER BY allDefectCount DESC, groupName ASC";
 
-    return route.executeSqlAndSendResponseRows(sql, res);
+    route.executeSqlAndSendResponseRows(sql, res);
 };
 
 exports.getByLab = function(req, res) {
@@ -92,11 +93,11 @@ exports.getByLab = function(req, res) {
 
 exports.getMinYear = function(req, res) {
     const sql = "SELECT year FROM WeeklyStatus ORDER BY year ASC LIMIT 1";
-    return database.exec(sql)
-        .then(function(rows) {
+    database.exec(sql)
+        .then((rows) => {
             res.send({status:'ok', value: rows[0].year});
         })
-        .catch(function(err) {
+        .catch((err) => {
             log.error(err);
             res.send({status:"fail", errorMessage: err.message});
         });
@@ -104,11 +105,11 @@ exports.getMinYear = function(req, res) {
 
 exports.getMaxYear = function(req, res) {
     const sql = "SELECT year FROM WeeklyStatus ORDER BY year DESC LIMIT 1";
-    return database.exec(sql)
-        .then(function(rows) {
+    database.exec(sql)
+        .then((rows) => {
             res.send({status:'ok', value: rows[0].year});
         })
-        .catch(function(err) {
+        .catch((err) => {
             log.error(err);
             res.send({status:"fail", errorMessage: err.message});
         });
@@ -117,28 +118,36 @@ exports.getMaxYear = function(req, res) {
 exports.getMaxWeek = function(req, res) {
     const year = mysql.escape(req.params.year);
     const sql = "SELECT week FROM WeeklyStatus WHERE year = " + year + " ORDER BY week DESC LIMIT 1";
-    return database.exec(sql)
-        .then(function(rows) {
+    database.exec(sql)
+        .then((rows) => {
             res.send({status:'ok', value: rows[0].week});
         })
-        .catch(function(err) {
+        .catch((err) => {
             log.error(err);
             res.send({status:"fail", errorMessage: err.message});
         });
 };
 
-exports.getDefectCountByDatabaseName = function(req, res) {
-    const dbName = mysql.escapeId(req.params.dbName);
-    const sql =
-        "SELECT                                                                                         " +
-        "   (SELECT COUNT(did) FROM " + dbName + ".Defect) AS defectCountTotal,                         " +
-        "   (SELECT COUNT(did) FROM " + dbName + ".Defect WHERE statusCode='FIX') AS defectCountFixed,  " +
-        "   COUNT(did) AS defectCountExcluded FROM " + dbName + ".Defect WHERE statusCode='EXC'         ";
-    return database.exec(sql)
-        .then(function(rows) {
-            res.send({status:'ok', values: rows[0]});
+exports.getDefectCountByProjectName = function(req, res) {
+    const projectName = mysql.escape(req.params.projectName);
+    project.getDatabaseNameByProjectName(projectName)
+        .then((dbName) => {
+            const escapedDbName = mysql.escapeId(dbName);
+            const sql =
+                "SELECT                                                                                                 " +
+                "   (SELECT COUNT(did) FROM " + escapedDbName + ".Defect) AS defectCountTotal,                          " +
+                "   (SELECT COUNT(did) FROM " + escapedDbName + ".Defect WHERE statusCode='FIX') AS defectCountFixed,   " +
+                "   COUNT(did) AS defectCountExcluded FROM " + escapedDbName + ".Defect WHERE statusCode='EXC'          ";
+            database.exec(sql)
+                .then((rows) => {
+                    res.send({status:'ok', values: rows[0]});
+                })
+                .catch((err) => {
+                    log.error(err);
+                    res.send({status:"fail", errorMessage: err.message});
+                });
         })
-        .catch(function(err) {
+        .catch((err) => {
             log.error(err);
             res.send({status:"fail", errorMessage: err.message});
         });
@@ -157,5 +166,5 @@ exports.getWeeklyChange = function(req, res) {
         "GROUP BY year, week                                " +
         "ORDER BY year DESC, week DESC                      ";
 
-    return route.executeSqlAndSendResponseRows(sql, res);
+    route.executeSqlAndSendResponseRows(sql, res);
 };

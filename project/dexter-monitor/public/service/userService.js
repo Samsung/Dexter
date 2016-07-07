@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 Samsung Electronics, Inc.,
+ * Copyright (c) 2016 Samsung Electronics, Inc.,
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,14 +35,14 @@ monitorApp.service('UserService', function($http, $log, $q) {
             .then((res) => {
                 if (!isHttpResultOK(res)) {
                     $log.error('Failed to get user list');
-                    return;
+                    return [];
                 }
 
                 return res.data.rows;
             })
             .catch((err) => {
                 $log.error(err);
-                return null;
+                return [];
             });
     };
 
@@ -54,14 +54,14 @@ monitorApp.service('UserService', function($http, $log, $q) {
             .then((res) => {
                 if (!isHttpResultOK(res)) {
                     $log.error('Failed to get user list');
-                    return;
+                    return [];
                 }
 
                 return res.data.rows;
             })
             .catch((err) => {
                 $log.error(err);
-                return null;
+                return [];
             });
     };
 

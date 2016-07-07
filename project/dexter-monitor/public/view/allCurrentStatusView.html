@@ -2,14 +2,14 @@
     <div class="container">
         <div>
             <span style="font-size:18pt">Summary of the current status</span>
-            <span style="font-size:11pt"> ({{current.time}})</span>
+            <span style="font-size:11pt"> ({{time}})</span>
         </div>
-        <div class="grid-current-summary" id='currentSummaryGrid' ui-grid="current.summaryGridOptions"
+        <div class="grid-current-summary" id='currentSummaryGrid' ui-grid="summaryGridOptions"
              ui-grid-resize-columns ui-grid-move-columns ui-grid-selection ui-grid-exporter ui-grid-auto-resize>
         </div>
         <br>
         <span style="font-size:18pt">Details of the current status</span>
-        <div class="grid-current-detail" id='currentDetailGrid' ui-grid="current.detailGridOptions"
+        <div class="grid-current-detail" id='currentDetailGrid' ui-grid="detailGridOptions"
              ui-grid-resize-columns ui-grid-move-columns ui-grid-selection ui-grid-exporter ui-grid-auto-resize>
         </div>
     </div>

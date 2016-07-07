@@ -66,7 +66,7 @@ function sendUserListInDatabaseNameList(dbNameList, res) {
         }));
     });
 
-    return Promise.all(promises)
+    Promise.all(promises)
         .then(() => {
             allRows = _.uniq(allRows, (row) => {
                 return row.userId;
@@ -83,7 +83,7 @@ function sendUserListInDatabaseNameList(dbNameList, res) {
 exports.getAll = function(req, res) {
    project.getDatabaseNameList()
        .then((rows) => {
-           let dbNameList = _.map(rows, 'dbName');
+           const dbNameList = _.map(rows, 'dbName');
            sendUserListInDatabaseNameList(dbNameList, res);
        })
        .catch((err) => {
@@ -168,7 +168,7 @@ exports.getMoreInfoByUserIdList = function(req, res) {
         promises.push(loadUserInfo(userId, userInfoUrl, userInfoList));
     });
 
-    return Promise.all(promises)
+    Promise.all(promises)
         .then(() => {
             res.send({status:'ok', rows: userInfoList});
         })
@@ -186,14 +186,21 @@ function validateUserInfoJson(data, userid) {
     return true;
 }
 
-exports.getUserCountByDatabaseName = function(req, res) {
-    const dbName = mysql.escapeId(req.params.dbName);
-    const sql = "SELECT COUNT(userId) AS userCount FROM " + dbName + ".Account";
-    return database.exec(sql)
-        .then(function(rows) {
-            res.send({status:'ok', value: rows[0].userCount});
+exports.getUserCountByProjectName = function(req, res) {
+    const projectName = mysql.escape(req.params.projectName);
+    project.getDatabaseNameByProjectName(projectName)
+        .then((dbName) => {
+            const sql = "SELECT COUNT(userId) AS userCount FROM " + mysql.escapeId(dbName) + ".Account";
+            database.exec(sql)
+                .then((rows) => {
+                    res.send({status:'ok', value: rows[0].userCount});
+                })
+                .catch((err) => {
+                    log.error(err);
+                    res.send({status:"fail", errorMessage: err.message});
+                });
         })
-        .catch(function(err) {
+        .catch((err) => {
             log.error(err);
             res.send({status:"fail", errorMessage: err.message});
         });

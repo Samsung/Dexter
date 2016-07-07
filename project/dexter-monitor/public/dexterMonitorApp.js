@@ -33,14 +33,12 @@ var monitorApp = angular.module("dexterMonitorApp", ['ngRoute', 'ngAnimate', 'ng
 monitorApp.config(function($routeProvider){
     $routeProvider
         .when("/", {
-            controller: "CurrentCtrl",
-            templateUrl: "view/currentView.html",
-            controllerAs: "current"
+            controller: "AllCurrentStatusCtrl",
+            templateUrl: "view/allCurrentStatusView.html"
         })
         .when("/change", {
-            controller: "ChangeCtrl",
-            templateUrl: "view/changeView.html",
-            controllerAs: "change"
+            controller: "AllWeeklyStatusCtrl",
+            templateUrl: "view/allWeeklyStatusCtrl.html"
         })
         .when("/serverstatus/", {
             controller: "ServerStatusCtrl",

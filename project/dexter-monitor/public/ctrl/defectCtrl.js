@@ -65,7 +65,7 @@ monitorApp.controller("DefectCtrl", function($scope, $http, $log) {
 
     function loadDefectList() {
         $http.get('/api/v2/defect')
-            .then(function (res) {
+            .then((res) => {
                 if (!isHttpResultOK(res)) {
                     $log.error('Failed to load defect list');
                     return;
@@ -73,7 +73,7 @@ monitorApp.controller("DefectCtrl", function($scope, $http, $log) {
 
                 defect.gridOptions.data = res.data.rows;
             })
-            .catch(function (err) {
+            .catch((err) => {
                 $log.error(err);
             });
     }

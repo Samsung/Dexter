@@ -29,11 +29,11 @@ const database = require("../util/database");
 const log = require('../util/logging');
 
 exports.executeSqlAndSendResponseRows = function(sql, res) {
-    return database.exec(sql)
-        .then(function(rows) {
+    database.exec(sql)
+        .then((rows) => {
             res.send({status:'ok', rows: rows});
         })
-        .catch(function(err) {
+        .catch((err) => {
             log.error(err);
             res.send({status:"fail", errorMessage: err.message});
         });

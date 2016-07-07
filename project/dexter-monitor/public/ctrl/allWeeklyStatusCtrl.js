@@ -25,8 +25,7 @@
  */
 "use strict";
 
-monitorApp.controller("ChangeCtrl", function($scope, $http, $log) {
-    let change = this;
+monitorApp.controller("AllWeeklyStatusCtrl", function($scope, $http, $log) {
 
     const columnDefs = [
         {field:'year',                  displayName:'Year',         width: 100,     cellClass: 'grid-align',    headerTooltip: 'Year'},
@@ -40,9 +39,9 @@ monitorApp.controller("ChangeCtrl", function($scope, $http, $log) {
     initialize();
 
     function initialize() {
-        change.gridOptions = createGrid(columnDefs);
+        $scope.gridOptions = createGrid(columnDefs);
         loadDate();
-        setGridExportingFileNames(change.gridOptions, WEEKLY_CHANGE_FILENAME_PREFIX);
+        setGridExportingFileNames($scope.gridOptions, WEEKLY_STATUS_FILENAME_PREFIX);
     }
 
     function loadDate() {
@@ -53,7 +52,7 @@ monitorApp.controller("ChangeCtrl", function($scope, $http, $log) {
                     return;
                 }
 
-                change.gridOptions.data = res.data.rows;
+                $scope.gridOptions.data = res.data.rows;
             })
             .catch((err) => {
                 $log.error(err);

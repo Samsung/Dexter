@@ -29,32 +29,34 @@ monitorApp.service('ProjectService', function($http, $log, $q) {
 
     this.getProjectList = function() {
         return $http.get('/api/v2/project-list')
-            .then(function (res) {
+            .then((res) => {
                 if (!isHttpResultOK(res)) {
                     $log.error('Failed to get project list');
-                    return null;
+                    return [];
                 }
 
                 return res.data.rows;
             })
-            .catch(function (err) {
+            .catch((err) => {
                 $log.error(err);
-                return null;
+                return [];
             });
     };
 
-    function setUserCount(row, dbName) {
+    function setUserCount(row, projectName) {
         let deferred = $q.defer();
 
-        $http.get('/api/v2/user-count/' + dbName)
-            .then(function (res) {
+        $http.get('/api/v2/user-count/' + projectName)
+            .then((res) => {
                 if (!isHttpResultOK(res)) {
-                    $log.error('Failed to get user count from ' + dbName);
+                    $log.error('Failed to get user count of ' + projectName);
+                    deferred.resolve();
+                    return;
                 }
                 row.accountCount = res.data.value;
                 deferred.resolve();
             })
-            .catch(function (err) {
+            .catch((err) => {
                 $log.error(err);
                 deferred.reject();
             });
@@ -62,20 +64,22 @@ monitorApp.service('ProjectService', function($http, $log, $q) {
         return deferred.promise;
     }
 
-    function setDefectCount(row, dbName) {
+    function setDefectCount(row, projectName) {
         let deferred = $q.defer();
 
-        $http.get('/api/v2/defect-status-count/' + dbName)
-            .then(function (res) {
+        $http.get('/api/v2/defect-status-count/' + projectName)
+            .then((res) => {
                 if (!isHttpResultOK(res)) {
-                    $log.error('Failed to get defect status count from ' + dbName);
+                    $log.error('Failed to get defect status count of ' + projectName);
+                    deferred.resolve();
+                    return;
                 }
                 row.defectCountTotal = res.data.values.defectCountTotal;
                 row.defectCountFixed = res.data.values.defectCountFixed;
                 row.defectCountExcluded = res.data.values.defectCountExcluded;
                 deferred.resolve();
             })
-            .catch(function (err) {
+            .catch((err) => {
                 $log.error(err);
                 deferred.reject();
             });
@@ -83,14 +87,14 @@ monitorApp.service('ProjectService', function($http, $log, $q) {
         return deferred.promise;
     }
 
-    this.getCurrentDetailList = function() {
+    this.getAllCurrentStatusList = function() {
         let promises = [];
 
         return this.getProjectList()
             .then((rows) => {
                 rows.forEach((row) => {
-                    promises.push(setUserCount(row, row.dbName));
-                    promises.push(setDefectCount(row, row.dbName));
+                    promises.push(setUserCount(row, row.projectName));
+                    promises.push(setDefectCount(row, row.projectName));
                 });
 
                 return $q.all(promises)
