@@ -106,4 +106,12 @@ public class DexterUtilTest {
 			e.printStackTrace();
 		}
 	}
+	
+	@Test
+	public void test_getSubFiles_with_invalid_baseFolder(){
+		File files[] = DexterUtil.getSubFiles(new File("./my_unexisit_folder_name"), "test");
+		
+		assertNotNull(files);
+		assertTrue(files.length == 0);
+	}
 }

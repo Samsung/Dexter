@@ -1092,15 +1092,29 @@ public class DexterUtil {
 	}
 
 	public static File[] getSubFiles(final File parentFolder, final String fileNamePrefix) {
-		return parentFolder.listFiles(new FileFilter(){
-			@Override
-			public boolean accept(File pathname) {
-				if(pathname.getName().startsWith(fileNamePrefix))
-					return true;
-				else
-					return false;
+		File[] subFiles = null;
+		
+		try{
+			subFiles = parentFolder.listFiles(new FileFilter(){
+				@Override
+				public boolean accept(File pathname) {
+					if(pathname.getName().startsWith(fileNamePrefix))
+						return true;
+					else
+						return false;
+				}
+			});
+			
+			if(subFiles == null){
+				logger.warn("can't get sub files from the base folder : " + parentFolder.getAbsolutePath());
+				return new File[0];
 			}
-		});
+			
+			return subFiles;
+		} catch(SecurityException e){
+			logger.error(e.getMessage(), e);
+			return new File[0];
+		}
 	}
 
 	public static String[] getSubFilenames(String baseDir) {
@@ -1119,7 +1133,8 @@ public class DexterUtil {
 			
 			return filenames;
 		} catch (SecurityException e){
-			throw new DexterRuntimeException("can't get sub folders or files:" + baseDir, e);
+			logger.error("can't get sub folders or files:" + baseDir, e);
+			return new String[0];
 		}
 	}
 	
@@ -1138,7 +1153,8 @@ public class DexterUtil {
 			
 			return files;
 		} catch (SecurityException e){
-			throw new DexterRuntimeException("can't get sub folders or files:" + baseDir.toString(), e);
+			logger.error("can't get sub folders or files:" + baseDir.toString(), e);
+			return new File[0];
 		}
 	}
 
