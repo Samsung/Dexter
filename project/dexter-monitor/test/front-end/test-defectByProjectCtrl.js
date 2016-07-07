@@ -43,7 +43,13 @@ describe('DefectByProjectCtrl Test', function() {
         var PROJECT_LANGUAGE = 'JAVA';
 
         it('should set current values to that of the selected project', function() {
-            $httpBackend.whenGET('/api/v2/defect/project/').respond({status:'ok', rows:[]});
+            $httpBackend.whenGET('/api/v2/project-list').respond({status:'ok', rows:[
+                {projectName: 'SamsungProject'}, {projectName: PROJECT_NAME}
+            ]});
+            $httpBackend.whenGET('/api/v2/defect/project/' + PROJECT_NAME).respond({status:'ok', rows:[
+                {year:2016, week:25, accountCount:4, allDefectCount:10, allFix:3, allExc:2},
+                {year:2016, week:24, accountCount:3, allDefectCount:9, allFix:1, allExc:2}
+            ]});
 
             defect.projects = [{
                 'projectType' : 'Preceding',
@@ -58,11 +64,24 @@ describe('DefectByProjectCtrl Test', function() {
             }];
 
             defect.projectChanged(PROJECT_NAME);
+            $httpBackend.flush();
 
             assert.equal(defect.curProjectName, PROJECT_NAME);
             assert.equal(defect.curProjectType, PROJECT_TYPE);
             assert.equal(defect.curProjectGroup, PROJECT_GROUP);
             assert.equal(defect.curProjectLang, PROJECT_LANGUAGE);
+            assert.equal(defect.gridOptions.data[0].year, 2016);
+            assert.equal(defect.gridOptions.data[0].week, 25);
+            assert.equal(defect.gridOptions.data[0].accountCount, 4);
+            assert.equal(defect.gridOptions.data[0].allDefectCount, 10);
+            assert.equal(defect.gridOptions.data[0].allFix, 3);
+            assert.equal(defect.gridOptions.data[0].allExc, 2);
+            assert.equal(defect.gridOptions.data[1].year, 2016);
+            assert.equal(defect.gridOptions.data[1].week, 24);
+            assert.equal(defect.gridOptions.data[1].accountCount, 3);
+            assert.equal(defect.gridOptions.data[1].allDefectCount, 9);
+            assert.equal(defect.gridOptions.data[1].allFix, 1);
+            assert.equal(defect.gridOptions.data[1].allExc, 2);
             assert.equal(defect.gridOptions.exporterCsvFilename, DEFECT_FILENAME_PREFIX + '-' + PROJECT_NAME + '.csv');
             assert.equal(defect.gridOptions.exporterPdfFilename, DEFECT_FILENAME_PREFIX + '-' + PROJECT_NAME + '.pdf');
         });

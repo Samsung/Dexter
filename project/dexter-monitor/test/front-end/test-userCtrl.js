@@ -23,7 +23,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-describe('UserByGroupCtrl Test', function() {
+describe('UserCtrl Test', function() {
 
     beforeEach(module('dexterMonitorApp'));
 
@@ -32,34 +32,40 @@ describe('UserByGroupCtrl Test', function() {
     beforeEach(inject(function(_$controller_, _$httpBackend_) {
         $controller = _$controller_;
         $httpBackend = _$httpBackend_;
-        user = $controller('UserByGroupCtrl', {$scope: {}});
+        user = $controller('UserCtrl', {$scope: {}});
     }));
 
-    describe('groupChanged()', function() {
+    describe('initialize()', function() {
+        it('should set values properly', function() {
+            $httpBackend.whenGET('/api/v2/user')
+                .respond({status:'ok', rows:[
+                    {userId: 'testid1'}, {userId: 'testid2'}
+                ]});
+            $httpBackend
+                .whenGET('/api/v2/user/extra-info/' + 'testid1,testid2')
+                .respond({status:'ok', rows:[
+                    {userId:'testid1', name:'myname1', department:'VD1', title: 'engineer1', employeeNumber: 1234},
+                    {userId:'testid2', name:'myname2', department:'VD2', title: 'engineer2', employeeNumber: 5678}
+                ]});
 
-        var GROUP_NAME = '16_DexterMonitorProject';
-        var USER_ID_1 = 'SamsungId1';
-        var USER_ID_2 = 'SamsungId2';
-
-        beforeEach(function() {
-            $httpBackend.whenGET('/api/v2/group-list').respond({status:'ok', rows:[
-                {'groupName':GROUP_NAME}
-            ]});
-        });
-
-        it('should set current values to that of the selected group', function() {
-            $httpBackend.whenGET('/api/v2/user/group/' + GROUP_NAME).respond({status:'ok', rows:[
-                {'userId':USER_ID_1},{'userId':USER_ID_2}
-            ]});
-
-            user.groupChanged(GROUP_NAME);
             $httpBackend.flush();
 
-            assert.equal(user.curGroupName, GROUP_NAME);
-            assert.equal(user.gridOptions.exporterCsvFilename, USER_FILENAME_PREFIX + '-' + GROUP_NAME + '.csv');
-            assert.equal(user.gridOptions.exporterPdfFilename, USER_FILENAME_PREFIX + '-' + GROUP_NAME + '.pdf');
-            assert.equal(user.gridOptions.data[0].userId, USER_ID_1);
-            assert.equal(user.gridOptions.data[1].userId, USER_ID_2);
+            assert.equal(user.gridOptions.data[0].userId, 'testid1');
+            assert.equal(user.gridOptions.data[1].userId, 'testid2');
+
+            user.getExtraInfo();
+            $httpBackend.flush();
+
+            assert.equal(user.gridOptions.data[0].userId, 'testid1');
+            assert.equal(user.gridOptions.data[0].name, 'myname1');
+            assert.equal(user.gridOptions.data[0].department, 'VD1');
+            assert.equal(user.gridOptions.data[0].title, 'engineer1');
+            assert.equal(user.gridOptions.data[0].employeeNumber, 1234);
+            assert.equal(user.gridOptions.data[1].userId, 'testid2');
+            assert.equal(user.gridOptions.data[1].name, 'myname2');
+            assert.equal(user.gridOptions.data[1].department, 'VD2');
+            assert.equal(user.gridOptions.data[1].title, 'engineer2');
+            assert.equal(user.gridOptions.data[1].employeeNumber, 5678);
         });
     });
 });
