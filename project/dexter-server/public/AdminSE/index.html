@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html ng-app="adminSEApp">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="UTF-8">
+    <title>For SE</title>
+    <link href="../css/jq/jquery-ui-1.9.2.min.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+
+
+    <link rel="stylesheet" type="text/css" href="../css/ng/ng-table.min.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ng/ng-table.css" />
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
+
+    <link rel="stylesheet" type="text/css" href="../css/jq/layout-default.css" />
+    <link rel="stylesheet" type="text/css" href="../css/ng/ng-grid.min.css" />
+
+    <!-- jQuery 2.1.4 -->
+    <script src="./asset/js/jQuery-2.1.4.min.js"></script>
+
+    <script src="../js/jq/jquery-ui-1.9.2.min.js"></script>
+    <script src="../js/jq/jquery.layout-latest.js"></script>
+    <script src="../js/ng/angular.min.js"></script>
+    <script src="../js/ng/angular-animate.min.js"></script>
+    <script src="../js/ng/angular-route.min.js"></script>
+    <script src="../js/ng/angular-resource.min.js"></script>
+    <script src="../js/ng/angular-sanitize.min.js"></script>
+    <script src="../js/ng/ng-grid-2.0.11.min.js"></script>
+    <script src="../js/ng/ui-bootstrap-tpls-0.11.0.min.js"></script>
+    <script src="../js/common.js"></script>
+
+    <script src="../js/bootstrap-button.js"></script>
+    <!--script src="../util/util/dexter-util.js"></script-->
+
+    <link rel="stylesheet" href="./asset/css/bootstrap.css">
+    <link rel="stylesheet" href="./asset/css/font-awesome.min.css">
+    <link rel="stylesheet" href="./asset/css/ionicons.min.css">
+    <link rel="stylesheet" href="./asset/css/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="./asset/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="./asset/css/skin-black-light.min.css">
+    <link rel="stylesheet" href="./asset/css/select2.min.css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="./asset/js/bootstrap.min.js"></script>
+    <script src="./asset/js/jquery.dataTables.min.js"></script>
+    <script src="./asset/js/dataTables.bootstrap.min.js"></script>
+    <script src="./asset/js/jquery.slimscroll.min.js"></script>
+    <script src="./asset/js/fastclick.min.js"></script>
+    <script src="./asset/js/app.min.js"></script>
+    <script src="./asset/js/demo.js"></script>
+    <script src="./asset/js/select2.full.min.js"></script>
+
+    <!--
+    * Sets this component properties.
+    *
+    * @public
+    * @function : checkBrowser
+    * @author min.ho.kim@samsung.com
+    *
+    * @detail description
+    * Dexter Web is supported below browser : [opera|chrome|safari|firefox|msie]
+    * If the developers are use another browser, we need to show the "/error/NotSupportedBrowser.html" page.
+    * @since 1.11.19
+    -->
+    <script>
+        checkBrowser();
+        $(document).ready(function(){
+        });
+
+    </script>
+</head>
+<body>
+<div ng-include="'../header.html'"></div>
+<div ng-view=""></div>
+<div ng-include="'../footer.html'"></div>
+
+<script src="adminSEApp.js"></script>
+<script src="adminSECtrl.js"></script>
+
+</body>
+</html>

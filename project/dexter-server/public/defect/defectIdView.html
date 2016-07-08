@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<font face="Tahoma, Lucida Grande, Helvetica, Arial, sans-serif">
+    <div id="defectDiv" style="min-width: 500px">
+        <div class="setDefectMSG" id="showDefectAlert" align="center"></div>
+        <div style="font: 12px Tahoma, 'Lucida Grande', Helvetica, Arial, sans-serif;" id="defectList">
+            <p style="margin-top : 0px; margin-bottom: 0px" >
+            <div style="float: left; width:600px">
+                <button id="loginBtn" class="btn btn-xs btn-warning" ng-click="checkLogin()">
+                    <span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;{{isHideLoginBtnTitle}}
+                </button>&nbsp;
+
+                <button id="adminBtn" class="btn btn-xs btn-default" ng-click="checkAdmin()">
+                    <span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Account
+                </button>&nbsp;
+
+                <!--button  id="deselectBtn" class="btn btn-xs btn-default" ng-click="deselectSelectionList()">
+                    <span class="glyphicon glyphicon-new-window"></span>&nbsp;&nbsp;Deselect All
+                </button-->
+            </div>
+
+            <div align="right">
+                <!--a href="../dashboard" target="_blank"><button id="chartBtn" class="btn btn-xs btn-default" ng-click="rePaging()">
+                    <span class="glyphicon glyphicon-stats"></span>&nbsp;Chart
+                </button></a-->
+
+                <button  id="dismissBtn"  class="btn btn-xs btn-default" ng-click="markDefectStatusByAngular('markFalseDefect')" tooltip="If you want to defect as 'False Positive' or 'Intentional', you can change status of defects." tooltip-placement="left">
+                    <span class="glyphicon glyphicon-log-in"></span>&nbsp;Mark False Defect
+                </button>&nbsp;
+
+                <button  id="newBtn" class="btn btn-xs btn-default" ng-click="markDefectStatusByAngular('markDefect')" tooltip="It is defects that you had been already changed to 'Dismissed', you can changed to 'New' status again." tooltip-placement="left">
+                    <span class="glyphicon glyphicon-log-out"></span>&nbsp;Mark Defect
+                </button>&nbsp;
+
+                <a href="/defect/#/snapshot/"><button id="snapshotBtn" class="btn btn-xs btn-default" ng-click="goSnapshotList()" tooltip="You can check Snapshot List" tooltip-placement="left">
+                    <span class="glyphicon glyphicon-ok"></span>&nbsp;Snapshot List
+                </button></a>&nbsp;
+
+                <!--button  id="removeBtn"  class="btn btn-xs btn-default" ng-click="removeDefectFromDB()" tooltip="If you remove 'Module' or 'File' in your workspace, you can remove 'Module' or 'File' in Web File Tree." tooltip-placement="left">
+                    <span class="glyphicon glyphicon-remove"></span>&nbsp;Remove File Tree
+                </button-->
+
+                <!--button  id="treeBtn"  class="btn btn-xs btn-info" ng-click="loadCurrentFileTree('showFileTreeBtn')">
+                    <span class="glyphicon glyphicon-align-left"></span>&nbsp;{{isFileTreeBtnTitleHidden}}
+                </button-->
+
+                <!--a href="#" class="exportDefect">
+                    <button  id="exportTreeBtn"  class="btn btn-xs btn-success">
+                        <span class="glyphicon glyphicon-save"></span> Export Defect List
+                    </button>
+                </a-->
+                <button id="exportDefectBtn" class="btn btn-xs btn-success" csv-header="getCSVHeader()"
+                        ng-csv="getCSVContent()" lazy-load="true" filename="{{projectName}}.csv" field-separator=",">
+                    <span class="glyphicon glyphicon-save"></span> Export Defect List
+                </button>&nbsp;
+
+                <!--button class="btn btn-xs btn-warning" csv-header="getCSVHeader()"
+                        ng-csv="csvContent" lazy-load="true" filename="{{projectName}}-Security.csv" field-separator=",">
+                    <span class="glyphicon glyphicon-save"></span> Security Report
+                </button-->
+
+
+            </div>
+            </p>
+
+            <!--div class="animate-hide fileTree" ng-hide="isFileTreeHidden" id="animationTab">
+                <div
+                        data-angular-treeview="true"
+                        data-tree-id="fileTreeId"
+                        data-tree-model="fileTree"
+                        data-node-id="name"
+                        data-node-label="label"
+                        data-node-children="children">
+                </div>
+            </div-->
+            <div class="defectList" id="defectListGrid" ng-grid="gridOptions">
+
+            </div>
+        </div>
+    </div>
+    <div class="detailTab">
+        <div class="row" >
+            <div ng-hide="isDetailTabHidden">
+                <tabset justified="false" type="pills" >
+                    <ul class="nav nav-tabs nav-justified">
+                        <tab id='SourceTab'heading="Source Code">
+                            <div align=right>&nbsp;<br><span class='glyphicon glyphicon-tags'>&nbsp;</span>
+                                {{currentDetailModulePath}}/<strong>{{currentDetailFileName}}</strong>: [ {{currentDidStartLine}} ]&nbsp;<br>
+                            </div>
+                            <div id="SourceCodeTab">
+                                <br>
+                                <?prettify linenums?>
+                                <pre class="prettyprint"></pre>
+                            </div>
+                        </tab>
+
+                        <tab heading="Defect Info">
+                            <p>
+                            <div class="row">
+                                <div class="col-lg-1">
+                                </div>
+                                <div class="form-group has-error">
+                                </div>
+                                <div class="col-lg-1">
+                                </div>
+                                <div class="col-lg-5">
+                                    <br>
+                                    <div ng-switch on='currentDetailSeverityCode'>
+                                        <div class="btn-group btn-group-justified">
+                                            <p ng-switch-when='CRI'>
+                                                <buttom class="btn btn-large btn-danger" style="font-size: 16px">
+                                                    <span class="glyphicon glyphicon-ban-circle">&nbsp;</span><b>CRITICAL</b>
+                                                </buttom>
+                                            </p>
+                                            <p ng-switch-when='MAJ'>
+                                                <buttom class="btn btn-large btn-warning" style="font-size: 16px">
+                                                    <span class="glyphicon glyphicon-warning-sign">&nbsp;</span><b>MAJOR</b>
+                                                </buttom>
+                                            </p>
+                                            <p ng-switch-when='ETC'>
+                                                <buttom class="btn btn-default" style="font-size: 16px">
+                                                    <span class="glyphicon glyphicon-tag">&nbsp;</span><b>ETC</b>
+                                                </buttom>
+                                            </p>
+                                            <p ng-switch-when='MIN'>
+                                                <buttom class="btn btn-large btn-default" style="font-size: 16px">
+                                                    <span class="glyphicon glyphicon-tags">&nbsp;</span><b>MINOR</b>
+                                                </buttom>
+                                            </p>
+                                            <p ng-switch-when='CRC'>
+                                                <buttom class="btn btn-large btn-default" style="font-size: 16px">
+                                                    <span class="glyphicon glyphicon-tags">&nbsp;</span><b>CRC</b>
+                                                </buttom>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div ng-switch on='currentDetailStatus'>
+                                        <div class="btn-group btn-group-justified">
+                                            <p ng-switch-when='NEW'>
+                                                <buttom class="btn btn-large btn-danger" style="font-size: 16px">
+                                                    <span class="glyphicon glyphicon-floppy-remove">&nbsp;</span><b>NEW</b>
+                                                </buttom>
+                                            <p ng-switch-when='FIX'>
+                                                <buttom class="btn btn-large  btn-default" style="font-size: 16px">
+                                                    <span class="glyphicon glyphicon-floppy-saved">&nbsp;</span><b>FIX</b>
+                                                </buttom>
+                                            <p ng-switch-when='EXC'>
+                                                <buttom class="btn btn-large btn-info" style="font-size: 16px">
+                                                    <span class="glyphicon glyphicon-floppy-save">&nbsp;</span><b>DISMISSED</b>
+                                                </buttom>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <ul class="list-group">
+                                        <li class="list-group-item">
+                                            <span class="badge">&nbsp;&nbsp;#&nbsp;{{currentDetailOccurenceCount}}&nbsp;/&nbsp;{{currentDetailFileName}}</span>
+                                            <span class="glyphicon glyphicon-search"></span>&nbsp;&nbsp;Occurrences
+                                        </li>
+
+                                        <li class="list-group-item">
+                                            <span class="badge">&nbsp;&nbsp;{{currentDetailMethodName}}</span>
+                                            <span class="glyphicon glyphicon-check"></span>&nbsp;&nbsp;Function
+                                        </li>
+
+                                        <li class="list-group-item">
+                                            <span class="badge">&nbsp;&nbsp;{{currentDetailModifierId}}</span>
+                                            <span class="glyphicon glyphicon-asterisk"></span>&nbsp;&nbsp;Committer
+                                        </li>
+
+                                        <li class="list-group-item">
+                                            <span class="badge">&nbsp;&nbsp;{{currentDetailModifiedDateTime | date:"yyyy-MM-dd HH:mm:ss"}}</span>
+                                            <span class="glyphicon glyphicon-chevron-down"></span>&nbsp;&nbsp;Last Modified
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-1">
+                                </div>
+                                <div class="form-group has-error">
+                                </div>
+                                <div class="col-lg-1">
+                                </div>
+                                <div class="col-lg-11">
+                                    <div class="panel panel-danger">
+                                        <div class="panel-body">
+                                            &nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-book"></span><strong>&nbsp;&nbsp;Description</strong>
+                                        </div>
+                                        <div class="panel-footer">
+                                            &nbsp;&nbsp;{{currentDetailmessage}} &nbsp;&nbsp;&nbsp;
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <!--div class="panel panel-info" ng-repeat="defectOccurenceInformation in defectOccurenceInformations" ng-if="currentDetailDid == defectOccurenceInformation.did">
+                                        <div class="panel-body">
+                                            &nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;Occurrence at<strong>&nbsp;{{currentDetailFileName}} : {{defectOccurenceInformation.startLine}}</strong>
+                                        </div>
+                                        <div class="panel-footer">
+                                            &nbsp;&nbsp;<span class="glyphicon glyphicon-link"></span> did : <strong>{{defectOccurenceInformation.did}}</strong>  &nbsp;&nbsp;&nbsp;
+                                            &nbsp;&nbsp;<span class="glyphicon glyphicon-link"></span> VariableName : <strong>{{defectOccurenceInformation.variableName}}</strong>  &nbsp;&nbsp;&nbsp;
+                                            &nbsp;&nbsp;<span class="glyphicon glyphicon-link"></span> StringValue : <strong>{{defectOccurenceInformation.stringValue}}</strong>  &nbsp;&nbsp;&nbsp;
+                                            &nbsp;&nbsp;<span class="glyphicon glyphicon-link"></span> FileName : <strong>{{defectOccurenceInformation.fieldName}}</strong> &nbsp;&nbsp;&nbsp;
+                                            &nbsp;&nbsp;<span class="glyphicon glyphicon-link"></span> CharEnd : <strong>{{defectOccurenceInformation.charEnd}} </strong> &nbsp;&nbsp;&nbsp;
+                                            &nbsp;&nbsp;<span class="glyphicon glyphicon-link"></span> CharStart : <strong>{{defectOccurenceInformation.charStart}}</strong>  &nbsp;&nbsp;&nbsp;
+                                        </div>
+                                    </div-->
+
+
+                                    <div class="panel panel-info" ng-repeat="currentDetailDefect in currentDetailDefectList">
+                                        <div class="panel-body">
+                                            &nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;Occurrence at<strong>&nbsp;{{currentDetailFileName}} : {{currentDetailDefect.startLine}}</strong>
+                                        </div>
+                                        <div class="panel-footer">
+                                            &nbsp;&nbsp;<span class="glyphicon glyphicon-link"></span> did : <strong>{{currentDetailDefect.did}}</strong>  &nbsp;&nbsp;&nbsp;
+                                            &nbsp;&nbsp;<span class="glyphicon glyphicon-link"></span> VariableName : <strong>{{currentDetailDefect.variableName}}</strong>  &nbsp;&nbsp;&nbsp;
+                                            &nbsp;&nbsp;<span class="glyphicon glyphicon-link"></span> StringValue : <strong>{{currentDetailDefect.stringValue}}</strong>  &nbsp;&nbsp;&nbsp;
+                                            &nbsp;&nbsp;<span class="glyphicon glyphicon-link"></span> FileName : <strong>{{currentDetailDefect.fieldName}}</strong> &nbsp;&nbsp;&nbsp;
+                                            &nbsp;&nbsp;<span class="glyphicon glyphicon-link"></span> CharStart : <strong>{{currentDetailDefect.charStart}} </strong> &nbsp;&nbsp;&nbsp;
+                                            &nbsp;&nbsp;<span class="glyphicon glyphicon-link"></span> CharEnd : <strong>{{currentDetailDefect.charEnd}}</strong>  &nbsp;&nbsp;&nbsp;
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            </p>
+                        </tab>
+                        <tab heading="Defect Description">
+                            <!--ul-->
+                            <!--li -->
+                            <br>
+                            <span ng-bind-html='currentDetailDescription'></span>
+                            <!--/li-->
+                            <!--/ul-->
+                        </tab>
+                    </ul>
+                </tabset>
+            </div>
+        </div>
+    </div>
+</font>
+<div style='display:none'>
+    <btn class='topOfPageDummy'style='cursor:pointer;' onclick='window.scrollTo(0,0);'>&nbsp;<span class='glyphicon glyphicon-chevron-up'></span>&nbsp;<font color='#00008b'><b>TOP</b></font></btn>
+    <btn class='realDefectDummy' style='cursor:pointer;'><span class='glyphicon glyphicon-log-out'></span>&nbsp;<font color="#00008b"><b>Mark Defect</b></font></btn>
+    <btn class='falseDefectDummy' style='cursor:pointer;'><span class='glyphicon glyphicon-log-in'></span>&nbsp;<font color="#00008b"><b>Mark False Defect</b></font></btn>
+</div>
