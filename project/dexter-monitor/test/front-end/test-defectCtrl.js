@@ -40,13 +40,13 @@ describe('DefectCtrl Test', function() {
             $httpBackend.whenGET('/api/v2/defect')
                 .respond({status:'ok', rows:[
                     {year:2016, week:25, groupName:'SamsungG_1', projectName:'SSP_1', language:'CPP', allDefectCount : 40,
-                        allNew : 15, allFix : 33, allExc : 0, criNew : 2, criFix : 16, criExc : 20,
-                        majNew : 8, majFix : 4, majExc : 5, minNew : 5, minFix : 3, minExc : 1,
-                        crcNew : 0, crcFix : 3, crcExc : 14, etcNew : 0, etcFix : 0, etcExc : 7},
+                        allNew : 15, allFix : 33, allDis : 0, criNew : 2, criFix : 16, criDis : 20,
+                        majNew : 8, majFix : 4, majDis : 5, minNew : 5, minFix : 3, minDis : 1,
+                        crcNew : 0, crcFix : 3, crcDis : 14, etcNew : 0, etcFix : 0, etcDis : 7},
                     {year:2015, week:3, groupName:'SamsungG_2', projectName:'SSP_2', language:'JAVA', allDefectCount : 60,
-                        allNew : 20, allFix : 30, allExc : 10, criNew : 12, criFix : 13, criExc : 30,
-                        majNew : 3, majFix : 4, majExc : 5, minNew : 5, minFix : 3, minExc : 1,
-                        crcNew : 0, crcFix : 3, crcExc : 14, etcNew : 0, etcFix : 0, etcExc : 7}
+                        allNew : 20, allFix : 30, allDis : 10, criNew : 12, criFix : 13, criDis : 30,
+                        majNew : 3, majFix : 4, majDis : 5, minNew : 5, minFix : 3, minDis : 1,
+                        crcNew : 0, crcFix : 3, crcDis : 14, etcNew : 0, etcFix : 0, etcDis : 7}
                 ]});
 
             $httpBackend.flush();
@@ -59,9 +59,9 @@ describe('DefectCtrl Test', function() {
             assert.equal(defect.gridOptions.data[0].allDefectCount, 40);
             assert.equal(defect.gridOptions.data[0].allNew, 15);
             assert.equal(defect.gridOptions.data[0].allFix, 33);
-            assert.equal(defect.gridOptions.data[0].allExc, 0);
+            assert.equal(defect.gridOptions.data[0].allDis, 0);
             assert.equal(defect.gridOptions.data[0].criFix, 16);
-            assert.equal(defect.gridOptions.data[0].majExc, 5);
+            assert.equal(defect.gridOptions.data[0].majDis, 5);
             assert.equal(defect.gridOptions.data[1].year, 2015);
             assert.equal(defect.gridOptions.data[1].week, 3);
             assert.equal(defect.gridOptions.data[1].groupName, 'SamsungG_2');
@@ -69,7 +69,7 @@ describe('DefectCtrl Test', function() {
             assert.equal(defect.gridOptions.data[1].language, 'JAVA');
             assert.equal(defect.gridOptions.data[1].criNew, 12);
             assert.equal(defect.gridOptions.data[1].majFix, 4);
-            assert.equal(defect.gridOptions.data[1].minExc, 1);
+            assert.equal(defect.gridOptions.data[1].minDis, 1);
             assert.equal(defect.gridOptions.data[1].crcNew, 0);
             assert.equal(defect.gridOptions.data[1].etcFix, 0);
         });

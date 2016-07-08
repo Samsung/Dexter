@@ -53,7 +53,7 @@ monitorApp.service('ProjectService', function($http, $log, $q) {
                     deferred.resolve();
                     return;
                 }
-                row.accountCount = res.data.value;
+                row.userCount = res.data.value;
                 deferred.resolve();
             })
             .catch((err) => {
@@ -76,7 +76,7 @@ monitorApp.service('ProjectService', function($http, $log, $q) {
                 }
                 row.defectCountTotal = res.data.values.defectCountTotal;
                 row.defectCountFixed = res.data.values.defectCountFixed;
-                row.defectCountExcluded = res.data.values.defectCountExcluded;
+                row.defectCountDismissed = res.data.values.defectCountDismissed;
                 deferred.resolve();
             })
             .catch((err) => {

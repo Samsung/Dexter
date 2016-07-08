@@ -39,13 +39,13 @@ monitorApp.controller("DefectByGroupCtrl", function($scope, $http, $log, $q, Def
         {field:'year',              displayName:'Year',         width: 80,      headerTooltip: 'Year'},
         {field:'week',              displayName:'Week',         width: 80,      headerTooltip: 'Week'},
         {field:'groupName',         displayName:'Group',        width: 185,     headerTooltip: 'Group'},
-        {field:'accountCount',      displayName:'Accout',       width: 80,      headerTooltip: 'Number of accounts',
-            cellClass: 'ui-grid-cell-contents grid-align', cellTemplate: '<div uib-tooltip="Go to the current \'{{row.entity.groupName}}\' account list" ' +
+        {field:'userCount',         displayName:'User',         width: 80,      headerTooltip: 'Number of users',
+            cellClass: 'ui-grid-cell-contents grid-align', cellTemplate: '<div uib-tooltip="Go to the current \'{{row.entity.groupName}}\' user list" ' +
             ' tooltip-placement="top" tooltip-append-to-body="true"><a href="#/user/group/{{row.entity.groupName}}">{{COL_FIELD}}</a></div>'},
         {field:'projectCount',      displayName:'Project',      width: 80,      headerTooltip: 'Number of projects'},
         {field:'allDefectCount',    displayName:'Total',        width: 160,     headerTooltip: 'Number of defects'},
         {field:'allFix',            displayName:'Fixed',        width: 160,     headerTooltip: 'Number of fixed defects'},
-        {field:'allExc',            displayName:'Excluded',     width: 160,     headerTooltip: 'Number of excluded defects'}
+        {field:'allDis',            displayName:'Dismissed',    width: 160,     headerTooltip: 'Number of dismissed defects'}
     ];
 
     initialize();

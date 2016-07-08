@@ -32,8 +32,8 @@ monitorApp.controller("AllWeeklyStatusCtrl", function($scope, $http, $log) {
         {field:'week',                  displayName:'Week',         width: 100,     cellClass: 'grid-align',    headerTooltip: 'Week'},
         {field:'defectCountTotal',      displayName:'Defect(All)',  width: 170,     cellClass: 'grid-align',    headerTooltip: 'Number of all defects'},
         {field:'defectCountFixed',      displayName:'Defect(Fix)',  width: 170,     cellClass: 'grid-align',    headerTooltip: 'Number of fixed defects'},
-        {field:'defectCountExcluded',   displayName:'Defect(Exc)',  width: 170,     cellClass: 'grid-align',    headerTooltip: 'Number of excluded defects'},
-        {field:'accountCount',          displayName:'Account',      width: 170,     cellClass: 'grid-align',    headerTooltip: 'Number of accounts'}
+        {field:'defectCountDismissed',  displayName:'Defect(Dis)',  width: 170,     cellClass: 'grid-align',    headerTooltip: 'Number of dismissed defects'},
+        {field:'userCount',             displayName:'User',         width: 170,     cellClass: 'grid-align',    headerTooltip: 'Number of users'}
     ];
 
     initialize();

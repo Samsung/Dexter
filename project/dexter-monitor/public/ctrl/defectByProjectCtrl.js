@@ -34,10 +34,10 @@ monitorApp.controller("DefectByProjectCtrl", function($scope, $http, $log, Proje
     const columnDefs = [
         {field:'year',              displayName:'Year',         width: 105,     headerTooltip: 'Year'},
         {field:'week',              displayName:'Week',         width: 105,     headerTooltip: 'Week'},
-        {field:'accountCount',      displayName:'Accout',       width: 170,     headerTooltip: 'Number of accounts'},
+        {field:'userCount',         displayName:'User',         width: 170,     headerTooltip: 'Number of users'},
         {field:'allDefectCount',    displayName:'Total',        width: 170,     headerTooltip: 'Number of defects'},
         {field:'allFix',            displayName:'Fixed',        width: 170,     headerTooltip: 'Number of fixed defects'},
-        {field:'allExc',            displayName:'Excluded',     width: 170,     headerTooltip: 'Number of excluded defects'}
+        {field:'allDis',            displayName:'Dismissed',    width: 170,     headerTooltip: 'Number of dismissed defects'}
     ];
 
     initialize();

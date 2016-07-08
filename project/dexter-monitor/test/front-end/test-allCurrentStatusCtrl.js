@@ -48,12 +48,12 @@ describe('AllCurrentStatusCtrl Test', function() {
             assert.equal($scope.summaryGridOptions.data[0].allGroupCount, 3);
             assert.equal($scope.summaryGridOptions.data[0].allProjectCount, 4);
             assert.equal($scope.summaryGridOptions.data[0].allDefectCount, 10 + 15 + 20 + 17);
-            assert.equal($scope.summaryGridOptions.data[0].allAccountCount, 5 + 7 + 6 + 3);
+            assert.equal($scope.summaryGridOptions.data[0].allUserCount, 5 + 7 + 6 + 3);
             assert.equal($scope.detailGridOptions.data[0].projectName, PROJECT_NAME_1);
-            assert.equal($scope.detailGridOptions.data[1].accountCount, 7);
+            assert.equal($scope.detailGridOptions.data[1].userCount, 7);
             assert.equal($scope.detailGridOptions.data[2].defectCountTotal, 20);
             assert.equal($scope.detailGridOptions.data[3].defectCountFixed, 3);
-            assert.equal($scope.detailGridOptions.data[3].defectCountExcluded, 7);
+            assert.equal($scope.detailGridOptions.data[3].defectCountDismissed, 7);
             assert.equal($scope.detailGridOptions.exporterCsvFilename, CURRENT_STATUS_FILENAME_PREFIX + '-' + $scope.time + '.csv');
             assert.equal($scope.detailGridOptions.exporterPdfFilename, CURRENT_STATUS_FILENAME_PREFIX + '-' + $scope.time + '.pdf');
         });
@@ -105,15 +105,15 @@ describe('AllCurrentStatusCtrl Test', function() {
 
         $httpBackend
             .whenGET('/api/v2/defect-status-count/' + PROJECT_NAME_1)
-            .respond({status:'ok', values:{defectCountTotal:10, defectCountFixed:1, defectCountExcluded:2}});
+            .respond({status:'ok', values:{defectCountTotal:10, defectCountFixed:1, defectCountDismissed:2}});
         $httpBackend
             .whenGET('/api/v2/defect-status-count/' + PROJECT_NAME_2)
-            .respond({status:'ok', values:{defectCountTotal:15, defectCountFixed:7, defectCountExcluded:3}});
+            .respond({status:'ok', values:{defectCountTotal:15, defectCountFixed:7, defectCountDismissed:3}});
         $httpBackend
             .whenGET('/api/v2/defect-status-count/' + PROJECT_NAME_3)
-            .respond({status:'ok', values:{defectCountTotal:20, defectCountFixed:5, defectCountExcluded:9}});
+            .respond({status:'ok', values:{defectCountTotal:20, defectCountFixed:5, defectCountDismissed:9}});
         $httpBackend
             .whenGET('/api/v2/defect-status-count/' + PROJECT_NAME_4)
-            .respond({status:'ok', values:{defectCountTotal:17, defectCountFixed:3, defectCountExcluded:7}});
+            .respond({status:'ok', values:{defectCountTotal:17, defectCountFixed:3, defectCountDismissed:7}});
     }
 });

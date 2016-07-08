@@ -37,7 +37,7 @@ describe('ProjectService Test', function() {
 
     describe('getAllCurrentStatusList()', function() {
 
-        it('should return the rows containing the current defect and account status sent from server', function(done) {
+        it('should return the rows containing the current defect and user status sent from server', function(done) {
             $httpBackend
                 .whenGET('/api/v2/project-list')
                 .respond({status:'ok', rows:[
@@ -73,31 +73,31 @@ describe('ProjectService Test', function() {
                 .respond({status:'ok', value:6});
             $httpBackend
                 .whenGET('/api/v2/defect-status-count/' + 'SamsungProject1')
-                .respond({status:'ok', values:{defectCountTotal:10, defectCountFixed:1, defectCountExcluded:2}});
+                .respond({status:'ok', values:{defectCountTotal:10, defectCountFixed:1, defectCountDismissed:2}});
             $httpBackend
                 .whenGET('/api/v2/defect-status-count/' + 'SamsungProject2')
-                .respond({status:'ok', values:{defectCountTotal:15, defectCountFixed:7, defectCountExcluded:3}});
+                .respond({status:'ok', values:{defectCountTotal:15, defectCountFixed:7, defectCountDismissed:3}});
             $httpBackend
                 .whenGET('/api/v2/defect-status-count/' + 'SamsungProject3')
-                .respond({status:'ok', values:{defectCountTotal:20, defectCountFixed:5, defectCountExcluded:9}});
+                .respond({status:'ok', values:{defectCountTotal:20, defectCountFixed:5, defectCountDismissed:9}});
 
             ProjectService.getAllCurrentStatusList()
                 .then(function(rows) {
                     assert.equal(rows[0].projectName, 'SamsungProject1');
-                    assert.equal(rows[0].accountCount, 5);
+                    assert.equal(rows[0].userCount, 5);
                     assert.equal(rows[0].defectCountTotal, 10);
                     assert.equal(rows[0].defectCountFixed, 1);
-                    assert.equal(rows[0].defectCountExcluded, 2);
+                    assert.equal(rows[0].defectCountDismissed, 2);
                     assert.equal(rows[1].projectName, 'SamsungProject2');
-                    assert.equal(rows[1].accountCount, 7);
+                    assert.equal(rows[1].userCount, 7);
                     assert.equal(rows[1].defectCountTotal, 15);
                     assert.equal(rows[1].defectCountFixed, 7);
-                    assert.equal(rows[1].defectCountExcluded, 3);
+                    assert.equal(rows[1].defectCountDismissed, 3);
                     assert.equal(rows[2].projectName, 'SamsungProject3');
-                    assert.equal(rows[2].accountCount, 6);
+                    assert.equal(rows[2].userCount, 6);
                     assert.equal(rows[2].defectCountTotal, 20);
                     assert.equal(rows[2].defectCountFixed, 5);
-                    assert.equal(rows[2].defectCountExcluded, 9);
+                    assert.equal(rows[2].defectCountDismissed, 9);
                     done();
                 });
             $httpBackend.flush();

@@ -45,14 +45,14 @@ describe('AllWeeklyStatusCtrl Test', function() {
             assert.equal($scope.gridOptions.data[0].week, 26);
             assert.equal($scope.gridOptions.data[0].defectCountTotal, 50);
             assert.equal($scope.gridOptions.data[0].defectCountFixed, 17);
-            assert.equal($scope.gridOptions.data[0].defectCountExcluded, 20);
-            assert.equal($scope.gridOptions.data[0].accountCount, 5);
+            assert.equal($scope.gridOptions.data[0].defectCountDismissed, 20);
+            assert.equal($scope.gridOptions.data[0].userCount, 5);
             assert.equal($scope.gridOptions.data[1].year, 2016);
             assert.equal($scope.gridOptions.data[1].week, 25);
             assert.equal($scope.gridOptions.data[1].defectCountTotal, 40);
             assert.equal($scope.gridOptions.data[1].defectCountFixed, 13);
-            assert.equal($scope.gridOptions.data[1].defectCountExcluded, 19);
-            assert.equal($scope.gridOptions.data[1].accountCount, 2);
+            assert.equal($scope.gridOptions.data[1].defectCountDismissed, 19);
+            assert.equal($scope.gridOptions.data[1].userCount, 2);
             assert.equal($scope.gridOptions.exporterCsvFilename, WEEKLY_STATUS_FILENAME_PREFIX + '.csv');
             assert.equal($scope.gridOptions.exporterPdfFilename, WEEKLY_STATUS_FILENAME_PREFIX + '.pdf');
         });
@@ -67,15 +67,15 @@ describe('AllWeeklyStatusCtrl Test', function() {
                     week : 26,
                     defectCountTotal : 50,
                     defectCountFixed : 17,
-                    defectCountExcluded : 20,
-                    accountCount : 5
+                    defectCountDismissed : 20,
+                    userCount : 5
                 },{
                     year : 2016,
                     week : 25,
                     defectCountTotal : 40,
                     defectCountFixed : 13,
-                    defectCountExcluded : 19,
-                    accountCount : 2
+                    defectCountDismissed : 19,
+                    userCount : 2
                 }
             ]});
     }

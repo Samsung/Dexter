@@ -34,9 +34,9 @@ const log = require('../util/logging');
 exports.getAll = function(req, res) {
     const sql =
         "SELECT year, week, groupName, projectName, language, allDefectCount,   "+
-        "       allNew, allFix, allExc, criNew, criFix, criExc,                 "+
-        "       majNew, majFix, majExc, minNew, minFix, minExc,                 "+
-        "       crcNew, crcFix, crcExc, etcNew, etcFix, etcExc                  "+
+        "       allNew, allFix, allDis, criNew, criFix, criDis,                 "+
+        "       majNew, majFix, majDis, minNew, minFix, minDis,                 "+
+        "       crcNew, crcFix, crcDis, etcNew, etcFix, etcDis                  "+
         "FROM WeeklyStatus                                                      "+
         "LEFT JOIN ProjectInfo                                                  "+
         "ON WeeklyStatus.pid = ProjectInfo.pid                                  "+
@@ -49,8 +49,8 @@ exports.getAll = function(req, res) {
 exports.getByProject = function(req, res) {
     const projectName = mysql.escape(req.params.projectName);
     const sql =
-        "SELECT year, week, accountCount,                   "+
-        "       allDefectCount, allFix, allExc              "+
+        "SELECT year, week, userCount,                      "+
+        "       allDefectCount, allFix, allDis              "+
         "FROM WeeklyStatus                                  "+
         "LEFT JOIN ProjectInfo                              "+
         "ON WeeklyStatus.pid = ProjectInfo.pid              "+
@@ -66,11 +66,11 @@ exports.getByGroup = function(req, res) {
 
     let sql =
         "SELECT year, week, groupName,                                  " +
-        "       SUM(accountCount) AS accountCount,                      " +
+        "       SUM(userCount) AS userCount,                            " +
         "       COUNT(projectName) AS projectCount,                     " +
         "       SUM(allDefectCount) AS allDefectCount,                  " +
         "       SUM(allFix) AS allFix,                                  " +
-        "       SUM(allExc) AS allExc                                   " +
+        "       SUM(allDis) AS allDis                                   " +
         "FROM WeeklyStatus                                              " +
         "LEFT JOIN ProjectInfo                                          " +
         "ON WeeklyStatus.pid = ProjectInfo.pid                          ";
@@ -137,7 +137,7 @@ exports.getDefectCountByProjectName = function(req, res) {
                 "SELECT                                                                                                 " +
                 "   (SELECT COUNT(did) FROM " + escapedDbName + ".Defect) AS defectCountTotal,                          " +
                 "   (SELECT COUNT(did) FROM " + escapedDbName + ".Defect WHERE statusCode='FIX') AS defectCountFixed,   " +
-                "   COUNT(did) AS defectCountExcluded FROM " + escapedDbName + ".Defect WHERE statusCode='EXC'          ";
+                "   COUNT(did) AS defectCountDismissed FROM " + escapedDbName + ".Defect WHERE statusCode='EXC'         ";
             database.exec(sql)
                 .then((rows) => {
                     res.send({status:'ok', values: rows[0]});
@@ -158,8 +158,8 @@ exports.getWeeklyChange = function(req, res) {
         "SELECT year, week,                                 " +
         "       SUM(allDefectCount) AS defectCountTotal,    " +
         "       SUM(allFix) AS defectCountFixed,            " +
-        "       SUM(allExc) AS defectCountExcluded,         " +
-        "       SUM(accountCount) AS accountCount           " +
+        "       SUM(allDis) AS defectCountDismissed,        " +
+        "       SUM(userCount) AS userCount                 " +
         "FROM WeeklyStatus                                  " +
         "LEFT JOIN ProjectInfo                              " +
         "ON WeeklyStatus.pid = ProjectInfo.pid              " +

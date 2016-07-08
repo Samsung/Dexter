@@ -42,8 +42,8 @@ describe('DefectByGroupCtrl Test', function() {
         $httpBackend.whenGET('/api/v2/defect/max-week/' + '2016').respond({status:'ok', value:25});
         $httpBackend.whenGET('/api/v2/defect/group/' + '2016/' + '25')
             .respond({status:'ok', rows:[
-                {year:2016, week:25, groupName:'SamsungG_1', accountCount:5, projectCount:3, allDefectCount:24, allFix:10, allExc:5},
-                {year:2016, week:25, groupName:'SamsungG_2', accountCount:7, projectCount:2, allDefectCount:16, allFix:2, allExc:4}
+                {year:2016, week:25, groupName:'SamsungG_1', userCount:5, projectCount:3, allDefectCount:24, allFix:10, allDis:5},
+                {year:2016, week:25, groupName:'SamsungG_2', userCount:7, projectCount:2, allDefectCount:16, allFix:2, allDis:4}
             ]});
     });
 
@@ -81,17 +81,17 @@ describe('DefectByGroupCtrl Test', function() {
         assert.equal(defect.gridOptions.data[0].year, 2016);
         assert.equal(defect.gridOptions.data[0].week, 25);
         assert.equal(defect.gridOptions.data[0].groupName, 'SamsungG_1');
-        assert.equal(defect.gridOptions.data[0].accountCount, 5);
+        assert.equal(defect.gridOptions.data[0].userCount, 5);
         assert.equal(defect.gridOptions.data[0].projectCount, 3);
         assert.equal(defect.gridOptions.data[0].allDefectCount, 24);
         assert.equal(defect.gridOptions.data[0].allFix, 10);
-        assert.equal(defect.gridOptions.data[0].allExc, 5);
+        assert.equal(defect.gridOptions.data[0].allDis, 5);
         assert.equal(defect.gridOptions.data[1].groupName, 'SamsungG_2');
-        assert.equal(defect.gridOptions.data[1].accountCount, 7);
+        assert.equal(defect.gridOptions.data[1].userCount, 7);
         assert.equal(defect.gridOptions.data[1].projectCount, 2);
         assert.equal(defect.gridOptions.data[1].allDefectCount, 16);
         assert.equal(defect.gridOptions.data[1].allFix, 2);
-        assert.equal(defect.gridOptions.data[1].allExc, 4);
+        assert.equal(defect.gridOptions.data[1].allDis, 4);
         assert.equal(defect.gridOptions.exporterCsvFilename, DEFECT_FILENAME_PREFIX + '-' + 2016 + '-' + 25 + '.csv');
         assert.equal(defect.gridOptions.exporterPdfFilename, DEFECT_FILENAME_PREFIX + '-' + 2016 + '-' + 25 + '.pdf');
     }

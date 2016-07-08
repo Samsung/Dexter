@@ -31,7 +31,7 @@ monitorApp.controller("AllCurrentStatusCtrl", function($scope, $http, $log, Proj
         {field:'allGroupCount',     displayName:'Group',    width: 220,     cellClass: 'grid-align',    headerTooltip: 'Number of groups'},
         {field:'allProjectCount',   displayName:'Project',  width: 220,     cellClass: 'grid-align',    headerTooltip: 'Number of projects'},
         {field:'allDefectCount',    displayName:'Defect',   width: 220,     cellClass: 'grid-align',    headerTooltip: 'Number of defects'},
-        {field:'allAccountCount',   displayName:'Account',  width: 220,     cellClass: 'grid-align',    headerTooltip: 'Number of accounts'}
+        {field:'allUserCount',      displayName:'User',     width: 220,     cellClass: 'grid-align',    headerTooltip: 'Number of users'}
     ];
 
     const detailColumnDefs = [
@@ -43,10 +43,10 @@ monitorApp.controller("AllCurrentStatusCtrl", function($scope, $http, $log, Proj
             headerTooltip: 'Number of all defects', aggregationType: uiGridConstants.aggregationTypes.sum},
         {field:'defectCountFixed',      displayName:'Defect(Fix)',      width: 140,     cellClass: 'grid-align',
             headerTooltip: 'Number of fixed defects', aggregationType: uiGridConstants.aggregationTypes.sum},
-        {field:'defectCountExcluded',   displayName:'Defect(Exc)',      width: 140,     cellClass: 'grid-align',
-            headerTooltip: 'Number of excluded defects', aggregationType: uiGridConstants.aggregationTypes.sum},
-        {field:'accountCount',          displayName:'Account',          width: 115,     cellClass: 'grid-align',
-            headerTooltip: 'Number of accounts', aggregationType: uiGridConstants.aggregationTypes.sum}
+        {field:'defectCountDismissed',  displayName:'Defect(Dis)',      width: 140,     cellClass: 'grid-align',
+            headerTooltip: 'Number of dismissed defects', aggregationType: uiGridConstants.aggregationTypes.sum},
+        {field:'userCount',             displayName:'User',             width: 115,     cellClass: 'grid-align',
+            headerTooltip: 'Number of users', aggregationType: uiGridConstants.aggregationTypes.sum}
     ];
 
     initialize();
@@ -76,7 +76,7 @@ monitorApp.controller("AllCurrentStatusCtrl", function($scope, $http, $log, Proj
                     allGroupCount: _.uniq(_.map(rows, 'groupName')).length,
                     allProjectCount: rows.length,
                     allDefectCount: _.sum(_.map(rows, 'defectCountTotal')),
-                    allAccountCount: _.sum(_.map(rows, 'accountCount'))
+                    allUserCount: _.sum(_.map(rows, 'userCount'))
                 }];
             })
             .catch((err) => {

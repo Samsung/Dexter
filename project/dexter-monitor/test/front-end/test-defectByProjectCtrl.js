@@ -47,8 +47,8 @@ describe('DefectByProjectCtrl Test', function() {
                 {projectName: 'SamsungProject'}, {projectName: PROJECT_NAME}
             ]});
             $httpBackend.whenGET('/api/v2/defect/project/' + PROJECT_NAME).respond({status:'ok', rows:[
-                {year:2016, week:25, accountCount:4, allDefectCount:10, allFix:3, allExc:2},
-                {year:2016, week:24, accountCount:3, allDefectCount:9, allFix:1, allExc:2}
+                {year:2016, week:25, userCount:4, allDefectCount:10, allFix:3, allDis:2},
+                {year:2016, week:24, userCount:3, allDefectCount:9, allFix:1, allDis:2}
             ]});
 
             defect.projects = [{
@@ -72,16 +72,16 @@ describe('DefectByProjectCtrl Test', function() {
             assert.equal(defect.curProjectLang, PROJECT_LANGUAGE);
             assert.equal(defect.gridOptions.data[0].year, 2016);
             assert.equal(defect.gridOptions.data[0].week, 25);
-            assert.equal(defect.gridOptions.data[0].accountCount, 4);
+            assert.equal(defect.gridOptions.data[0].userCount, 4);
             assert.equal(defect.gridOptions.data[0].allDefectCount, 10);
             assert.equal(defect.gridOptions.data[0].allFix, 3);
-            assert.equal(defect.gridOptions.data[0].allExc, 2);
+            assert.equal(defect.gridOptions.data[0].allDis, 2);
             assert.equal(defect.gridOptions.data[1].year, 2016);
             assert.equal(defect.gridOptions.data[1].week, 24);
-            assert.equal(defect.gridOptions.data[1].accountCount, 3);
+            assert.equal(defect.gridOptions.data[1].userCount, 3);
             assert.equal(defect.gridOptions.data[1].allDefectCount, 9);
             assert.equal(defect.gridOptions.data[1].allFix, 1);
-            assert.equal(defect.gridOptions.data[1].allExc, 2);
+            assert.equal(defect.gridOptions.data[1].allDis, 2);
             assert.equal(defect.gridOptions.exporterCsvFilename, DEFECT_FILENAME_PREFIX + '-' + PROJECT_NAME + '.csv');
             assert.equal(defect.gridOptions.exporterPdfFilename, DEFECT_FILENAME_PREFIX + '-' + PROJECT_NAME + '.pdf');
         });
