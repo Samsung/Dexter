@@ -16,7 +16,7 @@
                 <a href="#/user/" uib-tooltip="Current users of all projects" tooltip-placement="right" tooltip-append-to-body="true">User</a></li>
             <li ng-class="{'active':isActiveView('/user/project/')}">
                 <a href="#/user/project/" uib-tooltip="Current users of a selected project" tooltip-placement="right" tooltip-append-to-body="true">User by Project</a></li>
-            <li ng-class="{'active':isActiveView('/user/group/')}">
+            <li ng-class="{'active':isActiveViewWithParam('/user/group/')}">
                 <a href="#/user/group/" uib-tooltip="Current users of a selected group" tooltip-placement="right" tooltip-append-to-body="true">User by Group</a></li>
             <li ng-class="{'active':isActiveView('/user/lab/')}">
                 <a href="#/user/lab/" uib-tooltip="Current users of a selected lab (TBD)" tooltip-placement="right" tooltip-append-to-body="true">User by Lab</a></li>

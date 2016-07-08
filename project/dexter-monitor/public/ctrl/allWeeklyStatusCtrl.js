@@ -25,62 +25,37 @@
  */
 "use strict";
 
-monitorApp.service('UserService', function($http, $log, $q) {
+monitorApp.controller("AllWeeklyStatusCtrl", function($scope, $http, $log) {
 
-    this.getUserListByProject = function(projectName) {
-        if (!projectName)
-            return $q.reject('Project name is null');
+    const columnDefs = [
+        {field:'year',                  displayName:'Year',         width: 100,     cellClass: 'grid-align',    headerTooltip: 'Year'},
+        {field:'week',                  displayName:'Week',         width: 100,     cellClass: 'grid-align',    headerTooltip: 'Week'},
+        {field:'defectCountTotal',      displayName:'Defect(All)',  width: 170,     cellClass: 'grid-align',    headerTooltip: 'Number of all defects'},
+        {field:'defectCountFixed',      displayName:'Defect(Fix)',  width: 170,     cellClass: 'grid-align',    headerTooltip: 'Number of fixed defects'},
+        {field:'defectCountDismissed',  displayName:'Defect(Dis)',  width: 170,     cellClass: 'grid-align',    headerTooltip: 'Number of dismissed defects'},
+        {field:'userCount',             displayName:'User',         width: 170,     cellClass: 'grid-align',    headerTooltip: 'Number of users'}
+    ];
 
-        return $http.get('/api/v2/user/project/' + projectName)
+    initialize();
+
+    function initialize() {
+        $scope.gridOptions = createGrid(columnDefs);
+        loadDate();
+        setGridExportingFileNames($scope.gridOptions, WEEKLY_STATUS_FILENAME_PREFIX);
+    }
+
+    function loadDate() {
+        $http.get('/api/v2/defect-weekly-change')
             .then((res) => {
                 if (!isHttpResultOK(res)) {
-                    $log.error('Failed to get user list');
-                    return [];
+                    $log.error('Failed to load weekly change status list');
+                    return;
                 }
 
-                return res.data.rows;
+                $scope.gridOptions.data = res.data.rows;
             })
             .catch((err) => {
                 $log.error(err);
-                return [];
             });
-    };
-
-    this.getUserListByGroup = function(groupName) {
-        if (!groupName)
-            return $q.reject('Group name is null');
-
-        return $http.get('/api/v2/user/group/' + groupName)
-            .then((res) => {
-                if (!isHttpResultOK(res)) {
-                    $log.error('Failed to get user list');
-                    return [];
-                }
-
-                return res.data.rows;
-            })
-            .catch((err) => {
-                $log.error(err);
-                return [];
-            });
-    };
-
-    this.getExtraInfoByUserIdList = function(userIdList) {
-        if (!userIdList || userIdList.length == 0)
-            return $q.reject('User list is empty');
-
-        return $http.get('/api/v2/user/extra-info/' + userIdList)
-            .then((res) => {
-                if (!isHttpResultOK(res)) {
-                    $log.error('Failed to load extra user info');
-                    return null;
-                }
-
-                return res.data.rows;
-            })
-            .catch((err) => {
-                $log.error(err);
-                return null;
-            });
-    };
+    }
 });

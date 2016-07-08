@@ -33,12 +33,12 @@ exports.getProjectList = function(req, res) {
     const sql = "SELECT projectName, projectType, groupName, language   "+
                 "FROM ProjectInfo                                       "+
                 "ORDER BY projectName ASC                               ";
-    return route.executeSqlAndSendResponseRows(sql, res);
+    route.executeSqlAndSendResponseRows(sql, res);
 };
 
 exports.getGroupList = function(req, res) {
     const sql = "SELECT DISTINCT groupName FROM ProjectInfo ORDER BY groupName ASC";
-    return route.executeSqlAndSendResponseRows(sql, res);
+    route.executeSqlAndSendResponseRows(sql, res);
 };
 
 exports.getDatabaseNameByProjectName = function(projectName) {
@@ -61,7 +61,7 @@ exports.getDatabaseNameListByGroupName = function(groupName) {
         })
         .catch((err) => {
             log.error(err);
-            return null;
+            return [];
         });
 };
 
@@ -73,6 +73,6 @@ exports.getDatabaseNameList = function() {
         })
         .catch((err) => {
             log.error(err);
-            return null;
+            return [];
         });
 };

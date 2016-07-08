@@ -37,22 +37,22 @@ monitorApp.controller("DefectCtrl", function($scope, $http, $log) {
         {field:'allDefectCount',    displayName:'All',          width: 71,    headerTooltip: 'All defects'},
         {field:'allNew',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[New] All types of defects" tooltip-append-to-body="true">All<br>New</div>'},
         {field:'allFix',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[Fixed] All types of defects" tooltip-append-to-body="true">All<br>Fix</div>'},
-        {field:'allExc',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[Excluded] All types of defects" tooltip-append-to-body="true">All<br>Exc</div>'},
+        {field:'allDis',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[Dismissed] All types of defects" tooltip-append-to-body="true">All<br>Dis</div>'},
         {field:'criNew',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[New] Critical defects" tooltip-append-to-body="true">Cri<br>New</div>'},
         {field:'criFix',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[Fixed] Critical defects" tooltip-append-to-body="true">Cri<br>Fix</div>'},
-        {field:'criExc',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[Excluded] Critical defects" tooltip-append-to-body="true">Cri<br>Exc</div>'},
+        {field:'criDis',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[Dismissed] Critical defects" tooltip-append-to-body="true">Cri<br>Dis</div>'},
         {field:'majNew',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[New] Major defects" tooltip-append-to-body="true">Maj<br>New</div>'},
         {field:'majFix',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[Fixed] Major defects" tooltip-append-to-body="true">Maj<br>Fix</div>'},
-        {field:'majExc',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[Excluded] Major defects" tooltip-append-to-body="true">Maj<br>Exc</div>'},
+        {field:'majDis',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[Dismissed] Major defects" tooltip-append-to-body="true">Maj<br>Dis</div>'},
         {field:'minNew',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[New] Minor defects" tooltip-append-to-body="true">Min<br>New</div>'},
         {field:'minFix',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[Fixed] Minor defects" tooltip-append-to-body="true">Min<br>Fix</div>'},
-        {field:'minExc',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[Excluded] Minor defects" tooltip-append-to-body="true">Min<br>Exc</div>'},
+        {field:'minDis',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[Dismissed] Minor defects" tooltip-append-to-body="true">Min<br>Dis</div>'},
         {field:'crcNew',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[New] Coding rule checker defects" tooltip-append-to-body="true">Crc<br>New</div>'},
         {field:'crcFix',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[Fixed] Coding rule checker defects" tooltip-append-to-body="true">Crc<br>Fix</div>'},
-        {field:'crcExc',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[Excluded] Coding rule checker defects" tooltip-append-to-body="true">Crc<br>Exc</div>'},
+        {field:'crcDis',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[Dismissed] Coding rule checker defects" tooltip-append-to-body="true">Crc<br>Dis</div>'},
         {field:'etcNew',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[New] Etc defects" tooltip-append-to-body="true">Etc<br>New</div>'},
         {field:'etcFix',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[Fixed] Etc defects" tooltip-append-to-body="true">Etc<br>Fix</div>'},
-        {field:'etcExc',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[Excluded] Etc defects" tooltip-append-to-body="true">Etc<br>Exc</div>'}
+        {field:'etcDis',            width: 35,      headerCellTemplate:'<div style="text-align: center" uib-tooltip="[Dismissed] Etc defects" tooltip-append-to-body="true">Etc<br>Dis</div>'}
     ];
 
     initialize();
@@ -65,7 +65,7 @@ monitorApp.controller("DefectCtrl", function($scope, $http, $log) {
 
     function loadDefectList() {
         $http.get('/api/v2/defect')
-            .then(function (res) {
+            .then((res) => {
                 if (!isHttpResultOK(res)) {
                     $log.error('Failed to load defect list');
                     return;
@@ -73,7 +73,7 @@ monitorApp.controller("DefectCtrl", function($scope, $http, $log) {
 
                 defect.gridOptions.data = res.data.rows;
             })
-            .catch(function (err) {
+            .catch((err) => {
                 $log.error(err);
             });
     }

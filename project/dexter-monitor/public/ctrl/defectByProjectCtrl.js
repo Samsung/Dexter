@@ -25,7 +25,7 @@
  */
 "use strict";
 
-monitorApp.controller("DefectByProjectCtrl", function($scope, $http, $log) {
+monitorApp.controller("DefectByProjectCtrl", function($scope, $http, $log, ProjectService) {
     let defect = this;
     defect.projectNames = [];
     defect.projects = [];
@@ -34,10 +34,10 @@ monitorApp.controller("DefectByProjectCtrl", function($scope, $http, $log) {
     const columnDefs = [
         {field:'year',              displayName:'Year',         width: 105,     headerTooltip: 'Year'},
         {field:'week',              displayName:'Week',         width: 105,     headerTooltip: 'Week'},
-        {field:'accountCount',      displayName:'Accout',       width: 170,     headerTooltip: 'Number of accounts'},
+        {field:'userCount',         displayName:'User',         width: 170,     headerTooltip: 'Number of users'},
         {field:'allDefectCount',    displayName:'Total',        width: 170,     headerTooltip: 'Number of defects'},
         {field:'allFix',            displayName:'Fixed',        width: 170,     headerTooltip: 'Number of fixed defects'},
-        {field:'allExc',            displayName:'Excluded',     width: 170,     headerTooltip: 'Number of excluded defects'}
+        {field:'allDis',            displayName:'Dismissed',    width: 170,     headerTooltip: 'Number of dismissed defects'}
     ];
 
     initialize();
@@ -48,14 +48,9 @@ monitorApp.controller("DefectByProjectCtrl", function($scope, $http, $log) {
     }
     
     function loadProjectList() {
-        $http.get('/api/v2/project-list')
-            .then((res) => {
-                if (!isHttpResultOK(res)) {
-                    $log.error('Failed to load project list');
-                    return;
-                }
-
-                defect.projects = res.data.rows;
+        ProjectService.getProjectList()
+            .then((rows) => {
+                defect.projects = rows;
                 defect.projectNames = _.map(defect.projects, 'projectName');
             })
             .catch((err) => {

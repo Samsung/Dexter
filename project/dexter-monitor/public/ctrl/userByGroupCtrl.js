@@ -25,7 +25,7 @@
  */
 "use strict";
 
-monitorApp.controller("UserByGroupCtrl", function($scope, $http, $log, UserService) {
+monitorApp.controller("UserByGroupCtrl", function($scope, $http, $log, $routeParams, UserService) {
     let user = this;
     user.groupNames = [];
     user.curGroupName = 'Select a group';
@@ -55,6 +55,9 @@ monitorApp.controller("UserByGroupCtrl", function($scope, $http, $log, UserServi
                 }
 
                 user.groupNames = _.map(res.data.rows, 'groupName');
+                if (_.includes(user.groupNames, $routeParams.groupName)) {
+                    user.groupChanged($routeParams.groupName);
+                }
             })
             .catch((err) => {
                 $log.error(err);

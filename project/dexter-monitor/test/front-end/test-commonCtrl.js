@@ -23,43 +23,45 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-describe('UserByGroupCtrl Test', function() {
+describe('CommonCtrl Test', function() {
 
     beforeEach(module('dexterMonitorApp'));
 
-    var $controller, $httpBackend, user;
+    var $controller, $rootScope, $scope, $location;
 
-    beforeEach(inject(function(_$controller_, _$httpBackend_) {
+    beforeEach(inject(function(_$controller_, _$rootScope_, _$location_) {
         $controller = _$controller_;
-        $httpBackend = _$httpBackend_;
-        user = $controller('UserByGroupCtrl', {$scope: {}});
+        $rootScope = _$rootScope_;
+        $scope = $rootScope.$new();
+        $controller('CommonCtrl', {$scope: $scope});
+        $location = _$location_;
     }));
 
-    describe('groupChanged()', function() {
-
-        var GROUP_NAME = '16_DexterMonitorProject';
-        var USER_ID_1 = 'SamsungId1';
-        var USER_ID_2 = 'SamsungId2';
-
-        beforeEach(function() {
-            $httpBackend.whenGET('/api/v2/group-list').respond({status:'ok', rows:[
-                {'groupName':GROUP_NAME}
-            ]});
+    describe('isActiveView()', function() {
+        it('should return true if the passing parameter is equal to the current location' , function() {
+            $location.path('/user/project/');
+            assert.equal($scope.isActiveView('/user/project/'), true);
         });
+    });
 
-        it('should set current values to that of the selected group', function() {
-            $httpBackend.whenGET('/api/v2/user/group/' + GROUP_NAME).respond({status:'ok', rows:[
-                {'userId':USER_ID_1},{'userId':USER_ID_2}
-            ]});
+    describe('isActiveView()', function() {
+        it('should return false if the passing parameter is NOT equal to the current location', function() {
+            $location.path('/user/group/');
+            assert.equal($scope.isActiveView('/user/project/'), false);
+        });
+    });
 
-            user.groupChanged(GROUP_NAME);
-            $httpBackend.flush();
+    describe('isActiveViewWithParam()', function() {
+        it('should return true if the current location starts with the passing parameter', function() {
+            $location.path('/user/group/SE');
+            assert.equal($scope.isActiveViewWithParam('/user/group/'), true);
+        });
+    });
 
-            assert.equal(user.curGroupName, GROUP_NAME);
-            assert.equal(user.gridOptions.exporterCsvFilename, USER_FILENAME_PREFIX + '-' + GROUP_NAME + '.csv');
-            assert.equal(user.gridOptions.exporterPdfFilename, USER_FILENAME_PREFIX + '-' + GROUP_NAME + '.pdf');
-            assert.equal(user.gridOptions.data[0].userId, USER_ID_1);
-            assert.equal(user.gridOptions.data[1].userId, USER_ID_2);
+    describe('isActiveViewWithParam()', function() {
+        it('should return false if the current location does NOT starts with the passing parameter', function() {
+            $location.path('/user/group/SE');
+            assert.equal($scope.isActiveViewWithParam('/user/project/'), false);
         });
     });
 });
