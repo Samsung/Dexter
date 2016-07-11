@@ -1,13 +1,13 @@
 adminSEApp.controller('adminSECtrl', function($scope, $http, $location ,$routeParams, $log) {
     "use strict";
 
-    $('select').on('select2:select', function (e) {
-        addModulePathList(e);
+    $('select').on('select2:select', function (event) {
+        addModulePathList(event);
         changeSelectedModuleCount();
     });
 
-    $('select').on('select2:unselect', function (e) {
-        removeModulePathList(e);
+    $('select').on('select2:unselect', function (event) {
+        removeModulePathList(event);
         changeSelectedModuleCount();
     });
 
@@ -16,23 +16,22 @@ adminSEApp.controller('adminSECtrl', function($scope, $http, $location ,$routePa
         $("#removeModuleCount").html(parseInt(count));
         if(count > 0) {
             $("#isModuleSelected").removeClass("fa fa-folder").addClass("fa fa-folder-open");
-        }
-        if(count==0){
+        }else{
             $("#isModuleSelected").removeClass("fa fa-folder-open").addClass("fa fa-folder");
         }
     }
 
-    function addModulePathList(evt){
-        if (!evt) { return; }
-        JSON.stringify(evt.params, function (key, value) {
+    function addModulePathList(event){
+        if (!event) { return; }
+        JSON.stringify(event.params, function (key, value) {
             $scope.selectedModulePathList.push(value.data.id);
         });
     }
 
-    function removeModulePathList(evt){
-        if (!evt) { return; }
+    function removeModulePathList(event){
+        if (!event) { return; }
 
-        JSON.stringify(evt.params, function (key, value) {
+        JSON.stringify(event.params, function (key, value) {
             $scope.selectedModulePathList.pop(value.data.id);
         });
     }
@@ -46,13 +45,13 @@ adminSEApp.controller('adminSECtrl', function($scope, $http, $location ,$routePa
 
     init();
 
-    var getModulePathListUrl ='/api/v2/adminSE/modulePath';
+    var getModulePathListUrl ='/api/v2/module-path-list';
     $http.get(getModulePathListUrl, {
     }).then(function(result){
         if(isHttpResultOK(result)){
             $scope.modulePathList = [];
-            angular.forEach(result.data.rows, function(idx){
-                $scope.modulePathList.push(idx.modulePath);
+            angular.forEach(result.data.rows, function(index){
+                $scope.modulePathList.push(index.modulePath);
             });
 
             $(".select2").select2({
@@ -66,8 +65,8 @@ adminSEApp.controller('adminSECtrl', function($scope, $http, $location ,$routePa
 
 
     $scope.deleteModulePathList = function(){
-        alert("It can not restore if it is once deleted.");
-        var deleteModulePathListUrl = '/api/v2/adminSE/deleteModulePath';
+        alert("Defect can not restore if defect is once deleted in modulePath that you selected.");
+        var deleteModulePathListUrl = '/api/v2/module-path-list';
         $http.delete(deleteModulePathListUrl, {
                 params : {
                     "modulePathList": $scope.selectedModulePathList.toString(),

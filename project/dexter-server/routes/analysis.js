@@ -291,7 +291,6 @@ exports.getDefectForCSV = function(req, res){
     sql += " order by checkerCode, fileName, className, methodName ";
     return database.execV2(sql)
         .then(function(rows) {
-            console.log(rows.length);
             res.send({status:'ok', rows: rows} );
         })
         .catch(function(err) {
@@ -313,7 +312,6 @@ exports.getDidDefectForCSV = function(req, res){
         + "Defect A ";
 
     sql += " order by checkerCode, fileName, className, methodName ";
-//    console.log(sql);
     return database.execV2(sql)
         .then(function(rows) {
             res.send({status:'ok', rows: rows} );
@@ -343,8 +341,6 @@ exports.getSnapshotDefectForCSV = function(req, res){
         + "(select userId from Account where userNo = A.modifierNo) as modifierId, "
         + "ifnull(chargerNo,'') as chargerNo, ifnull(reviewerNo,'') as reviewerNo, ifnull(approvalNo,'') as approvalNo "
         + "From SnapshotDefectMap AS A WHERE snapshotId =" + database.toSqlValue(snapshotId) ;
-
-    console.log(sql);
 
    /* database.exec(sql, function (err, result){
         if(err){
@@ -2777,7 +2773,7 @@ exports.getAllSnapshotV2 = function (req, res){
 };
 
 exports.getOccurencesByFileNameInSnapshot = function(req, res){
-    if(req == undefined || req.query == undefined || req.query.fileName == undefined){
+    if(req == undefined || req.query == undefined || req.query.fileName == undefined || req.query.snapshotId){
         res.send({status:"fail", errorMessage: "Input(parameter) error"});
         return;
     }
@@ -2786,6 +2782,7 @@ exports.getOccurencesByFileNameInSnapshot = function(req, res){
         modulePath = base64.decode(req.query.modulePath);
 
     var fileName = req.query.fileName;
+    var snapshotId = req.query.snapshotId;
 
     var sql = "SELECT "
         + " did, if(startLine = -1, 1, startLine) as startLine, endLine, if(charStart = -1,'N/A', charStart) as charStart, "
@@ -2805,7 +2802,9 @@ exports.getOccurencesByFileNameInSnapshot = function(req, res){
     else{
         sql += "     modulePath = " + database.toSqlValue(modulePath);
     }
-    sql += "     and fileName = " + database.toSqlValue(fileName) + ") group by did order by startLine" ;
+    sql += "     and fileName = " + database.toSqlValue(fileName) + ") and snapshotId = "+ database.toSqlValue(snapshotId) + "group by did order by startLine" ;
+
+    console.log(sql);
     database.exec(sql, function (err, result) {
         if(err){
             res.send({result:'fail', errorMessage: err.message, errorCode: -1});

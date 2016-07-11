@@ -421,8 +421,8 @@ function initRestAPI(){
     app.get('/api/v2/snapshotAll', analysis.getSnapshotDefectForCSV);
 
     /* For Administrator */
-    app.get('/api/v2/adminSE/modulePath', adminSE.getModulePathList);
-    app.delete('/api/v2/adminSE/deleteModulePath', adminSE.deleteModulePathList);
+    app.get('/api/v2/module-path-list', adminSE.getModulePathList);
+    app.delete('/api/v2/module-path-list', auth, adminSE.deleteModulePathList);
 
 }
 

@@ -66,10 +66,10 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         checkLogin();
     };
 
-
     var commentIndex1 = [];
     var commentIndex2 = [];
 
+    init();
 
     var url = $location.absUrl().split('?');
 
@@ -83,9 +83,7 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         }
     };
 
-
     var SECURITY_CHECKER = 'SECURITY';
-
 
     function pushNoDefect() {
         $scope.csvContent.push({
@@ -127,7 +125,6 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
             'Date':  'None'
         });
     }
-
 
     function pushDefect(defect) {
         $scope.csvContent.push({
@@ -176,7 +173,7 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
                 .then(function(){
                     return $scope.csvSnapshotContent;
                 })
-        }else {
+        } else {
             return setDefectCSVContent()
                 .then(function () {
                     return $scope.csvContent;
@@ -225,7 +222,6 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         })
     }
 
-
     $scope.getSecurityCSVContent = function(){
         if($scope.isSnapshotView){
             return setSecuritySnapshotCSVContent()
@@ -272,6 +268,7 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
                 var result = results.data.rows;
                 if(result.length === 0){
                     pushNoSnapshotDefect();
+                    return ;
                 }
                 angular.forEach(result, function(snapshotDefect){
                     pushSnapshotDefect(snapshotDefect);
@@ -281,56 +278,21 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         })
     }
 
-    init();
-
-    function checkLogin() {
-        $http.get("/api/v1/accounts/checkLogin", {}).then(function (results) {
-            if (results.data.userId) {
-                $scope.isHideLoginBtnTitle = results.data.userId + "/ logout";
-            }
-            else {
-                $scope.isHideLoginBtnTitle = 'Login';
-            }
-        }, function (results) {
-            $log.error(results);
-        });
-    }
-
-    function initLocalStorage() {
-        window.localStorage['pageSize'] = (window.localStorage['pageSize']) || 500;
-        window.localStorage['currentPage'] = parseInt(window.localStorage['currentPage']) || 1;
-    }
-
-    function getProjectName() {
-        $http.get('/api/v1/projectName', {}).then(function (result) {
-            if (result && result.data) {
-                var html = 'Defect : ' + result.data.projectName;
-                $scope.projectName = result.data.projectName;
-                $('#indexTitle').html(html);
-            }
-        }, function (results) {
-            $log.error(results);
-        });
-    }
-
-    function moveTopOfPage() {
-        $location.hash('bookmark');
-        $anchorScroll();
-    }
-
-    function removeLocalStorageOfResources() {
-        window.localStorage.removeItem('modulePath');
-        window.localStorage.removeItem('fileName');
-        window.localStorage.removeItem('selectTree');
-    }
-
-    var resetAdminUserFlag = function () {
-        $scope.isAdminUser = false;
-        $scope.isCurrentLoginId = false;
+    $scope.loadFileTreeFromDB = function (btnID) {
+        if (btnID !== 'showFileTreeBtn') {
+            return;
+        }
+        if ($scope.isFileTreeHidden === true) {
+            loadTreeItem();
+        }
+        toggleFileTreeAnimation(!$scope.isFileTreeHidden);
+        toggleShowFileTreeBtn(!$scope.isFileTreeHidden);
     };
 
-    moveTopOfPage();
-    resetAdminUserFlag();
+    function loadTreeItem() {
+        $scope.fileTree = [];
+        loadTreeItemFromDB('project', 'project');
+    }
 
     function loadTreeItemFromDB(state, type) {
         $http.get('/api/v2/defect/status/' + state, {
@@ -339,7 +301,6 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
             }
         }).then(function (results) {// success
             if (isHttpResultOK(results)) {
-
                 var data = results.data.rows[0];
                 $scope.treeItem = {
                     'name': data.modulePath,
@@ -350,9 +311,7 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
                     'fixCount': data.fixCount,
                     'excCount': data.excCount,
                     'children': []
-                    //'collapsed' : true
                 };
-
                 if (type === 'project') {
                     $scope.fileTree.splice(0, 0, $scope.treeItem);
                 }
@@ -362,11 +321,6 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         });
     }
 
-    function loadTreeItem() {
-        $scope.fileTree = [];
-        loadTreeItemFromDB('project', 'project');
-    }
-
     $scope.$watch('fileTreeId.currentNode', function () {
         if ($scope.fileTreeId.currentNode === undefined) {
             return;
@@ -374,7 +328,6 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         var currentNode = $scope.fileTreeId.currentNode;
         loadTreeChildren(currentNode);
     }, false);
-
 
     function loadTreeChildren(node) {
         var modulePath = "";
@@ -453,6 +406,60 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         }).catch(console.error);
     };
 
+    function toggleShowFileTreeBtn(isShowState) {
+        $scope.isFileTreeHidden = isShowState;
+        $scope.isFileTreeBtnTitleHidden = ((isShowState === true) ? 'Show File Tree' : 'Hide File Tree');
+    }
+
+    function checkLogin() {
+        $http.get("/api/v1/accounts/checkLogin", {
+        }).then(function (results) {
+            if (results.data.userId) {
+                $scope.isHideLoginBtnTitle = results.data.userId + "/ logout";
+            }
+            else {
+                $scope.isHideLoginBtnTitle = 'Login';
+            }
+        }, function (results) {
+            $log.error(results);
+        });
+    }
+
+    function initLocalStorage() {
+        window.localStorage['pageSize'] = (window.localStorage['pageSize']) || 500;
+        window.localStorage['currentPage'] = parseInt(window.localStorage['currentPage']) || 1;
+    }
+
+    function getProjectName() {
+        $http.get('/api/v1/projectName', {}).then(function (result) {
+            if (result && result.data) {
+                var html = 'Defect : ' + result.data.projectName;
+                $scope.projectName = result.data.projectName;
+                $('#indexTitle').html(html);
+            }
+        }, function (results) {
+            $log.error(results);
+        });
+    }
+
+    function moveTopOfPage() {
+        $location.hash('bookmark');
+        $anchorScroll();
+    }
+
+    function removeLocalStorageOfResources() {
+        window.localStorage.removeItem('modulePath');
+        window.localStorage.removeItem('fileName');
+        window.localStorage.removeItem('selectTree');
+    }
+
+    var resetAdminUserFlag = function () {
+        $scope.isAdminUser = false;
+        $scope.isCurrentLoginId = false;
+    };
+
+    moveTopOfPage();
+    resetAdminUserFlag();
 
     $scope.isFileTreeHidden = true;
     $scope.isLoginBtnHidden = true;
@@ -474,13 +481,13 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         angular.element('#showDefectAlert').hide();
     };
 
-    var showDefectAlertMSG = function (str, status) {
-        var alertStatus = status;
-        var status = status;
-        (status == 'success') ? status = 'glyphicon-ok' : status = 'glyphicon-exclamation-sign';
-        (alertStatus == 'success') ? alertStatus = 'alert-success' : alertStatus = 'alert-warning';
+    var showDefectAlertMSG = function (_str, _status) {
+        var alertStatus = _status;
+        var status = _status;
+        status = (status == 'success') ? 'glyphicon-ok' : 'glyphicon-exclamation-sign';
+        alertStatus = (alertStatus == 'success') ?  'alert-success' : 'alert-warning';
         var showAlertDefectMSG = "<a class='close' data-dismiss='alert' aria-hidden='true'><div class='defect-alert " + alertStatus + " fade in'>" +
-            "x </a><span class='glyphicon " + status + "'>&nbsp;</span><strong></strong>" + str + " </strong></div>";
+            "x </a><span class='glyphicon " + status + "'>&nbsp;</span><strong></strong>" + _str + " </strong></div>";
         angular.element('#showDefectAlert').show().html(showAlertDefectMSG);
     };
 
@@ -510,8 +517,7 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
             $http.get("/api/v1/accounts/checkWebLogin", {}).then(function (results) {
                 if (results.data.userId) {
                     successLogin(results.data);
-                }
-                else {
+                } else {
                     var str = "Please check Your ID or PW and use the Dexter account.";
                     angular.element('#showDefectAlert').html(showDefectAlertMSG(str, 'error'));
                     setTimeout(hideDefectAlertMSG, 5000);
@@ -519,8 +525,7 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
             }, function (results) {
                 $log.error(results);
             });
-        }
-        else {
+        } else {
             $scope.isLoginBtnHidden = true;
             alert("Do you really want to logout on Dexter Web?");
             $scope.isHideLoginBtnTitle = 'Login';
@@ -536,8 +541,7 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         $http.get("/api/v1/accounts/checkAdmin", {}).then(function (results) {
             if (results.data.isAdmin) {
                 successAdminLogin(results.data);
-            }
-            else {
+            } else {
                 var str = "Please use Dexter Admin Account.";
                 angular.element('#showDefectAlert').html(showDefectAlertMSG(str, 'error'));
                 setTimeout(hideDefectAlertMSG, 5000);
@@ -588,29 +592,15 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
     function toggleFileTreeAnimation(isShowState) {
         if (isShowState === true) {
             $('#animationTab').hide();
-        }
-        else {
+        } else {
             var calculateLeft = document.body.clientWidth - 598;
-            $('#animationTab').css('display', 'block').animate({left: calculateLeft})
+            $('#animationTab')
+                .css('display', 'block')
+                .animate({left: calculateLeft})
                 .css('left', document.body.clientWidth);
         }
     }
 
-    function toggleShowFileTreeBtn(isShowState) {
-        $scope.isFileTreeHidden = isShowState;
-        $scope.isFileTreeBtnTitleHidden = ((isShowState === true) ? 'Show File Tree' : 'Hide File Tree');
-    }
-
-    $scope.loadCurrentFileTree = function (btnID) {
-        if (btnID !== 'showFileTreeBtn') {
-            return;
-        }
-        if ($scope.isFileTreeHidden === true) {
-            loadTreeItem();
-        }
-        toggleFileTreeAnimation(!$scope.isFileTreeHidden);
-        toggleShowFileTreeBtn(!$scope.isFileTreeHidden);
-    };
 
     $scope.isDetailTabHidden = false;
     $scope.isButtonHidden = true;
@@ -712,9 +702,8 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
                         fileList: $scope.fileList
                     }
                 }).then(function (results) {
-                    $scope.loadCurrentFileTree('removeFileTreeBtn');
+                    $scope.loadFileTreeFromDB('removeFileTreeBtn');
                     removeLocalStorageOfResources();
-
                 }, function (results) {
                 });
             }
@@ -733,7 +722,6 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
     }
 
     function showDefects() {
-        //loadTotalDefectCount();
         loadTotalDefectInformation();
     }
 

@@ -52,7 +52,6 @@ function deleteCodeMetricsFromDB(modulePathList, modulePathListLength, callback)
         }
     });
 
-    console.log(sql);
     database.execV2(sql)
         .then(function() {
             callback(modulePathList,modulePathListLength, deleteSourceCodeMapFromDB);
@@ -74,11 +73,9 @@ function deleteFunctionMetricFromDB(modulePathList,modulePathListLength, callbac
         }
     });
 
-    console.log(sql);
     database.execV2(sql)
         .then(function() {
             callback(modulePathList,modulePathListLength, deleteSnapshotDefectMapFromDB);
-            //res.send({status:'ok', rows: rows} );
         })
         .catch(function(err) {
             logging.error(err);
@@ -95,7 +92,6 @@ function deleteSourceCodeMapFromDB(modulePathList, modulePathListLength, callbac
             sql += " or modulePath = " + database.toSqlValue(modulePath);
         }
     });
-    console.log(sql);
     database.execV2(sql)
         .then(function() {
             callback(modulePathList,modulePathListLength, deleteDefectFromDB);
@@ -115,7 +111,6 @@ function deleteSnapshotDefectMapFromDB(modulePathList,modulePathListLength, call
         }
     });
 
-    console.log(sql);
     database.execV2(sql)
         .then(function() {
             return ;
@@ -136,7 +131,6 @@ function deleteDefectFromDB(modulePathList){
             sql += " or modulePath = " + database.toSqlValue(modulePath);
         }
     });
-    console.log(sql);
     database.execV2(sql)
         .then(function() {
         })
