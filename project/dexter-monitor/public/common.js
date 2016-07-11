@@ -25,13 +25,10 @@
  */
 "use strict";
 
-monitorApp.controller("CommonCtrl", function($scope, $location) {
+function isHttpResultOK(result) {
+    if (result.data && result.data.status && result.data.status == 'ok')
+        return true;
+    else
+        return false;
+}
 
-    $scope.isActiveView = function(path) {
-        return _.isEqual($location.path(), path);
-    };
-
-    $scope.isActiveViewWithParam = function(path) {
-        return _.startsWith($location.path(), path);
-    };
-});

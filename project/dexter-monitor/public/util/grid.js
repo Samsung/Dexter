@@ -25,13 +25,31 @@
  */
 "use strict";
 
-monitorApp.controller("CommonCtrl", function($scope, $location) {
+const DEFECT_FILENAME_PREFIX = 'defect-list';
+const USER_FILENAME_PREFIX = 'user-list';
+const CURRENT_STATUS_FILENAME_PREFIX = 'current-status-list';
+const WEEKLY_STATUS_FILENAME_PREFIX = 'weekly-status-list';
 
-    $scope.isActiveView = function(path) {
-        return _.isEqual($location.path(), path);
+function createGrid(columnDefs) {
+    return {
+        enableSorting: true,
+        enableFiltering: true,
+        showGridFooter: true,
+        enableGridMenu: true,
+        enableSelectAll: true,
+        exporterCsvFilename: 'list.csv',
+        exporterPdfFilename: 'list.pdf',
+        exporterPdfDefaultStyle: {fontSize: 8},
+        exporterTableStyle: {margin: [5,5,5,5]},
+        exporterPdfTableHeaderStyle: {fontSize: 10, bold: true, italics: true, color: 'red'},
+        exporterPdfOrientation: 'landscape',
+        exporterPdfPageSize: 'A4',
+        columnDefs: columnDefs,
+        data: []
     };
+}
 
-    $scope.isActiveViewWithParam = function(path) {
-        return _.startsWith($location.path(), path);
-    };
-});
+function setGridExportingFileNames(gridOptions, fileName) {
+    gridOptions.exporterCsvFilename = fileName + '.csv';
+    gridOptions.exporterPdfFilename = fileName + '.pdf';
+}

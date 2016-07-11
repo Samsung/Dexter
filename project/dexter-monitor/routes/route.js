@@ -25,13 +25,16 @@
  */
 "use strict";
 
-monitorApp.controller("CommonCtrl", function($scope, $location) {
+const database = require("../util/database");
+const log = require('../util/logging');
 
-    $scope.isActiveView = function(path) {
-        return _.isEqual($location.path(), path);
-    };
-
-    $scope.isActiveViewWithParam = function(path) {
-        return _.startsWith($location.path(), path);
-    };
-});
+exports.executeSqlAndSendResponseRows = function(sql, res) {
+    database.exec(sql)
+        .then((rows) => {
+            res.send({status:'ok', rows: rows});
+        })
+        .catch((err) => {
+            log.error(err);
+            res.send({status:"fail", errorMessage: err.message});
+        });
+};

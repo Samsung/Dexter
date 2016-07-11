@@ -1,3 +1,32 @@
 <div class="view">
-    <h1 class="">Defect list by group</h1>
+    <div class="container">
+        <h3>Defect list by group</h3>
+
+        <table><tr>
+            <td class="inner">
+                <div class="dropdown" uib-dropdown>
+                    <button type="button" class="btn btn-primary year-change" data-toggle="dropdown" id="year-change">
+                        {{defect.curYear}} <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu year-change" uib-dropdown-menu role="menu" aria-labelledby="year-change">
+                        <li ng-repeat="year in defect.years">
+                            <a ng-click="defect.yearChanged(year)" href>{{year}}</a>
+                        </li>
+                    </ul>
+                </div>
+            </td>
+            <td>
+                <uib-pagination boundary-link-numbers="true" direction-links="false" max-size="21" items-per-page="1"
+                                total-items="defect.maxWeekOfCurYear" ng-model="defect.curWeek" ng-change="defect.weekChanged()">
+                </uib-pagination>
+            </td>
+        </tr>
+            <tr>
+                <td></td>
+                <td><div class="grid-defect-group" id='defectByGroupGrid' ui-grid="defect.gridOptions"
+                         ui-grid-resize-columns ui-grid-move-columns ui-grid-selection ui-grid-exporter ui-grid-auto-resize>
+                </div></td>
+            </tr>
+        </table>
+    </div>
 </div>

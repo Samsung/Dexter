@@ -28,8 +28,6 @@ package com.samsung.sec.dexter.core.analyzer;
 import java.io.File;
 import java.util.List;
 
-import javax.swing.filechooser.FileFilter;
-
 import org.apache.log4j.Logger;
 
 import com.google.common.base.Strings;
@@ -53,10 +51,6 @@ public class AnalysisResultFileManager {
 		return LazyHolder.INSTANCE;
 	}
 
-	/**
-	 * @param result
-	 *            void
-	 */
 	public void writeJson(final List<AnalysisResult> resultList) {
 		if(resultList.size() == 0) return;
 		
@@ -72,11 +66,8 @@ public class AnalysisResultFileManager {
 	private void removeOldResultFile(final AnalysisResult baseResult, final String resultFolderStr) {
 		final File resultFolder = new File(resultFolderStr);
 		
-		final String resultFileName = ResultFileConstant.RESULF_FILE_PREFIX 
-				+ baseResult.getFileName() + "_"; 
+		final String resultFileName = getResultFilePrefixName(baseResult.getModulePath(), baseResult.getFileName()) + "_"; 
 		File[] oldResultFiles = DexterUtil.getSubFiles(resultFolder, resultFileName);
-		if(oldResultFiles == null || oldResultFiles.length == 0)
-			return;
 		
 		for(int i=0; i<oldResultFiles.length; i++){
 			if(oldResultFiles[i].delete() == false){
@@ -155,13 +146,17 @@ public class AnalysisResultFileManager {
 	private File getResultFilePath(final AnalysisResult result,
 			final String resultFolderStr) {
 		
-		final String path =  resultFolderStr + "/" + ResultFileConstant.RESULF_FILE_PREFIX + result.getFileName()
+		final String path =  resultFolderStr + "/" + getResultFilePrefixName(result.getModulePath(), result.getFileName())
 		        + "_" + DexterUtil.currentDateTimeMillis() + ResultFileConstant.RESULT_FILE_EXTENSION;
 		
 		final File resultFile = DexterUtil.createEmptyFileIfNotExist(path);
 		
 		return resultFile;
-	} 
+	}
+	
+	protected String getResultFilePrefixName(final String modulePath, final String fileName){
+		return ResultFileConstant.RESULF_FILE_PREFIX + fileName + "_" + modulePath.hashCode(); 
+	}
 
 	public String getJson(final AnalysisResult result) {
 		StringBuilder contents = createJson(result);

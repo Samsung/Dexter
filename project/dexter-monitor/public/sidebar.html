@@ -1,22 +1,34 @@
 <div class="row">
     <div class="sidebar">
         <ul class="nav nav-sidebar">
-            <li ng-class="{'active':isActiveView('/')}"><a href="#/">Overview</a></li>
-            <li ng-class="{'active':isActiveView('/serverstatus/')}"><a href="#/serverstatus/">Server Status</a></li>
+            <li><div><h3><b>Overview</b></h3></div></li>
+            <li ng-class="{'active':isActiveView('/')}">
+                <a href="#/" uib-tooltip="Current status of defects and users" tooltip-placement="right" tooltip-append-to-body="true">Current</a></li>
+            <li ng-class="{'active':isActiveView('/change/')}">
+                <a href="#/change/" uib-tooltip="Weekly status of defects and users" tooltip-placement="right" tooltip-append-to-body="true">Change</a></li>
+            <li ng-class="{'active':isActiveView('/serverstatus/')}">
+                <a href="#/serverstatus/" uib-tooltip="Current server status" tooltip-placement="right" tooltip-append-to-body="true">Server Status</a></li>
         </ul>
+        <br>
         <ul class="nav nav-sidebar">
-            <li><div><b>Users</b></div></li>
-            <li ng-class="{'active':isActiveView('/user/')}"><a href="#/user/">All</a></li>
-            <li ng-class="{'active':isActiveView('/user/project/')}"><a href="#/user/project/">by Project</a></li>
-            <li ng-class="{'active':isActiveView('/user/group/')}"><a href="#/user/group/">by Group</a></li>
-            <li ng-class="{'active':isActiveView('/user/lab/')}"><a href="#/user/lab/">by Lab</a></li>
-        </ul>
-        <ul class="nav nav-sidebar">
-            <li><div><b>Defects</b></div></li>
-            <li ng-class="{'active':isActiveView('/defect/')}"><a href="#/defect/">All</a></li>
-            <li ng-class="{'active':isActiveView('/defect/project/')}"><a href="#/defect/project/">by Project</a></li>
-            <li ng-class="{'active':isActiveView('/defect/group/')}"><a href="#/defect/group/">by Group</a></li>
-            <li ng-class="{'active':isActiveView('/defect/lab/')}"><a href="#/defect/lab/">by Lab</a></li>
+            <li><div><h3><b>Detail</b></h3></div></li>
+            <li ng-class="{'active':isActiveView('/user/')}">
+                <a href="#/user/" uib-tooltip="Current users of all projects" tooltip-placement="right" tooltip-append-to-body="true">User</a></li>
+            <li ng-class="{'active':isActiveView('/user/project/')}">
+                <a href="#/user/project/" uib-tooltip="Current users of a selected project" tooltip-placement="right" tooltip-append-to-body="true">User by Project</a></li>
+            <li ng-class="{'active':isActiveViewWithParam('/user/group/')}">
+                <a href="#/user/group/" uib-tooltip="Current users of a selected group" tooltip-placement="right" tooltip-append-to-body="true">User by Group</a></li>
+            <li ng-class="{'active':isActiveView('/user/lab/')}">
+                <a href="#/user/lab/" uib-tooltip="Current users of a selected lab (TBD)" tooltip-placement="right" tooltip-append-to-body="true">User by Lab</a></li>
+            <br>
+            <li ng-class="{'active':isActiveView('/defect/')}">
+                <a href="#/defect/" uib-tooltip="Weekly defects of all groups and projects" tooltip-placement="right" tooltip-append-to-body="true">Defect</a></li>
+            <li ng-class="{'active':isActiveView('/defect/project/')}">
+                <a href="#/defect/project/" uib-tooltip="Weekly defects of a selected project" tooltip-placement="right" tooltip-append-to-body="true">Defect by Project</a></li>
+            <li ng-class="{'active':isActiveView('/defect/group/')}">
+                <a href="#/defect/group/" uib-tooltip="Weekly defects of all groups for a selected week" tooltip-placement="right" tooltip-append-to-body="true">Defect by Group</a></li>
+            <li ng-class="{'active':isActiveView('/defect/lab/')}">
+                <a href="#/defect/lab/" uib-tooltip="Weekly defects of a selected lab (TBD)" tooltip-placement="right" tooltip-append-to-body="true">Defect by Lab</a></li>
         </ul>
     </div>
 </div>

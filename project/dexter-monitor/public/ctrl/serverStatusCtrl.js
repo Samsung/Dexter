@@ -35,6 +35,14 @@ monitorApp.controller("ServerStatusCtrl", function ($interval, ServerStatusServi
     main.startMonitoringServers = startMonitoringServers;
     main.stopMonitoringServers = stopMonitoringServers;
 
+    const columnDefs = [
+        {field:'type', displayName:'Type', cellTooltip: function(row, col){ return row.entity.type;}},
+        {field:'group', displayName:'Group', cellTooltip: function(row, col){ return row.entity.group;}},
+        {field:'name', displayName:'Name', width:"50%", cellTooltip: function(row, col){ return row.entity.name;}},
+        {field:'emailingWhenServerDead', displayName:'Email', width: 60, cellTooltip: function(row, col){
+            return row.entity.emailingWhenServerDead;}}
+    ];
+
     initialize();
 
     function initialize(){
@@ -44,39 +52,10 @@ monitorApp.controller("ServerStatusCtrl", function ($interval, ServerStatusServi
     }
 
     function createServerListTable(){
-        main.activeServerGridOptions = getCommonOptions();
-        main.activeServerGridOptions.data = [];
-
-        main.inactiveServerGridOptions = getCommonOptions();
-        main.inactiveServerGridOptions.data = [];
-    }
-
-    function getCommonOptions(){
-        return {
-            enableSorting: true,
-            enableFiltering: true,
-            showGridFooter: true,
-            enableGridMenu: true,
-            enableSelectAll: true,
-            exporterCsvFilename: 'server-list.csv',
-            exporterPdfFilename: 'server-list.pdf',
-            exporterPdfDefaultStyle: {fontSize: 8},
-            exporterTableStyle: {margin: [5,5,5,5]},
-            exporterPdfTableHeaderStyle: {fontSize: 10, bold: true, italics: true, color: 'red'},
-            exporterPdfOrientation: 'landscape',
-            exporterPdfPageSize: 'A4',
-            columnDefs: getServerGridColumnDefinitions()
-        };
-    }
-
-    function getServerGridColumnDefinitions(){
-        return [
-            {field:'type', displayName:'Type', cellTooltip: function(row, col){ return row.entity.type;}},
-            {field:'group', displayName:'Group', cellTooltip: function(row, col){ return row.entity.group;}},
-            {field:'name', displayName:'Name', width:"50%", cellTooltip: function(row, col){ return row.entity.name;}},
-            {field:'emailingWhenServerDead', displayName:'Email', width: 60, cellTooltip: function(row, col){
-                return row.entity.emailingWhenServerDead;}}
-        ];
+        main.activeServerGridOptions = createGrid(columnDefs);
+        main.inactiveServerGridOptions = createGrid(columnDefs);
+        setGridExportingFileNames(main.activeServerGridOptions, 'active-server-list');
+        setGridExportingFileNames(main.inactiveServerGridOptions, 'inactive-server-list');
     }
 
     function startMonitoringServers(){
