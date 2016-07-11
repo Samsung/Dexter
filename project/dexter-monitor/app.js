@@ -152,6 +152,7 @@ function setWebApis(){
     app.get('/api/v2/user/lab', user.getByLab);
     app.get('/api/v2/user/extra-info/:userIdList', user.getMoreInfoByUserIdList);
     app.get('/api/v2/user-count/:projectName', user.getUserCountByProjectName);
+    app.get('/api/v2/user-status', user.getUserStatus);
 
     app.get('/api/v2/defect/min-year', defect.getMinYear);
     app.get('/api/v2/defect/max-year', defect.getMaxYear);

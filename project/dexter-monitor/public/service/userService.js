@@ -34,7 +34,7 @@ monitorApp.service('UserService', function($http, $log, $q) {
         return $http.get('/api/v2/user/project/' + projectName)
             .then((res) => {
                 if (!isHttpResultOK(res)) {
-                    $log.error('Failed to get user list');
+                    $log.error('Failed to get user list by project');
                     return [];
                 }
 
@@ -53,7 +53,7 @@ monitorApp.service('UserService', function($http, $log, $q) {
         return $http.get('/api/v2/user/group/' + groupName)
             .then((res) => {
                 if (!isHttpResultOK(res)) {
-                    $log.error('Failed to get user list');
+                    $log.error('Failed to get user list by group');
                     return [];
                 }
 
@@ -81,6 +81,38 @@ monitorApp.service('UserService', function($http, $log, $q) {
             .catch((err) => {
                 $log.error(err);
                 return null;
+            });
+    };
+
+    this.getUserList = function() {
+        return $http.get('/api/v2/user')
+            .then((res) => {
+                if (!isHttpResultOK(res)) {
+                    $log.error('Failed to get user list');
+                    return [];
+                }
+
+                return res.data.rows;
+            })
+            .catch((err) => {
+                $log.error(err);
+                return [];
+            });
+    };
+
+    this.getUserStatus = function() {
+        return $http.get('/api/v2/user-status')
+            .then((res) => {
+                if (!isHttpResultOK(res)) {
+                    $log.error('Failed to get user status list');
+                    return [];
+                }
+
+                return res.data.rows;
+            })
+            .catch((err) => {
+                $log.error(err);
+                return [];
             });
     };
 });

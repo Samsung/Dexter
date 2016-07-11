@@ -87,7 +87,7 @@ exports.getAll = function(req, res) {
            sendUserListInDatabaseNameList(dbNameList, res);
        })
        .catch((err) => {
-           log.error('Failed to get the DB name list of the ' + groupName + ' group: ' + err);
+           log.error('Failed to get the DB name list: ' + err);
            res.send({status:"fail", errorMessage: err.message});
        });
 };
@@ -202,6 +202,146 @@ exports.getUserCountByProjectName = function(req, res) {
         })
         .catch((err) => {
             log.error(err);
+            res.send({status:"fail", errorMessage: err.message});
+        });
+};
+
+function loadUserStatusList() {
+    const sql = "SELECT * FROM DexterUserList";
+    return database.exec(sql)
+        .then((rows) => {
+            return rows;
+        })
+        .catch((err) => {
+            log.error(err);
+            return [];
+        });
+}
+
+function loadUserList() {
+    return project.getDatabaseNameList()
+        .then((rows) => {
+            const dbNameList = _.map(rows, 'dbName');
+            let allRows = [];
+            let promises = [];
+
+            dbNameList.forEach((dbName) => {
+                promises.push(new Promise((resolve, reject) => {
+                    getUserListByProjectDatabaseName(dbName)
+                        .then((rows) => {
+                            allRows = _.union(allRows, rows);
+                            resolve();
+                        })
+                        .catch((err) => {
+                            log.error(err);
+                            reject();
+                        })
+                }));
+            });
+
+            return Promise.all(promises)
+                .then(() => {
+                    allRows = _.uniq(allRows, (row) => {
+                        return row.userId;
+                    });
+                    return allRows;
+                })
+                .catch((err) => {
+                    log.error(err);
+                    return [];
+                });
+        })
+        .catch((err) => {
+            log.error('Failed to get the DB name list: ' + err);
+            return [];
+        });
+}
+
+function updateUserStatusList() {
+    let promises = [];
+    let userStatusList = [];
+    let userList = [];
+
+    promises.push(new Promise((resolve, reject) => {
+        loadUserStatusList()
+            .then((rows) => {
+                userStatusList = rows;
+                resolve();
+            })
+            .catch((err) => {
+                log.error(err);
+                reject();
+            })
+    }));
+    promises.push(new Promise((resolve, reject) => {
+        loadUserList()
+            .then((rows) => {
+                userList = rows;
+                resolve();
+            })
+            .catch((err) => {
+                log.error(err);
+                reject();
+            })
+    }));
+
+    return Promise.all(promises)
+        .then(() => {
+            return Promise.map(userStatusList, (row) => {
+                if (_.findIndex(userList, (user) => user.userId == row.userId) >= 0) {
+                    row.dexterYn = 'Y';
+                } else if (row.dexterYn == 'Y') {
+                    row.dexterYn = 'N';
+                } else {
+                    return;
+                }
+
+                const sql =
+                    `UPDATE DexterUserList
+                     SET dexterYn='${row.dexterYn}', reason='', ide='', language=''
+                     WHERE userId='${row.userId}'`;
+                return database.exec(sql)
+                    .catch((err) => {
+                        log.error('Failed to set dexterYn : ' + err);
+                    });
+            });
+        });
+}
+
+function loadAndCreateUserStatusTable() {
+    const sql = `SELECT DexterUserList.userLab AS groupName,
+                        COUNT(DexterUserList.userId) AS allDeveloperCount,
+                        installedDeveloperCount,
+                        nonTargetDeveloperCount
+                 FROM DexterUserList
+                 LEFT JOIN (SELECT userLab, COUNT(DUL1.userId) AS installedDeveloperCount
+                            FROM DexterUserList AS DUL1
+                            WHERE DUL1.dexterYn='y'
+                            GROUP BY DUL1.userLab) AS d1
+                 ON DexterUserList.userLab = d1.userLab
+                 LEFT JOIN (SELECT userLab, COUNT(DUL2.userId) AS nonTargetDeveloperCount
+                            FROM DexterUserList AS DUL2
+                            WHERE DUL2.dexterYn='u'
+                            GROUP BY DUL2.userLab) AS d2
+                 ON DexterUserList.userLab = d2.userLab
+                 GROUP BY DexterUserList.userLab`;
+    return database.exec(sql)
+        .then((rows) => {
+            rows.forEach((row) => {
+                row.targetDeveloperCount = row.allDeveloperCount - row.nonTargetDeveloperCount;
+                row.installationRate = (row.installedDeveloperCount / row.targetDeveloperCount * 100).toFixed(2);
+            });
+            return rows;
+        });
+}
+
+exports.getUserStatus = function(req, res) {
+    updateUserStatusList()
+        .then(loadAndCreateUserStatusTable)
+        .then((userStatusTable) => {
+            res.send({status:'ok', rows: userStatusTable});
+        })
+        .catch((err) => {
             res.send({status:"fail", errorMessage: err.message});
         });
 };

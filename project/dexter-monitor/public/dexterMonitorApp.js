@@ -36,7 +36,7 @@ monitorApp.config(function($routeProvider){
             controller: "AllCurrentStatusCtrl",
             templateUrl: "view/allCurrentStatusView.html"
         })
-        .when("/change", {
+        .when("/change/", {
             controller: "AllWeeklyStatusCtrl",
             templateUrl: "view/allWeeklyStatusCtrl.html"
         })
@@ -44,6 +44,10 @@ monitorApp.config(function($routeProvider){
             controller: "ServerStatusCtrl",
             templateUrl: "view/serverStatusView.html",
             controllerAs: "main"
+        })
+        .when("/userstatus/", {
+            controller: "UserStatusCtrl",
+            templateUrl: "view/userStatusView.html",
         })
         .when("/user/", {
             controller: "UserCtrl",

@@ -45,14 +45,9 @@ monitorApp.controller("UserCtrl", function($scope, $http, $log, UserService) {
     }
 
     function loadUserList() {
-        $http.get('/api/v2/user')
-            .then((res) => {
-                if (!isHttpResultOK(res)) {
-                    $log.error('Failed to load user list');
-                    return;
-                }
-
-                user.gridOptions.data = res.data.rows;
+        UserService.getUserList()
+            .then((rows) => {
+                user.gridOptions.data = rows;
             })
             .catch((err) => {
                 $log.error(err);

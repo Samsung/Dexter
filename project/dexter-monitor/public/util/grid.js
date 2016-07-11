@@ -27,6 +27,7 @@
 
 const DEFECT_FILENAME_PREFIX = 'defect-list';
 const USER_FILENAME_PREFIX = 'user-list';
+const USER_STATUS_FILENAME_PREFIX = 'user-status-list';
 const CURRENT_STATUS_FILENAME_PREFIX = 'current-status-list';
 const WEEKLY_STATUS_FILENAME_PREFIX = 'weekly-status-list';
 

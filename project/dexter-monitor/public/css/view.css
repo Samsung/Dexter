@@ -58,6 +58,11 @@ body {
   height: 650px;
 }
 
+.grid-user-status {
+  width: 920px;
+  height: 360px;
+}
+
 .grid-user-id {
   text-align: center;
 }
