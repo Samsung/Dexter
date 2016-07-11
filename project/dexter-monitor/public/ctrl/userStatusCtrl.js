@@ -28,21 +28,21 @@
 monitorApp.controller("UserStatusCtrl", function($scope, $http, $log, UserService, uiGridConstants) {
 
     const columnDefs = [
-        {field:'groupName',                 displayName:'부서명',      width: 215,
+        {field:'groupName',                 displayName:'Group',                    width: 170,
             cellClass: 'grid-align',    headerTooltip: 'Group name'},
-        {field:'allDeveloperCount',         displayName:'총 개발자 수',  width: 135,
+        {field:'allDeveloperCount',         displayName:'Developers',               width: 110,
             cellClass: 'grid-align',    headerTooltip: 'Number of developers',
             aggregationType: uiGridConstants.aggregationTypes.sum},
-        {field:'targetDeveloperCount',      displayName:'설치 대상',    width: 135,
+        {field:'targetDeveloperCount',      displayName:'Target developers',        width: 155,
             cellClass: 'grid-align',    headerTooltip: 'Number of developers who should install Dexter',
             aggregationType: uiGridConstants.aggregationTypes.sum},
-        {field:'installedDeveloperCount',   displayName:'설치 완료',    width: 135,
+        {field:'installedDeveloperCount',   displayName:'Installed developers',     width: 170,
             cellClass: 'grid-align',    headerTooltip: 'Number of developers who installed Dexter',
             aggregationType: uiGridConstants.aggregationTypes.sum},
-        {field:'installationRate',          displayName:'설치율(%)',   width: 135,
+        {field:'installationRate',          displayName:'Installation rate (%)',    width: 160,
             cellClass: 'grid-align',    headerTooltip: 'Installation rate',
             aggregationType: () => $scope.rate, footerCellClass: 'grid-align'},
-        {field:'nonTargetDeveloperCount',   displayName:'설치 불가',    width: 135,
+        {field:'nonTargetDeveloperCount',   displayName:'Non-target developers',    width: 210,
             cellClass: 'grid-align',    headerTooltip: 'Number of developers not applicable to install Dexter',
             aggregationType: uiGridConstants.aggregationTypes.sum}
     ];
@@ -64,7 +64,7 @@ monitorApp.controller("UserStatusCtrl", function($scope, $http, $log, UserServic
                 $scope.gridOptions.data = rows;
                 const targetDeveloperCountTotal = _.sum(_.map($scope.gridOptions.data, 'targetDeveloperCount'));
                 const installedDeveloperCountTotal = _.sum(_.map($scope.gridOptions.data, 'installedDeveloperCount'));
-                $scope.rate = ((installedDeveloperCountTotal / targetDeveloperCountTotal) * 100).toFixed(2);
+                $scope.rate = ((installedDeveloperCountTotal / targetDeveloperCountTotal) * 100).toFixed(1);
             })
             .catch((err) => {
                 $log.error(err);

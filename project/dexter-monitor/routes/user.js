@@ -207,7 +207,7 @@ exports.getUserCountByProjectName = function(req, res) {
 };
 
 function loadUserStatusList() {
-    const sql = "SELECT * FROM DexterUserList";
+    const sql = "SELECT userId, dexterYn FROM DexterUserList";
     return database.exec(sql)
         .then((rows) => {
             return rows;
@@ -329,7 +329,7 @@ function loadAndCreateUserStatusTable() {
         .then((rows) => {
             rows.forEach((row) => {
                 row.targetDeveloperCount = row.allDeveloperCount - row.nonTargetDeveloperCount;
-                row.installationRate = (row.installedDeveloperCount / row.targetDeveloperCount * 100).toFixed(2);
+                row.installationRate = (row.installedDeveloperCount / row.targetDeveloperCount * 100).toFixed(1);
             });
             return rows;
         });
