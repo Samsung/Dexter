@@ -54,11 +54,11 @@ monitorApp.controller("UserStatusCtrl", function($scope, $http, $log, UserServic
         $scope.gridOptions.showColumnFooter = true;
         $scope.gridOptions.exporterOlderExcelCompatibility = true;
         $scope.time = new Date().toLocaleString();
-        loadDate();
+        loadData();
         setGridExportingFileNames($scope.gridOptions, USER_STATUS_FILENAME_PREFIX + '-' + $scope.time);
     }
 
-    function loadDate() {
+    function loadData() {
         UserService.getUserStatus()
             .then((rows) => {
                 $scope.gridOptions.data = rows;

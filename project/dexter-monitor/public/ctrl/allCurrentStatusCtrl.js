@@ -56,7 +56,7 @@ monitorApp.controller("AllCurrentStatusCtrl", function($scope, $http, $log, Proj
         removeUselessGridOptions($scope.summaryGridOptions);
         $scope.detailGridOptions = createGrid(detailColumnDefs);
         $scope.detailGridOptions.showColumnFooter = true;
-        loadDate();
+        loadData();
         $scope.time = new Date().toLocaleString();
         setGridExportingFileNames($scope.detailGridOptions, CURRENT_STATUS_FILENAME_PREFIX + '-' + $scope.time);
     }
@@ -68,7 +68,7 @@ monitorApp.controller("AllCurrentStatusCtrl", function($scope, $http, $log, Proj
         gridOptions.enableGridMenu = false;
     }
 
-    function loadDate() {
+    function loadData() {
         ProjectService.getAllCurrentStatusList()
             .then((rows) => {
                 $scope.detailGridOptions.data = rows;

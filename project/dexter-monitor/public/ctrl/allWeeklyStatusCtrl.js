@@ -40,11 +40,11 @@ monitorApp.controller("AllWeeklyStatusCtrl", function($scope, $http, $log) {
 
     function initialize() {
         $scope.gridOptions = createGrid(columnDefs);
-        loadDate();
+        loadData();
         setGridExportingFileNames($scope.gridOptions, WEEKLY_STATUS_FILENAME_PREFIX);
     }
 
-    function loadDate() {
+    function loadData() {
         $http.get('/api/v2/defect-weekly-change')
             .then((res) => {
                 if (!isHttpResultOK(res)) {
