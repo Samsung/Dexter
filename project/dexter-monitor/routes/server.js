@@ -25,47 +25,57 @@
  */
 "use strict";
 
-var fs = require('fs');
-var http = require('http');
-var log = require('../util/logging');
-var mailing = require('../util/mailing');
-var _ = require('lodash');
+const http = require('http');
+const database = require("../util/database");
+const log = require('../util/logging');
+const mailing = require('../util/mailing');
+const _ = require('lodash');
 
-var serverListJsonFilePath = "./server-list.json";
-var serverList = [];
-var serverListLastModifiedTime = new Date();
-var checkingServerStatus;
+let serverList = [];
+let serverListLastModifiedTime = new Date();
+let checkingServerStatus;
 
 exports.init = function(doNotStartChecking){
-    loadServerListFromFile();
 
     mailing.init();
 
-    if(!doNotStartChecking)
-        startCheckingServerStatus();
+    loadServerList()
+        .then(initServerStatusValues)
+        .then(() => {
+            if (!doNotStartChecking)
+                startCheckingServerStatus();
+        });
 };
 
-function loadServerListFromFile(){
-    var text = fs.readFileSync(serverListJsonFilePath, 'utf8');
-    if(!text){
-        log.warn("there is no %dexter-monitor-home%/server-list.json file.");
-        return;
-    }
-
-    serverList = JSON.parse(text);
-
-    for(var i=0; i<serverList.length; i++){
-        serverList.rerunLastTryTime = new Date().getTime();
-        serverList.rerunTimes = 0;
-    }
+function loadServerList() {
+    const sql =
+        `SELECT pid, projectName, hostIP, portNumber,
+                emailList, emailingWhenServerDead,
+                projectType, groupName, administrator
+        FROM ProjectInfo`;
+    return database.exec(sql)
+        .then((rows) => {
+            serverList = rows;
+        })
+        .catch((err) => {
+            log.error(err);
+        });
 }
 
-exports.setServerListJsonFilePath = function (filePath){
-    serverListJsonFilePath = filePath;
+function initServerStatusValues() {
+    const date = new Date().getTime();
+    serverList.forEach((server) => {
+        const lastDigitOfHostIP = server.hostIP.split('.')[3];
+        server.name = `${server.projectName}(${lastDigitOfHostIP}:${server.portNumber})`;
+        server.rerunLastTryTime = date;
+        server.rerunTimes = 0;
+        server.heartbeat = `http://${server.hostIP}:${server.portNumber}/api/v1/isServerAlive`;
+        server.heartbeatInDetail = `http://${server.hostIP}:${server.portNumber}/api/v2/server-detailed-status`;  // Not used yet
+    });
 }
 
 function startCheckingServerStatus(){
-    checkingServerStatus = setInterval(function() {
+    checkingServerStatus = setInterval(() => {
         checkServerStatusAndRunWhenItDown();
     }, global.config.serverStatusCheckInterval * 1000);
 }
@@ -76,17 +86,15 @@ exports.stopServerChecking = stopCheckingServerStatus;  // TODO check
 // TODO: detailedServerStatus
 
 function checkServerStatusAndRunWhenItDown(){
-    var http = require('http');
-
-    _.forEach(serverList, function(server){
-        http.get(server.heartbeat, function(res){
-            if(res.statusCode === 200){
+    _.forEach(serverList, (server) => {
+        http.get(server.heartbeat, (res) => {
+            if(res.statusCode === 200) {
                 setServerActiveStatus(server, true);
                 return;
             }
 
             handleServerWhenDown(server, res);
-        }).on('error', function(error){
+        }).on('error', (error) => {
             handleServerWhenDown(server, error);
         });
     });
@@ -116,16 +124,16 @@ function handleServerWhenDown(server, error){
 }
 
 function emailWhenServerDown(server) {
-    if(server.emailingWhenServerDead === false || server.notifiedWhenItDown) return;
+    if(server.emailingWhenServerDead === 'N' || server.notifiedWhenItDown) return;
 
-    var params = {
+    const params = {
         toList:server.emailList,
         ccList:["min.ho.kim@samsung.com"],
         title:"[Dexter Monitor] Server Failure: " + server.name,
         contents: createEmailContentsWhenServerDown(server)
     };
 
-    mailing.sendEmail(params, function(error){
+    mailing.sendEmail(params, (error) => {
         if(error)
             log.error("fail to email: " + JSON.stringify(params));
         else
@@ -147,7 +155,7 @@ function createEmailContentsWhenServerDown(server){
 
 function stopCheckingServerStatus(){
     clearInterval(checkingServerStatus);
-};
+}
 
 exports.getConfig = function(req, res) {
     res.send(config);

@@ -169,9 +169,8 @@ function setWebApis(){
 }
 
 function initModules(){
-    log.init();
-    server.init();
     database.init(runOptions);
+    server.init();
 }
 
 function startServer(){
