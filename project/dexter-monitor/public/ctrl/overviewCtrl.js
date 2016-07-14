@@ -25,7 +25,7 @@
  */
 "use strict";
 
-monitorApp.controller("UserStatusCtrl", function($scope, $http, $log, UserService, uiGridConstants) {
+monitorApp.controller("OverviewCtrl", function($scope, $http, $log, UserService, uiGridConstants) {
 
     const columnDefs = [
         {field:'groupName',                 displayName:'Group',                    width: 170,

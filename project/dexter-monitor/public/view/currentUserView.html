@@ -1,0 +1,14 @@
+<div class="view">
+    <div class="container">
+        <div>
+            <span style="font-size:18pt">Current user list of all projects</span>
+            <span style="font-size:11pt"> ({{time}})</span>
+        </div>
+        <button type="button" class="btn btn-info" ng-click="getExtraInfo()">
+        See extra user information <span class="glyphicon glyphicon-hand-down"></span>
+    </button>
+        <div class="grid-current-user" id='currentUserGrid' ui-grid="gridOptions"
+             ui-grid-resize-columns ui-grid-move-columns ui-grid-selection ui-grid-exporter ui-grid-auto-resize>
+        </div>
+    </div>
+</div>

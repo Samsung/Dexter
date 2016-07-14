@@ -13,12 +13,12 @@ body {
   padding-left: 200px;
 }
 
-.grid-defect-all {
+.grid-weekly-project {
   width: 1207px;
   height: 650px;
 }
 
-.grid-defect-group {
+.grid-weekly-group {
   width: 1010px;
   height: 650px;
 }
@@ -38,17 +38,12 @@ body {
   height: 650px;
 }
 
-.grid-user-all {
+.grid-current-user {
   width: 1090px;
   height: 650px;
 }
 
-.grid-current-summary {
-  width: 920px;
-  height: 80px;
-}
-
-.grid-current-detail {
+.grid-current-project {
   width: 920px;
   height: 500px;
 }
@@ -58,7 +53,7 @@ body {
   height: 650px;
 }
 
-.grid-user-status {
+.grid-overview-installation-status {
   width: 970px;
   height: 360px;
 }

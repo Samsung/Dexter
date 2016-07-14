@@ -25,37 +25,45 @@
  */
 "use strict";
 
-monitorApp.controller("AllWeeklyStatusCtrl", function($scope, $http, $log) {
+monitorApp.controller("CurrentUserCtrl", function($scope, $http, $log, UserService) {
 
     const columnDefs = [
-        {field:'year',                  displayName:'Year',         width: 100,     cellClass: 'grid-align',    headerTooltip: 'Year'},
-        {field:'week',                  displayName:'Week',         width: 100,     cellClass: 'grid-align',    headerTooltip: 'Week'},
-        {field:'defectCountTotal',      displayName:'Defect(All)',  width: 170,     cellClass: 'grid-align',    headerTooltip: 'Number of all defects'},
-        {field:'defectCountFixed',      displayName:'Defect(Fix)',  width: 170,     cellClass: 'grid-align',    headerTooltip: 'Number of fixed defects'},
-        {field:'defectCountDismissed',  displayName:'Defect(Dis)',  width: 170,     cellClass: 'grid-align',    headerTooltip: 'Number of dismissed defects'},
-        {field:'userCount',             displayName:'User',         width: 170,     cellClass: 'grid-align',    headerTooltip: 'Number of users'}
+        {field:'userId',            displayName:'ID',       width: 194,     cellClass: 'grid-align',    headerTooltip: 'ID'},
+        {field:'name',              displayName:'Name',     width: 204,     cellClass: 'grid-align',    headerTooltip: 'Name'},
+        {field:'department',        displayName:'Group',    width: 284,     cellClass: 'grid-align',    headerTooltip: 'Group'},
+        {field:'title',             displayName:'Title',    width: 194,     cellClass: 'grid-align',    headerTooltip: 'Title'},
+        {field:'employeeNumber',    displayName:'Number',   width: 184,     cellClass: 'grid-align',    headerTooltip: 'Number'}
     ];
 
     initialize();
 
     function initialize() {
         $scope.gridOptions = createGrid(columnDefs);
-        loadData();
-        setGridExportingFileNames($scope.gridOptions, WEEKLY_STATUS_FILENAME_PREFIX);
+        loadUserList();
+        $scope.time = new Date().toLocaleString();
+        setGridExportingFileNames($scope.gridOptions, USER_FILENAME_PREFIX + '-' + $scope.time);
     }
 
-    function loadData() {
-        $http.get('/api/v2/defect-weekly-change')
-            .then((res) => {
-                if (!isHttpResultOK(res)) {
-                    $log.error('Failed to load weekly change status list');
-                    return;
-                }
-
-                $scope.gridOptions.data = res.data.rows;
+    function loadUserList() {
+        UserService.getUserList()
+            .then((rows) => {
+                $scope.gridOptions.data = rows;
             })
             .catch((err) => {
                 $log.error(err);
             });
     }
+
+    $scope.getExtraInfo = function() {
+        const userIdList = _.map($scope.gridOptions.data, 'userId');
+        UserService.getExtraInfoByUserIdList(userIdList)
+            .then((rows) => {
+                if(rows) {
+                    $scope.gridOptions.data = _.sortBy(rows, 'userId');
+                }
+            })
+            .catch((err) => {
+                $log.error(err);
+            });
+    };
 });

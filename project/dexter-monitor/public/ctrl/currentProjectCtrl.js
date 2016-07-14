@@ -25,16 +25,9 @@
  */
 "use strict";
 
-monitorApp.controller("AllCurrentStatusCtrl", function($scope, $http, $log, ProjectService, uiGridConstants) {
+monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, ProjectService, uiGridConstants) {
 
-    const summaryColumnDefs = [
-        {field:'allGroupCount',     displayName:'Group',    width: 220,     cellClass: 'grid-align',    headerTooltip: 'Number of groups'},
-        {field:'allProjectCount',   displayName:'Project',  width: 220,     cellClass: 'grid-align',    headerTooltip: 'Number of projects'},
-        {field:'allDefectCount',    displayName:'Defect',   width: 220,     cellClass: 'grid-align',    headerTooltip: 'Number of defects'},
-        {field:'allUserCount',      displayName:'User',     width: 220,     cellClass: 'grid-align',    headerTooltip: 'Number of users'}
-    ];
-
-    const detailColumnDefs = [
+    const columnDefs = [
         {field:'groupName',             displayName:'Group',            width: 180,     cellClass: 'grid-align',
             headerTooltip: 'Group name'},
         {field:'projectName',           displayName:'Project',          width: 180,     cellClass: 'grid-align',
@@ -52,32 +45,17 @@ monitorApp.controller("AllCurrentStatusCtrl", function($scope, $http, $log, Proj
     initialize();
 
     function initialize() {
-        $scope.summaryGridOptions = createGrid(summaryColumnDefs);
-        removeUselessGridOptions($scope.summaryGridOptions);
-        $scope.detailGridOptions = createGrid(detailColumnDefs);
-        $scope.detailGridOptions.showColumnFooter = true;
+        $scope.gridOptions = createGrid(columnDefs);
+        $scope.gridOptions.showColumnFooter = true;
         loadData();
         $scope.time = new Date().toLocaleString();
-        setGridExportingFileNames($scope.detailGridOptions, CURRENT_STATUS_FILENAME_PREFIX + '-' + $scope.time);
-    }
-
-    function removeUselessGridOptions(gridOptions) {
-        gridOptions.enableSorting = false;
-        gridOptions.enableFiltering = false;
-        gridOptions.showGridFooter = false;
-        gridOptions.enableGridMenu = false;
+        setGridExportingFileNames($scope.gridOptions, CURRENT_STATUS_FILENAME_PREFIX + '-' + $scope.time);
     }
 
     function loadData() {
         ProjectService.getAllCurrentStatusList()
             .then((rows) => {
-                $scope.detailGridOptions.data = rows;
-                $scope.summaryGridOptions.data = [{
-                    allGroupCount: _.uniq(_.map(rows, 'groupName')).length,
-                    allProjectCount: rows.length,
-                    allDefectCount: _.sum(_.map(rows, 'defectCountTotal')),
-                    allUserCount: _.sum(_.map(rows, 'userCount'))
-                }];
+                $scope.gridOptions.data = rows;
             })
             .catch((err) => {
                 $log.error(err);

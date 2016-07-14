@@ -25,8 +25,7 @@
  */
 "use strict";
 
-monitorApp.controller("DefectCtrl", function($scope, $http, $log) {
-    let defect = this;
+monitorApp.controller("WeeklyProjectCtrl", function($scope, $http, $log) {
 
     const columnDefs = [
         {field:'year',              displayName:'Year',         width: 60,    headerTooltip: 'Year'},
@@ -58,9 +57,9 @@ monitorApp.controller("DefectCtrl", function($scope, $http, $log) {
     initialize();
 
     function initialize() {
-        defect.gridOptions = createGrid(columnDefs);
+        $scope.gridOptions = createGrid(columnDefs);
         loadDefectList();
-        setGridExportingFileNames(defect.gridOptions, DEFECT_FILENAME_PREFIX);
+        setGridExportingFileNames($scope.gridOptions, DEFECT_FILENAME_PREFIX);
     }
 
     function loadDefectList() {
@@ -71,7 +70,7 @@ monitorApp.controller("DefectCtrl", function($scope, $http, $log) {
                     return;
                 }
 
-                defect.gridOptions.data = res.data.rows;
+                $scope.gridOptions.data = res.data.rows;
             })
             .catch((err) => {
                 $log.error(err);

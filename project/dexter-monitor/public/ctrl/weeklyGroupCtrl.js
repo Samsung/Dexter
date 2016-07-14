@@ -25,23 +25,21 @@
  */
 "use strict";
 
-monitorApp.controller("DefectByGroupCtrl", function($scope, $http, $log, $q, DefectService) {
-    let defect = this;
+monitorApp.controller("WeeklyGroupCtrl", function($scope, $http, $log, $q, DefectService) {
+
     let minYear;
     let maxYear;
-    defect.years = [];
+    $scope.years = [];
 
     let currentFileName = function() {
-        return DEFECT_FILENAME_PREFIX + '-' + defect.curYear + '-' + defect.curWeek;
+        return DEFECT_FILENAME_PREFIX + '-' + $scope.curYear + '-' + $scope.curWeek;
     };
 
     const columnDefs = [
         {field:'year',              displayName:'Year',         width: 80,      headerTooltip: 'Year'},
         {field:'week',              displayName:'Week',         width: 80,      headerTooltip: 'Week'},
         {field:'groupName',         displayName:'Group',        width: 185,     headerTooltip: 'Group'},
-        {field:'userCount',         displayName:'User',         width: 80,      headerTooltip: 'Number of users',
-            cellClass: 'ui-grid-cell-contents grid-align', cellTemplate: '<div uib-tooltip="Go to the current \'{{row.entity.groupName}}\' user list" ' +
-            ' tooltip-placement="top" tooltip-append-to-body="true"><a href="#/user/group/{{row.entity.groupName}}">{{COL_FIELD}}</a></div>'},
+        {field:'userCount',         displayName:'User',         width: 80,      headerTooltip: 'Number of users'},
         {field:'projectCount',      displayName:'Project',      width: 80,      headerTooltip: 'Number of projects'},
         {field:'allDefectCount',    displayName:'Total',        width: 160,     headerTooltip: 'Number of defects'},
         {field:'allFix',            displayName:'Fixed',        width: 160,     headerTooltip: 'Number of fixed defects'},
@@ -51,13 +49,13 @@ monitorApp.controller("DefectByGroupCtrl", function($scope, $http, $log, $q, Def
     initialize();
 
     function initialize() {
-        defect.gridOptions = createGrid(columnDefs);
+        $scope.gridOptions = createGrid(columnDefs);
         loadDateRange()
             .then(() => {
-                defect.curYear = maxYear;
-                defect.curWeek = defect.maxWeekOfCurYear;
-                loadDefectListByGroup(defect.curYear, defect.curWeek);
-                setGridExportingFileNames(defect.gridOptions, currentFileName());
+                $scope.curYear = maxYear;
+                $scope.curWeek = $scope.maxWeekOfCurYear;
+                loadDefectListByGroup($scope.curYear, $scope.curWeek);
+                setGridExportingFileNames($scope.gridOptions, currentFileName());
             });
     }
 
@@ -91,31 +89,31 @@ monitorApp.controller("DefectByGroupCtrl", function($scope, $http, $log, $q, Def
 
         return $q.all(promises).then(() => {
             for(let i=minYear ; i<=maxYear ; i++) {
-                defect.years.push(i);
+                $scope.years.push(i);
             }
             return DefectService.getMaxWeek(maxYear)
                 .then((week) => {
-                    defect.maxWeekOfCurYear = week;
+                    $scope.maxWeekOfCurYear = week;
                 });
         });
     }
 
-    defect.yearChanged = function(year) {
-        defect.curYear = year;
-        DefectService.getMaxWeek(defect.curYear)
+    $scope.yearChanged = function(year) {
+        $scope.curYear = year;
+        DefectService.getMaxWeek($scope.curYear)
             .then((week) => {
-                defect.maxWeekOfCurYear = week;
-                defect.curWeek = defect.maxWeekOfCurYear;
+                $scope.maxWeekOfCurYear = week;
+                $scope.curWeek = $scope.maxWeekOfCurYear;
             })
             .then(() => {
-                loadDefectListByGroup(defect.curYear, defect.curWeek);
-                setGridExportingFileNames(defect.gridOptions, currentFileName());
+                loadDefectListByGroup($scope.curYear, $scope.curWeek);
+                setGridExportingFileNames($scope.gridOptions, currentFileName());
             });
     };
 
-    defect.weekChanged = function() {
-        loadDefectListByGroup(defect.curYear, defect.curWeek);
-        setGridExportingFileNames(defect.gridOptions, currentFileName());
+    $scope.weekChanged = function() {
+        loadDefectListByGroup($scope.curYear, $scope.curWeek);
+        setGridExportingFileNames($scope.gridOptions, currentFileName());
     };
 
     function loadDefectListByGroup(year, week) {
@@ -126,7 +124,7 @@ monitorApp.controller("DefectByGroupCtrl", function($scope, $http, $log, $q, Def
                     return;
                 }
 
-                defect.gridOptions.data = res.data.rows;
+                $scope.gridOptions.data = res.data.rows;
             })
             .catch((err) => {
                 $log.error(err);
