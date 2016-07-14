@@ -39,7 +39,7 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisResultFileManager;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.RunMode;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
-import com.samsung.sec.dexter.core.plugin.DexterPluginManager;
+import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
 import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.metrics.CodeMetricsGenerator;
@@ -47,16 +47,22 @@ import com.samsung.sec.dexter.metrics.CodeMetricsGenerator;
 public class DexterAnalyzerThread extends Thread{
 	private final static Logger logger = Logger.getLogger(DexterAnalyzerThread.class);
 	private AnalysisConfig config;
-//	private AnalysisResult result;
 	private DexterAnalyzer analyzer = DexterAnalyzer.getInstance();
+	private IDexterPluginManager pluginManager;
 	
-	public DexterAnalyzerThread(AnalysisConfig config){
+	public DexterAnalyzerThread(final AnalysisConfig config, final IDexterPluginManager pluginManager){
+		assert config != null;
+		assert pluginManager != null;
+		
 		this.config = config;
-		//this.result = result;
+		this.pluginManager = pluginManager;
 	}
 	
 	@Override
 	public void run() {
+		assert config != null;
+		assert pluginManager != null;
+		
 		try{
 			// TODO: Dismissed / Excluding Scope 대상 파일인지 검사
 			// 0. Check parameters
@@ -86,7 +92,7 @@ public class DexterAnalyzerThread extends Thread{
 	
 			// 4. call plugin's analyzer (static analysis)
 			analyzer.preRunStaticAnalysis(config);
-			List<AnalysisResult> resultList = DexterPluginManager.getInstance().analyze(config);
+			List<AnalysisResult> resultList = pluginManager.analyze(config);
 			AnalysisResultFileManager.getInstance().writeJson(resultList);
 			logger.info("analyzed " + config.getSourceFileFullPath());
 			config.getResultHandler().handleAnalysisResult(resultList);

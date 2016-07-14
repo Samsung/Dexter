@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014 Samsung Electronics, Inc.,
+ * Copyright (c) 2016 Samsung Electronics, Inc.,
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -42,31 +42,17 @@ import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.core.util.IDexterClient;
 
-public class DexterPluginManager implements IDexterHomeListener{
-	private final static Logger LOG = Logger.getLogger(DexterPluginManager.class);
+public class BaseDexterPluginManager implements IDexterPluginManager, IDexterHomeListener{
+	private final static Logger LOG = Logger.getLogger(BaseDexterPluginManager.class);
 
-	private List<IDexterPlugin> pluginList = new ArrayList<IDexterPlugin>(0);
-	private boolean isInitialized = false;
-	IDexterPluginInitializer initializer;
-	
-	private static class DexterPluginManagerHolder {
-		private final static DexterPluginManager INSTANCE = new DexterPluginManager();
-	}
+	protected List<IDexterPlugin> pluginList = new ArrayList<IDexterPlugin>(0);
+	protected IDexterPluginInitializer initializer;
 
-//	public static DexterPluginManager getInstance() {
-//		return DexterPluginManagerHolder.INSTANCE;
-//	}
-	
-	/**
-	 * @return the isInitialized
-	 */
-	public boolean isInitialized() {
-		return isInitialized;
-	}
-
-	private DexterPluginManager() {
+	public BaseDexterPluginManager(IDexterPluginInitializer pluginInitializer) {
+		assert pluginInitializer != null;
+		
 		DexterConfig.getInstance().addDexterHomeListener(this);
-		LOG.debug("DexterPluginManager");
+		this.initializer = pluginInitializer;
 	}
 	
 //	private void initDexterPluginsForCLI(final IDexterPluginInitializer pluginInitializer){
@@ -87,10 +73,10 @@ public class DexterPluginManager implements IDexterHomeListener{
 //		}
 //	}
 
+	@Override
 	public void initDexterPlugins() throws DexterRuntimeException{
 		assert initializer != null;
 		
-		this.isInitialized = false;
 		pluginList = new ArrayList<IDexterPlugin>(0);
 		IDexterClient client = DexterClient.getInstance();
 		
@@ -100,18 +86,17 @@ public class DexterPluginManager implements IDexterHomeListener{
 				&& client.isServerAlive()){  
 			updateCheckerConfig();
 		}
-		this.isInitialized = true;
 		LOG.info("Dexter plug-ins initialized successfully");
 	}
 	
-	private void initSupportingFileExetensions() {
+	protected void initSupportingFileExetensions() {
 		DexterConfig.getInstance().removeAllSupportingFileExtensions();
 		for(IDexterPlugin plugin : pluginList){
 			DexterConfig.getInstance().addSupprotingFileExtensions(plugin.getSupportingFileExtensions());
 		}
     }
 
-	private void updateCheckerConfig() {
+	protected void updateCheckerConfig() {
 		Thread updateCheckerThread = new Thread(){
 			@Override
 			public void run() {
@@ -153,6 +138,7 @@ public class DexterPluginManager implements IDexterHomeListener{
 		}
 	}
 	
+	@Override
 	public List<AnalysisResult> analyze(final AnalysisConfig config){
 		List<AnalysisResult> resultList = new ArrayList<AnalysisResult>();
 		
@@ -170,9 +156,9 @@ public class DexterPluginManager implements IDexterHomeListener{
 	    return resultList;
     }
 	
+	@Override
 	public CheckerConfig getCheckerConfig(final String pluginName){
 		assert Strings.isNullOrEmpty(pluginName) == false;
-		assert isInitialized != false;
 		
 		for (final IDexterPlugin plugin : pluginList) {
 			if (pluginName.equals(plugin.getDexterPluginDescription().getPluginName())) {
@@ -184,13 +170,10 @@ public class DexterPluginManager implements IDexterHomeListener{
 		throw new DexterRuntimeException("there is no proper Checker Config info for " + pluginName);
 	}
 
+	@Override
 	public void setCheckerConfig(final String pluginName, final CheckerConfig config) {
 		assert !Strings.isNullOrEmpty(pluginName);
 		assert config != null;
-		
-		if(isInitialized == false){
-			throw new DexterRuntimeException("Invalid status : isInitialized is false");
-		}
 		
 		for (final IDexterPlugin plugin : this.pluginList) {
 			if (plugin.getDexterPluginDescription().getPluginName().equals(pluginName)) {
@@ -203,22 +186,8 @@ public class DexterPluginManager implements IDexterHomeListener{
 	 * @return List<IDexterPlugin>
 	 */
 	public List<IDexterPlugin> getPluginList() {
-		if(isInitialized == false){
-			LOG.warn("Plugin initiation is not finished or not started yet." 
-					 + " There is no static analysis plug-ins to execute."
-					 + " check your plug-ins or login status");
-			return new ArrayList<IDexterPlugin>(0);
-		}
-		
 		return pluginList;
 	}
-
-	public void runDexterHomeChangeHandler(final String oldPath, final String newPath) 
-			throws DexterException {
-		for(IDexterPlugin plugin : this.pluginList){
-			plugin.handleDexterHomeChanged(oldPath, newPath);
-		}
-    }
 
 	public void setDexterPluginInitializer(final IDexterPluginInitializer initializer) {
 		this.initializer = initializer;
@@ -227,5 +196,8 @@ public class DexterPluginManager implements IDexterHomeListener{
 	@Override
     public void handleDexterHomeChanged(final String oldPath, final String newPath) {
 		initDexterPlugins();
+		
+		for(IDexterPlugin plugin : pluginList)
+			plugin.handleDexterHomeChanged(oldPath, newPath);
     }
 }

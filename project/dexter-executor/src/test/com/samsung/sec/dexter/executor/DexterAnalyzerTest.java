@@ -43,27 +43,20 @@ import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.exception.DexterException;
-import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
-import com.samsung.sec.dexter.core.plugin.DexterPluginManager;
-import com.samsung.sec.dexter.core.util.DexterClient;
+import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
+import com.samsung.sec.dexter.executor.cli.CLIDexterPluginManager;
+import com.samsung.sec.dexter.executor.cli.CLILog;
+import com.samsung.sec.dexter.executor.cli.EmptyDexterCLIOption;
 
 public class DexterAnalyzerTest {
-	static {
-//		String serverPath = System.getenv("DEXTER_SERVER_HOME");
-//		System.out.println("DEXTER_SERVER_HOME >>>>> " +  serverPath);
-//		DexterClient.startDexterServer(serverPath);
-		DexterClient.getInstance().setDexterServer("http://localhost", 4982);
-		try {
-	        DexterClient.getInstance().login(SaConfigureTest.ID, SaConfigureTest.PWD);
-        } catch (DexterRuntimeException e) {
-	        e.printStackTrace();
-        }
-	}
-
+	static private IDexterPluginManager pluginManager = new CLIDexterPluginManager(new DexterPluginInitializerMock(),
+			new CLILog(System.out), new EmptyDexterCLIOption());
+	
 	private DexterAnalyzer analyzer;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		pluginManager.initDexterPlugins();
 	}
 
 	@AfterClass
@@ -116,7 +109,7 @@ public class DexterAnalyzerTest {
         		Stopwatch s = Stopwatch.createStarted();
         		ac.setResultHandler(this);
 //        		AnalysisResultManager.getInstance().addListener("defect.example.ConstructorCallsOverridableMethod.java", this);
-        		analyzer.runSync(ac);
+        		analyzer.runSync(ac, pluginManager);
         		System.out.println("first executed : " + s.elapsed(TimeUnit.MILLISECONDS));
         		
 //        		s = Stopwatch.createStarted();
@@ -153,15 +146,13 @@ public class DexterAnalyzerTest {
         		String pluginName = "dexter-findbugs";
         		
         		// 1. customizing rules, then...
-        		DexterPluginManager.getInstance().setDexterPluginInitializer(new CliPluginInitializer());
-        		CheckerConfig cc = DexterPluginManager.getInstance().getCheckerConfig(pluginName);
+        		CheckerConfig cc = pluginManager.getCheckerConfig(pluginName);
         		
         		if(cc == null){
         			return;
         		}
         		
-//        		cc.allowCheckerCategories("AA", "BB");
-        		DexterPluginManager.getInstance().setCheckerConfig(pluginName, cc);
+        		pluginManager.setCheckerConfig(pluginName, cc);
 
         		
         		// 2. set static analysis objects : source file, class file path, classpath
@@ -179,7 +170,7 @@ public class DexterAnalyzerTest {
         		ac.setResultHandler(this);
         		
 //        		AnalysisResultManager.getInstance().addListener("defect.example.ConstructorCallsOverridableMethod.java", this);
-        		analyzer.runSync(ac);
+        		analyzer.runSync(ac, pluginManager);
         		System.out.println("first executed : " + s.elapsed(TimeUnit.MILLISECONDS));
         		
         		//assertNotNull(this.executor.getResult(exeId));

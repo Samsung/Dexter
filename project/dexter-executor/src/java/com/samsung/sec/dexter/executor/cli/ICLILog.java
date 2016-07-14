@@ -25,67 +25,34 @@
 */
 package com.samsung.sec.dexter.executor.cli;
 
+import java.io.File;
 import java.io.PrintStream;
 
-import org.apache.log4j.Logger;
+import com.samsung.sec.dexter.core.plugin.PluginDescription;
 
-public class CliLogger implements ICliLog {
-	private PrintStream out;
-	private final static Logger log = Logger.getLogger(CliLogger.class);
-	private final static String errorPrefix = "★ ERROR : ";
-	private final static String moreInfoDesc = " (see ../log/dexter-executor.log file for more information)";
-	private final static String warnPrefix = "  [WARN] ";
+public interface ICLILog {
+	public void printStartingAnalysisMessage();
 	
-	@Override
-    public void startMessage() {
-		infoln("");
-		infoln("===== Starting Dexter Analysis =====");   
-    }
+	public void info(String message);
+	public void warn(String message);
+	public void error(String message);
 	
-	public CliLogger(PrintStream out){
-		this.out = out;
-	}
+	public void infoln(String message);
+	public void warnln(String message);
+	public void errorln(String message);
+	public void errorln(String message, Throwable t);
 
-	@Override
-    public void info(String message) {
-		out.print(message);
-		log.info(message);
-    }
+	void setPrintStream(PrintStream out);
 
-	@Override
-    public void warn(String message) {
-		out.print(message);
-		log.warn(message);
-    }
+	void printMessagePreAsyncAnalysis();
 
-	@Override
-    public void error(String message) {
-		out.print(errorPrefix + message);
-		log.error(message);
-    }
+	void printMessagePreSyncAnalysis();
 
-	@Override
-    public void infoln(String message) {
-		out.println(message);
-		log.info(message);
-    }
+	void printElapsedTime(final long elapsedSeconds);
 
-	@Override
-    public void warnln(String message) {
-		out.println(warnPrefix + message);
-		log.warn(message);
-    }
+	void printResultFileLocation(final File file);
 
-	@Override
-    public void errorln(String message) {
-		out.println(errorPrefix + message + moreInfoDesc);
-		log.error(message);
-    }
-	
-	@Override
-    public void errorln(String message, Throwable t) {
-		out.println(errorPrefix + message + moreInfoDesc);
-		log.error(message);
-		log.error(t.getMessage(), t);
-    }
+	public void printErrorMessageWhenNoPlugins();
+
+	public void printMessageWhenPluginLoaded(PluginDescription desc);
 }

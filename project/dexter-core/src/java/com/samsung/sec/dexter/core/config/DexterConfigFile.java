@@ -45,13 +45,16 @@ import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 
-public class DexterConfigFile {
-	static Logger logger = Logger.getLogger(DexterConfigFile.class);
+public class DexterConfigFile implements IDexterConfigFile {
+	static Logger log = Logger.getLogger(DexterConfigFile.class);
+	
 	private String dexterHome;
 	private String dexterServerIp;
 	private int dexterServerPort;
 	private String projectName;
 	private String projectFullPath;
+	private boolean hasOneSourceDir = false;
+	private String firstSourceDir = "";
 	private List<String> sourceDirList;
 	private List<String> headerDirList;
 	private List<String> functionList;
@@ -66,22 +69,7 @@ public class DexterConfigFile {
 	
 	private Type type = Type.FILE;
 
-	public enum Type {
-		FILE, FOLDER, PROJECT, SNAPSHOT;
-		
-		public static boolean hasValue(final String value){
-			if(Strings.isNullOrEmpty(value)) return false;
-			
-			for(Type type : Type.values()){
-				if(type.toString().equals(value)){
-					return true;
-				}
-			}
-			
-			return false;
-		}
-	};
-	
+	@Override
 	public void loadFromFile(final File file) {
 		Map<String, Object> configMap = getConfigurationMap(file);
 		setFields(configMap);
@@ -142,6 +130,7 @@ public class DexterConfigFile {
 		return srcDirList;
     }
 
+	@Override
 	public AnalysisConfig toAnalysisConfig() {
 		IAnalysisEntityFactory configFactory = new AnalysisEntityFactory();
 		final AnalysisConfig analysisConfig = configFactory.createAnalysisConfig();
@@ -160,6 +149,7 @@ public class DexterConfigFile {
 		return analysisConfig;
 	}
 
+	@Override
 	public void setFields(final Map<String, Object> params) {
 		checkDexterConfigMap(params);
 
@@ -255,134 +245,214 @@ public class DexterConfigFile {
 			throw new DexterRuntimeException("Dexter Configuration Error : '" + key + "' field is empty");
 	}
 
+	@Override
 	public String getDexterHome() {
 		return dexterHome;
 	}
 
+	@Override
 	public void setDexterHome(String dexterHome) {
+		if(new File(dexterHome).exists() == false)
+			throw new DexterRuntimeException("there is no dexter home folder : " + dexterHome);
+			
 		this.dexterHome = dexterHome;
 	}
 
+	@Override
 	public String getDexterServerIp() {
 		return dexterServerIp;
 	}
 
+	@Override
 	public void setDexterServerIp(String dexterServerIp) {
 		this.dexterServerIp = dexterServerIp;
 	}
 
+	@Override
 	public int getDexterServerPort() {
 		return dexterServerPort;
 	}
 
+	@Override
 	public void setDexterServerPort(int dexterServerPort) {
 		this.dexterServerPort = dexterServerPort;
 	}
 
+	@Override
 	public String getProjectName() {
 		return projectName;
 	}
 
+	@Override
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
 	}
 
+	@Override
 	public String getProjectFullPath() {
 		return projectFullPath;
 	}
 
+	@Override
 	public void setProjectFullPath(String projectFullPath) {
+		if(new File(projectFullPath).exists() == false)
+			throw new DexterRuntimeException("there is no project path : " + projectFullPath);
+		
 		this.projectFullPath = projectFullPath;
 	}
 
+	@Override
 	public List<String> getSourceDirList() {
 		return sourceDirList;
 	}
 
+	@Override
 	public void setSourceDirList(List<String> sourceDirList) {
+		assert sourceDirList != null;
+		
+		for(String dir : sourceDirList){
+			if(new File(dir).exists() == false)
+				throw new DexterRuntimeException("there is no source folder : " + dir);
+		}
+		
 		this.sourceDirList = sourceDirList;
+		this.firstSourceDir = this.sourceDirList.get(0);
+		this.hasOneSourceDir = this.sourceDirList.size() == 1;
 	}
 
+	@Override
 	public List<String> getHeaderDirList() {
 		return headerDirList;
 	}
 
+	@Override
 	public void setHeaderDirList(List<String> headerDirList) {
+		assert headerDirList != null;
+		
+		for(String dir : headerDirList){
+			if(new File(dir).exists() == false)
+				throw new DexterRuntimeException("there is no header folder : " + dir);
+		}
+		
 		this.headerDirList = headerDirList;
 	}
 
+	@Override
 	public List<String> getFunctionList(){
 		return this.functionList;
 	}
 	
+	@Override
 	public void setFunctionList(List<String> functionList){
 		this.functionList = functionList;
 	}
 
+	@Override
 	public String getSourceEncoding() {
 		return sourceEncoding;
 	}
 
+	@Override
 	public void setSourceEncoding(String sourceEncoding) {
 		this.sourceEncoding = sourceEncoding;
 	}
 
+	@Override
 	public List<String> getLibDirList() {
 		return libDirList;
 	}
 
+	@Override
 	public void setLibDirList(List<String> libDirList) {
+		assert libDirList != null;
+		
+		for(String dir : libDirList){
+			if(new File(dir).exists() == false)
+				throw new DexterRuntimeException("there is no lib file or folder : " + dir);
+		}
+		
 		this.libDirList = libDirList;
 	}
 
+	@Override
 	public String getBinDir() {
 		return binDir;
 	}
 
+	@Override
 	public void setBinDir(String binDir) {
+		assert binDir != null;
+		
+		if(Strings.isNullOrEmpty(binDir) == false && new File(binDir).exists() == false)
+			throw new DexterRuntimeException("there is no bin folder : " + binDir);
+		
 		this.binDir = binDir;
 	}
 
+	@Override
 	public String getLanguage() {
 		return language;
 	}
 
+	@Override
 	public void setLanguage(String language) {
 		this.language = language;
 	}
 
+	@Override
 	public String getModulePath() {
 		return modulePath;
 	}
 
+	@Override
 	public void setModulePath(String modulePath) {
 		this.modulePath = (modulePath == null) ? "" : modulePath;
 	}
 
+	@Override
 	public List<String> getFileNameList() {
 		return fileNameList;
 	}
 
+	@Override
 	public void setFileNameList(List<String> fileNameList) {
+		for(int i=0; i<fileNameList.size(); i++){
+			final String fileName = fileNameList.get(0);
+			
+			if (DexterConfig.getInstance().isAnalysisAllowedFile(fileName) == false) {
+				throw new DexterRuntimeException("not supported file : " + fileName);
+			}
+		}
+		
 		this.fileNameList = fileNameList;
 	}
 
+	@Override
 	public String getResultFileFullPath() {
     	return resultFileFullPath;
     }
 
+	@Override
 	public void setResultFileFullPath(String resultFileFullPath) {
+		assert resultFileFullPath != null;
+		
+		if(Strings.isNullOrEmpty(resultFileFullPath) == false && new File(resultFileFullPath).exists() == false)
+			throw new DexterRuntimeException("there is no result file path : " + resultFileFullPath);
+		
     	this.resultFileFullPath = resultFileFullPath;
     }
 
+	@Override
 	public Type getType() {
     	return type;
     }
 
+	@Override
 	public void setType(Type type) {
     	this.type = type;
     }
 
+	@Override
 	public List<String> generateSourceFileFullPathList() {
 		assert type != null;
 		
@@ -404,35 +474,37 @@ public class DexterConfigFile {
 	private List<String> generateSourceFileFullPathListAsFileType() {
 		final List<String> sourceFileFullPathList = new ArrayList<String>(this.fileNameList.size());
 		
+		// for performance, it is nested
 		for(String fileName : this.fileNameList){
 			String filePathFromModule = this.modulePath + "/" + fileName;
-			String fileFullPath = getExistingFileFullPathWithSourceDirList(filePathFromModule);
-			if(!"".equals(fileFullPath)){
-				sourceFileFullPathList.add(fileFullPath);
+			String fileFullPath = "";
+		
+			if(this.hasOneSourceDir){
+				fileFullPath = DexterUtil.refinePath(this.firstSourceDir + "/" + filePathFromModule);
+			} else {
+				for(String srcDir : this.sourceDirList){
+					fileFullPath = DexterUtil.refinePath(srcDir + "/" + filePathFromModule);
+					
+					if(new File(fileFullPath).exists()){
+						break;
+					}
+				}
 			}
+			
+			if(Strings.isNullOrEmpty(fileFullPath))
+				continue;
+				
+			sourceFileFullPathList.add(fileFullPath);
 		}
 		
 		return sourceFileFullPathList;
     }
 
-	private String getExistingFileFullPathWithSourceDirList(String filePathFromModule){
-		for(String srcDir : this.sourceDirList){
-			String fileFullPath = DexterUtil.refinePath(srcDir + "/" + filePathFromModule);
-			
-			if(new File(fileFullPath).exists()){
-				return fileFullPath;
-			}
-		}
-		
-		return "";
-	}
-	
 	private List<String> generateSourceFileFullPathListAsFolderType() {
 		final String moduleFullPath = getExistingModuleFullPathWithSourceDirList();
 		
-		if("".equals(moduleFullPath)){
+		if(Strings.isNullOrEmpty(moduleFullPath))
 			return new ArrayList<String>(0);
-		}
 		
 		List<String> sourceFileFullPathList = new ArrayList<String>(10);
 		
@@ -443,9 +515,17 @@ public class DexterConfigFile {
 				continue;
 			}
 			
-			if(file.length() > 0L){
-				sourceFileFullPathList.add(filePath);
+			if (DexterConfig.getInstance().isAnalysisAllowedFile(file.getName()) == false) {
+				log.warn("not supported file : " + filePath);
+				continue;
 			}
+			
+			if(file.length() == 0L){
+				log.warn("zero size file : " + filePath);
+				continue;
+			}
+			
+			sourceFileFullPathList.add(filePath);
 		}
 		
 		return sourceFileFullPathList;
@@ -476,6 +556,11 @@ public class DexterConfigFile {
 
 	private void addSourceFileFullPathHierachy(File baseFile, List<String> sourceFileFullPathList) {
 		if(baseFile.isFile()){
+			if (DexterConfig.getInstance().isAnalysisAllowedFile(baseFile.getName()) == false) {
+				log.warn("not supported file : " + baseFile.getAbsolutePath());
+				return;
+			}
+			
 			sourceFileFullPathList.add(DexterUtil.refinePath(baseFile.getAbsolutePath()));
 		} else {
 			for(File subFile : DexterUtil.getSubFiles(baseFile)){ 
@@ -484,14 +569,17 @@ public class DexterConfigFile {
 		}
     }
 
+	@Override
 	public String getFirstFileName() {
 	    return this.fileNameList.get(0);
     }
 
+	@Override
 	public String getSnapshotId() {
     	return snapshotId;
     }
 
+	@Override
 	public void setSnapshotId(String snapshotId) {
     	this.snapshotId = snapshotId;
     }

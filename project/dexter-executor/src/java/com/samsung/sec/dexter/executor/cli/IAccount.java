@@ -25,6 +25,19 @@
 */
 package com.samsung.sec.dexter.executor.cli;
 
+import java.io.InputStream;
+import java.io.PrintStream;
+
+import com.samsung.sec.dexter.core.util.IDexterClient;
+
 public interface IAccount {
 	public void createAccount(String userId, String password);
+
+	void loginOrCreateAccount(final String userId, final String password);
+
+	void setPrintStream(PrintStream out);
+
+	void setInputStream(InputStream in);
+
+	void setDexterClient(IDexterClient client);
 }

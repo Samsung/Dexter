@@ -45,11 +45,11 @@ import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.core.util.IDexterClient;
 
 public class AccountTest {
-	private Account account = null;
+	private IAccount account = null;
 	
 	@Before
 	public void createAccountObject(){
-		account = new Account();
+		account = new Account(new CLILog(System.out));
 	}
 	
 	@Test

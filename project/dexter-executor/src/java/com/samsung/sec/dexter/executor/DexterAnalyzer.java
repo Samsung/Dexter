@@ -40,17 +40,13 @@ import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
-import com.samsung.sec.dexter.core.analyzer.AnalysisResultFileManager;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.IDexterHomeListener;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.exception.DexterException;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
-import com.samsung.sec.dexter.core.filter.AnalysisFilterHandler;
-import com.samsung.sec.dexter.core.plugin.DexterPluginManager;
-import com.samsung.sec.dexter.core.util.DexterClient;
+import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
 import com.samsung.sec.dexter.core.util.DexterUtil;
-import com.samsung.sec.dexter.core.util.PersistenceProperty;
 
 public class DexterAnalyzer implements IDexterHomeListener{
     private static final String CFG_PARM_JSON_FILE = "/cfg/dexter-config-parameter.json";
@@ -58,21 +54,12 @@ public class DexterAnalyzer implements IDexterHomeListener{
 
 	private List<IDexterAnalyzerListener> listenerList = new ArrayList<IDexterAnalyzerListener>(1);
 	private List<ProjectAnalysisConfiguration> projectAnalysisConfigurationList = new ArrayList<ProjectAnalysisConfiguration>(0);
-
+	
 	private DexterAnalyzer() {
 		DexterConfig.getInstance().addDexterHomeListener(this);
 		LOG.debug("DexterAnalyzer");
-		initSingletons();
 	}
 	
-	private void initSingletons() {
-		PersistenceProperty.getInstance();
-		DexterPluginManager.getInstance();
-		AnalysisFilterHandler.getInstance();
-		AnalysisResultFileManager.getInstance();
-		DexterClient.getInstance();
-	}
-
 	private static class SaExecutorHolder {
 		private static final DexterAnalyzer INSTANCE = new DexterAnalyzer();
 	}
@@ -84,12 +71,13 @@ public class DexterAnalyzer implements IDexterHomeListener{
 		return SaExecutorHolder.INSTANCE;
 	}
 
-	public void runSync(final AnalysisConfig config) {
-		new DexterAnalyzerThread(config).run();
+	public void runSync(final AnalysisConfig config, final IDexterPluginManager pluginManager) {
+		// sync일때에는 인스턴스 하나로 실행해도 될 듯
+		new DexterAnalyzerThread(config, pluginManager).run();
 	}
 	
-	public void runAsync(final AnalysisConfig config) {
-		new DexterAnalyzerThread(config).start();
+	public void runAsync(final AnalysisConfig config,final IDexterPluginManager pluginManager) {
+		new DexterAnalyzerThread(config, pluginManager).start();
 	}
 	
 	public void addHeaderAndSourceConfiguration(final AnalysisConfig config) {
@@ -285,7 +273,7 @@ public class DexterAnalyzer implements IDexterHomeListener{
     }
 
 	@Override
-    public void handleDexterHomeChanged() {
+    public void handleDexterHomeChanged(final String oldPath, final String newPath) {
 		initProjectAnalysisConfiguration();
     }
 	

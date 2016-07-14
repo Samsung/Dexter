@@ -40,9 +40,9 @@ import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.exception.DexterException;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
-import com.samsung.sec.dexter.core.plugin.DexterPluginManager;
 import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.core.util.DexterUtil;
+import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 import com.samsung.sec.dexter.executor.DexterAnalyzer;
 
@@ -74,11 +74,6 @@ public class EclipseAnalysis {
 	}
 	
 	public static void analysis(final IResource resource) {
-		// can analyze without login because there can be network problem.
-		if (DexterPluginManager.getInstance().getPluginList().size() < 1) {
-			return;
-		}
-		
 		final Stopwatch s = Stopwatch.createStarted();
 		
 		final IFile file = (IFile) resource;
@@ -92,9 +87,6 @@ public class EclipseAnalysis {
 	}
 	
 	public static void deleteDefect(final IResource resource){
-		if (DexterPluginManager.getInstance().getPluginList().size() < 1) 
-			return;
-		
 		if (DexterClient.getInstance().isServerAlive() == false)
 			return;
 
@@ -147,6 +139,6 @@ public class EclipseAnalysis {
 	}
 	
 	private static void execute(final AnalysisConfig config) {
-		DexterAnalyzer.getInstance().runSync(config);
+		DexterAnalyzer.getInstance().runSync(config, DexterUIActivator.getDefault().getPluginManager());
 	}
 }

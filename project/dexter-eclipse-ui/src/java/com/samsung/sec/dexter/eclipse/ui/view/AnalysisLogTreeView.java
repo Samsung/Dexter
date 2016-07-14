@@ -568,7 +568,7 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
 	 * @see com.samsung.sec.dexter.core.config.IDexterHomeListener#handleDexterHomeChanged()
 	 */
     @Override
-    public void handleDexterHomeChanged() {
+    public void handleDexterHomeChanged(final String oldPath, final String newPath) {
 		rootLog = new RootAnalysisLog();
 		rootLog.loadFromLogFiles();
 		if(messageText == null) return;

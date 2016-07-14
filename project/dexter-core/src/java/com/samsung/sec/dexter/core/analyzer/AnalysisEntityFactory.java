@@ -29,6 +29,7 @@ import java.io.File;
 import java.util.List;
 
 import com.samsung.sec.dexter.core.config.DexterConfigFile;
+import com.samsung.sec.dexter.core.config.IDexterConfigFile;
 
 public class AnalysisEntityFactory implements IAnalysisEntityFactory {
 	@Override
@@ -47,7 +48,7 @@ public class AnalysisEntityFactory implements IAnalysisEntityFactory {
 	
 	@Override
     public AnalysisConfig createAnalsysiConfigFromDexterConfigFile(final File dexterConfigFilePath) {
-		DexterConfigFile configFile = new DexterConfigFile();
+		IDexterConfigFile configFile = new DexterConfigFile();
 		configFile.loadFromFile(dexterConfigFilePath);
 		return configFile.toAnalysisConfig();
 	}

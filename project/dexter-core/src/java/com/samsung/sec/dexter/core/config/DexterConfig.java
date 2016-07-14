@@ -40,14 +40,13 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResultFileManager;
-import com.samsung.sec.dexter.core.exception.DexterException;
-import com.samsung.sec.dexter.core.plugin.DexterPluginManager;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 
 public class DexterConfig {
 	int i = 1;
 	final private static Logger LOG = Logger.getLogger(AnalysisResultFileManager.class);
     
+	public static final String PLUGIN_FOLDER_NAME = "plugin";
 	public static final String RESULT_FOLDER_NAME = "result";
 	public static final String OLD_FOLDER_NAME = "old";
 	public static final String FILTER_FOLDER_NAME = "filter";
@@ -124,8 +123,13 @@ public class DexterConfig {
 	private Charset sourceEncoding = Charsets.UTF_8;
 	private boolean doesSendResult = true;
 	private boolean isStandalone = false;
-	private boolean isCheckerEnableOption = false;
 	private int serverConnectionTimeOut = 15000;	// ms
+	
+	/**
+	 * only for CLI version
+	 * true : -e option is used
+	 */
+	private boolean isSpecifiedCheckerOptionEnabledByCli = false;
 	
 	public int getServerConnectionTimeOut() {
 		return serverConnectionTimeOut;
@@ -224,79 +228,12 @@ public class DexterConfig {
 			final IDexterHomeListener listener = dexterHomeListenerList.get(i);
 			
 			if(listener != null){
-				listener.handleDexterHomeChanged();
+				listener.handleDexterHomeChanged(oldPath, newPath);
 			} else {
 				dexterHomeListenerList.remove(i--);
 			}
 		}
-		
-		try {
-	        DexterPluginManager.getInstance().runDexterHomeChangeHandler(oldPath, newPath);
-        } catch (DexterException e) {
-	        LOG.error(e.getMessage(), e);
-        }
 	}
-	
-//	public void startSchedule() {
-//		scheduler = Executors.newScheduledThreadPool(1);
-//		scheduler.scheduleAtFixedRate(new DeleteResultLogJob(), 0, getIntervalDeleteResultLog(), TimeUnit.SECONDS);
-//		sendResultFuture = scheduler.scheduleAtFixedRate(new SendResultJob(), 10, getIntervalSendingAnalysisResult(), TimeUnit.SECONDS);
-//		mergeFilterFuture = scheduler.scheduleAtFixedRate(new MergeFilterJob(), 15, getIntervalMergingFilter(), TimeUnit.SECONDS);
-//	}
-//	
-//	public void stopSchedule(){
-//		if(scheduler != null)
-//			scheduler.shutdown();
-//	}
-//	
-//	public void stopJobSchedulForServer() {
-//		assert sendResultFuture == null;
-//		assert mergeFilterFuture == null;
-//		
-//		sendResultFuture.cancel(false);
-//		mergeFilterFuture.cancel(false);
-//	}
-//	
-//	public void resumeJobSchedulForServer() {
-//		new Thread(){
-//			public void run() {
-//				resumeSendResultFuture();
-//				resumeMergeFilterFuture();
-//			}
-//
-//			private void resumeSendResultFuture() {
-//				while(true){
-//					if(sendResultFuture.isDone()){
-//						sendResultFuture = scheduler.scheduleAtFixedRate(new SendResultJob(), 10, 
-//								getIntervalSendingAnalysisResult(), TimeUnit.SECONDS);
-//						break;
-//					}
-//					
-//					try {
-//						Thread.sleep(1000);
-//					} catch (InterruptedException e) {
-//						// Do nothing
-//					}
-//				}
-//			};
-//			
-//			private void resumeMergeFilterFuture() {
-//				while(true){
-//					if(mergeFilterFuture.isDone()){
-//						mergeFilterFuture = scheduler.scheduleAtFixedRate(new MergeFilterJob(), 15, 
-//								getIntervalMergingFilter(), TimeUnit.SECONDS);
-//						break;
-//					}
-//					
-//					try {
-//						Thread.sleep(1000);
-//					} catch (InterruptedException e) {
-//						// Do nothing
-//					}
-//				}
-//			};
-//		}.start();
-//	}
 	
 	public void createInitialFolderAndFiles() {
 		if (Strings.isNullOrEmpty(this.dexterHome)) {
@@ -312,7 +249,7 @@ public class DexterConfig {
 			DexterUtil.createFolderWithParents(bin + "/cppcheck/cfg");
 			DexterUtil.createFolderWithParents(bin + "/" + DAEMON_FOLDER_NAME);
 			
-			final String plugin = dexterHome + "/plugin";
+			final String plugin = dexterHome + "/" + PLUGIN_FOLDER_NAME;
 			DexterUtil.createFolderWithParents(plugin);
 			
 			final String result = dexterHome + "/" + DexterConfig.RESULT_FOLDER_NAME;
@@ -570,12 +507,26 @@ public class DexterConfig {
 		return System.getProperty("user.home") + "/" + DexterConfig.DEXTER_DEFAULT_FOLDER_NAME;
 	}
 	
-	public boolean isCheckerEnableOption(){
-		return isCheckerEnableOption;
+	/**
+	 * only for CLI version
+	 * true : -e option is used
+	 * @return
+	 */
+	public boolean isSpecifiedCheckerOptionEnabledByCli(){
+		return isSpecifiedCheckerOptionEnabledByCli;
 	}
 	
-	public void setCheckerEnableOptionForCLI(boolean isCheckerEnableOption){
-		this.isCheckerEnableOption = isCheckerEnableOption;
+	/**
+	 * only for CLI version
+	 * true : -e option is used
+	 * @param isCheckerEnableOption
+	 */
+	public void setSpecifiedCheckerOptionEnabledByCli(boolean isCheckerEnableOption){
+		this.isSpecifiedCheckerOptionEnabledByCli = isCheckerEnableOption;
+	}
+
+	public String getDexterPluginFolderPath() {
+		return getDexterHome() + "/" + PLUGIN_FOLDER_NAME;
 	}
 	
 }

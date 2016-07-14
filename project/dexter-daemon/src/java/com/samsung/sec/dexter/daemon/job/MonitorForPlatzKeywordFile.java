@@ -1,14 +1,14 @@
 package com.samsung.sec.dexter.daemon.job;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.ui.progress.UIJob;
+
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.IDexterHomeListener;
 import com.samsung.sec.dexter.core.config.PlatzKeywordFile;
@@ -18,7 +18,6 @@ import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.daemon.DexterDaemonActivator;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 import com.samsung.sec.dexter.eclipse.ui.view.PlatzView;
-import org.eclipse.ui.progress.UIJob;
 
 public class MonitorForPlatzKeywordFile extends Job implements IDexterHomeListener {
 	public static long LAST_CONF_CHANAGED_TIME = -1;
@@ -41,7 +40,7 @@ public class MonitorForPlatzKeywordFile extends Job implements IDexterHomeListen
 	}
 
 	@Override
-	public void handleDexterHomeChanged() {
+	public void handleDexterHomeChanged(final String oldPath, final String newPath) {
 		initPlatzKeywordFile();
 	}
 

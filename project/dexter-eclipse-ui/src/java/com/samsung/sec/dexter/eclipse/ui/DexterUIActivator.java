@@ -34,12 +34,13 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 import com.google.common.base.Strings;
-import com.samsung.sec.dexter.core.analyzer.IDexterPluginInitializer;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.job.DexterJobFacade;
-import com.samsung.sec.dexter.core.plugin.DexterPluginManager;
+import com.samsung.sec.dexter.core.plugin.BaseDexterPluginManager;
 import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
+import com.samsung.sec.dexter.core.plugin.IDexterPluginInitializer;
+import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
 import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.core.util.IDexterClient;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseLog;
@@ -53,6 +54,8 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 	public static final String PLUGIN_ID = "dexter-eclipse-ui"; //$NON-NLS-1$
 	private static DexterUIActivator plugin;
 	public final static EclipseLog LOG = new EclipseLog(PLUGIN_ID);
+	
+	private IDexterPluginManager pluginManager;
 	
 	/**
 	 * The constructor
@@ -69,8 +72,8 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 		plugin = this;
 		LOG.setPlugin(this);
 		
+		pluginManager = new BaseDexterPluginManager(this);
 		DexterAnalyzer.getInstance();		
-		DexterPluginManager.getInstance().setDexterPluginInitializer(this);
 		
 		final boolean isStandalone = getPreferenceStore().getBoolean("isStandalone");
 		DexterConfig.getInstance().setStandalone(isStandalone);
@@ -81,7 +84,6 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 		DexterConfig.getInstance().addDexterStandaloneListener(DexterClient.getInstance());
 		
 		initDexterClient();
-		//DexterPluginManager.getInstance().initDexterPlugins();
 	}
 	
 	void initDexterClient(){
@@ -189,6 +191,10 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 	 */
 	public static DexterUIActivator getDefault() {
 		return plugin;
+	}
+
+	public IDexterPluginManager getPluginManager() {
+		return this.pluginManager;
 	}
 	
 	

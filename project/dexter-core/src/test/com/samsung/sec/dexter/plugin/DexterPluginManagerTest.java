@@ -36,9 +36,13 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
-import com.samsung.sec.dexter.core.plugin.DexterPluginManager;
+import com.samsung.sec.dexter.core.plugin.BaseDexterPluginManager;
+import com.samsung.sec.dexter.core.plugin.EmptyDexterPluginInitializer;
+import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
 
 public class DexterPluginManagerTest {
+	private IDexterPluginManager pluginManager = new BaseDexterPluginManager(new EmptyDexterPluginInitializer());
+	
 	@Test
 	public void shouldWorkWhenSrcFolderHasFile() throws IOException {
 		File tempDir = Files.createTempDir();
@@ -52,7 +56,7 @@ public class DexterPluginManagerTest {
 		// set source dir that has no source file
 		config.setSourceBaseDirList(Arrays.asList(tempDir.getAbsolutePath()));
 		
-		DexterPluginManager.getInstance().analyze(config);
+		pluginManager.analyze(config);
 
 		deleteDir(tempDir);
 	}
@@ -65,7 +69,7 @@ public class DexterPluginManagerTest {
 		// set source dir that has no source file
 		config.setSourceBaseDirList(Arrays.asList(tempDir.getAbsolutePath()));
 		
-		DexterPluginManager.getInstance().analyze(config);
+		pluginManager.analyze(config);
 
 		deleteDir(tempDir);
 	}

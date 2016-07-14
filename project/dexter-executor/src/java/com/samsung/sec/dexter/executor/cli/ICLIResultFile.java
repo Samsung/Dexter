@@ -25,15 +25,30 @@
 */
 package com.samsung.sec.dexter.executor.cli;
 
-public interface ICliLog {
-	public void startMessage();
-	
-	public void info(String message);
-	public void warn(String message);
-	public void error(String message);
-	
-	public void infoln(String message);
-	public void warnln(String message);
-	public void errorln(String message);
-	public void errorln(String message, Throwable t);
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import com.samsung.sec.dexter.core.defect.Defect;
+
+public interface ICLIResultFile {
+
+	void writeXml2ResultFilePostfix(final File file) throws IOException;
+
+	void writeXmlResultFilePostfix(final File file) throws IOException;
+
+	void writeJsonResultFilePostfix(final File file) throws IOException;
+
+	void writeXml2ResultFilePrefix(final File file) throws IOException;
+
+	void writeXmlResultFilePrefix(final File file) throws IOException;
+
+	void writeJsonResultFilePrefix(final File file) throws IOException;
+
+	void writeJsonResultFileBody(final File file, final List<Defect> allDefectList) throws IOException;
+
+	void writeXmlResultFileBody(final File file, final List<Defect> allDefectList, final String sourceFileFullPath) throws IOException;
+
+	void writeXml2ResultFileBody(final File file, final List<Defect> allDefectList, final String sourceFileFullPath) throws IOException;
+
 }

@@ -42,6 +42,7 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.EndOfAnalysisHandler;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfigFile;
+import com.samsung.sec.dexter.core.config.IDexterConfigFile;
 import com.samsung.sec.dexter.core.config.IDexterHomeListener;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.defect.Occurence;
@@ -49,6 +50,7 @@ import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.filter.AnalysisFilterHandler;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.daemon.DexterDaemonActivator;
+import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
 import com.samsung.sec.dexter.executor.DexterAnalyzer;
 
 public class MonitorForDexterConfigFile extends Job implements IDexterHomeListener{
@@ -105,7 +107,7 @@ public class MonitorForDexterConfigFile extends Job implements IDexterHomeListen
 			return;
 		}
 
-		DexterConfigFile dexterConfigFile = new DexterConfigFile();
+		IDexterConfigFile dexterConfigFile = new DexterConfigFile();
 		dexterConfigFile.loadFromFile(configFile);
 		final AnalysisConfig analysisConfig = dexterConfigFile.toAnalysisConfig();
 
@@ -140,7 +142,8 @@ public class MonitorForDexterConfigFile extends Job implements IDexterHomeListen
     	if(Strings.isNullOrEmpty(config.getModulePath())){
     		for(String src : config.getSourceBaseDirList()){
     			if(config.getSourceFileFullPath().indexOf(src) >= 0){
-    				config.setModulePath(config.getSourceFileFullPath().substring(src.length(), config.getSourceFileFullPath().lastIndexOf("/")));
+    				config.setModulePath(config.getSourceFileFullPath().substring(src.length(), 
+    						config.getSourceFileFullPath().lastIndexOf('/')));
     			}
     		}
     		
@@ -157,7 +160,7 @@ public class MonitorForDexterConfigFile extends Job implements IDexterHomeListen
 
     	config.setResultHandler(createResultChanageHandler());
     	config.setShouldSendSourceCode(true);
-    	DexterAnalyzer.getInstance().runAsync(config);
+    	DexterAnalyzer.getInstance().runAsync(config, DexterUIActivator.getDefault().getPluginManager());
     }
 
 	private void delayMonitor() {
@@ -229,7 +232,7 @@ public class MonitorForDexterConfigFile extends Job implements IDexterHomeListen
 	 * @see com.samsung.sec.dexter.core.config.IDexterHomeListener#handleDexterHomeChanged()
 	 */
     @Override
-    public void handleDexterHomeChanged() {
+    public void handleDexterHomeChanged(final String oldPath, final String newPath) {
     	initDexterConfigFile();	    
     }
 }

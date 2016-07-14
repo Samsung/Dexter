@@ -23,12 +23,11 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.samsung.sec.dexter.core.analyzer;
+package com.samsung.sec.dexter.core.plugin;
 
 import java.util.List;
 
 import com.samsung.sec.dexter.core.exception.DexterException;
-import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 
 public interface IDexterPluginInitializer {
 	/**

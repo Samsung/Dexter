@@ -152,7 +152,7 @@ public class ProjectOrFolderAnalyzer {
 		config.createResultFileFullPath();
 		config.generateModulePath();
 		
-		DexterAnalyzer.getInstance().runSync(config);
+		DexterAnalyzer.getInstance().runSync(config, DexterUIActivator.getDefault().getPluginManager());
 	}
 	
 	private void setShouldSendSourceCode(AnalysisConfig config) {

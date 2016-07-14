@@ -87,7 +87,7 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
 		plugin = this;
 		LOG.setPlugin(this);
 		checkOS();
-		CheckPlatzServer();
+		checkPlatzServer();
 		initializeAfterSettingDexterHome();
 		DexterConfig.getInstance().addDexterHomeListener(this);
 		DexterClient.getInstance().addLoginInfoListener(this);
@@ -104,7 +104,7 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
 	 * handleDexterHomeChanged()
 	 */
 	@Override
-	public void handleDexterHomeChanged() {
+	public void handleDexterHomeChanged(final String oldPath, final String newPath) {
 		initializeAfterSettingDexterHome();
 	}
 	
@@ -122,7 +122,7 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
 		setWindowTitleWithLoginInformation();
 		initializeSourceInsightEnvironment();
 		startMonitorForDexterConfigFile();
-		if(java.lang.System.getProperty("isPlatzAlive") == "true"){
+		if("true".equals(java.lang.System.getProperty("isPlatzAlive"))){
 			startMonitorForPlatzKeywordFile();
 		}
 		setSourceInsightStatusRegistryAsRunning();
@@ -152,9 +152,6 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
 		String serverString, userId, loginString;
 		
 		try {
-			serverString = getPreferenceStore().getString("serverAddress");
-			userId = getPreferenceStore().getString("userId");
-			
 			serverString = client.getServerHost() + ":" + client.getServerPort(); 
 			userId = client.getCurrentUserId();
 			loginString = "(" + serverString + " - " + userId + ")";
@@ -279,7 +276,7 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
 		return plugin;
 	}
 	
-	private void CheckPlatzServer(){
+	private void checkPlatzServer(){
 		try{
 			if (!InetAddress.getByName(DexterConfig.PLATZ_DOMAIN).isReachable(SERVER_TIMEOUT)) {
 				java.lang.System.setProperty("isPlatzAlive", "true");

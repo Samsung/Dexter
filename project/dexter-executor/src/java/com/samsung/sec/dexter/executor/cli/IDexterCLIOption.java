@@ -23,11 +23,54 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.samsung.sec.dexter.core.config;
+package com.samsung.sec.dexter.executor.cli;
 
-public interface IDexterHomeListener {
+import java.io.File;
+import java.util.List;
+
+public interface IDexterCLIOption {
 	/**
-	 *  occur whenever login
+	 * @param args it should be parameters from main method.
 	 */
-	public void handleDexterHomeChanged(final String oldPath, final String newPath);
+	void createCliOptionFromArguments(final String[] args);
+	
+	/**
+	 * @return full file path of dexter_cfg.json file, 
+	 * which has configurations to run Dexter CLI such as project name, source folder path, etc.
+	 */
+	String getConfigFilePath();
+
+	boolean isStandAloneMode();
+	boolean isAsynchronousMode();
+	boolean isSpecifiedCheckerEnabledMode();
+	boolean isTargetFilesOptionEnabled();
+
+	List<String> getTargetFileFullPathList();
+
+	String getUserId();
+
+	String getUserPassword();
+
+	String[] getEnabledCheckerCodes();
+	String[] getEnabledCheckerLanguages();
+	String[] getEnabledCheckerToolNames();
+
+	boolean isXml2File();
+
+	boolean isXmlFile();
+
+	boolean isJsonFile();
+
+	File getXml2ResultFile();
+
+	File getXmlResultFile();
+
+	File getJsonResultFile();
+
+	boolean isAccountCreationMode();
+
+	int getServerPort();
+
+	String getServerHostIp();
+
 }

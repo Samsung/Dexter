@@ -1,0 +1,15 @@
+{
+  "dexterHome": "./src/test/dexter-home",
+  "dexterServerIp": "123.123.123.123",
+  "dexterServerPort": "4982",
+  "projectName": "ProjectName",
+  "projectFullPath": "./src/test/myproject",
+  "sourceDir": [ "./src/test" ],
+  "headerDir": [],
+  "sourceEncoding": "UTF-8",
+  "libDir": [ "./lib"],
+  "binDir": "./bin",
+  "type": "FILE",
+  "modulePath": "",
+  "fileName": [ "dexter_conf_java.json" ] /* optional */
+}

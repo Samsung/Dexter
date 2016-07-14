@@ -33,16 +33,39 @@ import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.core.util.IDexterClient;
 
-public class Account implements IAccount{
+public class Account implements IAccount {
 	private IDexterClient client = DexterClient.getInstance();
 	private InputStream in = System.in;
-	private PrintStream out = System.out;
+	private ICLILog cliLog = new CLILog(System.out);
+	
 	private static int MAX_TRY_COUNT = 5;
 	
+	
+	public Account(ICLILog cliLog) {
+		this.cliLog = cliLog;
+	}
+
+	@Override
+	public void loginOrCreateAccount(final String userId, final String password) {
+		try{
+			client.login(userId, password);
+		} catch (DexterRuntimeException e){
+			cliLog.errorln("Invalid userId ID(" + userId + ") or password(" + password + ")");
+			cliLog.infoln("You can create your account by the following command:");
+			cliLog.infoln("$ chmod 755 create-user.sh");
+			cliLog.infoln("$ create-user.sh -u your_id -p your_password -h dexter_server_ip -o dexter_server_port");
+			cliLog.infoln("OR");
+			cliLog.infoln("$ java -jar dexter-executor.jar -c -u your_id -p your_password -h dexter_server_ip -o dexter_server_port");
+			cliLog.infoln("If you want reset your password:");
+			cliLog.infoln("$ java -jar dexter-executor.jar -r -u your_id -h dexter_server_ip -o dexter_server_port");
+		}
+	}
 	
 	@Override
     public void createAccount(String userId, String password) {
 		try{
+//			client.setDexterServer(host, port);
+			
 			if(isValidUserId(userId) == false){
 				userId = readUserId();
 			}
@@ -52,7 +75,7 @@ public class Account implements IAccount{
 			}
 			
 	    	client.createAccount(userId, password, false);
-	    	out.println("Your account is created: " + userId);
+	    	cliLog.infoln("Your account is created: " + userId);
 	    	client.login(userId, password);
 	    } catch (DexterRuntimeException e1){
 	    	throw new RuntimeException("Can't make new account. try it again. " + e1.getMessage(), e1);
@@ -66,7 +89,7 @@ public class Account implements IAccount{
 			int tryCount = 0;
 			
 			do {
-				out.print("Enter your ID (4 - 20 length, 'CTRL + C' to exit): ");
+				cliLog.info("Enter your ID (4 - 20 length, 'CTRL + C' to exit): ");
 				userId = input.nextLine().trim();
 				
 				if(++tryCount >= MAX_TRY_COUNT){
@@ -89,7 +112,7 @@ public class Account implements IAccount{
 		if(userId.length() < 4 || userId.length() > 20) return false;
 		
 		if(client.hasAccount(userId)){
-			out.println("Your account is already exist: " + userId);
+			cliLog.infoln("Your account is already exist: " + userId);
 			return false;
 		}
 		
@@ -103,15 +126,15 @@ public class Account implements IAccount{
 			int tryCount = 0;
 			
 			do {
-				out.print("Enter your password('CTRL + C' to exit): ");
+				cliLog.info("Enter your password('CTRL + C' to exit): ");
 				password = input.nextLine().trim();
 			
 				String password2 = "";
-				out.print("Enter your password again('CTRL + C' to exit): ");
+				cliLog.info("Enter your password again('CTRL + C' to exit): ");
 				password2 = input.nextLine().trim();
 				
 				if(password.equals(password2) == false){
-					out.println("Passwords are not same.");
+					cliLog.infoln("Passwords are not same.");
 					password = "";
 				}
 				
@@ -134,15 +157,18 @@ public class Account implements IAccount{
 		return true;
 	}
 
+	@Override
 	public void setDexterClient(IDexterClient client) {
 	    this.client = client;
     }
 	
+	@Override
 	public void setInputStream(InputStream in){
 		this.in = in;
 	}
 	
+	@Override
 	public void setPrintStream(PrintStream out){
-		this.out = out;
+		this.cliLog.setPrintStream(out);
 	}
 }

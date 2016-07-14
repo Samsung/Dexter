@@ -27,6 +27,7 @@ package com.samsung.sec.dexter.core.filter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 
@@ -46,7 +47,8 @@ public class AnalysisFilterHandler implements IDexterHomeListener{
 	final private static Logger LOG = Logger.getLogger(AnalysisFilterHandler.class);
     private IFalseAlarmConfiguration falseAlarmCfg;
 	private boolean hasFilterToUpload;
-    private static int LAST_VERSION = -1;
+    //private static int LAST_VERSION = -1;
+	private static AtomicInteger LAST_VERSION = new AtomicInteger(-1);
     
     private AnalysisFilterHandler(){
     	DexterConfig.getInstance().addDexterHomeListener(this);
@@ -144,7 +146,7 @@ public class AnalysisFilterHandler implements IDexterHomeListener{
     	final IDexterClient client = DexterClient.getInstance();
     	final int lastVersion = client.getLastFalseAlarmVersion();
 		
-		return LAST_VERSION < lastVersion;
+		return LAST_VERSION.get() < lastVersion;
 	}
     
 	/**
@@ -162,10 +164,10 @@ public class AnalysisFilterHandler implements IDexterHomeListener{
 			if(cfg != null){
 				this.falseAlarmCfg = cfg;
 				Files.write(gson.toJson(cfg), falseAlarmListFile, Charsets.UTF_8);
-				LAST_VERSION = client.getLastFalseAlarmVersion();
+				LAST_VERSION.set(client.getLastFalseAlarmVersion());
 			}
 		} catch (Exception e) {
-			LAST_VERSION = -1;
+			LAST_VERSION.set(-1);
 			LOG.error(e.getMessage(), e);
 		}
 	}
@@ -210,7 +212,7 @@ public class AnalysisFilterHandler implements IDexterHomeListener{
 
 
 	@Override
-    public void handleDexterHomeChanged() {
+    public void handleDexterHomeChanged(final String oldPath, final String newPath) {
 		loadFilterFromFile();
     }
 	
