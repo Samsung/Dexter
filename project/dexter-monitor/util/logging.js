@@ -31,8 +31,8 @@ var logFilePath = "./log/dexter-monitor.log";
 
 var logger;
 
-exports.init = function (){
-
+init();
+function init(){
     if(!fs.existsSync("./log")){
         fs.mkdirSync("./log");
     }

@@ -1,34 +1,21 @@
 <div class="row">
     <div class="sidebar">
         <ul class="nav nav-sidebar">
-            <li><div><h3><b>Overview</b></h3></div></li>
+            <li><div><h3><b>Current</b></h3></div></li>
             <li ng-class="{'active':isActiveView('/')}">
-                <a href="#/" uib-tooltip="Current status of defects and users" tooltip-placement="right" tooltip-append-to-body="true">Current</a></li>
-            <li ng-class="{'active':isActiveView('/change/')}">
-                <a href="#/change/" uib-tooltip="Weekly status of defects and users" tooltip-placement="right" tooltip-append-to-body="true">Change</a></li>
-            <li ng-class="{'active':isActiveView('/serverstatus/')}">
-                <a href="#/serverstatus/" uib-tooltip="Current server status" tooltip-placement="right" tooltip-append-to-body="true">Server Status</a></li>
+                <a href="#/" uib-tooltip="Current installation rate and defect status of all groups" tooltip-placement="right" tooltip-append-to-body="true">Overview</a></li>
+            <li ng-class="{'active':isActiveView('/current-project/')}">
+                <a href="#/current-project/" uib-tooltip="Current status of all projects" tooltip-placement="right" tooltip-append-to-body="true">Project Status</a></li>
+            <li ng-class="{'active':isActiveView('/current-user/')}">
+                <a href="#/current-user/" uib-tooltip="Current user list of all projects" tooltip-placement="right" tooltip-append-to-body="true">User List</a></li>
         </ul>
         <br>
         <ul class="nav nav-sidebar">
-            <li><div><h3><b>Detail</b></h3></div></li>
-            <li ng-class="{'active':isActiveView('/user/')}">
-                <a href="#/user/" uib-tooltip="Current users of all projects" tooltip-placement="right" tooltip-append-to-body="true">User</a></li>
-            <li ng-class="{'active':isActiveView('/user/project/')}">
-                <a href="#/user/project/" uib-tooltip="Current users of a selected project" tooltip-placement="right" tooltip-append-to-body="true">User by Project</a></li>
-            <li ng-class="{'active':isActiveViewWithParam('/user/group/')}">
-                <a href="#/user/group/" uib-tooltip="Current users of a selected group" tooltip-placement="right" tooltip-append-to-body="true">User by Group</a></li>
-            <li ng-class="{'active':isActiveView('/user/lab/')}">
-                <a href="#/user/lab/" uib-tooltip="Current users of a selected lab (TBD)" tooltip-placement="right" tooltip-append-to-body="true">User by Lab</a></li>
-            <br>
-            <li ng-class="{'active':isActiveView('/defect/')}">
-                <a href="#/defect/" uib-tooltip="Weekly defects of all groups and projects" tooltip-placement="right" tooltip-append-to-body="true">Defect</a></li>
-            <li ng-class="{'active':isActiveView('/defect/project/')}">
-                <a href="#/defect/project/" uib-tooltip="Weekly defects of a selected project" tooltip-placement="right" tooltip-append-to-body="true">Defect by Project</a></li>
-            <li ng-class="{'active':isActiveView('/defect/group/')}">
-                <a href="#/defect/group/" uib-tooltip="Weekly defects of all groups for a selected week" tooltip-placement="right" tooltip-append-to-body="true">Defect by Group</a></li>
-            <li ng-class="{'active':isActiveView('/defect/lab/')}">
-                <a href="#/defect/lab/" uib-tooltip="Weekly defects of a selected lab (TBD)" tooltip-placement="right" tooltip-append-to-body="true">Defect by Lab</a></li>
+            <li><div><h3><b>Weekly</b></h3></div></li>
+            <li ng-class="{'active':isActiveView('/weekly-group/')}">
+                <a href="#/weekly-group/" uib-tooltip="Weekly defect and user status of all groups for a selected week" tooltip-placement="right" tooltip-append-to-body="true">Group Status</a></li>
+            <li ng-class="{'active':isActiveView('/weekly-project/')}">
+                <a href="#/weekly-project/" uib-tooltip="Weekly defect status of all projects" tooltip-placement="right" tooltip-append-to-body="true">Project Status</a></li>
         </ul>
     </div>
 </div>

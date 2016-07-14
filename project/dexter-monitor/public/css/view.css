@@ -13,12 +13,12 @@ body {
   padding-left: 200px;
 }
 
-.grid-defect-all {
+.grid-weekly-project {
   width: 1207px;
   height: 650px;
 }
 
-.grid-defect-group {
+.grid-weekly-group {
   width: 1010px;
   height: 650px;
 }
@@ -38,24 +38,34 @@ body {
   height: 650px;
 }
 
-.grid-user-all {
+.grid-current-user {
   width: 1090px;
   height: 650px;
 }
 
-.grid-current-summary {
-  width: 920px;
-  height: 80px;
-}
-
-.grid-current-detail {
-  width: 920px;
-  height: 500px;
+.grid-current-project {
+  width: 100%;
+  height: 650px;
 }
 
 .grid-weekly-change {
   width: 920px;
   height: 650px;
+}
+
+.grid-overview-summary {
+  width: 100%;
+  height: 62px;
+}
+
+.grid-overview-installation-status {
+  width: 100%;
+  height: 350px;
+}
+
+.grid-overview-defect-status {
+  width: 100%;
+  height: 350px;
 }
 
 .grid-user-id {
@@ -64,6 +74,16 @@ body {
 
 .grid-align {
   text-align: center;
+}
+
+.server-status-active {
+  color: green;
+  font-weight: bold;
+}
+
+.server-status-inactive {
+  color: red;
+  font-weight: bold;
 }
 
 .year-change {

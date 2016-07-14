@@ -25,7 +25,7 @@
  */
 "use strict";
 
-monitorApp.service('ProjectService', function($http, $log, $q) {
+monitorApp.service('ProjectService', function($http, $log, $q, ServerStatusService) {
 
     this.getProjectList = function() {
         return $http.get('/api/v2/project-list')
@@ -87,21 +87,25 @@ monitorApp.service('ProjectService', function($http, $log, $q) {
         return deferred.promise;
     }
 
-    this.getAllCurrentStatusList = function() {
+    this.getAllCurrentStatusList = function(activeServerList) {
         let promises = [];
 
         return this.getProjectList()
             .then((rows) => {
+                const activeProjectNames = _.map(activeServerList, 'projectName');
                 rows.forEach((row) => {
-                    promises.push(setUserCount(row, row.projectName));
-                    promises.push(setDefectCount(row, row.projectName));
+                    if (_.includes(activeProjectNames, row.projectName)) {
+                        promises.push(setUserCount(row, row.projectName));
+                        promises.push(setDefectCount(row, row.projectName));
+                        row.serverStatus = 'Active';
+                    } else {
+                        row.serverStatus = 'Inactive';
+                    }
                 });
 
                 return $q.all(promises)
                     .then(() => {
-                        rows = _.sortBy(rows, (row) => {
-                            return row.groupName.toLowerCase();
-                        });
+                        rows = _.sortBy(rows, (row) => row.groupName.toLowerCase());
                         return rows;
                     })
                     .catch((err) => {
@@ -111,4 +115,62 @@ monitorApp.service('ProjectService', function($http, $log, $q) {
             });
     };
 
+    this.getCurrentStatusByGroup = function() {
+        let promises = [];
+        let statusListByProject = [];
+
+        return ServerStatusService.getActiveServerList()
+            .then((activeServerList) => {
+                statusListByProject = activeServerList;
+                statusListByProject.forEach((row) => {
+                    promises.push(setUserCount(row, row.projectName));
+                    promises.push(setDefectCount(row, row.projectName));
+                });
+
+                return $q.all(promises)
+                    .then(() => {
+                        return createStatusListByGroup();
+                    })
+                    .catch((err) => {
+                        $log.error(err);
+                        return [];
+                    });
+            })
+            .catch((err) => {
+                $log.error(err);
+                return [];
+            });
+
+
+        function createStatusListByGroup() {
+            let statusListByGroup = [];
+            const groupNameList = _.uniq(_.map(statusListByProject, 'groupName'));
+
+            groupNameList.forEach((groupName) => {
+                const groupNameFilteredStatusList = _.filter(statusListByProject, (o) => o.groupName == groupName);
+                let userCount = 0;
+                let defectCountTotal = 0;
+                let defectCountFixed = 0;
+                let defectCountDismissed = 0;
+
+                groupNameFilteredStatusList.forEach((row) => {
+                    userCount += row.userCount;
+                    defectCountTotal += row.defectCountTotal;
+                    defectCountFixed += row.defectCountFixed;
+                    defectCountDismissed += row.defectCountDismissed;
+                });
+
+                statusListByGroup.push({
+                    groupName: groupName,
+                    projectCount: groupNameFilteredStatusList.length,
+                    userCount: (_.isNaN(userCount) ? '' : userCount),
+                    defectCountTotal: (_.isNaN(defectCountTotal) ? '' : defectCountTotal),
+                    defectCountFixed: (_.isNaN(defectCountFixed) ? '' : defectCountFixed),
+                    defectCountDismissed: (_.isNaN(defectCountDismissed) ? '' : defectCountDismissed)
+                });
+            });
+
+            return _.sortBy(statusListByGroup, 'groupName');
+        }
+    };
 });
