@@ -25,37 +25,51 @@
  */
 "use strict";
 
-monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, ProjectService, uiGridConstants) {
+monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, ProjectService, ServerStatusService, uiGridConstants) {
 
     const columnDefs = [
-        {field:'groupName',             displayName:'Group',            width: 180,     cellClass: 'grid-align',
-            headerTooltip: 'Group name'},
-        {field:'projectName',           displayName:'Project',          width: 180,     cellClass: 'grid-align',
-            headerTooltip: 'Project name', aggregationType: uiGridConstants.aggregationTypes.count},
-        {field:'defectCountTotal',      displayName:'Defect(All)',      width: 140,     cellClass: 'grid-align',
+        {field:'groupName',             displayName:'Group',            width: '17%',   cellClass: 'grid-align',
+            headerTooltip: 'Group name', cellTooltip: true},
+        {field:'projectName',           displayName:'Project',          width: '18%',   cellClass: 'grid-align',
+            headerTooltip: 'Project name', cellTooltip: true, aggregationType: uiGridConstants.aggregationTypes.count},
+        {field:'defectCountTotal',      displayName:'Total',            width: '12%',   cellClass: 'grid-align',
             headerTooltip: 'Number of all defects', aggregationType: uiGridConstants.aggregationTypes.sum},
-        {field:'defectCountFixed',      displayName:'Defect(Fix)',      width: 140,     cellClass: 'grid-align',
+        {field:'defectCountFixed',      displayName:'Fixed',            width: '12%',   cellClass: 'grid-align',
             headerTooltip: 'Number of fixed defects', aggregationType: uiGridConstants.aggregationTypes.sum},
-        {field:'defectCountDismissed',  displayName:'Defect(Dis)',      width: 140,     cellClass: 'grid-align',
+        {field:'defectCountDismissed',  displayName:'Dismissed',        width: '12%',   cellClass: 'grid-align',
             headerTooltip: 'Number of dismissed defects', aggregationType: uiGridConstants.aggregationTypes.sum},
-        {field:'userCount',             displayName:'User',             width: 115,     cellClass: 'grid-align',
-            headerTooltip: 'Number of users', aggregationType: uiGridConstants.aggregationTypes.sum}
+        {field:'userCount',             displayName:'User',             width: '12%',   cellClass: 'grid-align',
+            headerTooltip: 'Number of users', aggregationType: uiGridConstants.aggregationTypes.sum},
+        {field:'serverStatus',          displayName:'Server Status',    width: '17%',   cellClass: 'grid-align',
+            headerTooltip: 'Server status', footerCellClass: 'grid-align',
+            aggregationType: () => `Active: ${$scope.activeServerCount} / Inactive: ${$scope.allServerCount-$scope.activeServerCount}`,
+            cellTemplate:'<div class="ui-grid-cell-contents"' +
+                        ' ng-class="{\'server-status-active\':COL_FIELD == \'Active\',' +
+                        '            \'server-status-inactive\':COL_FIELD == \'Inactive\'}">{{COL_FIELD}}</div>'}
     ];
 
     initialize();
 
     function initialize() {
+        $scope.allServerCount = 0;
+        $scope.activeServerCount = 0;
         $scope.gridOptions = createGrid(columnDefs);
         $scope.gridOptions.showColumnFooter = true;
-        loadData();
+        ServerStatusService.getActiveServerList()
+            .then(loadData)
+            .catch((err) => {
+                $log.error(err);
+            });
         $scope.time = new Date().toLocaleString();
         setGridExportingFileNames($scope.gridOptions, CURRENT_STATUS_FILENAME_PREFIX + '-' + $scope.time);
     }
 
-    function loadData() {
-        ProjectService.getAllCurrentStatusList()
+    function loadData(activeServerList) {
+        ProjectService.getAllCurrentStatusList(activeServerList)
             .then((rows) => {
                 $scope.gridOptions.data = rows;
+                $scope.allServerCount = rows.length;
+                $scope.activeServerCount = activeServerList.length;
             })
             .catch((err) => {
                 $log.error(err);

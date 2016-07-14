@@ -87,21 +87,25 @@ monitorApp.service('ProjectService', function($http, $log, $q) {
         return deferred.promise;
     }
 
-    this.getAllCurrentStatusList = function() {
+    this.getAllCurrentStatusList = function(activeServerList) {
         let promises = [];
 
         return this.getProjectList()
             .then((rows) => {
+                const activeProjectNames = _.map(activeServerList, 'projectName');
                 rows.forEach((row) => {
-                    promises.push(setUserCount(row, row.projectName));
-                    promises.push(setDefectCount(row, row.projectName));
+                    if (_.includes(activeProjectNames, row.projectName)) {
+                        promises.push(setUserCount(row, row.projectName));
+                        promises.push(setDefectCount(row, row.projectName));
+                        row.serverStatus = 'Active';
+                    } else {
+                        row.serverStatus = 'Inactive';
+                    }
                 });
 
                 return $q.all(promises)
                     .then(() => {
-                        rows = _.sortBy(rows, (row) => {
-                            return row.groupName.toLowerCase();
-                        });
+                        rows = _.sortBy(rows, (row) => row.groupName.toLowerCase());
                         return rows;
                     })
                     .catch((err) => {

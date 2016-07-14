@@ -44,7 +44,7 @@ body {
 }
 
 .grid-current-project {
-  width: 920px;
+  width: 100%;
   height: 500px;
 }
 
@@ -64,6 +64,16 @@ body {
 
 .grid-align {
   text-align: center;
+}
+
+.server-status-active {
+  color: green;
+  font-weight: bold;
+}
+
+.server-status-inactive {
+  color: red;
+  font-weight: bold;
 }
 
 .year-change {
