@@ -25,49 +25,120 @@
  */
 "use strict";
 
-monitorApp.controller("OverviewCtrl", function($scope, $http, $log, UserService, uiGridConstants) {
+monitorApp.controller("OverviewCtrl", function($scope, $http, $log, UserService, ProjectService, uiGridConstants) {
 
-    const columnDefs = [
-        {field:'groupName',                 displayName:'Group',                    width: 170,
+    const summaryColumnDefs = [
+        {field:'installationRate',          width: '25%',       cellClass: 'grid-align',
+            headerCellTemplate:'<div class="grid-align ui-grid-cell-contents">Installation rate</div>'},
+        {field:'installedDeveloperCount',   width: '25%',       cellClass: 'grid-align',
+            headerCellTemplate:'<div class="grid-align ui-grid-cell-contents">Installed developers</div>'},
+        {field:'fixedDefectRate',           width: '25%',       cellClass: 'grid-align',
+            headerCellTemplate:'<div class="grid-align ui-grid-cell-contents">Fixed defect rate</div>'},
+        {field:'defectCountTotal',          width: '25%',       cellClass: 'grid-align',
+            headerCellTemplate:'<div class="grid-align ui-grid-cell-contents">Total defects</div>'}
+    ];
+
+    const installationStatusColumnDefs = [
+        {field:'groupName',                 displayName:'Group',                    width: '17%',
             cellClass: 'grid-align',    headerTooltip: 'Group name'},
-        {field:'allDeveloperCount',         displayName:'Developers',               width: 110,
+        {field:'allDeveloperCount',         displayName:'Developers',               width: '16%',
             cellClass: 'grid-align',    headerTooltip: 'Number of developers',
             aggregationType: uiGridConstants.aggregationTypes.sum},
-        {field:'targetDeveloperCount',      displayName:'Target developers',        width: 155,
+        {field:'targetDeveloperCount',      displayName:'Target developers',        width: '16%',
             cellClass: 'grid-align',    headerTooltip: 'Number of developers who should install Dexter',
             aggregationType: uiGridConstants.aggregationTypes.sum},
-        {field:'installedDeveloperCount',   displayName:'Installed developers',     width: 170,
+        {field:'installedDeveloperCount',   displayName:'Installed developers',     width: '16%',
             cellClass: 'grid-align',    headerTooltip: 'Number of developers who installed Dexter',
             aggregationType: uiGridConstants.aggregationTypes.sum},
-        {field:'installationRate',          displayName:'Installation rate (%)',    width: 160,
+        {field:'installationRate',          displayName:'Installation rate (%)',    width: '16%',
             cellClass: 'grid-align',    headerTooltip: 'Installation rate',
             aggregationType: () => $scope.rate, footerCellClass: 'grid-align'},
-        {field:'nonTargetDeveloperCount',   displayName:'Non-target developers',    width: 210,
+        {field:'nonTargetDeveloperCount',   displayName:'Non-target developers',    width: '19%',
             cellClass: 'grid-align',    headerTooltip: 'Number of developers not applicable to install Dexter',
             aggregationType: uiGridConstants.aggregationTypes.sum}
+    ];
+
+    const defectStatusColumnDefs = [
+        {field:'groupName',             displayName:'Group',            width: '20%',   cellClass: 'grid-align',
+            headerTooltip: 'Group name', cellTooltip: true},
+        {field:'projectCount',          displayName:'Project',          width: '16%',   cellClass: 'grid-align',
+            headerTooltip: 'Number of projects',            aggregationType: uiGridConstants.aggregationTypes.sum},
+        {field:'userCount',             displayName:'User',             width: '16%',   cellClass: 'grid-align',
+            headerTooltip: 'Number of users',               aggregationType: uiGridConstants.aggregationTypes.sum},
+        {field:'defectCountTotal',      displayName:'Total',            width: '16%',   cellClass: 'grid-align',
+            headerTooltip: 'Number of all defects',         aggregationType: uiGridConstants.aggregationTypes.sum},
+        {field:'defectCountFixed',      displayName:'Fixed',            width: '16%',   cellClass: 'grid-align',
+            headerTooltip: 'Number of fixed defects',       aggregationType: uiGridConstants.aggregationTypes.sum},
+        {field:'defectCountDismissed',  displayName:'Dismissed',        width: '16%',   cellClass: 'grid-align',
+            headerTooltip: 'Number of dismissed defects',   aggregationType: uiGridConstants.aggregationTypes.sum}
     ];
 
     initialize();
 
     function initialize() {
-        $scope.gridOptions = createGrid(columnDefs);
-        $scope.gridOptions.showColumnFooter = true;
-        $scope.gridOptions.exporterOlderExcelCompatibility = true;
+        $scope.summaryGridOptions = createGrid(summaryColumnDefs);
+        removeUselessGridOptions($scope.summaryGridOptions);
+        removeScrollbarFromGrid($scope.summaryGridOptions);
+        $scope.installationStatusGridOptions = createGrid(installationStatusColumnDefs);
+        $scope.installationStatusGridOptions.showColumnFooter = true;
+        removeScrollbarFromGrid($scope.installationStatusGridOptions);
+        $scope.defectStatusGridOptions = createGrid(defectStatusColumnDefs);
+        $scope.defectStatusGridOptions.showColumnFooter = true;
+        removeScrollbarFromGrid($scope.defectStatusGridOptions);
+
         $scope.time = new Date().toLocaleString();
-        loadData();
-        setGridExportingFileNames($scope.gridOptions, USER_STATUS_FILENAME_PREFIX + '-' + $scope.time);
+        $scope.summaryGridOptions.data.push({});
+        loadDataForInstallationStatusGrid();
+        loadDataForDefectStatusGrid();
+        setGridExportingFileNames($scope.installationStatusGridOptions, INSTALLATION_STATUS_FILENAME_PREFIX + '-' + $scope.time);
+        setGridExportingFileNames($scope.defectStatusGridOptions, DEFECT_STATUS_FILENAME_PREFIX + '-' + $scope.time);
     }
 
-    function loadData() {
+    function removeScrollbarFromGrid(gridOptions) {
+        gridOptions.enableHorizontalScrollbar = uiGridConstants.scrollbars.NEVER;
+        gridOptions.enableVerticalScrollbar =  uiGridConstants.scrollbars.NEVER;
+    }
+
+    function removeUselessGridOptions(gridOptions) {
+        gridOptions.enableSorting = false;
+        gridOptions.enableFiltering = false;
+        gridOptions.showGridFooter = false;
+        gridOptions.enableGridMenu = false;
+    }
+
+    function loadDataForInstallationStatusGrid() {
         UserService.getUserStatus()
             .then((rows) => {
-                $scope.gridOptions.data = rows;
-                const targetDeveloperCountTotal = _.sum(_.map($scope.gridOptions.data, 'targetDeveloperCount'));
-                const installedDeveloperCountTotal = _.sum(_.map($scope.gridOptions.data, 'installedDeveloperCount'));
+                $scope.installationStatusGridOptions.data = rows;
+                resizeHeightOfGrid('overviewInstallationStatusGrid', rows.length);
+                const targetDeveloperCountTotal = _.sum(_.map($scope.installationStatusGridOptions.data, 'targetDeveloperCount'));
+                const installedDeveloperCountTotal = _.sum(_.map($scope.installationStatusGridOptions.data, 'installedDeveloperCount'));
                 $scope.rate = ((installedDeveloperCountTotal / targetDeveloperCountTotal) * 100).toFixed(1);
+                $scope.summaryGridOptions.data[0].installationRate = $scope.rate + '%';
+                $scope.summaryGridOptions.data[0].installedDeveloperCount = installedDeveloperCountTotal;
             })
             .catch((err) => {
                 $log.error(err);
             });
+    }
+
+    function loadDataForDefectStatusGrid() {
+        ProjectService.getCurrentStatusByGroup()
+            .then((rows) => {
+                $scope.defectStatusGridOptions.data = rows;
+                resizeHeightOfGrid('overviewDefectStatusGrid', rows.length);
+                const defectCountTotal = _.sum(_.pull(_.map(rows, 'defectCountTotal'), ""));
+                const defectCountFixed = _.sum(_.pull(_.map(rows, 'defectCountFixed'), ""));
+                $scope.summaryGridOptions.data[0].fixedDefectRate = (defectCountFixed / defectCountTotal * 100).toFixed(1) + '%';
+                $scope.summaryGridOptions.data[0].defectCountTotal = defectCountTotal;
+            })
+            .catch((err) => {
+                $log.error(err);
+            });
+    }
+
+    function resizeHeightOfGrid(gridId, rowCount) {
+        angular.element(document.getElementById(gridId))
+            .css('height', (rowCount * ROW_HEIGHT + HEADER_HEIGHT) + 'px');
     }
 });

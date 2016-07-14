@@ -27,9 +27,13 @@
 
 const DEFECT_FILENAME_PREFIX = 'defect-list';
 const USER_FILENAME_PREFIX = 'user-list';
-const USER_STATUS_FILENAME_PREFIX = 'user-status-list';
+const INSTALLATION_STATUS_FILENAME_PREFIX = 'installation-status';
+const DEFECT_STATUS_FILENAME_PREFIX = 'defect-status';
 const CURRENT_STATUS_FILENAME_PREFIX = 'current-status-list';
 const WEEKLY_STATUS_FILENAME_PREFIX = 'weekly-status-list';
+
+const ROW_HEIGHT = 32;
+const HEADER_HEIGHT = 110;
 
 function createGrid(columnDefs) {
     return {
@@ -38,6 +42,7 @@ function createGrid(columnDefs) {
         showGridFooter: true,
         enableGridMenu: true,
         enableSelectAll: true,
+        exporterOlderExcelCompatibility: true,
         exporterCsvFilename: 'list.csv',
         exporterPdfFilename: 'list.pdf',
         exporterPdfDefaultStyle: {fontSize: 8},

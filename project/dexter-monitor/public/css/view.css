@@ -45,7 +45,7 @@ body {
 
 .grid-current-project {
   width: 100%;
-  height: 500px;
+  height: 650px;
 }
 
 .grid-weekly-change {
@@ -53,9 +53,19 @@ body {
   height: 650px;
 }
 
+.grid-overview-summary {
+  width: 100%;
+  height: 62px;
+}
+
 .grid-overview-installation-status {
-  width: 970px;
-  height: 360px;
+  width: 100%;
+  height: 350px;
+}
+
+.grid-overview-defect-status {
+  width: 100%;
+  height: 350px;
 }
 
 .grid-user-id {
