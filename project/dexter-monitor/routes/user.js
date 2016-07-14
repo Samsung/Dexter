@@ -68,9 +68,7 @@ function sendUserListInDatabaseNameList(dbNameList, res) {
 
     Promise.all(promises)
         .then(() => {
-            allRows = _.uniq(allRows, (row) => {
-                return row.userId;
-            });
+            allRows = _.filter(allRows, (row) => row.userId !== 'admin' && row.userId !== 'user');
             allRows = _.sortBy(allRows, 'userId');
             res.send({status:'ok', rows: allRows});
         })
@@ -190,7 +188,10 @@ exports.getUserCountByProjectName = function(req, res) {
     const projectName = mysql.escape(req.params.projectName);
     project.getDatabaseNameByProjectName(projectName)
         .then((dbName) => {
-            const sql = "SELECT COUNT(userId) AS userCount FROM " + mysql.escapeId(dbName) + ".Account";
+            const sql =
+                "SELECT COUNT(userId) AS userCount              " +
+                "FROM " + mysql.escapeId(dbName) + ".Account    " +
+                "WHERE userId!='admin' AND userId!='user'       ";
             database.exec(sql)
                 .then((rows) => {
                     res.send({status:'ok', value: rows[0].userCount});
