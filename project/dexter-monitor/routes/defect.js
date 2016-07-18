@@ -46,20 +46,6 @@ exports.getAll = function(req, res) {
     route.executeSqlAndSendResponseRows(sql, res);
 };
 
-exports.getByProject = function(req, res) {
-    const projectName = mysql.escape(req.params.projectName);
-    const sql =
-        "SELECT year, week, userCount,                      "+
-        "       allDefectCount, allFix, allDis              "+
-        "FROM WeeklyStatus                                  "+
-        "LEFT JOIN ProjectInfo                              "+
-        "ON WeeklyStatus.pid = ProjectInfo.pid              "+
-        "WHERE ProjectInfo.projectName = " + projectName     +
-        "ORDER BY year DESC, week DESC                      ";
-
-    route.executeSqlAndSendResponseRows(sql, res);
-};
-
 exports.getByGroup = function(req, res) {
     const year = mysql.escape(req.params.year);
     const week = mysql.escape(req.params.week);
@@ -84,11 +70,6 @@ exports.getByGroup = function(req, res) {
     sql += "GROUP BY groupName ORDER BY allDefectCount DESC, groupName ASC";
 
     route.executeSqlAndSendResponseRows(sql, res);
-};
-
-exports.getByLab = function(req, res) {
-    const year = mysql.escape(req.params.year);
-    const week = mysql.escape(req.params.week);
 };
 
 exports.getMinYear = function(req, res) {
@@ -151,20 +132,4 @@ exports.getDefectCountByProjectName = function(req, res) {
             log.error(err);
             res.send({status:"fail", errorMessage: err.message});
         });
-};
-
-exports.getWeeklyChange = function(req, res) {
-    const sql =
-        "SELECT year, week,                                 " +
-        "       SUM(allDefectCount) AS defectCountTotal,    " +
-        "       SUM(allFix) AS defectCountFixed,            " +
-        "       SUM(allDis) AS defectCountDismissed,        " +
-        "       SUM(userCount) AS userCount                 " +
-        "FROM WeeklyStatus                                  " +
-        "LEFT JOIN ProjectInfo                              " +
-        "ON WeeklyStatus.pid = ProjectInfo.pid              " +
-        "GROUP BY year, week                                " +
-        "ORDER BY year DESC, week DESC                      ";
-
-    route.executeSqlAndSendResponseRows(sql, res);
 };

@@ -49,36 +49,6 @@ function getUserListByProjectDatabaseName(dbName) {
         });
 }
 
-function sendUserListInDatabaseNameList(dbNameList, res) {
-    let allRows = [];
-    let promises = [];
-
-    dbNameList.forEach((dbName) => {
-        promises.push(new Promise((resolve, reject) => {
-            getUserListByProjectDatabaseName(dbName)
-                .then((rows) => {
-                    allRows = _.union(allRows, rows);
-                    resolve();
-                })
-                .catch((err) => {
-                    log.error(err);
-                    reject();
-                })
-        }));
-    });
-
-    Promise.all(promises)
-        .then(() => {
-            allRows = _.filter(allRows, (row) => row.userId !== 'admin' && row.userId !== 'user');
-            allRows = _.sortBy(allRows, 'userId');
-            res.send({status:'ok', rows: allRows});
-        })
-        .catch((err) => {
-            log.error(err);
-            res.send({status:"fail", errorMessage: err.message});
-        });
-}
-
 function sendUserListInActiveServerList(activeServerList, res) {
     let allRows = [];
     let promises = [];
@@ -131,43 +101,6 @@ exports.getAll = function(req, res) {
         log.error('Failed to get user list: ' + err);
         res.send({status:"fail", errorMessage: err.message});
     });
-};
-
-exports.getByProject = function(req, res) {
-    const projectName = mysql.escape(req.params.projectName);
-    project.getDatabaseNameByProjectName(projectName)
-        .then((dbName) => {
-            getUserListByProjectDatabaseName(dbName)
-                .then((rows) => {
-                    res.send({status:'ok', rows: rows});
-                })
-                .catch((err) => {
-                    log.error(err);
-                    res.send({status:"fail", errorMessage: err.message});
-                });
-        })
-        .catch((err) => {
-            log.error('Failed to get the DB name of the ' + projectName + ' project: ' + err);
-            res.send({status:"fail", errorMessage: err.message});
-        });
-};
-
-exports.getByGroup = function(req, res) {
-    const groupName = mysql.escape(req.params.groupName);
-
-    project.getDatabaseNameListByGroupName(groupName)
-        .then((rows) => {
-            let dbNameList = _.map(rows, 'dbName');
-            sendUserListInDatabaseNameList(dbNameList, res);
-        })
-        .catch((err) => {
-            log.error('Failed to get the DB name list of the ' + groupName + ' group: ' + err);
-            res.send({status:"fail", errorMessage: err.message});
-        });
-};
-
-exports.getByLab = function(req, res) {
-
 };
 
 function processReturnedData(data) {

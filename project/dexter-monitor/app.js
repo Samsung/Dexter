@@ -147,9 +147,6 @@ function setWebApis(){
     app.get('/api/v1/server-detailed-status', getServerDetailedStatus);
 
     app.get('/api/v2/user', user.getAll);
-    app.get('/api/v2/user/project/:projectName', user.getByProject);
-    app.get('/api/v2/user/group/:groupName', user.getByGroup);
-    app.get('/api/v2/user/lab', user.getByLab);
     app.get('/api/v2/user/extra-info/:userIdList', user.getMoreInfoByUserIdList);
     app.get('/api/v2/user-count/:projectName', user.getUserCountByProjectName);
     app.get('/api/v2/user-status', user.getUserStatus);
@@ -158,14 +155,10 @@ function setWebApis(){
     app.get('/api/v2/defect/max-year', defect.getMaxYear);
     app.get('/api/v2/defect/max-week/:year', defect.getMaxWeek);
     app.get('/api/v2/defect', defect.getAll);
-    app.get('/api/v2/defect/project/:projectName', defect.getByProject);
     app.get('/api/v2/defect/group/:year/:week', defect.getByGroup);
-    app.get('/api/v2/defect/lab/:year/:week', defect.getByLab);
     app.get('/api/v2/defect-status-count/:projectName', defect.getDefectCountByProjectName);
-    app.get('/api/v2/defect-weekly-change', defect.getWeeklyChange);
 
     app.get('/api/v2/project-list', project.getProjectList);
-    app.get('/api/v2/group-list', project.getGroupList);
 }
 
 function initModules(){

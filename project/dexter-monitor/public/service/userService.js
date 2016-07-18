@@ -27,44 +27,6 @@
 
 monitorApp.service('UserService', function($http, $log, $q) {
 
-    this.getUserListByProject = function(projectName) {
-        if (!projectName)
-            return $q.reject('Project name is null');
-
-        return $http.get('/api/v2/user/project/' + projectName)
-            .then((res) => {
-                if (!isHttpResultOK(res)) {
-                    $log.error('Failed to get user list by project');
-                    return [];
-                }
-
-                return res.data.rows;
-            })
-            .catch((err) => {
-                $log.error(err);
-                return [];
-            });
-    };
-
-    this.getUserListByGroup = function(groupName) {
-        if (!groupName)
-            return $q.reject('Group name is null');
-
-        return $http.get('/api/v2/user/group/' + groupName)
-            .then((res) => {
-                if (!isHttpResultOK(res)) {
-                    $log.error('Failed to get user list by group');
-                    return [];
-                }
-
-                return res.data.rows;
-            })
-            .catch((err) => {
-                $log.error(err);
-                return [];
-            });
-    };
-
     this.getExtraInfoByUserId = function(userId) {
         if (!userId || userId.length == 0)
             return $q.reject('User ID is invalid');
@@ -77,25 +39,6 @@ monitorApp.service('UserService', function($http, $log, $q) {
                 }
 
                 return res.data.rows[0];
-            })
-            .catch((err) => {
-                $log.error(err);
-                return null;
-            });
-    };
-
-    this.getExtraInfoByUserIdList = function(userIdList) {
-        if (!userIdList || userIdList.length == 0)
-            return $q.reject('User list is empty');
-
-        return $http.get('/api/v2/user/extra-info/' + userIdList)
-            .then((res) => {
-                if (!isHttpResultOK(res)) {
-                    $log.error('Failed to load extra user info');
-                    return null;
-                }
-
-                return res.data.rows;
             })
             .catch((err) => {
                 $log.error(err);

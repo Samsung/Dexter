@@ -36,11 +36,6 @@ exports.getProjectList = function(req, res) {
     route.executeSqlAndSendResponseRows(sql, res);
 };
 
-exports.getGroupList = function(req, res) {
-    const sql = "SELECT DISTINCT groupName FROM ProjectInfo ORDER BY groupName ASC";
-    route.executeSqlAndSendResponseRows(sql, res);
-};
-
 exports.getDatabaseNameByProjectName = function(projectName) {
     const sql = "SELECT DISTINCT dbName FROM ProjectInfo WHERE projectName=" + projectName;
     return database.exec(sql)
@@ -50,18 +45,6 @@ exports.getDatabaseNameByProjectName = function(projectName) {
         .catch((err) => {
             log.error(err);
             return null;
-        });
-};
-
-exports.getDatabaseNameListByGroupName = function(groupName) {
-    const sql = "SELECT DISTINCT dbName FROM ProjectInfo WHERE groupName=" + groupName;
-    return database.exec(sql)
-        .then((rows) => {
-            return rows;
-        })
-        .catch((err) => {
-            log.error(err);
-            return [];
         });
 };
 
