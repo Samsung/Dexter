@@ -25,6 +25,13 @@
 */
 package com.samsung.sec.dexter.core.job;
 
+import com.google.common.base.Charsets;
+import com.google.common.io.Files;
+import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.util.DexterUtil;
+import com.samsung.sec.dexter.core.util.IDexterClient;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -32,59 +39,58 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
-import com.samsung.sec.dexter.core.config.DexterConfig;
-import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
-import com.samsung.sec.dexter.core.util.DexterClient;
-import com.samsung.sec.dexter.core.util.DexterUtil;
-
 public class SendResultJob implements Runnable {
 	private final static Logger logger = Logger.getLogger(SendResultJob.class);
 	private static AtomicInteger COUNT = new AtomicInteger(DexterJobFacade.MAX_JOB_DELAY_COUNT);
-	
-	/* (non-Javadoc)
-	 * @see java.lang.Runnable#run()
-	 */
-    @Override
-    public void run() {
-    	long freeMemSize = Runtime.getRuntime().freeMemory();
-    	
-    	if(freeMemSize > DexterJobFacade.ALLOWED_FREE_MEMORY_SIZE_FOR_JOBS || COUNT.get() > DexterJobFacade.MAX_JOB_DELAY_COUNT){
-    		COUNT.set(0);
-    		try {
-	            SendResultJob.send();
-	            logger.debug("SendResultJob Executed");
-            } catch (DexterRuntimeException e) {
-            	logger.debug(e.getMessage(), e);
-            }
-    	}
-    	
-    	COUNT.addAndGet(1);
-    }
-    
-    public static void send() { 
-    	final File resultFolder = new File(DexterConfig.getInstance().getResultPath());
-    	
-		for(final File file : DexterUtil.getSubFiles(resultFolder)){
-			if(file.isFile()){
-				sendResult(file);
+	private IDexterClient client;
+
+	public SendResultJob(final IDexterClient client) {
+		assert client != null;
+
+		this.client = client;
+	}
+
+	@Override
+	public void run() {
+		long freeMemSize = Runtime.getRuntime().freeMemory();
+
+		if (freeMemSize > DexterJobFacade.ALLOWED_FREE_MEMORY_SIZE_FOR_JOBS
+				|| COUNT.get() > DexterJobFacade.MAX_JOB_DELAY_COUNT) {
+			COUNT.set(0);
+			try {
+				send();
+				logger.debug("SendResultJob Executed");
+			} catch (DexterRuntimeException e) {
+				logger.debug(e.getMessage(), e);
 			}
 		}
-    }
 
-	private static void sendResult(final File resultFile) {
-		final String oldResultPath = DexterConfig.getInstance().getOldResultPath();
+		COUNT.addAndGet(1);
+	}
+
+	public synchronized void send() {
+		final File resultFolder = new File(DexterConfig.getInstance().getResultPath());
+
+		for (final File file : DexterUtil.getSubFiles(resultFolder)) {
+			if (file.isFile()) {
+				sendResult(file, client);
+				moveResultFileToOldFolder(file);
+			}
+		}
+	}
+
+	private synchronized static void sendResult(final File resultFile, final IDexterClient client) {
 		final String errorResultPath = DexterConfig.getInstance().getErrorResultPath();
-		
+
 		if (resultFile.isDirectory() || resultFile.exists() == false || resultFile.canRead() == false) {
 			throw new DexterRuntimeException("Invalid resultFile parameter: " + resultFile.toString());
 		}
-		
-		if (!"json".equals(Files.getFileExtension(resultFile.toString())) || resultFile.toString().indexOf("result_") == -1) {
+
+		if (!"json".equals(Files.getFileExtension(resultFile.toString()))
+				|| resultFile.toString().indexOf("result_") == -1) {
 			handleInvalidResultFile(resultFile, errorResultPath);
 		}
-		
+
 		try {
 			final List<String> contents = Files.readLines(resultFile, Charsets.UTF_8);
 			final StringBuilder result = new StringBuilder(1024);
@@ -93,31 +99,59 @@ public class SendResultJob implements Runnable {
 			}
 			contents.clear();
 
-			DexterClient.getInstance().sendAnalsysisResult(result.toString());
-			Files.move(resultFile, new File(oldResultPath + "/" + resultFile.getName()));
+			client.sendAnalsysisResult(result.toString());
+
 		} catch (IOException e) {
 			throw new DexterRuntimeException(e.getMessage(), e);
-		} catch (Exception e){
+		} catch (Exception e) {
 			throw new DexterRuntimeException(e.getMessage(), e);
 		}
 	}
 
+	private synchronized static void moveResultFileToOldFolder(File resultFile) {
+		try {
+			final String oldResultPath = DexterConfig.getInstance().getOldResultPath();
+			Files.move(resultFile, new File(oldResultPath + "/" + resultFile.getName()));
+		} catch (IOException e) {
+			throw new DexterRuntimeException(e.getMessage(), e);
+		}
+	}
+
+	private synchronized static void deleteResultFile(File resultFile) {
+		if (resultFile.delete() == false) {
+			logger.warn("cannot delete the old result file : " + resultFile.getAbsolutePath());
+		}
+	}
+
 	private static void handleInvalidResultFile(final File resultFile, final String errorResultPath) {
-	    try {
-	    	final File errorPath = new File(errorResultPath);
-	    	if(errorPath.exists() == false){
-	    		if(errorPath.mkdir()){
-	    			Files.move(resultFile, new File(errorResultPath + DexterUtil.PATH_SEPARATOR + resultFile.getName()));
-	    		} else {
-	    			logger.warn("can't make error folder for result: " + errorResultPath + " for file name: " + resultFile.toString());
-	    		}
-	    	} else {
-	    		Files.move(resultFile, new File(errorResultPath + DexterUtil.PATH_SEPARATOR + resultFile.getName()));
-	    	}
-	    } catch (IOException e) {
-	        logger.warn(e.getMessage(), e);
-	    }
-	    
-	    throw new DexterRuntimeException("Invalid resultFile Name: " + resultFile.toString());
-    }
+		try {
+			final File errorPath = new File(errorResultPath);
+			if (errorPath.exists() == false) {
+				if (errorPath.mkdir()) {
+					Files.move(resultFile,
+							new File(errorResultPath + DexterUtil.PATH_SEPARATOR + resultFile.getName()));
+				} else {
+					logger.warn("can't make error folder for result: " + errorResultPath + " for file name: "
+							+ resultFile.toString());
+				}
+			} else {
+				Files.move(resultFile, new File(errorResultPath + DexterUtil.PATH_SEPARATOR + resultFile.getName()));
+			}
+		} catch (IOException e) {
+			logger.warn(e.getMessage(), e);
+		}
+
+		throw new DexterRuntimeException("Invalid resultFile Name: " + resultFile.toString());
+	}
+
+	public static void sendResultFileThenDelete(final IDexterClient client, final String resultFilePrefix) {
+		final String resultFolderStr = DexterConfig.getInstance().getDexterHome() + "/"
+				+ DexterConfig.RESULT_FOLDER_NAME;
+		File[] resultFiles = DexterUtil.getSubFilesByPrefix(new File(resultFolderStr), resultFilePrefix);
+
+		for (int i = 0; i < resultFiles.length; i++) {
+			sendResult(resultFiles[i], client);
+			deleteResultFile(resultFiles[i]);
+		}
+	}
 }

@@ -25,11 +25,11 @@
 */
 package com.samsung.sec.dexter.core.analyzer;
 
-import java.io.File;
-import java.util.List;
-
 import com.samsung.sec.dexter.core.config.DexterConfigFile;
 import com.samsung.sec.dexter.core.config.IDexterConfigFile;
+
+import java.io.File;
+import java.util.List;
 
 public class AnalysisEntityFactory implements IAnalysisEntityFactory {
 	@Override
@@ -41,22 +41,19 @@ public class AnalysisEntityFactory implements IAnalysisEntityFactory {
 	public AnalysisConfig copyAnalysisConfigWithoutSourcecode(final AnalysisConfig baseAnalysisConfig) {
 		return new AnalysisConfig(baseAnalysisConfig);
 	}
-	
-	public void test(){
-		
-	}
-	
+
 	@Override
-    public AnalysisConfig createAnalsysiConfigFromDexterConfigFile(final File dexterConfigFilePath) {
+	public AnalysisConfig createAnalsysiConfigFromDexterConfigFile(final File dexterConfigFilePath, final String host,
+			final int port) {
 		IDexterConfigFile configFile = new DexterConfigFile();
-		configFile.loadFromFile(dexterConfigFilePath);
+		configFile.loadFromFile(dexterConfigFilePath, host, port);
 		return configFile.toAnalysisConfig();
 	}
-	
-    @Override
-    public AnalysisResult createAnalysisResult(final AnalysisConfig config) {
+
+	@Override
+	public AnalysisResult createAnalysisResult(final AnalysisConfig config) {
 		final AnalysisResult result = new AnalysisResult();
-		
+
 		result.setFileName(config.getFileName());
 		result.setModulePath(config.getModulePath());
 		result.setProjectName(config.getProjectName());
@@ -67,8 +64,8 @@ public class AnalysisEntityFactory implements IAnalysisEntityFactory {
 		result.setResultFileFullPath(config.getResultFileFullPath());
 		result.setCodeMetrics(config.getCodeMetrics());
 		result.setFunctionMetrics(config.getFunctionMetrics());
-//		result.setResultHandler(config.getResultHandler());
-		
+		// result.setResultHandler(config.getResultHandler());
+
 		return result;
 	}
 
@@ -76,7 +73,7 @@ public class AnalysisEntityFactory implements IAnalysisEntityFactory {
 	public AnalysisResult createAnalysisResult(List<AnalysisResult> resultList) {
 		final AnalysisResult result = new AnalysisResult();
 		final AnalysisResult base = resultList.get(0);
-		
+
 		result.setFileName(base.getFileName());
 		result.setModulePath(base.getModulePath());
 		result.setProjectName(base.getProjectName());
@@ -87,11 +84,11 @@ public class AnalysisEntityFactory implements IAnalysisEntityFactory {
 		result.setResultFileFullPath(base.getResultFileFullPath());
 		result.setCodeMetrics(base.getCodeMetrics());
 		result.setFunctionMetrics(base.getFunctionMetrics());
-		
-		for(int i=0; i<resultList.size(); i++){
+
+		for (int i = 0; i < resultList.size(); i++) {
 			result.getDefectList().addAll(resultList.get(i).getDefectList());
 		}
-		
+
 		return result;
 	}
 }

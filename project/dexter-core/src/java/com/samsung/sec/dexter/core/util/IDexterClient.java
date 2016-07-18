@@ -25,16 +25,20 @@
 */
 package com.samsung.sec.dexter.core.util;
 
-import java.util.List;
-
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.config.DefectGroup;
 import com.samsung.sec.dexter.core.config.DexterCode;
+import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.config.IDexterStandaloneListener;
 import com.samsung.sec.dexter.core.defect.Defect;
-import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.filter.IFalseAlarmConfiguration;
+import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
+import com.sun.jersey.api.client.UniformInterfaceException;
 
-public interface IDexterClient {
+import java.util.List;
+
+public interface IDexterClient extends IDexterStandaloneListener {
 	public String getDexterDashboardUrl();
 
 	public String getDexterWebUrl();
@@ -82,8 +86,8 @@ public interface IDexterClient {
 	public void insertDefectGroup(final DefectGroup defectGroup);
 
 	/**
-	 * get defect group
-	 * defect group is a kind of key to analyze defects status as a whole project
+	 * get defect group defect group is a kind of key to analyze defects status
+	 * as a whole project
 	 * 
 	 * @param groupName
 	 * @return
@@ -111,18 +115,18 @@ public interface IDexterClient {
 	public IFalseAlarmConfiguration getFalseAlarmTree();
 
 	/**
-	 * get last version of false alarm information that indicates the change of false alarm list to be merged to local
+	 * get last version of false alarm information that indicates the change of
+	 * false alarm list to be merged to local
 	 * 
 	 * @return
-	 * @return int  > 0 : Ok
-	 * 			-2 : Error while executing Client module. it can be caused by the dead of Dexter Server.
-	 * 			-3 : Return-value is not number
-	 * 			-4 : Unknown error 
+	 * @return int > 0 : Ok -2 : Error while executing Client module. it can be
+	 *         caused by the dead of Dexter Server. -3 : Return-value is not
+	 *         number -4 : Unknown error
 	 */
 	public int getLastFalseAlarmVersion();
 
 	public void insertDefectFilter(final Defect defect);
-	
+
 	/**
 	 * remove defect filter(false positive) on Dexter Server
 	 * 
@@ -160,15 +164,20 @@ public interface IDexterClient {
 	/**
 	 * add source codes into Dexter Server
 	 * 
-	 * @param snapshotId		option. -1: not use snapshot, timestamp: use snapshot
-	 * @param defectGroupId		option. -1: not use defect group. timestamp: use defect group
-	 * @param modulePath		mandatory. "": no modulePath, "a/b/": has module path
-	 * @param fileName			mandatory. not including path. only filename + extension
-	 * @param sourceCode		mandatory. the contents of file (text. UTF-8)
+	 * @param snapshotId
+	 *            option. -1: not use snapshot, timestamp: use snapshot
+	 * @param defectGroupId
+	 *            option. -1: not use defect group. timestamp: use defect group
+	 * @param modulePath
+	 *            mandatory. "": no modulePath, "a/b/": has module path
+	 * @param fileName
+	 *            mandatory. not including path. only filename + extension
+	 * @param sourceCode
+	 *            mandatory. the contents of file (text. UTF-8)
 	 * @return
 	 */
-	public void insertSourceCode(final long snapshotId, final long defectGroupId, 
-			final String modulePath, final String fileName, final String sourceCode);
+	public void insertSourceCode(final long snapshotId, final long defectGroupId, final String modulePath,
+			final String fileName, final String sourceCode);
 
 	/**
 	 * [Mandatory] Method���듭떖 湲곕뒫 諛��ъ슜���뚭퀬由ъ쬁���꾩쟾��臾몄옣�쇰줈 湲곗닠�쒕떎.
@@ -193,16 +202,17 @@ public interface IDexterClient {
 	public void login(final String id, final String pwd);
 
 	/**
-	 * If you want to your own WebResource object, use this method.
-	 * Unless you use this method, DexterClient will use DefaultWebResource object which is built-in
+	 * If you want to your own WebResource object, use this method. Unless you
+	 * use this method, DexterClient will use DefaultWebResource object which is
+	 * built-in
 	 * 
 	 * @param resource
 	 */
 	public void setWebResource(IDexterWebResource resource);
 
 	/**
-	 * set the current user as an administrator or not.
-	 * If admin, the user can do administrator things such as create a snapshot
+	 * set the current user as an administrator or not. If admin, the user can
+	 * do administrator things such as create a snapshot
 	 * 
 	 * @param isAdmin
 	 */
@@ -211,10 +221,19 @@ public interface IDexterClient {
 	void setLogin(boolean b);
 
 	public String getDexterPluginUpdateUrl();
+
 	public CheckerConfig getDexterPluginChecker(IDexterPlugin plugin, String pluginName);
-	
+
 	public void addLoginInfoListener(final IDexterLoginInfoListener listener);
+
 	public void removeLoginInfoListener(final IDexterLoginInfoListener listener);
+
 	public void runLoginInfoHandler(String oldServerHost, int oldServerPort, String oldUserId);
+
+	String getDexterCodeMetricsUrl();
+
+	String getDexterFunctionMetricsUrl();
+
+	boolean hasSupportedHelpHtmlFile(final StringBuilder url);
 
 }

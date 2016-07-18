@@ -25,15 +25,6 @@
 */
 package com.samsung.sec.dexter.executor;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
-
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
@@ -47,19 +38,30 @@ import com.samsung.sec.dexter.core.exception.DexterException;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
 import com.samsung.sec.dexter.core.util.DexterUtil;
+import com.samsung.sec.dexter.core.util.IDexterClient;
 
-public class DexterAnalyzer implements IDexterHomeListener{
-    private static final String CFG_PARM_JSON_FILE = "/cfg/dexter-config-parameter.json";
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
+
+public class DexterAnalyzer implements IDexterHomeListener {
+	private static final String CFG_PARM_JSON_FILE = "/cfg/dexter-config-parameter.json";
 	private final static Logger LOG = Logger.getLogger(DexterAnalyzer.class);
 
 	private List<IDexterAnalyzerListener> listenerList = new ArrayList<IDexterAnalyzerListener>(1);
-	private List<ProjectAnalysisConfiguration> projectAnalysisConfigurationList = new ArrayList<ProjectAnalysisConfiguration>(0);
-	
+	private List<ProjectAnalysisConfiguration> projectAnalysisConfigurationList = new ArrayList<ProjectAnalysisConfiguration>(
+			0);
+
 	private DexterAnalyzer() {
 		DexterConfig.getInstance().addDexterHomeListener(this);
 		LOG.debug("DexterAnalyzer");
 	}
-	
+
 	private static class SaExecutorHolder {
 		private static final DexterAnalyzer INSTANCE = new DexterAnalyzer();
 	}
@@ -71,29 +73,31 @@ public class DexterAnalyzer implements IDexterHomeListener{
 		return SaExecutorHolder.INSTANCE;
 	}
 
-	public void runSync(final AnalysisConfig config, final IDexterPluginManager pluginManager) {
+	public void runSync(final AnalysisConfig config, final IDexterPluginManager pluginManager,
+			final IDexterClient client) {
 		// sync일때에는 인스턴스 하나로 실행해도 될 듯
-		new DexterAnalyzerThread(config, pluginManager).run();
+		new DexterAnalyzerThread(config, pluginManager, client).run();
 	}
-	
-	public void runAsync(final AnalysisConfig config,final IDexterPluginManager pluginManager) {
-		new DexterAnalyzerThread(config, pluginManager).start();
+
+	public void runAsync(final AnalysisConfig config, final IDexterPluginManager pluginManager,
+			final IDexterClient client) {
+		new DexterAnalyzerThread(config, pluginManager, client).start();
 	}
-	
+
 	public void addHeaderAndSourceConfiguration(final AnalysisConfig config) {
-		for(final ProjectAnalysisConfiguration param : projectAnalysisConfigurationList){
-			if(param.getProjectName().equals(config.getProjectName()) 
-					&& DexterUtil.refinePath(param.getProjectFullPath()).equals(config.getProjectFullPath())){
-				for(final String dir : param.getSourceDirs()){
+		for (final ProjectAnalysisConfiguration param : projectAnalysisConfigurationList) {
+			if (param.getProjectName().equals(config.getProjectName())
+					&& DexterUtil.refinePath(param.getProjectFullPath()).equals(config.getProjectFullPath())) {
+				for (final String dir : param.getSourceDirs()) {
 					config.addSourceBaseDirList(dir);
 				}
-				
-				for(final String dir : param.getHeaderDirs()){
+
+				for (final String dir : param.getHeaderDirs()) {
 					config.addHeaderBaseDirList(dir);
 				}
 			}
 		}
-    }
+	}
 
 	protected void preSendSourceCode(final AnalysisConfig config) {
 		for (final IDexterAnalyzerListener listener : listenerList) {
@@ -131,50 +135,21 @@ public class DexterAnalyzer implements IDexterHomeListener{
 		}
 	}
 
-	public long getDefectGroup(final String projectName) throws DexterException{ 
+	public long getDefectGroup(final String projectName) throws DexterException {
 		return -1;
 		// TODO Implement Later
-//		List<DefectGroup> results;
-//        results = DexterClient.getInstance().getDefectGroupByGroupName(projectName);
-//        return results.get(0).getId();
+		// List<DefectGroup> results;
+		// results =
+		// DexterClient.getInstance().getDefectGroupByGroupName(projectName);
+		// return results.get(0).getId();
 	}
-	
+
 	public void createDefectGroup(final String projectName) throws DexterException {
 		// TODO Implement Later
-//		final DefectGroup group = new DefectGroup();
-//		group.setGroupName(projectName);
-//		group.setGroupType("PRJ");
-//		DexterClient.getInstance().insertDefectGroup(group);
-	}
-	
-	/**
-	 * return defect group id of project name
-	 * 
-	 * @param projectName
-	 * @return long if not exist, create defect group with project name
-	 */
-	public long getDefectGroupByCreating(final String projectName){
-		return 1l;
-		// TODO Implement Later
-//		long defectGroupId = -1l;
-//		
-//		try{
-//			defectGroupId = getDefectGroup(projectName);
-//		} catch (DexterException e){
-//			try {
-//	            createDefectGroup(projectName);
-//	            defectGroupId = getDefectGroup(projectName);
-//            } catch (DexterException e1) {
-//            	try {
-//	                defectGroupId = getDefectGroup(projectName);
-//                } catch (DexterException e2) {
-//                	LOG.error(e2.getMessage(), e2);
-//                	return -1;
-//                }
-//            }
-//		}
-//		
-//		return defectGroupId;
+		// final DefectGroup group = new DefectGroup();
+		// group.setGroupName(projectName);
+		// group.setGroupType("PRJ");
+		// DexterClient.getInstance().insertDefectGroup(group);
 	}
 
 	public void addListener(final IDexterAnalyzerListener listener) {
@@ -186,166 +161,167 @@ public class DexterAnalyzer implements IDexterHomeListener{
 	public void removeListener(final IDexterAnalyzerListener listener) {
 		listenerList.remove(listener);
 	}
-	
-	public void addProjectAnalysisConfiguration(final ProjectAnalysisConfiguration param){
-		if(!projectAnalysisConfigurationList.contains(param)){
+
+	public void addProjectAnalysisConfiguration(final ProjectAnalysisConfiguration param) {
+		if (!projectAnalysisConfigurationList.contains(param)) {
 			projectAnalysisConfigurationList.add(param);
 			writeCfgParamToJsonFile();
 		}
 	}
-	
-	
-	public void removeCfgParam(final ProjectAnalysisConfiguration param){
+
+	public void removeCfgParam(final ProjectAnalysisConfiguration param) {
 		projectAnalysisConfigurationList.remove(param);
 		writeCfgParamToJsonFile();
 	}
-	
-	private void writeCfgParamToJsonFile(){
+
+	private void writeCfgParamToJsonFile() {
 		final String dexterHome = DexterConfig.getInstance().getDexterHome();
-    	if(Strings.isNullOrEmpty(dexterHome)){
-    		LOG.error("cannot write ProjectAnalysisConfiguration List because of Invalid of Dexter Home");
-    		return;
-    	}
-    	
-    	final File file = new File(dexterHome + CFG_PARM_JSON_FILE);
-    	
-    	try {
-	        Files.write(new Gson().toJson(this.projectAnalysisConfigurationList), file, Charsets.UTF_8);
-        } catch (IOException e) {
-        	LOG.error(e.getMessage(), e);
-        }
+		if (Strings.isNullOrEmpty(dexterHome)) {
+			LOG.error("cannot write ProjectAnalysisConfiguration List because of Invalid of Dexter Home");
+			return;
+		}
+
+		final File file = new File(dexterHome + CFG_PARM_JSON_FILE);
+
+		try {
+			Files.write(new Gson().toJson(this.projectAnalysisConfigurationList), file, Charsets.UTF_8);
+		} catch (IOException e) {
+			LOG.error(e.getMessage(), e);
+		}
 	}
-	
-	public List<ProjectAnalysisConfiguration> getProjectAnalysisConfigurationList(){
+
+	public List<ProjectAnalysisConfiguration> getProjectAnalysisConfigurationList() {
 		return projectAnalysisConfigurationList;
 	}
 
 	/**
-	 * @param key 
+	 * @param key
 	 */
-    public void removeCfgParam(final String key) {
-    	for(int i = 0; i < projectAnalysisConfigurationList.size(); i++){
-    		ProjectAnalysisConfiguration param = projectAnalysisConfigurationList.get(i);
-    		if(param.getCfgKey().equals(key)){
-    			projectAnalysisConfigurationList.remove(i);
-    			break;
-    		}
-    	}
-    }
+	public void removeCfgParam(final String key) {
+		for (int i = 0; i < projectAnalysisConfigurationList.size(); i++) {
+			ProjectAnalysisConfiguration param = projectAnalysisConfigurationList.get(i);
+			if (param.getCfgKey().equals(key)) {
+				projectAnalysisConfigurationList.remove(i);
+				break;
+			}
+		}
+	}
 
 	/**
 	 *  
 	 */
-    public void removeAllCfgParam() {
-    	projectAnalysisConfigurationList.clear();
-    	writeCfgParamToJsonFile();
-    }
+	public void removeAllCfgParam() {
+		projectAnalysisConfigurationList.clear();
+		writeCfgParamToJsonFile();
+	}
 
 	/**
-	 * @param parameter 
+	 * @param parameter
 	 */
-    public void setCfgParam(final ProjectAnalysisConfiguration parameter) {
-    	final String key = parameter.getCfgKey();
-    	for(int i =0; i<projectAnalysisConfigurationList.size(); i++){
-    		ProjectAnalysisConfiguration p = projectAnalysisConfigurationList.get(i);
-    		if(p.getCfgKey().equals(key)){
-    			projectAnalysisConfigurationList.remove(i);
-    			break;
-    		}
-    	}
-    	
-    	projectAnalysisConfigurationList.add(parameter);
-    	writeCfgParamToJsonFile();
-    }
+	public void setCfgParam(final ProjectAnalysisConfiguration parameter) {
+		final String key = parameter.getCfgKey();
+		for (int i = 0; i < projectAnalysisConfigurationList.size(); i++) {
+			ProjectAnalysisConfiguration p = projectAnalysisConfigurationList.get(i);
+			if (p.getCfgKey().equals(key)) {
+				projectAnalysisConfigurationList.remove(i);
+				break;
+			}
+		}
+
+		projectAnalysisConfigurationList.add(parameter);
+		writeCfgParamToJsonFile();
+	}
 
 	/**
 	 * @param key
-	 * @return 
+	 * @return
 	 */
-    public ProjectAnalysisConfiguration getConfParamByKey(final String key) {
-    	for(final ProjectAnalysisConfiguration p : projectAnalysisConfigurationList){
-    		if(p.getCfgKey().equals(key)){
-    			return p;
-    		}
-    	}
-    	
-    	return null;
-    }
+	public ProjectAnalysisConfiguration getConfParamByKey(final String key) {
+		for (final ProjectAnalysisConfiguration p : projectAnalysisConfigurationList) {
+			if (p.getCfgKey().equals(key)) {
+				return p;
+			}
+		}
+
+		return null;
+	}
 
 	@Override
-    public void handleDexterHomeChanged(final String oldPath, final String newPath) {
+	public void handleDexterHomeChanged(final String oldPath, final String newPath) {
 		initProjectAnalysisConfiguration();
-    }
-	
+	}
+
 	private void initProjectAnalysisConfiguration() {
 		final boolean isFirstLoading = projectAnalysisConfigurationList == null;
-		
-		if(isFirstLoading){
+
+		if (isFirstLoading) {
 			loadProjectAnalysisConfiguration();
 		} else {
 			writePreviousConfiguration();
 		}
-    }
+	}
 
 	private void writePreviousConfiguration() {
-	    final String cfgFilePath = DexterConfig.getInstance().getDexterHome() + CFG_PARM_JSON_FILE;
-	    try {
-	    	final Gson gson = new Gson();
-	        FileUtils.writeStringToFile(new File(cfgFilePath), gson.toJson(projectAnalysisConfigurationList));
-	    } catch (IOException e) {
-	        throw new DexterRuntimeException(e.getMessage(), e);
-	    }
-    }
+		final String cfgFilePath = DexterConfig.getInstance().getDexterHome() + CFG_PARM_JSON_FILE;
+		try {
+			final Gson gson = new Gson();
+			FileUtils.writeStringToFile(new File(cfgFilePath), gson.toJson(projectAnalysisConfigurationList));
+		} catch (IOException e) {
+			throw new DexterRuntimeException(e.getMessage(), e);
+		}
+	}
 
 	private void loadProjectAnalysisConfiguration() {
-	    projectAnalysisConfigurationList = new ArrayList<ProjectAnalysisConfiguration>();
-	    
-	    final String cfgFilePath = DexterConfig.getInstance().getDexterHome() + CFG_PARM_JSON_FILE;
-	    DexterUtil.createEmptyFileIfNotExist(cfgFilePath);
-	    
-	    final String content = DexterUtil.getContentsFromFile(cfgFilePath, Charsets.UTF_8);
-	    if(Strings.isNullOrEmpty(content))	return;
-	    
-	    final Gson gson = new Gson();
-	    @SuppressWarnings({ "unchecked", "rawtypes" })
-	    final List<Map> list = gson.fromJson(content, List.class);
-	    
-	    for(@SuppressWarnings("rawtypes") final Map map : list){
-	    	final String jsonStr = gson.toJson(map);
-	    	ProjectAnalysisConfiguration cfg = gson.fromJson(jsonStr, ProjectAnalysisConfiguration.class);
-	    	addProjectAnalysisConfiguration(cfg);
-	    }
-    }
+		projectAnalysisConfigurationList = new ArrayList<ProjectAnalysisConfiguration>();
+
+		final String cfgFilePath = DexterConfig.getInstance().getDexterHome() + CFG_PARM_JSON_FILE;
+		DexterUtil.createEmptyFileIfNotExist(cfgFilePath);
+
+		final String content = DexterUtil.getContentsFromFile(cfgFilePath, Charsets.UTF_8);
+		if (Strings.isNullOrEmpty(content))
+			return;
+
+		final Gson gson = new Gson();
+		@SuppressWarnings({ "unchecked", "rawtypes" })
+		final List<Map> list = gson.fromJson(content, List.class);
+
+		for (@SuppressWarnings("rawtypes")
+		final Map map : list) {
+			final String jsonStr = gson.toJson(map);
+			ProjectAnalysisConfiguration cfg = gson.fromJson(jsonStr, ProjectAnalysisConfiguration.class);
+			addProjectAnalysisConfiguration(cfg);
+		}
+	}
 
 	public static List<Defect> getAllDefectList(List<AnalysisResult> resultList) {
 		assert resultList != null && resultList.size() > 0;
-		
+
 		List<Defect> allDefectList = new ArrayList<Defect>();
-		
-		for(AnalysisResult result : resultList){
+
+		for (AnalysisResult result : resultList) {
 			allDefectList.addAll(result.getDefectList());
 		}
-		
+
 		return allDefectList;
-    }
+	}
 
 	public static String getSourceFileFullPath(List<AnalysisResult> resultList) {
 		assert resultList != null && resultList.size() > 0;
-		
+
 		return resultList.get(0).getSourceFileFullPath();
-    }
+	}
 
 	public static File getResultFile(List<AnalysisResult> resultList) {
-		assert resultList != null && resultList.size() > 0 
+		assert resultList != null && resultList.size() > 0
 				&& Strings.isNullOrEmpty(resultList.get(0).getResultFileFullPath()) == false;
-		
+
 		return new File(resultList.get(0).getResultFileFullPath());
-    }
+	}
 
 	public static String getFileName(List<AnalysisResult> resultList) {
-		assert resultList != null && resultList.size() > 0 
+		assert resultList != null && resultList.size() > 0
 				&& Strings.isNullOrEmpty(resultList.get(0).getFileName()) == false;
-		
+
 		return resultList.get(0).getFileName();
-    }
+	}
 }

@@ -25,6 +25,12 @@
 */
 package com.samsung.sec.dexter.eclipse.builder;
 
+import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
+import com.samsung.sec.dexter.core.defect.Defect;
+import com.samsung.sec.dexter.eclipse.DexterEclipseActivator;
+import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
+import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;
@@ -32,15 +38,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IMarkerResolution2;
 
-import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
-import com.samsung.sec.dexter.core.defect.Defect;
-import com.samsung.sec.dexter.core.util.DexterClient;
-import com.samsung.sec.dexter.eclipse.DexterEclipseActivator;
-import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
-
 public class GetGlobalIdResolution implements IMarkerResolution2 {
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ui.IMarkerResolution#getLabel()
 	 */
 	@Override
@@ -48,49 +50,53 @@ public class GetGlobalIdResolution implements IMarkerResolution2 {
 		return Messages.GetGlobalIdResolution_GET_GLOBAL_ID_LABEL;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IMarkerResolution#run(org.eclipse.core.resources.IMarker)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ui.IMarkerResolution#run(org.eclipse.core.resources.IMarker)
 	 */
 	@Override
 	public void run(final IMarker markerOriginal) {
-		
+
 		final IResource resource = markerOriginal.getResource();
-		if(!(resource instanceof IFile)){
+		if (!(resource instanceof IFile)) {
 			return;
 		}
-		
-		
+
 		final IFile file = (IFile) resource;
-		
-        try {
-        	final IMarker[] markers = file.findMarkers(DexterMarker.DEFECT_MARKER_TYPE, true, IResource.DEPTH_INFINITE);
-	        if(markers != null && markers.length > 0){
-	        	for(final IMarker marker : markers){
-	        		Defect defect = new Defect();
-	        		defect.setToolName((String) marker.getAttribute(ResultFileConstant.TOOL_NAME, "")); //$NON-NLS-1$
-	        		defect.setLanguage((String) marker.getAttribute("language", "")); //$NON-NLS-1$
-	        		defect.setCheckerCode((String) marker.getAttribute(ResultFileConstant.CHECKER_CODE, "")); //$NON-NLS-1$
-	        		defect.setClassName((String) marker.getAttribute(ResultFileConstant.CLASS_NAME, "")); //$NON-NLS-1$
-	        		defect.setFileName((String) marker.getAttribute(ResultFileConstant.FILE_NAME, "")); //$NON-NLS-1$
-	        		defect.setMethodName((String) marker.getAttribute(ResultFileConstant.METHOD_NAME, "")); //$NON-NLS-1$
-	        		defect.setModulePath((String) marker.getAttribute(ResultFileConstant.MODULE_PATH, "")); //$NON-NLS-1$
-	        		
-	        		final long gdid = DexterClient.getInstance().getGlobalDid(defect);
-	        		
-	        		if(gdid >= 0){
-	        			marker.setAttribute(IMarker.MESSAGE,
-	        					((String) marker.getAttribute(IMarker.MESSAGE)).replace("To-Be-Defined", "" + gdid)); //$NON-NLS-1$ //$NON-NLS-2$
-	        		}
-	        		marker.setAttribute(IMarker.MESSAGE,
-        					((String) marker.getAttribute(IMarker.MESSAGE)).replace("(-1)", "" + gdid)); //$NON-NLS-1$ //$NON-NLS-2$
-	        	}
-	        }
-        } catch (CoreException e) {
-	        DexterEclipseActivator.LOG.error(e.getMessage(), e);
-        }
+
+		try {
+			final IMarker[] markers = file.findMarkers(DexterMarker.DEFECT_MARKER_TYPE, true, IResource.DEPTH_INFINITE);
+			if (markers != null && markers.length > 0) {
+				for (final IMarker marker : markers) {
+					Defect defect = new Defect();
+					defect.setToolName((String) marker.getAttribute(ResultFileConstant.TOOL_NAME, "")); //$NON-NLS-1$
+					defect.setLanguage((String) marker.getAttribute("language", "")); //$NON-NLS-1$
+					defect.setCheckerCode((String) marker.getAttribute(ResultFileConstant.CHECKER_CODE, "")); //$NON-NLS-1$
+					defect.setClassName((String) marker.getAttribute(ResultFileConstant.CLASS_NAME, "")); //$NON-NLS-1$
+					defect.setFileName((String) marker.getAttribute(ResultFileConstant.FILE_NAME, "")); //$NON-NLS-1$
+					defect.setMethodName((String) marker.getAttribute(ResultFileConstant.METHOD_NAME, "")); //$NON-NLS-1$
+					defect.setModulePath((String) marker.getAttribute(ResultFileConstant.MODULE_PATH, "")); //$NON-NLS-1$
+
+					final long gdid = DexterUIActivator.getDefault().getDexterClient().getGlobalDid(defect);
+
+					if (gdid >= 0) {
+						marker.setAttribute(IMarker.MESSAGE,
+								((String) marker.getAttribute(IMarker.MESSAGE)).replace("To-Be-Defined", "" + gdid)); //$NON-NLS-1$ //$NON-NLS-2$
+					}
+					marker.setAttribute(IMarker.MESSAGE,
+							((String) marker.getAttribute(IMarker.MESSAGE)).replace("(-1)", "" + gdid)); //$NON-NLS-1$ //$NON-NLS-2$
+				}
+			}
+		} catch (CoreException e) {
+			DexterEclipseActivator.LOG.error(e.getMessage(), e);
+		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ui.IMarkerResolution2#getDescription()
 	 */
 	@Override
@@ -98,7 +104,9 @@ public class GetGlobalIdResolution implements IMarkerResolution2 {
 		return Messages.GetGlobalIdResolution_GET_GLOBAL_ID_DESC;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ui.IMarkerResolution2#getImage()
 	 */
 	@Override

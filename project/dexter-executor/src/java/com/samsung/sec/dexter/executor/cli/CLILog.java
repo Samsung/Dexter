@@ -25,14 +25,13 @@
 */
 package com.samsung.sec.dexter.executor.cli;
 
+import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.plugin.PluginDescription;
+
 import java.io.File;
 import java.io.PrintStream;
 
 import org.apache.log4j.Logger;
-
-import com.samsung.sec.dexter.core.config.DexterConfig;
-import com.samsung.sec.dexter.core.plugin.PluginDescription;
-import com.samsung.sec.dexter.core.util.DexterClient;
 
 public class CLILog implements ICLILog {
 	private PrintStream out;
@@ -40,44 +39,44 @@ public class CLILog implements ICLILog {
 	private final static String errorPrefix = "★ ERROR : ";
 	private final static String moreInfoDesc = " (see ../log/dexter-executor.log file for more information)";
 	private final static String warnPrefix = "  [WARN] ";
-	
-	public CLILog(PrintStream out){
+
+	public CLILog(PrintStream out) {
 		this.out = out;
 	}
-	
+
 	@Override
-    public void printStartingAnalysisMessage() {
+	public void printStartingAnalysisMessage() {
 		infoln("");
-		infoln("===== Starting Dexter Analysis =====");   
-    }
-	
+		infoln("===== Starting Dexter Analysis =====");
+	}
+
 	@Override
 	public void printMessagePreSyncAnalysis() {
 		infoln("");
 		infoln("== Defects Report ==");
 		infoln("analyze synchronously...");
-    }
-	
+	}
+
 	@Override
-	public void printMessagePreAsyncAnalysis() {
+	public void printMessagePreAsyncAnalysis(final String dexterWebUrl) {
 		infoln("");
 		infoln("== Defects Report ==");
-		
-    	infoln("analyze asynchronously...");
-    	infoln("* Check Dexter web site in detail, after executing : " + DexterClient.getInstance().getDexterWebUrl());
-    }
-	
+
+		infoln("analyze asynchronously...");
+		infoln("* Check Dexter web site in detail, after executing : " + dexterWebUrl);
+	}
+
 	@Override
-	public void printResultFileLocation(final File file){
+	public void printResultFileLocation(final File file) {
 		infoln("※ Refer to " + file.getAbsolutePath());
 	}
-	
+
 	@Override
 	public void printElapsedTime(final long elapsedSeconds) {
 		infoln("===== End of Dexter Analysis (" + elapsedSeconds + " seconds) =====");
 		infoln("");
 	}
-	
+
 	@Override
 	public void printErrorMessageWhenNoPlugins() {
 		errorln("There is no static analysis plug-ins to use.");
@@ -87,54 +86,54 @@ public class CLILog implements ICLILog {
 
 	@Override
 	public void printMessageWhenPluginLoaded(PluginDescription desc) {
-		infoln(" - Loaded " + desc.getPluginName()	+ " " + desc.getVersion());
+		infoln(" - Loaded " + desc.getPluginName() + " " + desc.getVersion());
 	}
-	
+
 	@Override
-	public void setPrintStream(PrintStream out){
+	public void setPrintStream(PrintStream out) {
 		this.out = out;
 	}
 
 	@Override
-    public void info(String message) {
+	public void info(String message) {
 		out.print(message);
 		log.info(message);
-    }
+	}
 
 	@Override
-    public void warn(String message) {
+	public void warn(String message) {
 		out.print(message);
 		log.warn(message);
-    }
+	}
 
 	@Override
-    public void error(String message) {
+	public void error(String message) {
 		out.print(errorPrefix + message);
 		log.error(message);
-    }
+	}
 
 	@Override
-    public void infoln(String message) {
+	public void infoln(String message) {
 		out.println(message);
 		log.info(message);
-    }
+	}
 
 	@Override
-    public void warnln(String message) {
+	public void warnln(String message) {
 		out.println(warnPrefix + message);
 		log.warn(message);
-    }
+	}
 
 	@Override
-    public void errorln(String message) {
+	public void errorln(String message) {
 		out.println(errorPrefix + message + moreInfoDesc);
 		log.error(message);
-    }
-	
+	}
+
 	@Override
-    public void errorln(String message, Throwable t) {
+	public void errorln(String message, Throwable t) {
 		out.println(errorPrefix + message + moreInfoDesc);
 		log.error(message);
 		log.error(t.getMessage(), t);
-    }
+	}
 }

@@ -25,15 +25,16 @@
 */
 package com.samsung.sec.dexter.core.analyzer;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.defect.Occurence;
+import com.samsung.sec.dexter.core.util.IDexterClient;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
 
 public class AnalysisResultChangeHandlerForUT implements EndOfAnalysisHandler {
 	static Logger logger = Logger.getLogger(AnalysisResultChangeHandlerForUT.class);
@@ -46,44 +47,44 @@ public class AnalysisResultChangeHandlerForUT implements EndOfAnalysisHandler {
 	private int etcCnt = 0;
 
 	private int exepectedDefectCount = -1;
-	
+
 	private List<Defect> expectedDefectList = new ArrayList<Defect>();
 
 	private String projectName;
 
 	private String fileName;
-	
+
 	private ITestHandlerAtTheEndOfHandleAnalysisResult testHandler;
-	
-	public AnalysisResultChangeHandlerForUT(){
-		testHandler = new ITestHandlerAtTheEndOfHandleAnalysisResult(){
+
+	public AnalysisResultChangeHandlerForUT() {
+		testHandler = new ITestHandlerAtTheEndOfHandleAnalysisResult() {
 			@Override
-            public void testAfterHandlingAnalysisResult(final AnalysisResult result) {
+			public void testAfterHandlingAnalysisResult(final AnalysisResult result) {
 				// do nothing
-            }
+			}
 		};
 	}
-			
-	public AnalysisResultChangeHandlerForUT(ITestHandlerAtTheEndOfHandleAnalysisResult handler){
+
+	public AnalysisResultChangeHandlerForUT(ITestHandlerAtTheEndOfHandleAnalysisResult handler) {
 		this.testHandler = handler;
 	}
-	
 
 	@Override
-	public void handleAnalysisResult(final List<AnalysisResult> resultList) {
-		for(AnalysisResult result : resultList){
+	public void handleAnalysisResult(final List<AnalysisResult> resultList, final IDexterClient client) {
+		for (AnalysisResult result : resultList) {
 			handleResult(result);
 		}
 	}
-	
+
 	private void handleResult(AnalysisResult result) {
 		System.out.println("=================================================================================");
 		System.out.println("### START TEST for the result of static analysis");
-		
-		System.out.println("\t# Json of the AnalysisResult Object : " + AnalysisResultFileManager.getInstance().getJson(result));
+
+		System.out.println(
+				"\t# Json of the AnalysisResult Object : " + AnalysisResultFileManager.getInstance().getJson(result));
 
 		boolean isPassed = true;
-		
+
 		for (Defect defect : result.getDefectList()) {
 			totalCnt++;
 			if ("CRI".equals(defect.getSeverityCode())) {
@@ -98,88 +99,89 @@ public class AnalysisResultChangeHandlerForUT implements EndOfAnalysisHandler {
 				etcCnt++;
 			}
 		}
-		
-		if(this.exepectedDefectCount != -1){
-			if(this.exepectedDefectCount == totalCnt){
+
+		if (this.exepectedDefectCount != -1) {
+			if (this.exepectedDefectCount == totalCnt) {
 				System.out.println("\t# Check Defect Count : OK");
 			} else {
 				isPassed = false;
-				System.out.println("\t# Check Defect Count : Fail - expected:" + this.exepectedDefectCount + " real:" + totalCnt);
+				System.out.println(
+						"\t# Check Defect Count : Fail - expected:" + this.exepectedDefectCount + " real:" + totalCnt);
 			}
 		}
-		
-		if(!Strings.isNullOrEmpty(this.projectName)){
-			if(this.projectName.equals(result.getProjectName())){
+
+		if (!Strings.isNullOrEmpty(this.projectName)) {
+			if (this.projectName.equals(result.getProjectName())) {
 				System.out.println("\t# Check ProjectName : OK");
 			} else {
 				isPassed = false;
-				System.out.println("\t# Check ProjectName : Fail - expected:" + this.projectName + " real:" + result.getProjectName());
+				System.out.println("\t# Check ProjectName : Fail - expected:" + this.projectName + " real:"
+						+ result.getProjectName());
 			}
 		}
-		
-		if(!Strings.isNullOrEmpty(this.fileName)){
-			if(this.fileName.equals(result.getFileName())){
+
+		if (!Strings.isNullOrEmpty(this.fileName)) {
+			if (this.fileName.equals(result.getFileName())) {
 				System.out.println("\t# Check FileName : OK");
 			} else {
 				isPassed = false;
-				System.out.println("\t# Check FileName : Fail - expected:" + this.fileName + " real:" + result.getFileName());
+				System.out.println(
+						"\t# Check FileName : Fail - expected:" + this.fileName + " real:" + result.getFileName());
 			}
 		}
 		System.out.println("\t# Total Defect Count : " + this.totalCnt);
-		for(Defect defect : result.getDefectList()){
+		for (Defect defect : result.getDefectList()) {
 			System.out.println("\t\t" + defect.getCheckerCode() + " occ:" + defect.getOccurences().size());
 		}
-		
-		
-		
+
 		System.out.println("\t# Check Defect List...");
 		boolean isAllDefectSame = true;
 		int i = 1;
-		for(Defect d1 : expectedDefectList){
+		for (Defect d1 : expectedDefectList) {
 			boolean hasExpectedDefect = false;
-			
-			for(Defect d2 : result.getDefectList()){
-				if(d1.getSeverityCode().equals(d2.getSeverityCode())){
-					if(!d1.getCheckerCode().equals(d2.getCheckerCode())){
+
+			for (Defect d2 : result.getDefectList()) {
+				if (d1.getSeverityCode().equals(d2.getSeverityCode())) {
+					if (!d1.getCheckerCode().equals(d2.getCheckerCode())) {
 						continue;
 					}
-					
-					if(!d1.getToolName().equals(d2.getToolName())){
+
+					if (!d1.getToolName().equals(d2.getToolName())) {
 						continue;
 					}
-					
-					if(!d1.getLanguage().equals(d2.getLanguage())){
+
+					if (!d1.getLanguage().equals(d2.getLanguage())) {
 						continue;
 					}
-					
-					if(!d1.getFileName().equals(d2.getFileName())){
+
+					if (!d1.getFileName().equals(d2.getFileName())) {
 						continue;
 					}
-					
+
 					boolean isAllOccurenceSame = true;
-					for(Occurence o2 : d2.getOccurences()){
+					for (Occurence o2 : d2.getOccurences()) {
 						boolean isOccurenceSame = false;
-						
-						for(Occurence o1 : d1.getOccurences()){
-							if(o2.equals(o1)){
+
+						for (Occurence o1 : d1.getOccurences()) {
+							if (o2.equals(o1)) {
 								isOccurenceSame = true;
 								break;
 							}
 						}
-						
-						if(isOccurenceSame == false){
+
+						if (isOccurenceSame == false) {
 							isAllOccurenceSame = false;
 							break;
 						}
 					}
-					
+
 					hasExpectedDefect = true & isAllOccurenceSame;
 				}
 			}
-			
+
 			isAllDefectSame = isAllDefectSame & hasExpectedDefect;
-			
-			if(hasExpectedDefect){
+
+			if (hasExpectedDefect) {
 				System.out.println("\t\t- Defect #" + i++ + " : Ok => defect message - " + d1.getMessage());
 			} else {
 				isPassed = false;
@@ -187,8 +189,8 @@ public class AnalysisResultChangeHandlerForUT implements EndOfAnalysisHandler {
 				System.out.println("\t\t- Defect #" + i++ + " : Fail => extected Defect - " + gson.toJson(d1));
 			}
 		}
-		
-		if(isAllDefectSame){
+
+		if (isAllDefectSame) {
 			System.out.println("\t# Check All Defects : OK");
 		} else {
 			isPassed = false;
@@ -197,24 +199,23 @@ public class AnalysisResultChangeHandlerForUT implements EndOfAnalysisHandler {
 			System.out.println("\t\t> texpected defect list : " + gson.toJson(this.expectedDefectList));
 			System.out.println("\t\t>     treal defect list : " + gson.toJson(result.getDefectList()));
 		}
-		
-		
+
 		System.out.println("### END TEST for the result of static analysis");
 		System.out.println("=================================================================================");
-		
-		if(isPassed == false){
+
+		if (isPassed == false) {
 			throw new RuntimeException("Failed to pass the test. check the messages on the console.");
 		}
-		
+
 		testHandler.testAfterHandlingAnalysisResult(result);
-    }
+	}
 
 	/**
 	 * @param count
 	 */
-    public void setExpectedDefectCount(final int count) {
-    	this.exepectedDefectCount = count;
-    }
+	public void setExpectedDefectCount(final int count) {
+		this.exepectedDefectCount = count;
+	}
 
 	/**
 	 * @return the totalCnt
@@ -259,22 +260,22 @@ public class AnalysisResultChangeHandlerForUT implements EndOfAnalysisHandler {
 	}
 
 	/**
-	 * @param d 
+	 * @param d
 	 */
-    public void addExpectedDefect(final Defect d) {
-    	if(!expectedDefectList.contains(d)){
-    		expectedDefectList.add(d);
-    	}
-    }
+	public void addExpectedDefect(final Defect d) {
+		if (!expectedDefectList.contains(d)) {
+			expectedDefectList.add(d);
+		}
+	}
 
 	/**
-	 * @param projectName 
+	 * @param projectName
 	 */
-    public void setExpectedProjectName(final String projectName) {
-    	this.projectName = projectName;
-    }
+	public void setExpectedProjectName(final String projectName) {
+		this.projectName = projectName;
+	}
 
-    public void setExpectedFileName(final String fileName) {
-    	this.fileName = fileName;
-    }
+	public void setExpectedFileName(final String fileName) {
+		this.fileName = fileName;
+	}
 }

@@ -25,6 +25,15 @@
 */
 package com.samsung.sec.dexter.eclipse.ui.action;
 
+import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.defect.Defect;
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.util.IDexterClient;
+import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
+import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
+import com.samsung.sec.dexter.eclipse.ui.view.DefectHelpView;
+import com.samsung.sec.dexter.eclipse.ui.view.DefectLog;
+
 import java.util.Iterator;
 
 import org.eclipse.jface.action.IAction;
@@ -34,14 +43,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPart;
-
-import com.samsung.sec.dexter.core.config.DexterConfig;
-import com.samsung.sec.dexter.core.defect.Defect;
-import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
-import com.samsung.sec.dexter.core.util.DexterClient;
-import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
-import com.samsung.sec.dexter.eclipse.ui.view.DefectHelpView;
-import com.samsung.sec.dexter.eclipse.ui.view.DefectLog;
 
 public class CheckerDescription implements IObjectActionDelegate {
 	private Defect defect;
@@ -53,51 +54,54 @@ public class CheckerDescription implements IObjectActionDelegate {
 	@Override
 	public void run(IAction action) {
 		assert defect != null;
-		
-		try{
+
+		try {
 			IViewPart view = EclipseUtil.findView(DefectHelpView.ID);
+			IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
 			final DefectHelpView helpView = (DefectHelpView) view;
-			
-				StringBuilder url = new StringBuilder();
-				url.append("http://").append(DexterClient.getInstance().getServerHost()).append(":") //$NON-NLS-1$ //$NON-NLS-2$
-				.append(DexterClient.getInstance().getServerPort()).append(DexterConfig.DEFECT_HELP_BASE).append("/") //$NON-NLS-1$
-				.append(defect.getToolName()).append("/").append(defect.getLanguage()).append(DexterConfig.DEFECT_HELP) //$NON-NLS-1$
-				.append("/").append(defect.getCheckerCode()).append(".html"); //$NON-NLS-1$ //$NON-NLS-2$ 
-				
-				if(defect.getOccurences() != null && defect.getOccurences().size() == 1){
-				 	url.append("#").append(defect.getFirstOccurence().getCode());
-				}
-				
-				if(DexterClient.getInstance().hasSupportedHelpHtmlFile(url) == false){
-					url.setLength(0);
-					url.append("http://").append(DexterClient.getInstance().getServerHost()).append(":") //$NON-NLS-1$ //$NON-NLS-2$
-					.append(DexterClient.getInstance().getServerPort()).append(DexterConfig.DEFECT_HELP_BASE).append("/") //$NON-NLS-1$
-					.append(DexterConfig.NOT_FOUND_CHECKER_DESCRIPTION).append("/").append(DexterConfig.EMPTY_HTML_FILE_NAME).append(".html"); //$NON-NLS-1$ //$NON-NLS-2$
-				}
-				
-				helpView.setUrl(url.toString());
-	            EclipseUtil.showView(DefectHelpView.ID);
-		} catch (DexterRuntimeException e){
-			MessageDialog.openError(part.getSite().getShell(), "Checker Description Error", 
+
+			StringBuilder url = new StringBuilder();
+			url.append("http://").append(client.getServerHost()).append(":") //$NON-NLS-1$ //$NON-NLS-2$
+					.append(client.getServerPort()).append(DexterConfig.DEFECT_HELP_BASE).append("/") //$NON-NLS-1$
+					.append(defect.getToolName()).append("/").append(defect.getLanguage()) //$NON-NLS-1$
+					.append(DexterConfig.DEFECT_HELP)
+					.append("/").append(defect.getCheckerCode()).append(".html"); //$NON-NLS-1$ //$NON-NLS-2$
+
+			if (defect.getOccurences() != null && defect.getOccurences().size() == 1) {
+				url.append("#").append(defect.getFirstOccurence().getCode());
+			}
+
+			if (client.hasSupportedHelpHtmlFile(url) == false) {
+				url.setLength(0);
+				url.append("http://").append(client.getServerHost()).append(":") //$NON-NLS-1$ //$NON-NLS-2$
+						.append(client.getServerPort()).append(DexterConfig.DEFECT_HELP_BASE).append("/") //$NON-NLS-1$
+						.append(DexterConfig.NOT_FOUND_CHECKER_DESCRIPTION).append("/") //$NON-NLS-1$
+						.append(DexterConfig.EMPTY_HTML_FILE_NAME).append(".html"); //$NON-NLS-1$
+			}
+
+			helpView.setUrl(url.toString());
+			EclipseUtil.showView(DefectHelpView.ID);
+		} catch (DexterRuntimeException e) {
+			MessageDialog.openError(part.getSite().getShell(), "Checker Description Error",
 					"Cannot open the Checker Description View");
 		}
 	}
 
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
-		if(!(selection instanceof IStructuredSelection)){
+		if (!(selection instanceof IStructuredSelection)) {
 			defect = null;
 			return;
 		}
-		
+
 		final IStructuredSelection sel = (IStructuredSelection) selection;
 		@SuppressWarnings("unchecked")
 		final Iterator<Object> iter = sel.iterator();
-		
-		while(iter.hasNext()){
+
+		while (iter.hasNext()) {
 			final Object obj = iter.next();
-			
-			if(obj instanceof DefectLog){
+
+			if (obj instanceof DefectLog) {
 				defect = ((DefectLog) obj).getDefect();
 			}
 		}

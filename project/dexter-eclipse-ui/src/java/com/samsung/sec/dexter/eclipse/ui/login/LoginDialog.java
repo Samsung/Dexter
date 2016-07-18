@@ -3,13 +3,18 @@
  */
 package com.samsung.sec.dexter.eclipse.ui.login;
 
+import com.google.common.base.Strings;
+import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.util.IDexterClient;
+import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
+import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
+
 import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.SWT;
@@ -24,20 +29,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.DirectoryDialog;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import com.google.common.base.Strings;
-import com.samsung.sec.dexter.core.config.DexterConfig;
-import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
-import com.samsung.sec.dexter.core.job.DexterJobFacade;
-import com.samsung.sec.dexter.core.util.DexterClient;
-import com.samsung.sec.dexter.core.util.IDexterClient;
-import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
-import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 /**
  * 
  * Copyright 2014 by Samsung Electronics, Inc.,
@@ -48,9 +44,9 @@ import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
  * of the license agreement you entered into with Samsung.
  */
 public class LoginDialog extends TitleAreaDialog {
-	private IDexterClient client = DexterClient.getInstance();
 	private DexterConfig config = DexterConfig.getInstance();
-	
+	final private IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
+
 	private Text idText;
 	private Text pwdText;
 	private Text serverText;
@@ -62,40 +58,6 @@ public class LoginDialog extends TitleAreaDialog {
 	 */
 	public LoginDialog(Shell parentShell) {
 		super(parentShell);
-	}
-
-	public static void loginJob(final Shell shell) {
-		final Shell localShell;
-		
-		if(shell == null || shell.isDisposed()){
-			if(Display.getDefault() != null
-					&& Display.getDefault().getActiveShell() != null){
-				localShell = Display.getDefault().getActiveShell(); 
-			} else {
-				return;
-			}
-		} else {
-			localShell = shell;
-		}
-		
-		localShell.getDisplay().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				if(Strings.isNullOrEmpty(DexterConfig.getInstance().getDexterHome()) == false
-						&& Strings.isNullOrEmpty(DexterClient.getInstance().getCurrentUserId()) == false){
-					return;
-				}
-				
-				final LoginDialog dialog = new LoginDialog(localShell);
-				final int ret = dialog.open();
-				
-				if (ret == InputDialog.CANCEL) {
-					MessageDialog
-					.openError(localShell, "Dexter Login Error", //$NON-NLS-1$
-							Messages.LoginDialog_LOGIN_GUIDE_MSG);
-				}
-			}
-		});
 	}
 
 	/*
@@ -154,7 +116,7 @@ public class LoginDialog extends TitleAreaDialog {
 		} else {
 			dexterHomeText.setText(EclipseUtil.getDefaultDexterHomePath());
 		}
-		
+
 		dexterHomeText.addFocusListener(new FocusAdapter() {
 			@Override
 			public void focusGained(FocusEvent e) {
@@ -199,17 +161,17 @@ public class LoginDialog extends TitleAreaDialog {
 		serverText = new Text(container, SWT.BORDER);
 		serverText.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false));
 
-		try{
+		try {
 			serverText.setText(client.getServerHost() + ":" //$NON-NLS-1$
 					+ client.getServerPort());
-		} catch (DexterRuntimeException e){
+		} catch (DexterRuntimeException e) {
 			serverText.setText("DexterServer_IP:DexterServer_Port"); //$NON-NLS-1$
 		}
-		
+
 		serverText.addFocusListener(new FocusListener() {
 			@Override
 			public void focusLost(FocusEvent arg0) {
-				//validate();
+				// validate();
 			}
 
 			@Override
@@ -257,7 +219,7 @@ public class LoginDialog extends TitleAreaDialog {
 
 			@Override
 			public void focusLost(FocusEvent arg0) {
-				//validate();
+				// validate();
 			}
 
 			@Override
@@ -283,7 +245,7 @@ public class LoginDialog extends TitleAreaDialog {
 
 			@Override
 			public void focusLost(FocusEvent arg0) {
-				//validate();
+				// validate();
 			}
 
 			@Override
@@ -293,11 +255,11 @@ public class LoginDialog extends TitleAreaDialog {
 			}
 		});
 	}
-	
+
 	private void addFieldForStandaloneMode(final Composite container) {
 		final Label separator = new Label(container, SWT.SEPARATOR | SWT.HORIZONTAL);
 		separator.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false, 3, 1));
-		
+
 		standaloneModeButton = new Button(container, SWT.CHECK);
 		standaloneModeButton.setLayoutData(new GridData(GridData.END, GridData.CENTER, false, false, 3, 1));
 		standaloneModeButton.setText("Run in Standalone mode");
@@ -315,10 +277,10 @@ public class LoginDialog extends TitleAreaDialog {
 			}
 		});
 	}
-	
+
 	private void updateWidgetsForStandaloneMode() {
 		setErrorMessage(null);
-		
+
 		if (standaloneModeButton.getSelection()) {
 			idText.setEditable(false);
 			pwdText.setEditable(false);
@@ -346,7 +308,7 @@ public class LoginDialog extends TitleAreaDialog {
 
 	private boolean validate() {
 		setErrorMessage(null);
-		
+
 		boolean isStandaloneMode = standaloneModeButton.getSelection();
 		if (isStandaloneMode == false) {
 			final String id = idText.getText();
@@ -354,7 +316,7 @@ public class LoginDialog extends TitleAreaDialog {
 				setErrorMessage(Messages.LoginDialog_ID_VAL_MSG);
 				return false;
 			}
-	
+
 			final String pwd = pwdText.getText();
 			if (Strings.isNullOrEmpty(pwd)) {
 				setErrorMessage(Messages.LoginDialog_PASSWORD_VAL_MSG);
@@ -364,14 +326,14 @@ public class LoginDialog extends TitleAreaDialog {
 				setErrorMessage(Messages.LoginDialog_PASSWORD_LENGTH_VAL_MSG);
 				return false;
 			}
-	
+
 			final Pattern p = Pattern.compile("[\\S]{4,20}"); //$NON-NLS-1$
 			final Matcher m = p.matcher(pwd);
 			if (m.matches() == false) {
 				setErrorMessage(Messages.LoginDialog_PASSWORD_ERROR_MSG);
 				return false;
 			}
-	
+
 			final String server = serverText.getText();
 			if (Strings.isNullOrEmpty(server)) {
 				setErrorMessage(Messages.LoginDialog_SERVER_ERROR_MSG);
@@ -385,12 +347,12 @@ public class LoginDialog extends TitleAreaDialog {
 			setErrorMessage(Messages.LoginDialog_DEXTER_HOME_ERROR_MSG);
 			return false;
 		}
-		
-		if (homePathStr.indexOf(' ') >= 0){
+
+		if (homePathStr.indexOf(' ') >= 0) {
 			setErrorMessage(Messages.LoginDialog_DEXTER_HOME_SPACE_ERROR_MSG);
 			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -405,22 +367,22 @@ public class LoginDialog extends TitleAreaDialog {
 		if (validate() == false) {
 			return;
 		}
-		
+
 		boolean isStandalone = standaloneModeButton.getSelection();
 		config.setStandalone(isStandalone);
-		
+
 		if (isStandalone == false) {
 			String oldServerHost;
-			
+
 			int oldServerPort = client.getServerPort();
 			String oldUserId = client.getCurrentUserId();
-			
+
 			try {
 				oldServerHost = client.getServerHost();
 			} catch (DexterRuntimeException e) {
 				oldServerHost = "";
 			}
-	
+
 			setMessage(Messages.LoginDialog_CHECK_SERVER_MSG);
 			// server connection
 			setMessage(Messages.LoginDialog_NETWORK_TESTING_MSG, IMessageProvider.INFORMATION);
@@ -430,22 +392,22 @@ public class LoginDialog extends TitleAreaDialog {
 			}
 			client.setDexterServer(serverText.getText().trim());
 			setMessage(Messages.LoginDialog_NETWORK_OK_MSG, IMessageProvider.INFORMATION);
-	
+
 			// login
 			final String id = idText.getText();
 			final String pwd = pwdText.getText();
-			
-			if(client.hasAccount(id) == false){
+
+			if (client.hasAccount(id) == false) {
 				createAccount(id, pwd);
 			}
-			
+
 			try {
 				client.login(id, pwd);
-				DexterJobFacade.getInstance().startDexterServerJobs();
-	        } catch (DexterRuntimeException e) {
-	        	setMessage(Messages.LoginDialog_LOGIN_ERROR_MSG, IMessageProvider.ERROR);
-	        	return;
-	        }
+				DexterUIActivator.getDefault().initDexterJobFacade();
+			} catch (DexterRuntimeException e) {
+				setMessage(Messages.LoginDialog_LOGIN_ERROR_MSG, IMessageProvider.ERROR);
+				return;
+			}
 			client.runLoginInfoHandler(oldServerHost, oldServerPort, oldUserId);
 		}
 
@@ -462,10 +424,10 @@ public class LoginDialog extends TitleAreaDialog {
 		store.setValue("serverAddress", serverText.getText()); //$NON-NLS-1$
 		store.setValue("isStandalone", isStandalone);
 		store.setValue(DexterConfig.DEXTER_HOME_KEY, dexterHomeText.getText());
-		
+
 		System.setProperty(DexterConfig.DEXTER_HOME_KEY, dexterHomeText.getText());
 		config.setDexterHome(dexterHomeText.getText());
-		
+
 		// client store
 		client.setCurrentUserId(idText.getText());
 		client.setCurrentUserPwd(pwdText.getText());
@@ -475,30 +437,30 @@ public class LoginDialog extends TitleAreaDialog {
 	}
 
 	private void createAccount(final String id, final String pwd) {
-    	MessageBox dialog = new MessageBox(getShell(), SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
-    	dialog.setText(Messages.LoginDialog_CREATE_ACCOUNT_DIALOG_TITLE);
-    	dialog.setMessage(Messages.LoginDialog_NO_ACCOUNT_ERROR_MSG + id + "'. " //$NON-NLS-2$ //$NON-NLS-1$
-    	        + Messages.LoginDialog_ACCOUNT_ASK_PREFIX_MSG + id + Messages.LoginDialog_ACCOUNT_ASK_POSTFIX_MSG);
+		MessageBox dialog = new MessageBox(getShell(), SWT.ICON_QUESTION | SWT.OK | SWT.CANCEL);
+		dialog.setText(Messages.LoginDialog_CREATE_ACCOUNT_DIALOG_TITLE);
+		dialog.setMessage(Messages.LoginDialog_NO_ACCOUNT_ERROR_MSG + id + "'. " // $NON-NLS-2$ //$NON-NLS-1$
+				+ Messages.LoginDialog_ACCOUNT_ASK_PREFIX_MSG + id + Messages.LoginDialog_ACCOUNT_ASK_POSTFIX_MSG);
 
-    	if (dialog.open() == SWT.OK) {
-    		if(handleCreateAccount(id, pwd)){
-    			setMessage(Messages.LoginDialog_ACCOUNT_CREATED_MSG, IMessageProvider.INFORMATION);
-    		} else {
-    			setMessage(Messages.LoginDialog_FAIL_TO_CREATE_ACCOUNT_MSG, IMessageProvider.ERROR);
-    		}
-    	}
-    }
+		if (dialog.open() == SWT.OK) {
+			if (handleCreateAccount(id, pwd)) {
+				setMessage(Messages.LoginDialog_ACCOUNT_CREATED_MSG, IMessageProvider.INFORMATION);
+			} else {
+				setMessage(Messages.LoginDialog_FAIL_TO_CREATE_ACCOUNT_MSG, IMessageProvider.ERROR);
+			}
+		}
+	}
 
 	private boolean handleCreateAccount(final String id, final String pwd) {
 		try {
-	        client.createAccount(id, pwd, false);
-	        return true;
-        } catch (DexterRuntimeException e) {
-        	DexterUIActivator.LOG.error(e.getMessage(), e);
-        	setMessage(Messages.LoginDialog_ACCOUNT_ERROR_MSG, IMessageProvider.ERROR);
-        	return false;
-        }
-    }
+			client.createAccount(id, pwd, false);
+			return true;
+		} catch (DexterRuntimeException e) {
+			DexterUIActivator.LOG.error(e.getMessage(), e);
+			setMessage(Messages.LoginDialog_ACCOUNT_ERROR_MSG, IMessageProvider.ERROR);
+			return false;
+		}
+	}
 
 	/*
 	 * (non-Javadoc)

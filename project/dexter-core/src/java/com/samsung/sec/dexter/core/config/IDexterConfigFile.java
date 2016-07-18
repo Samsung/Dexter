@@ -1,29 +1,30 @@
 package com.samsung.sec.dexter.core.config;
 
+import com.google.common.base.Strings;
+import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
+
 import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.base.Strings;
-import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
-
 public interface IDexterConfigFile {
 	public enum Type {
 		FILE, FOLDER, PROJECT, SNAPSHOT;
-		
-		public static boolean hasValue(final String value){
-			if(Strings.isNullOrEmpty(value)) return false;
-			
-			for(Type type : Type.values()){
-				if(type.toString().equals(value)){
+
+		public static boolean hasValue(final String value) {
+			if (Strings.isNullOrEmpty(value))
+				return false;
+
+			for (Type type : Type.values()) {
+				if (type.toString().equals(value)) {
 					return true;
 				}
 			}
-			
+
 			return false;
 		}
 	};
-	
+
 	void setSnapshotId(String snapshotId);
 
 	String getSnapshotId();
@@ -100,6 +101,6 @@ public interface IDexterConfigFile {
 
 	AnalysisConfig toAnalysisConfig();
 
-	void loadFromFile(final File file);
+	void loadFromFile(final File file, final String host, final int port);
 
 }

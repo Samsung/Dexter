@@ -25,15 +25,19 @@
 */
 package com.samsung.sec.dexter.core.analyzer;
 
+import com.samsung.sec.dexter.core.util.IDexterClient;
+
 import java.util.List;
 
 public interface EndOfAnalysisHandler {
 
-    /**
-     * handle the AnalysisResult object after making it by a static analysis plug-ins such as cppcheck and findbugs
-     * 
-     * @param analysisResult the result of static analsyis 
-     * @return void
-     */
-    void handleAnalysisResult(final List<AnalysisResult> analysisResult);
+	/**
+	 * handle the AnalysisResult object after making it by a static analysis
+	 * plug-ins such as cppcheck and findbugs
+	 * 
+	 * @param analysisResult
+	 *            the result of static analsyis
+	 * @return void
+	 */
+	void handleAnalysisResult(final List<AnalysisResult> analysisResult, final IDexterClient client);
 }

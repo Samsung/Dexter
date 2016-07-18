@@ -25,6 +25,21 @@
 */
 package com.samsung.sec.dexter.eclipse.ui.view;
 
+import com.google.common.base.Strings;
+import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
+import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
+import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
+import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.config.IDexterHomeListener;
+import com.samsung.sec.dexter.core.defect.Defect;
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.util.DexterUtil;
+import com.samsung.sec.dexter.core.util.PersistenceProperty;
+import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
+import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
+import com.samsung.sec.dexter.executor.DexterAnalyzer;
+import com.samsung.sec.dexter.executor.DexterAnalyzerAdapter;
+
 import java.util.Date;
 import java.util.List;
 
@@ -63,42 +78,26 @@ import org.eclipse.ui.part.ViewPart;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 
-import com.google.common.base.Strings;
-import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
-import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
-import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
-import com.samsung.sec.dexter.core.config.DexterConfig;
-import com.samsung.sec.dexter.core.config.IDexterHomeListener;
-import com.samsung.sec.dexter.core.defect.Defect;
-import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
-import com.samsung.sec.dexter.core.util.DexterClient;
-import com.samsung.sec.dexter.core.util.DexterUtil;
-import com.samsung.sec.dexter.core.util.PersistenceProperty;
-import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
-import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
-import com.samsung.sec.dexter.executor.DexterAnalyzer;
-import com.samsung.sec.dexter.executor.DexterAnalyzerAdapter;
-
-public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener{
+public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener {
 	public static final String ID = "com.samsung.sec.dexter.eclipse.ui.view.AnalysisLogTreeView";
-	public static final String P_SHOW_TEXT_AREA = "show_text_area"; 
-	public static final String P_COLUMN_1 = "column1"; 
-	public static final String P_COLUMN_2 = "column2"; 
-	public static final String P_COLUMN_3 = "column3"; 
-	public static final String P_COLUMN_4 = "column4"; 
-	public static final String P_COLUMN_5 = "column5"; 
-	public static final String P_COLUMN_6 = "column6"; 
-	public static final String P_COLUMN_7 = "column7"; 
+	public static final String P_SHOW_TEXT_AREA = "show_text_area";
+	public static final String P_COLUMN_1 = "column1";
+	public static final String P_COLUMN_2 = "column2";
+	public static final String P_COLUMN_3 = "column3";
+	public static final String P_COLUMN_4 = "column4";
+	public static final String P_COLUMN_5 = "column5";
+	public static final String P_COLUMN_6 = "column6";
+	public static final String P_COLUMN_7 = "column7";
 	public static final String P_ORDER_VALUE = "orderValue";
-	
+
 	private TreeViewer logTreeView;
 	private Tree tree;
 	private RootAnalysisLog rootLog;
-	private AnalyzerHandler analyzerHandler = new AnalyzerHandler(); 
+	private AnalyzerHandler analyzerHandler = new AnalyzerHandler();
 	private Display display;
 	private Text messageText;
 	private IMemento fMemento;
-	
+
 	private TreeColumn fColumn1;
 	private TreeColumn fColumn2;
 	private TreeColumn fColumn3;
@@ -106,38 +105,37 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
 	private TreeColumn fColumn5;
 	private TreeColumn fColumn6;
 	private TreeColumn fColumn7;
-	
+
 	private int ITEM_ORDER;
 	public static final int ASCENDING = 1;
 	public static final int DESCENDING = -1;
-	
+
 	public AnalysisLogTreeView() {
 		rootLog = new RootAnalysisLog();
 		rootLog.loadFromLogFiles();
 	}
-	
-	
+
 	@Override
 	public void createPartControl(final Composite parent) {
 		display = parent.getDisplay();
-		
+
 		final GridLayout layout = new GridLayout();
 		layout.numColumns = 1;
 		parent.setLayout(layout);
-		
+
 		messageText = new Text(parent, SWT.MULTI | SWT.READ_ONLY | SWT.BORDER | SWT.V_SCROLL | SWT.WRAP);
 		messageText.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WHITE));
-		
+
 		GridData gridData = new GridData();
 		gridData.horizontalAlignment = GridData.FILL;
 		gridData.heightHint = 100;
 		gridData.minimumHeight = 100;
 		messageText.setLayoutData(gridData);
-		
+
 		tree = new Tree(parent, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
 		tree.setHeaderVisible(true);
 		tree.setLinesVisible(true);
-		
+
 		fColumn1 = new TreeColumn(tree, SWT.CENTER);
 		fColumn1.setText("Items");
 		fColumn1.setAlignment(SWT.LEFT);
@@ -153,42 +151,42 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
 		});
 		tree.setSortColumn(fColumn1);
 		tree.setSortDirection(ITEM_ORDER == ASCENDING ? SWT.UP : SWT.DOWN);
-		
+
 		fColumn2 = new TreeColumn(tree, SWT.CENTER);
 		fColumn2.setText("Status");
 		fColumn2.setAlignment(SWT.CENTER);
 		fColumn2.setWidth(fMemento.getInteger(P_COLUMN_2));
-		
+
 		fColumn3 = new TreeColumn(tree, SWT.CENTER);
 		fColumn3.setText(ResultFileConstant.SEVERITY);
 		fColumn3.setAlignment(SWT.CENTER);
 		fColumn3.setWidth(fMemento.getInteger(P_COLUMN_3));
-		
+
 		fColumn4 = new TreeColumn(tree, SWT.CENTER);
 		fColumn4.setText("Module");
 		fColumn4.setAlignment(SWT.LEFT);
 		fColumn4.setWidth(fMemento.getInteger(P_COLUMN_4));
-		
+
 		fColumn5 = new TreeColumn(tree, SWT.CENTER);
 		fColumn5.setText("Class");
 		fColumn5.setAlignment(SWT.LEFT);
 		fColumn5.setWidth(fMemento.getInteger(P_COLUMN_5));
-		
+
 		fColumn6 = new TreeColumn(tree, SWT.CENTER);
 		fColumn6.setText("Method");
 		fColumn6.setAlignment(SWT.LEFT);
 		fColumn6.setWidth(fMemento.getInteger(P_COLUMN_6));
-		
+
 		fColumn7 = new TreeColumn(tree, SWT.CENTER);
 		fColumn7.setText("Message");
 		fColumn7.setAlignment(SWT.LEFT);
 		fColumn7.setWidth(fMemento.getInteger(P_COLUMN_7));
-		
+
 		gridData = new GridData(GridData.FILL_BOTH);
 		gridData.horizontalAlignment = GridData.FILL;
 		gridData.verticalAlignment = GridData.FILL;
 		tree.setLayoutData(gridData);
-		
+
 		logTreeView = new TreeViewer(tree);
 		logTreeView.setLabelProvider(new AnalysisLogLabelProvider());
 		logTreeView.setContentProvider(new AnalysisLogContentProvider());
@@ -196,168 +194,168 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
 		logTreeView.setInput(rootLog);
 		logTreeView.getSorter().sort(logTreeView, tree.getItems());
 
-		
 		logTreeView.addDoubleClickListener(new ItemDoubleClickListener(parent));
 		logTreeView.addSelectionChangedListener(new ISelectionChangedListener() {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				final Object obj = event.getSelection();
-				if(!(obj instanceof IStructuredSelection)){
+				if (!(obj instanceof IStructuredSelection)) {
 					return;
 				}
-				
+
 				final IStructuredSelection selection = (IStructuredSelection) obj;
 				Object ele = selection.getFirstElement();
-				if(ele instanceof AnalysisLog){
+				if (ele instanceof AnalysisLog) {
 					final AnalysisLog log = (AnalysisLog) ele;
 					messageText.setText(log.getFileFullPath());
-				} else if(ele instanceof DefectLog){
+				} else if (ele instanceof DefectLog) {
 					final DefectLog log = (DefectLog) ele;
 					messageText.setText(log.getDefect().getMessage().replace("[#", "\r\n[#"));
-				} else if(ele instanceof OccurenceLog){
+				} else if (ele instanceof OccurenceLog) {
 					final OccurenceLog log = (OccurenceLog) ele;
-					messageText.setText(log.getOccurence().getMessage() + "\r\n\r\n" 
-							+ log.getOccurence().getStringValue());
+					messageText.setText(
+							log.getOccurence().getMessage() + "\r\n\r\n" + log.getOccurence().getStringValue());
 				}
-				
+
 			}
 		});
-		
+
 		initMenu();
-		
+
 		DexterConfig.getInstance().addDexterHomeListener(this);
 		DexterAnalyzer.getInstance().addListener(analyzerHandler);
-		
-		DexterClient.getInstance().login();
+
 		DexterConfig.getInstance().createInitialFolderAndFiles();
 	}
-	
+
 	class ItemDoubleClickListener implements IDoubleClickListener {
 		private Composite parent;
-		
+
 		public ItemDoubleClickListener(Composite parent) {
 			this.parent = parent;
 		}
-		
+
 		@Override
 		public void doubleClick(DoubleClickEvent event) {
-			try{
+			try {
 				final Object target = getSelectedTarget(event);
-				
-				if(target instanceof OccurenceLog){
+
+				if (target instanceof OccurenceLog) {
 					handleOccurenceLogDoubleClickEvent((OccurenceLog) target);
 				}
-			} catch (DexterRuntimeException e){
+			} catch (DexterRuntimeException e) {
 				DexterUIActivator.LOG.error(e.getMessage());
 				return;
 			}
 		}
 
 		private Object getSelectedTarget(final DoubleClickEvent event) {
-			if(event.getSelection().isEmpty() || !(event.getSelection() instanceof IStructuredSelection)){
+			if (event.getSelection().isEmpty() || !(event.getSelection() instanceof IStructuredSelection)) {
 				throw new DexterRuntimeException("Invalid Selection : it is not IStructuredSelection");
 			}
-			
+
 			return ((IStructuredSelection) event.getSelection()).getFirstElement();
 		}
-		
+
 		private void handleOccurenceLogDoubleClickEvent(final OccurenceLog log) {
 			display.asyncExec(new Runnable() {
-                public void run() {
-                	final String sourceFileFullPath = log.getParent().getParent().getFileFullPath();
-                	final int line = log.getOccurence().getStartLine();
-                	
-                	switch(DexterConfig.getInstance().getRunMode()){
-	                	case DAEMON:
-	                	case SOURCE_INSIGHT:
-	                		try{
-	                			DexterUtil.openSourceInsight(sourceFileFullPath, line);
-	                		} catch (DexterRuntimeException e){
-	                			saveSourceInsightExePath(parent);
-	                			DexterUtil.openSourceInsight(sourceFileFullPath, line);
-	                		}
-	                		break;
-	                	case ECLIPSE:
-	                	default:
-	                		EclipseUtil.openEditor(sourceFileFullPath, line);
-	            			break;
-                	}
-                }                	
-            });
+				public void run() {
+					final String sourceFileFullPath = log.getParent().getParent().getFileFullPath();
+					final int line = log.getOccurence().getStartLine();
+
+					switch (DexterConfig.getInstance().getRunMode()) {
+					case DAEMON:
+					case SOURCE_INSIGHT:
+						try {
+							DexterUtil.openSourceInsight(sourceFileFullPath, line);
+						} catch (DexterRuntimeException e) {
+							saveSourceInsightExePath(parent);
+							DexterUtil.openSourceInsight(sourceFileFullPath, line);
+						}
+						break;
+					case ECLIPSE:
+					default:
+						EclipseUtil.openEditor(sourceFileFullPath, line);
+						break;
+					}
+				}
+			});
 		}
 	}
-	
-	private void saveSourceInsightExePath(final Composite parent) {
-			final FileDialog dialog = new FileDialog(parent.getShell(), SWT.OPEN);
-			dialog.setText("Select your Source Insight executable file : Insight3.exe");
-			final String[] filterExt = { "*.exe" };
-			dialog.setFilterExtensions(filterExt);
-			
-			final String exePath = dialog.open();
-			
-			if(Strings.isNullOrEmpty(exePath)){
-				MessageDialog.openError(parent.getShell(), "Error for Insight3.exe" , "You have to select Insight3.exe file first");
-				throw new RuntimeException("You have to select Insight3.exe file first");
-			}
 
-			PersistenceProperty.getInstance().write(DexterConfig.SOURCE_INSIGHT_EXE_PATH_KEY, exePath);
+	private void saveSourceInsightExePath(final Composite parent) {
+		final FileDialog dialog = new FileDialog(parent.getShell(), SWT.OPEN);
+		dialog.setText("Select your Source Insight executable file : Insight3.exe");
+		final String[] filterExt = { "*.exe" };
+		dialog.setFilterExtensions(filterExt);
+
+		final String exePath = dialog.open();
+
+		if (Strings.isNullOrEmpty(exePath)) {
+			MessageDialog.openError(parent.getShell(), "Error for Insight3.exe",
+					"You have to select Insight3.exe file first");
+			throw new RuntimeException("You have to select Insight3.exe file first");
+		}
+
+		PersistenceProperty.getInstance().write(DexterConfig.SOURCE_INSIGHT_EXE_PATH_KEY, exePath);
 	}
 
 	private void initMenu() {
-	    final MenuManager menuManager = new MenuManager("#PopupMenu");
-		
+		final MenuManager menuManager = new MenuManager("#PopupMenu");
+
 		menuManager.setRemoveAllWhenShown(true);
-		
-		if(logTreeView != null){
+
+		if (logTreeView != null) {
 			logTreeView.getTree().setMenu(menuManager.createContextMenu(logTreeView.getTree()));
 			getSite().registerContextMenu(menuManager, logTreeView);
 		}
-		
+
 		IMenuManager barmenuManager = getViewSite().getActionBars().getMenuManager();
 		barmenuManager.add(createShowTextAction());
-    }
-	
+	}
+
 	private Action createShowTextAction() {
 		Action action = new Action("Show text area") {
 			public void run() {
 				showTextArea(isChecked());
 			}
 		};
-		
+
 		boolean visible = fMemento.getBoolean(P_SHOW_TEXT_AREA).booleanValue();
 		action.setChecked(visible);
 		showTextArea(visible);
 		return action;
 	}
-	
+
 	private void showTextArea(boolean visible) {
 		fMemento.putBoolean(P_SHOW_TEXT_AREA, visible);
-		if(messageText == null) return ;
-		Composite parentComposite = messageText.getParent(); 
+		if (messageText == null)
+			return;
+		Composite parentComposite = messageText.getParent();
 		GridData gd = (GridData) messageText.getLayoutData();
 		gd.exclude = !visible;
 		messageText.setVisible(visible);
 		parentComposite.layout(false);
 	}
-	
+
 	@Override
 	public void init(IViewSite site, IMemento memento) throws PartInitException {
 		super.init(site, memento);
 		if (memento == null)
-			this.fMemento = XMLMemento.createWriteRoot("DEXTERVIEW"); 
+			this.fMemento = XMLMemento.createWriteRoot("DEXTERVIEW");
 		else
 			this.fMemento = memento;
-		
+
 		readSettings();
-		
+
 		ITEM_ORDER = this.fMemento.getInteger(P_ORDER_VALUE);
 	}
-	
+
 	@Override
 	public void saveState(IMemento memento) {
 		if (this.fMemento == null || memento == null)
 			return;
-		
+
 		this.fMemento.putInteger(P_COLUMN_1, getColumnWidth(fColumn1, 300));
 		this.fMemento.putInteger(P_COLUMN_2, getColumnWidth(fColumn2, 80));
 		this.fMemento.putInteger(P_COLUMN_3, getColumnWidth(fColumn3, 60));
@@ -368,11 +366,11 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
 		memento.putMemento(this.fMemento);
 		writeSettings();
 	}
-	
+
 	private Preferences getLogPreferences() {
 		return InstanceScope.INSTANCE.getNode(ID);
 	}
-	
+
 	private void readSettings() {
 		Preferences instancePrefs = getLogPreferences();
 		fMemento.putBoolean(P_SHOW_TEXT_AREA, instancePrefs.getBoolean(P_SHOW_TEXT_AREA, true));
@@ -385,7 +383,7 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
 		fMemento.putInteger(P_COLUMN_6, getColumnWidthPreference(instancePrefs, P_COLUMN_6, 150));
 		fMemento.putInteger(P_COLUMN_7, getColumnWidthPreference(instancePrefs, P_COLUMN_7, 500));
 	}
-	
+
 	private void writeSettings() {
 		Preferences instancePrefs = getLogPreferences();
 		instancePrefs.putBoolean(P_SHOW_TEXT_AREA, fMemento.getBoolean(P_SHOW_TEXT_AREA).booleanValue());
@@ -397,7 +395,6 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
 		instancePrefs.putInt(P_COLUMN_5, fMemento.getInteger(P_COLUMN_5));
 		instancePrefs.putInt(P_COLUMN_6, fMemento.getInteger(P_COLUMN_6));
 		instancePrefs.putInt(P_COLUMN_7, fMemento.getInteger(P_COLUMN_7));
-		
 
 		try {
 			instancePrefs.flush();
@@ -405,99 +402,110 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
 			DexterUIActivator.LOG.error(e.getMessage(), e);
 		}
 	}
-	
+
 	int getColumnWidthPreference(Preferences instancePrefs, String key, int defaultwidth) {
 		int width = instancePrefs.getInt(key, defaultwidth);
 		return width < 1 ? defaultwidth : width;
 	}
-	
+
 	int getColumnWidth(TreeColumn column, int defaultwidth) {
 		int width = column.getWidth();
 		return width < 1 ? defaultwidth : width;
 	}
-	
+
 	@Override
 	public void setFocus() {
-		if(logTreeView != null){
+		if (logTreeView != null) {
 			logTreeView.getControl().setFocus();
 		}
 	}
-	
+
 	class LogTreeViewerSorter extends ViewerSorter {
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.ViewerComparator#compare(org.eclipse.jface.viewers.Viewer, java.lang.Object, java.lang.Object)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.eclipse.jface.viewers.ViewerComparator#compare(org.eclipse.jface.
+		 * viewers.Viewer, java.lang.Object, java.lang.Object)
 		 */
 		@Override
 		public int compare(Viewer viewer, Object e1, Object e2) {
-			if(e1 instanceof TreeItem && e2 instanceof TreeItem){
-				if( !(((TreeItem) e1).getData() instanceof AnalysisLog)
-					|| ! (((TreeItem) e2).getData() instanceof AnalysisLog)){
-						return super.compare(viewer, e1, e2);
+			if (e1 instanceof TreeItem && e2 instanceof TreeItem) {
+				if (!(((TreeItem) e1).getData() instanceof AnalysisLog)
+						|| !(((TreeItem) e2).getData() instanceof AnalysisLog)) {
+					return super.compare(viewer, e1, e2);
 				}
-				
+
 				final AnalysisLog a1 = (AnalysisLog) ((TreeItem) e1).getData();
 				final AnalysisLog a2 = (AnalysisLog) ((TreeItem) e2).getData();
 
 				return compareAnalysisLog(a1, a2) * ITEM_ORDER;
-				
-			} else if(e1 instanceof AnalysisLog && e2 instanceof AnalysisLog){
+
+			} else if (e1 instanceof AnalysisLog && e2 instanceof AnalysisLog) {
 				final AnalysisLog a1 = (AnalysisLog) e1;
 				final AnalysisLog a2 = (AnalysisLog) e2;
-				
+
 				return compareAnalysisLog(a1, a2) * ITEM_ORDER;
-			} else if(e1 instanceof DefectLog && e2 instanceof DefectLog){
+			} else if (e1 instanceof DefectLog && e2 instanceof DefectLog) {
 				final DefectLog d1 = (DefectLog) e1;
 				final DefectLog d2 = (DefectLog) e2;
-				
+
 				return d1.getDefect().getCheckerCode().compareTo(d2.getDefect().getCheckerCode()) * ITEM_ORDER;
-			} else if(e1 instanceof OccurenceLog && e2 instanceof OccurenceLog){
+			} else if (e1 instanceof OccurenceLog && e2 instanceof OccurenceLog) {
 				final OccurenceLog o1 = (OccurenceLog) e1;
 				final OccurenceLog o2 = (OccurenceLog) e2;
-				
-				if(o1.getOccurence().getStartLine() > o2.getOccurence().getStartLine()){
+
+				if (o1.getOccurence().getStartLine() > o2.getOccurence().getStartLine()) {
 					return 1;
-				} else if(o1.getOccurence().getStartLine() < o2.getOccurence().getStartLine()){
+				} else if (o1.getOccurence().getStartLine() < o2.getOccurence().getStartLine()) {
 					return -1;
 				} else {
 					return 0;
 				}
 			}
-			
-		    return super.compare(viewer, e1, e2);
+
+			return super.compare(viewer, e1, e2);
 		}
-		
-		private int compareAnalysisLog(final AnalysisLog a1, final AnalysisLog a2){
-			if(a1.getCreatedTimeStr() == null){
+
+		private int compareAnalysisLog(final AnalysisLog a1, final AnalysisLog a2) {
+			if (a1.getCreatedTimeStr() == null) {
 				return -1;
-			} else if(a2.getCreatedTimeStr() == null){
+			} else if (a2.getCreatedTimeStr() == null) {
 				return 1;
-			} else if (a1.getCreatedTimeStr() == null && a2.getCreatedTimeStr() == null){
+			} else if (a1.getCreatedTimeStr() == null && a2.getCreatedTimeStr() == null) {
 				return 0;
 			} else {
 				return a1.getCreatedTimeStr().compareTo(a2.getCreatedTimeStr()) * -1;
 			}
 		}
-		
-		/* (non-Javadoc)
-		 * @see org.eclipse.jface.viewers.ViewerComparator#category(java.lang.Object)
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * org.eclipse.jface.viewers.ViewerComparator#category(java.lang.Object)
 		 */
 		@Override
 		public int category(Object element) {
-			if(element instanceof AnalysisLog){
+			if (element instanceof AnalysisLog) {
 				return 1;
-			} else if(element instanceof DefectLog){
+			} else if (element instanceof DefectLog) {
 				return 2;
-			} else if(element instanceof OccurenceLog){
+			} else if (element instanceof OccurenceLog) {
 				return 3;
 			} else {
 				return 4;
 			}
 		}
 	}
-	
+
 	class AnalyzerHandler extends DexterAnalyzerAdapter {
-		/* (non-Javadoc)
-		 * @see com.samsung.sec.dexter.executor.DexterAnalyzerAdapter#handlePostRunStaticAnalysis(com.samsung.sec.dexter.core.analyzer.AnalysisConfig, com.samsung.sec.dexter.core.analyzer.AnalysisResult)
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see com.samsung.sec.dexter.executor.DexterAnalyzerAdapter#
+		 * handlePostRunStaticAnalysis(com.samsung.sec.dexter.core.analyzer.
+		 * AnalysisConfig, com.samsung.sec.dexter.core.analyzer.AnalysisResult)
 		 */
 		@Override
 		public void handlePostRunStaticAnalysis(final AnalysisConfig config, final List<AnalysisResult> resultList) {
@@ -506,7 +514,7 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
 			final String fileName = DexterAnalyzer.getFileName(resultList);
 			final String modulePath = config.getModulePath();
 			final String sourceFileFullPath = DexterAnalyzer.getSourceFileFullPath(resultList);
-			
+
 			final AnalysisLog log = new AnalysisLog();
 			final Date date = new Date();
 			log.setCreatedTime(date);
@@ -515,15 +523,15 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
 			log.setFileName(fileName);
 			log.setModulePath(modulePath);
 			log.setFileFullPath(sourceFileFullPath);
-			
-			for(final Defect defect : allDefectList){
+
+			for (final Defect defect : allDefectList) {
 				log.addDefectLog(defect);
 			}
-			
-			for(final String function : allFunctionList){
+
+			for (final String function : allFunctionList) {
 				log.addFunctionList(function);
 			}
-			
+
 			display.syncExec(new Runnable() {
 				@Override
 				public void run() {
@@ -532,21 +540,24 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
 					logTreeView.getSorter().sort(logTreeView, tree.getItems());
 					logTreeView.refresh(log, false);
 					logTreeView.expandToLevel(log, AbstractTreeViewer.ALL_LEVELS);
-					updateStatusBar("added new log (defect: " + log.getDefectLogList().size() + ") - " + log.getFileFullPath());
+					updateStatusBar(
+							"added new log (defect: " + log.getDefectLogList().size() + ") - " + log.getFileFullPath());
 					rootLog.addChild(log);
 				}
 			});
-			
+
 		}
 	}
-	
-	public void openFirstElement(){
-		if(tree != null && logTreeView != null && tree.getItems() != null && tree.getItems().length > 0){
+
+	public void openFirstElement() {
+		if (tree != null && logTreeView != null && tree.getItems() != null && tree.getItems().length > 0) {
 			logTreeView.expandToLevel(tree.getItems()[0].getData(), AbstractTreeViewer.ALL_LEVELS);
 		}
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ui.part.WorkbenchPart#dispose()
 	 */
 	@Override
@@ -554,7 +565,7 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
 		writeSettings();
 		DexterConfig.getInstance().removeDexterHomeListener(this);
 		DexterAnalyzer.getInstance().removeListener(analyzerHandler);
-	    super.dispose();
+		super.dispose();
 	}
 
 	/**
@@ -564,22 +575,27 @@ public class AnalysisLogTreeView extends ViewPart implements IDexterHomeListener
 		return logTreeView;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.samsung.sec.dexter.core.config.IDexterHomeListener#handleDexterHomeChanged()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.samsung.sec.dexter.core.config.IDexterHomeListener#
+	 * handleDexterHomeChanged()
 	 */
-    @Override
-    public void handleDexterHomeChanged(final String oldPath, final String newPath) {
+	@Override
+	public void handleDexterHomeChanged(final String oldPath, final String newPath) {
 		rootLog = new RootAnalysisLog();
 		rootLog.loadFromLogFiles();
-		if(messageText == null) return;
+		if (messageText == null)
+			return;
 		messageText.setText("");
-		if(logTreeView == null ) return;
+		if (logTreeView == null)
+			return;
 		logTreeView.setInput(rootLog);
 		logTreeView.refresh();
-    }
-    
-    public void updateStatusBar(final String message){
-    	final IStatusLineManager statusLine = this.getViewSite().getActionBars().getStatusLineManager();
-    	statusLine.setMessage(message);
-    }
+	}
+
+	public void updateStatusBar(final String message) {
+		final IStatusLineManager statusLine = this.getViewSite().getActionBars().getStatusLineManager();
+		statusLine.setMessage(message);
+	}
 }

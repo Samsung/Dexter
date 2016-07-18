@@ -25,10 +25,6 @@
 */
 package com.samsung.sec.dexter.executor.cli;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.checker.Checker;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
@@ -36,58 +32,59 @@ import com.samsung.sec.dexter.core.plugin.BaseDexterPluginManager;
 import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginInitializer;
 import com.samsung.sec.dexter.core.plugin.PluginDescription;
-import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.core.util.IDexterClient;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class CLIDexterPluginManager extends BaseDexterPluginManager {
 	private ICLILog cliLog;
 	private IDexterCLIOption cliOption;
 
-	public CLIDexterPluginManager(final IDexterPluginInitializer pluginInitializer, 
+	public CLIDexterPluginManager(final IDexterPluginInitializer pluginInitializer, final IDexterClient client,
 			final ICLILog cliLog, final IDexterCLIOption cliOption) {
-		super(pluginInitializer);
-		
+		super(pluginInitializer, client);
+
 		assert cliLog != null;
 		assert cliOption != null;
-		
+
 		this.cliLog = cliLog;
 		this.cliOption = cliOption;
 	}
-	
+
 	@Override
-	public void initDexterPlugins() throws DexterRuntimeException{
+	public void initDexterPlugins() throws DexterRuntimeException {
 		assert initializer != null;
-		
+
 		pluginList = new ArrayList<IDexterPlugin>(0);
-		IDexterClient client = DexterClient.getInstance();
-		
 		initializer.init(pluginList);
-		
-		if(getPluginList().size() == 0){
+
+		if (getPluginList().size() == 0) {
 			cliLog.printErrorMessageWhenNoPlugins();
 			System.exit(1);
 		}
-		
+
 		initSupportingFileExetensions();
-		
-		if(!cliOption.isStandAloneMode() && client.isServerAlive()){  
+
+		if (!cliOption.isStandAloneMode() && client.isServerAlive()) {
 			updateCheckerConfig();
 		}
-		
-		for(IDexterPlugin plugin : getPluginList()){
+
+		for (IDexterPlugin plugin : getPluginList()) {
 			PluginDescription desc = plugin.getDexterPluginDescription();
 			cliLog.printMessageWhenPluginLoaded(desc);
-			
-			resetCheckerEnable(desc.getPluginName(), desc.getLanguage().toString(), 
+
+			resetCheckerEnable(desc.getPluginName(), desc.getLanguage().toString(),
 					plugin.getCheckerConfig().getCheckerList());
 		}
 	}
-	
+
 	private void resetCheckerEnable(final String toolName, final String language, final List<Checker> checkers) {
-		if(cliOption.isSpecifiedCheckerEnabledMode() == false)
+		if (cliOption.isSpecifiedCheckerEnabledMode() == false)
 			return;
-		
-		for(Checker checker : checkers){
+
+		for (Checker checker : checkers) {
 			boolean isEnable = checkCheckerEnablenessByCliOption(toolName, language, checker);
 			checker.setActive(isEnable);
 		}
@@ -95,18 +92,18 @@ public class CLIDexterPluginManager extends BaseDexterPluginManager {
 
 	private boolean checkCheckerEnablenessByCliOption(final String toolName, final String language, Checker checker) {
 		int index = Arrays.binarySearch(cliOption.getEnabledCheckerCodes(), checker.getCode());
-		
-		if(index == -1)
+
+		if (index == -1)
 			return false;
-		
+
 		final String enableToolName = cliOption.getEnabledCheckerToolNames()[index];
-		if(Strings.isNullOrEmpty(enableToolName) == false && enableToolName.equals(toolName) == false)
+		if (Strings.isNullOrEmpty(enableToolName) == false && enableToolName.equals(toolName) == false)
 			return false;
-		
+
 		final String enableLanguage = cliOption.getEnabledCheckerLanguages()[index];
-		if(Strings.isNullOrEmpty(enableLanguage) == false && enableLanguage.equals(language) == false)
+		if (Strings.isNullOrEmpty(enableLanguage) == false && enableLanguage.equals(language) == false)
 			return false;
-		
+
 		return true;
-    }
+	}
 }

@@ -25,13 +25,6 @@
 */
 package com.samsung.sec.dexter.plugin;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-
-import org.apache.commons.io.FileUtils;
-import org.junit.Test;
-
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
@@ -39,10 +32,19 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.plugin.BaseDexterPluginManager;
 import com.samsung.sec.dexter.core.plugin.EmptyDexterPluginInitializer;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
+import com.samsung.sec.dexter.core.util.EmptyDexterClient;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+
+import org.apache.commons.io.FileUtils;
+import org.junit.Test;
 
 public class DexterPluginManagerTest {
-	private IDexterPluginManager pluginManager = new BaseDexterPluginManager(new EmptyDexterPluginInitializer());
-	
+	private IDexterPluginManager pluginManager = new BaseDexterPluginManager(new EmptyDexterPluginInitializer(),
+			new EmptyDexterClient());
+
 	@Test
 	public void shouldWorkWhenSrcFolderHasFile() throws IOException {
 		File tempDir = Files.createTempDir();
@@ -50,25 +52,25 @@ public class DexterPluginManagerTest {
 		StringBuilder contents = new StringBuilder();
 		contents.append("public class TestSource { ");
 		contents.append("\tpublic void main(String[] args){ }\t}");
-	    Files.write(contents.toString(), srcFile, Charsets.UTF_8);
-	    
+		Files.write(contents.toString(), srcFile, Charsets.UTF_8);
+
 		AnalysisConfig config = (new AnalysisEntityFactory()).createAnalysisConfig();
 		// set source dir that has no source file
 		config.setSourceBaseDirList(Arrays.asList(tempDir.getAbsolutePath()));
-		
+
 		pluginManager.analyze(config);
 
 		deleteDir(tempDir);
 	}
-	
+
 	@Test
 	public void shouldWorkWhenSrcFolderHasNoFile() {
 		File tempDir = Files.createTempDir();
-		
+
 		AnalysisConfig config = (new AnalysisEntityFactory()).createAnalysisConfig();
 		// set source dir that has no source file
 		config.setSourceBaseDirList(Arrays.asList(tempDir.getAbsolutePath()));
-		
+
 		pluginManager.analyze(config);
 
 		deleteDir(tempDir);

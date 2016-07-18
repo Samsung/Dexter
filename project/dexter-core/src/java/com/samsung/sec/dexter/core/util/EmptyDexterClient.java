@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014 Samsung Electronics, Inc.,
+ * Copyright (c) 2016 Samsung Electronics, Inc.,
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -28,136 +28,98 @@ package com.samsung.sec.dexter.core.util;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.config.DefectGroup;
 import com.samsung.sec.dexter.core.config.DexterCode;
+import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.defect.Defect;
+import com.samsung.sec.dexter.core.filter.EmptyFalseAlarmConfiguration;
 import com.samsung.sec.dexter.core.filter.IFalseAlarmConfiguration;
 import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 
-import java.security.cert.CertificateException;
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Mock for Handling Dexter Server(Database, etc)
- */
-public class DexterClientMock implements IDexterClient {
+public class EmptyDexterClient implements IDexterClient {
+
+	@Override
 	public String getDexterDashboardUrl() {
-		return null;
+		return "";
 	}
 
+	@Override
 	public String getDexterWebUrl() {
-		return null;
+		return "";
 	}
 
+	@Override
 	public boolean isCurrentUserAdmin() {
 		return false;
 	}
 
+	@Override
 	public int getCurrentUserNo() {
 		return 0;
 	}
 
-	public void setCurrentUserNo(final int userNo) {
+	@Override
+	public void setCurrentUserNo(int userNo) {
 	}
 
-	public void setCurrentUserPwd(final String currentUserPwd) {
+	@Override
+	public void setCurrentUserPwd(String currentUserPwd) {
 	}
 
-	public void setCurrentUserId(final String currentUserId) {
+	@Override
+	public void setCurrentUserId(String currentUserId) {
 	}
 
-	public void setServerPort(final int serverPort) {
+	@Override
+	public void setServerPort(int serverPort) {
 	}
 
-	public void setServerHost(final String serverHost) {
+	@Override
+	public void setServerHost(String serverHost) {
 	}
 
+	@Override
 	public int getServerPort() {
 		return 0;
 	}
 
+	@Override
 	public String getServerHost() {
-		return null;
+		return "";
 	}
 
-	public String getServerHostForUI() {
-		return null;
+	@Override
+	public void setUserPwd(String userPwd) {
 	}
 
-	public void setUserPwd(final String userPwd) {
+	@Override
+	public void setUserId(String userId) {
 	}
 
-	public void setUserId(final String userId) {
-	}
-
+	@Override
 	public String getCurrentUserPwd() {
-		return null;
+		return "";
 	}
 
-	public String getSourceCode(final String modulePath, final String fileName) {
-		return null;
+	@Override
+	public String getSourceCode(String modulePath, String fileName) {
+		return "";
 	}
 
-	public List<DexterCode> getCodes(final String codeKey) {
-		return null;
+	@Override
+	public List<DexterCode> getCodes(String codeKey) {
+		return new ArrayList<DexterCode>(0);
 	}
 
+	@Override
 	public List<DefectGroup> getDefectGroupList() {
-		return null;
+		return new ArrayList<DefectGroup>(0);
 	}
 
-	public boolean deleteDefectGroup(final long defectGroupId) {
+	@Override
+	public boolean deleteDefectGroup(long defectGroupId) {
 		return false;
-	}
-
-	public List<DefectGroup> getDefectGroupByGroupName(final String groupName) {
-		return null;
-	}
-
-	public IFalseAlarmConfiguration getFalseAlarmTree() {
-		return null;
-	}
-
-	public int getLastFalseAlarmVersion() {
-		return 0;
-	}
-
-	public boolean sendNewDefectFilter(final String content) throws CertificateException {
-		return false;
-	}
-
-	public int getUserNo(final String userId, final String userPwd) {
-		return 0;
-	}
-
-	public boolean hasAccount(final String id) {
-		return false;
-	}
-
-	public void setDexterServer(final String serverAddress) {
-	}
-
-	public boolean isServerAlive() {
-		return false;
-	}
-
-	public boolean isServerAddressOk(final String serverAddress) {
-		return false;
-	}
-
-	public String getCurrentUserId() {
-		return null;
-	}
-
-	public boolean isLogin() {
-		return false;
-	}
-
-	public void setDexterServer(final String serverHost, final int serverPort) {
-	}
-
-	public void login() {
-	}
-
-	public void setWebResource(IDexterWebResource resource) {
 	}
 
 	@Override
@@ -167,7 +129,15 @@ public class DexterClientMock implements IDexterClient {
 
 	@Override
 	public void insertDefectGroup(DefectGroup defectGroup) {
+	}
 
+	@Override
+	public List<DefectGroup> getDefectGroupByGroupName(String groupName) {
+		return new ArrayList<DefectGroup>(0);
+	}
+
+	@Override
+	public void deleteDefects(String modulePath, String fileName) {
 	}
 
 	@Override
@@ -176,27 +146,62 @@ public class DexterClientMock implements IDexterClient {
 	}
 
 	@Override
-	public void insertDefectFilter(Defect defect) {
+	public IFalseAlarmConfiguration getFalseAlarmTree() {
+		return new EmptyFalseAlarmConfiguration();
+	}
 
+	@Override
+	public int getLastFalseAlarmVersion() {
+		return 0;
+	}
+
+	@Override
+	public void insertDefectFilter(Defect defect) {
 	}
 
 	@Override
 	public void removeDefectFilter(Defect defect) {
-
 	}
 
 	@Override
 	public void changeDefectStatus(Defect defect, String status) {
-
-	}
-
-	@Override
-	public void deleteDefects(String modulePath, String fileName) {
-
 	}
 
 	@Override
 	public void createAccount(String id, String pwd, boolean isAdmin) {
+	}
+
+	@Override
+	public boolean hasAccount(String id) {
+		return false;
+	}
+
+	@Override
+	public void setDexterServer(String serverAddress) {
+	}
+
+	@Override
+	public boolean isServerAlive() {
+		return false;
+	}
+
+	@Override
+	public boolean isServerAddressOk(String serverAddress) {
+		return false;
+	}
+
+	@Override
+	public String getCurrentUserId() {
+		return "";
+	}
+
+	@Override
+	public boolean isLogin() {
+		return false;
+	}
+
+	@Override
+	public void setDexterServer(String serverHost, int serverPort) {
 	}
 
 	@Override
@@ -209,7 +214,15 @@ public class DexterClientMock implements IDexterClient {
 	}
 
 	@Override
+	public void login() {
+	}
+
+	@Override
 	public void login(String id, String pwd) {
+	}
+
+	@Override
+	public void setWebResource(IDexterWebResource resource) {
 	}
 
 	@Override
@@ -222,15 +235,20 @@ public class DexterClientMock implements IDexterClient {
 
 	@Override
 	public String getDexterPluginUpdateUrl() {
-		return null;
+		return "";
 	}
 
 	@Override
-	public void addLoginInfoListener(final IDexterLoginInfoListener listener) {
+	public CheckerConfig getDexterPluginChecker(IDexterPlugin plugin, String pluginName) {
+		return new CheckerConfig("empty checker config", LANGUAGE.UNKNOWN);
 	}
 
 	@Override
-	public void removeLoginInfoListener(final IDexterLoginInfoListener listener) {
+	public void addLoginInfoListener(IDexterLoginInfoListener listener) {
+	}
+
+	@Override
+	public void removeLoginInfoListener(IDexterLoginInfoListener listener) {
 	}
 
 	@Override
@@ -238,8 +256,7 @@ public class DexterClientMock implements IDexterClient {
 	}
 
 	@Override
-	public CheckerConfig getDexterPluginChecker(IDexterPlugin plugin, String pluginName) {
-		return null;
+	public void handleDexterStandaloneChanged() {
 	}
 
 	@Override
@@ -253,11 +270,7 @@ public class DexterClientMock implements IDexterClient {
 	}
 
 	@Override
-	public boolean hasSupportedHelpHtmlFile(final StringBuilder url) {
+	public boolean hasSupportedHelpHtmlFile(StringBuilder url) {
 		return false;
-	}
-
-	@Override
-	public void handleDexterStandaloneChanged() {
 	}
 }

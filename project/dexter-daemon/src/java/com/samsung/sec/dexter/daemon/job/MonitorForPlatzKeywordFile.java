@@ -1,5 +1,15 @@
 package com.samsung.sec.dexter.daemon.job;
 
+import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.config.IDexterHomeListener;
+import com.samsung.sec.dexter.core.config.PlatzKeywordFile;
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.util.DexterUtil;
+import com.samsung.sec.dexter.daemon.DexterDaemonActivator;
+import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
+import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
+import com.samsung.sec.dexter.eclipse.ui.view.PlatzView;
+
 import java.io.File;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -8,16 +18,6 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.progress.UIJob;
-
-import com.samsung.sec.dexter.core.config.DexterConfig;
-import com.samsung.sec.dexter.core.config.IDexterHomeListener;
-import com.samsung.sec.dexter.core.config.PlatzKeywordFile;
-import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
-import com.samsung.sec.dexter.core.util.DexterClient;
-import com.samsung.sec.dexter.core.util.DexterUtil;
-import com.samsung.sec.dexter.daemon.DexterDaemonActivator;
-import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
-import com.samsung.sec.dexter.eclipse.ui.view.PlatzView;
 
 public class MonitorForPlatzKeywordFile extends Job implements IDexterHomeListener {
 	public static long LAST_CONF_CHANAGED_TIME = -1;
@@ -80,7 +80,7 @@ public class MonitorForPlatzKeywordFile extends Job implements IDexterHomeListen
 					final PlatzView platzView = (PlatzView) EclipseUtil.findView(PlatzView.ID);
 					StringBuilder url = new StringBuilder();
 					url.append(DexterConfig.PLATZ_SEARCH_API_URL).append(keyword).append("?dexterId=")
-							.append(DexterClient.getInstance().getCurrentUserId());
+							.append(DexterUIActivator.getDefault().getDexterClient().getCurrentUserId());
 					platzView.setUrl(url.toString());
 					return Status.OK_STATUS;
 				} catch (DexterRuntimeException e) {

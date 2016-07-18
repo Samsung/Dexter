@@ -37,7 +37,7 @@ public class EmptyDexterCLIOption implements IDexterCLIOption {
 
 	@Override
 	public List<String> getTargetFileFullPathList() {
-		return new ArrayList(0);
+		return new ArrayList<String>(0);
 	}
 
 	@Override
@@ -96,8 +96,8 @@ public class EmptyDexterCLIOption implements IDexterCLIOption {
 	}
 
 	@Override
-	public boolean isAccountCreationMode() {
-		return false;
+	public CommandMode getCommandMode() {
+		return CommandMode.NONE;
 	}
 
 	@Override

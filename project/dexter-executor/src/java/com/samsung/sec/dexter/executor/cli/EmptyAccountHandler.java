@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014 Samsung Electronics, Inc.,
+ * Copyright (c) 2016 Samsung Electronics, Inc.,
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -23,45 +23,32 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.samsung.sec.dexter.core.job;
+package com.samsung.sec.dexter.executor.cli;
 
-import com.samsung.sec.dexter.core.filter.AnalysisFilterHandler;
 import com.samsung.sec.dexter.core.util.IDexterClient;
 
-public class MergeFilterJob implements Runnable {
-	private final AnalysisFilterHandler filter = AnalysisFilterHandler.getInstance();
-	private static int COUNT = DexterJobFacade.MAX_JOB_DELAY_COUNT;
-	private IDexterClient client;
+import java.io.InputStream;
+import java.io.PrintStream;
 
-	public MergeFilterJob(final IDexterClient client) {
-		assert client != null;
-
-		this.client = client;
+public class EmptyAccountHandler implements IAccountHandler {
+	@Override
+	public void createAccount(String userId, String password) {
 	}
 
 	@Override
-	public void run() {
-		assert client != null;
+	public boolean loginOrCreateAccount() {
+		return false;
+	}
 
-		long freeMemSize = Runtime.getRuntime().freeMemory();
+	@Override
+	public void setPrintStream(PrintStream out) {
+	}
 
-		if (freeMemSize > DexterJobFacade.ALLOWED_FREE_MEMORY_SIZE_FOR_JOBS
-				|| COUNT > DexterJobFacade.MAX_JOB_DELAY_COUNT) {
-			COUNT = 0;
+	@Override
+	public void setInputStream(InputStream in) {
+	}
 
-			if (client.isServerAlive() == false || client.isLogin() == false) {
-				return;
-			}
-
-			if (filter.hasFilterToUpload()) {
-				filter.uploadFalseAlarmFilter(client);
-			}
-
-			if (filter.hasFilterToDownload(client)) {
-				filter.downloadFalseAlarmFilter(client);
-			}
-		}
-
-		COUNT++;
+	@Override
+	public void setDexterClient(IDexterClient client) {
 	}
 }

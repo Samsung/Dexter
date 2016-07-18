@@ -25,53 +25,51 @@
 */
 package com.samsung.sec.dexter.core.analyzer;
 
+import com.samsung.sec.dexter.core.defect.Defect;
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.util.IDexterClient;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.samsung.sec.dexter.core.defect.Defect;
-import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
-import com.samsung.sec.dexter.core.util.DexterClient;
-import com.samsung.sec.dexter.core.util.IDexterClient;
-
 public class DefaultAnalysisResultChangeHandler implements EndOfAnalysisHandler {
 	static Logger logger = Logger.getLogger(DefaultAnalysisResultChangeHandler.class);
-	
+
 	private int totalCnt = 0;
 	private int criticalCnt = 0;
 	private int majorCnt = 0;
 	private int minorCnt = 0;
 	private int crcCnt = 0;
 	private int etcCnt = 0;
-	
+
 	@Override
-	public void handleAnalysisResult(final List<AnalysisResult> resultList) {
-		IDexterClient client = DexterClient.getInstance(); 
+	public void handleAnalysisResult(final List<AnalysisResult> resultList, final IDexterClient client) {
 		try {
-			if(client.isLogin() == false){
+			if (client.isLogin() == false) {
 				return;
 			}
 
 			List<Defect> allDefectList = new ArrayList<Defect>();
-			
-			for(AnalysisResult result : resultList){
+
+			for (AnalysisResult result : resultList) {
 				client.sendAnalsysisResult(AnalysisResultFileManager.getInstance().getJson(result));
 				allDefectList.addAll(result.getDefectList());
 			}
 
-			for(Defect defect : allDefectList){
-				totalCnt ++;
-				if("CRI".equals(defect.getSeverityCode())){
-					criticalCnt ++;
-				} else if("MAJ".equals(defect.getSeverityCode())){
-					majorCnt ++;
-				} else if("MIN".equals(defect.getSeverityCode())){
-					minorCnt ++;
-				} else if("CRC".equals(defect.getSeverityCode())){
-					crcCnt ++;
-				} else if("ETC".equals(defect.getSeverityCode())){
-					etcCnt ++;
+			for (Defect defect : allDefectList) {
+				totalCnt++;
+				if ("CRI".equals(defect.getSeverityCode())) {
+					criticalCnt++;
+				} else if ("MAJ".equals(defect.getSeverityCode())) {
+					majorCnt++;
+				} else if ("MIN".equals(defect.getSeverityCode())) {
+					minorCnt++;
+				} else if ("CRC".equals(defect.getSeverityCode())) {
+					crcCnt++;
+				} else if ("ETC".equals(defect.getSeverityCode())) {
+					etcCnt++;
 				}
 			}
 		} catch (DexterRuntimeException e) {

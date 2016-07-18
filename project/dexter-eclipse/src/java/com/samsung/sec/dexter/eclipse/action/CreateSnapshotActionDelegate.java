@@ -25,6 +25,12 @@
 */
 package com.samsung.sec.dexter.eclipse.action;
 
+import com.samsung.sec.dexter.core.exception.DexterException;
+import com.samsung.sec.dexter.eclipse.DexterEclipseActivator;
+import com.samsung.sec.dexter.eclipse.EclipseAnalysis;
+import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
+import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -47,12 +53,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
-import com.samsung.sec.dexter.core.exception.DexterException;
-import com.samsung.sec.dexter.core.util.DexterClient;
-import com.samsung.sec.dexter.eclipse.DexterEclipseActivator;
-import com.samsung.sec.dexter.eclipse.EclipseAnalysis;
-import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
-
 @SuppressWarnings("restriction")
 public class CreateSnapshotActionDelegate implements IObjectActionDelegate {
 	ISelection selection;
@@ -63,123 +63,129 @@ public class CreateSnapshotActionDelegate implements IObjectActionDelegate {
 	public CreateSnapshotActionDelegate() {
 	}
 
-    @Override
+	@Override
 	public void run(IAction action) {
-		if( (selection instanceof StructuredSelection) == false){
+		if ((selection instanceof StructuredSelection) == false) {
 			return;
 		}
-		
-		if(isLogout()) return;
-		if(isNotAdmin()) return;
-		
+
+		if (isLogout())
+			return;
+		if (isNotAdmin())
+			return;
+
 		final StructuredSelection selection = (StructuredSelection) this.selection;
-		if(selection == null ) return ;
-		
+		if (selection == null)
+			return;
+
 		final Object selectedObject = selection.getFirstElement();
-		if(isNotProjectSelection(selectedObject)) return;
-		
+		if (isNotProjectSelection(selectedObject))
+			return;
+
 		createTargetFiles(selection);
-		
+
 		analysis();
 	}
 
 	private void analysis() {
-	    Job analysisJob = new Job("Static Analysis Job"){
-	    	@Override
-	        protected IStatus run(IProgressMonitor monitor) {
-	    		monitor.beginTask("Static Analyzing...", targetFiles.size());
-	    		
-	    		final long snapshotId = System.currentTimeMillis();
-	    		for(int i=targetFiles.size(); i > 0; --i) {
-    				final IFile targetFile = targetFiles.get(i-1);
-    				analysisFile(monitor, snapshotId, targetFile);
-    				
-    				if(monitor.isCanceled()) break;
-	    		}
-	    		
-	    		monitor.done();
-	    		return Status.OK_STATUS;
-	        }
+		Job analysisJob = new Job("Static Analysis Job") {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				monitor.beginTask("Static Analyzing...", targetFiles.size());
+
+				final long snapshotId = System.currentTimeMillis();
+				for (int i = targetFiles.size(); i > 0; --i) {
+					final IFile targetFile = targetFiles.get(i - 1);
+					analysisFile(monitor, snapshotId, targetFile);
+
+					if (monitor.isCanceled())
+						break;
+				}
+
+				monitor.done();
+				return Status.OK_STATUS;
+			}
 
 			private void analysisFile(final IProgressMonitor monitor, final long snapshotId, final IFile targetFile) {
-	            monitor.subTask("analyzing : " + targetFile.getName());
-	            
-	            Display.getDefault().syncExec(new Runnable() {
-	            	@Override
-	            	public void run() {
-	            		try {
-	            			EclipseAnalysis.analysis(targetFile, snapshotId, defectGroupId);
-	            			monitor.worked(1);
-	            		} catch (DexterException e) {
-	            			DexterEclipseActivator.LOG.error(e.getMessage(), e);
-	            		}
-	            	}
-	            });
-            }
-	    };
-	    
-	    analysisJob.setPriority(Job.DECORATE);
-	    analysisJob.schedule();
-    }
+				monitor.subTask("analyzing : " + targetFile.getName());
+
+				Display.getDefault().syncExec(new Runnable() {
+					@Override
+					public void run() {
+						try {
+							EclipseAnalysis.analysis(targetFile, snapshotId, defectGroupId);
+							monitor.worked(1);
+						} catch (DexterException e) {
+							DexterEclipseActivator.LOG.error(e.getMessage(), e);
+						}
+					}
+				});
+			}
+		};
+
+		analysisJob.setPriority(Job.DECORATE);
+		analysisJob.schedule();
+	}
 
 	private void createTargetFiles(final StructuredSelection selection) {
-	    @SuppressWarnings("unchecked")
-	    final Iterator<Object> iter = selection.iterator();
-	    while(iter.hasNext()){
-	    	final Object object = iter.next();
-	    	
-	    	if(object instanceof IResource){
-	    		final IResource resource = (IResource) object;
-	    		addResourceAsTargetFile(resource);
-	    	}
-	    }
-    }
-	
-	private boolean isNotProjectSelection(Object selectedObject) {
-		boolean isNotProject = (selectedObject == null || (selectedObject instanceof Project) == false);
-		
-		if(isNotProject){
-			showErrorMessage("Snapshot Creation Error", "You can select only a Project element.");
-			return true;
-		}
-		
-		return false;
-    }
+		@SuppressWarnings("unchecked")
+		final Iterator<Object> iter = selection.iterator();
+		while (iter.hasNext()) {
+			final Object object = iter.next();
 
-	private boolean isNotAdmin() {
-		if(DexterClient.getInstance().isCurrentUserAdmin() == false){
-			showErrorMessage("Snapshot Creation Error", "Only administrator can create a snapshot.");
-			
-			return true;
-		}
-		
-		return false;
-    }
-
-	private boolean isLogout() {
-		if(DexterClient.getInstance().isLogin() == false){
-			DexterEclipseActivator.LOG.error("Can not create snapshot due to no loggin");
-			
-			showErrorMessage("Snapshot Creation Error",	"Can not create snapshot due to no loggin");
-//			if(targetPart != null && targetPart.getSite() != null && targetPart.getSite().getShell() != null){
-//			}
-			return true;
-		}
-		
-	    return false;
-    }
-	
-	private void showErrorMessage(final String title, final String message){
-		if (targetPart != null && targetPart.getSite() != null	&& targetPart.getSite().getShell() != null) {
-			MessageDialog.openError(targetPart.getSite().getShell(), title,	message);
+			if (object instanceof IResource) {
+				final IResource resource = (IResource) object;
+				addResourceAsTargetFile(resource);
+			}
 		}
 	}
 
-	private void addResourceAsTargetFile(final IResource resource){
+	private boolean isNotProjectSelection(Object selectedObject) {
+		boolean isNotProject = (selectedObject == null || (selectedObject instanceof Project) == false);
+
+		if (isNotProject) {
+			showErrorMessage("Snapshot Creation Error", "You can select only a Project element.");
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean isNotAdmin() {
+		if (DexterUIActivator.getDefault().getDexterClient().isCurrentUserAdmin() == false) {
+			showErrorMessage("Snapshot Creation Error", "Only administrator can create a snapshot.");
+
+			return true;
+		}
+
+		return false;
+	}
+
+	private boolean isLogout() {
+		if (DexterUIActivator.getDefault().getDexterClient().isLogin() == false) {
+			DexterEclipseActivator.LOG.error("Can not create snapshot due to no loggin");
+
+			showErrorMessage("Snapshot Creation Error", "Can not create snapshot due to no loggin");
+			// if(targetPart != null && targetPart.getSite() != null &&
+			// targetPart.getSite().getShell() != null){
+			// }
+			return true;
+		}
+
+		return false;
+	}
+
+	private void showErrorMessage(final String title, final String message) {
+		if (targetPart != null && targetPart.getSite() != null && targetPart.getSite().getShell() != null) {
+			MessageDialog.openError(targetPart.getSite().getShell(), title, message);
+		}
+	}
+
+	private void addResourceAsTargetFile(final IResource resource) {
 		try {
-        	if(resource instanceof IFile){
-        		final IFile targetFile = (IFile) resource;
-        
+			if (resource instanceof IFile) {
+				final IFile targetFile = (IFile) resource;
+
 				if (EclipseUtil.isValidJavaResource(resource) == false
 						&& EclipseUtil.isValidCAndCppResource(resource) == false) {
 					return;
@@ -187,27 +193,27 @@ public class CreateSnapshotActionDelegate implements IObjectActionDelegate {
 				if (!targetFiles.contains(targetFile)) {
 					targetFiles.add(targetFile);
 				}
-				
-        	} else if(resource instanceof IFolder){
-        		final IFolder folder = (IFolder) resource;
-        		if(folder.members() == null || folder.members().length == 0){
-    	        	return;
-    	        }
-        		for(IResource child : folder.members()){
-        			addResourceAsTargetFile(child);
-        		}
-        	} else if(resource instanceof IProject){
-        		final IProject project = (IProject) resource;
-        		if(project.members() == null || project.members().length == 0){
-    	        	return;
-    	        }
-        		for(IResource child : project.members()){
-        			addResourceAsTargetFile(child);
-        		}
-        	}
-        } catch (CoreException e) {
-	        DexterEclipseActivator.LOG.error(e.getMessage(), e);
-        }
+
+			} else if (resource instanceof IFolder) {
+				final IFolder folder = (IFolder) resource;
+				if (folder.members() == null || folder.members().length == 0) {
+					return;
+				}
+				for (IResource child : folder.members()) {
+					addResourceAsTargetFile(child);
+				}
+			} else if (resource instanceof IProject) {
+				final IProject project = (IProject) resource;
+				if (project.members() == null || project.members().length == 0) {
+					return;
+				}
+				for (IResource child : project.members()) {
+					addResourceAsTargetFile(child);
+				}
+			}
+		} catch (CoreException e) {
+			DexterEclipseActivator.LOG.error(e.getMessage(), e);
+		}
 	}
 
 	@Override

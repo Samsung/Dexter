@@ -25,15 +25,6 @@
 */
 package com.samsung.sec.dexter.executor;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
 import com.google.common.base.Stopwatch;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
@@ -44,16 +35,27 @@ import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.exception.DexterException;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
+import com.samsung.sec.dexter.core.util.EmptyDexterClient;
+import com.samsung.sec.dexter.core.util.IDexterClient;
 import com.samsung.sec.dexter.executor.cli.CLIDexterPluginManager;
 import com.samsung.sec.dexter.executor.cli.CLILog;
 import com.samsung.sec.dexter.executor.cli.EmptyDexterCLIOption;
 
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 public class DexterAnalyzerTest {
 	static private IDexterPluginManager pluginManager = new CLIDexterPluginManager(new DexterPluginInitializerMock(),
-			new CLILog(System.out), new EmptyDexterCLIOption());
-	
+			new EmptyDexterClient(), new CLILog(System.out), new EmptyDexterCLIOption());
+
 	private DexterAnalyzer analyzer;
-	
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 		pluginManager.initDexterPlugins();
@@ -75,111 +77,120 @@ public class DexterAnalyzerTest {
 	@Test
 	public void analysisOneFile() {
 		class TempHandler implements EndOfAnalysisHandler {
+			private IDexterClient client;
+
 			@Override
-            public void handleAnalysisResult(List<AnalysisResult> resultList) {
-            	System.out.println("AnalysisResult changed =====================================");
-            	
-            	List<Defect> allDefectList = DexterAnalyzer.getAllDefectList(resultList);
-            	
-            	for(Defect d : allDefectList){
-        			System.out.println(">>> " + d);
-        		}
-            }
+			public void handleAnalysisResult(List<AnalysisResult> resultList, final IDexterClient client) {
+				System.out.println("AnalysisResult changed =====================================");
 
+				this.client = client;
 
-            public void execute(){
-        		// 1. set static analysis objects : source file, class file path, classpath
-            	IAnalysisEntityFactory analysisFactory = new AnalysisEntityFactory();
-        		AnalysisConfig ac = analysisFactory.createAnalysisConfig();
-        		ac.setProjectName("DefectTest");
-        		ac.setProjectFullPath("C:\\DEV\\workspace\\dexter\\DefectTest");
-        		ac.addSourceBaseDirList("C:\\DEV\\workspace\\dexter\\DefectTest\\src");
-        		ac.addLibDirList("C:\\DEV\\workspace\\dexter\\DefectTest\\lib");
-        		//ac.addLibFile("");
-        		//ac.addTargetSourceList("C:\\DEV\\workspace\\dexter_20140407\\DefectTest\\src\\defect\\example\\ConstructorCallsOverridableMethod.java");
-        		//ac.addTargetCompiledDirList("C:/DEV/workspace/dexter/DefectTest/bin/defect/example/");
-        		//ac.addTargetCompiledDirList("C:/DEV/workspace/dexter/DefectTest/bin/");
-        		ac.addLibFile("C:/DEV/workspace/dexter/DefectTest/lib/guava-16.0.1.jar");
-        		
-        		// It dosen't work
-        		//ac.addLibDirList("C:/DEV/workspace/dexter/DefectTest/lib");
+				List<Defect> allDefectList = DexterAnalyzer.getAllDefectList(resultList);
 
-        		
-        		// 2. execution
-        		Stopwatch s = Stopwatch.createStarted();
-        		ac.setResultHandler(this);
-//        		AnalysisResultManager.getInstance().addListener("defect.example.ConstructorCallsOverridableMethod.java", this);
-        		analyzer.runSync(ac, pluginManager);
-        		System.out.println("first executed : " + s.elapsed(TimeUnit.MILLISECONDS));
-        		
-//        		s = Stopwatch.createStarted();
-//        		analysisResult = AnalysisResultManager.getInstance().createSaResult();
-//        		AnalysisResultManager.getInstance().addListener(analysisResult.getId(), this);
-//        		analyzer.analysis(ac, analysisResult);
-//        		System.out.println("second executed : " + s.elapsed(TimeUnit.MILLISECONDS));
-        		
-        		
-        		//assertNotNull(this.executor.getResult(exeId));
-            }
+				for (Defect d : allDefectList) {
+					System.out.println(">>> " + d);
+				}
+			}
+
+			public void execute() {
+				// 1. set static analysis objects : source file, class file
+				// path, classpath
+				IAnalysisEntityFactory analysisFactory = new AnalysisEntityFactory();
+				AnalysisConfig ac = analysisFactory.createAnalysisConfig();
+				ac.setProjectName("DefectTest");
+				ac.setProjectFullPath("C:\\DEV\\workspace\\dexter\\DefectTest");
+				ac.addSourceBaseDirList("C:\\DEV\\workspace\\dexter\\DefectTest\\src");
+				ac.addLibDirList("C:\\DEV\\workspace\\dexter\\DefectTest\\lib");
+				// ac.addLibFile("");
+				// ac.addTargetSourceList("C:\\DEV\\workspace\\dexter_20140407\\DefectTest\\src\\defect\\example\\ConstructorCallsOverridableMethod.java");
+				// ac.addTargetCompiledDirList("C:/DEV/workspace/dexter/DefectTest/bin/defect/example/");
+				// ac.addTargetCompiledDirList("C:/DEV/workspace/dexter/DefectTest/bin/");
+				ac.addLibFile("C:/DEV/workspace/dexter/DefectTest/lib/guava-16.0.1.jar");
+
+				// It dosen't work
+				// ac.addLibDirList("C:/DEV/workspace/dexter/DefectTest/lib");
+
+				// 2. execution
+				Stopwatch s = Stopwatch.createStarted();
+				ac.setResultHandler(this);
+				// AnalysisResultManager.getInstance().addListener("defect.example.ConstructorCallsOverridableMethod.java",
+				// this);
+				analyzer.runSync(ac, pluginManager, client);
+				System.out.println("first executed : " + s.elapsed(TimeUnit.MILLISECONDS));
+
+				// s = Stopwatch.createStarted();
+				// analysisResult =
+				// AnalysisResultManager.getInstance().createSaResult();
+				// AnalysisResultManager.getInstance().addListener(analysisResult.getId(),
+				// this);
+				// analyzer.analysis(ac, analysisResult);
+				// System.out.println("second executed : " +
+				// s.elapsed(TimeUnit.MILLISECONDS));
+
+				// assertNotNull(this.executor.getResult(exeId));
+			}
 		}
-		
+
 		TempHandler handler = new TempHandler();
 		handler.execute();
-		
-//		AnalysisResultManager.getInstance().removeListener(handler);
+
+		// AnalysisResultManager.getInstance().removeListener(handler);
 	}
-	
+
 	@Test
 	public void customizeChecker() throws DexterException {
 		class TempHandler implements EndOfAnalysisHandler {
+			private IDexterClient client;
 
 			@Override
-            public void handleAnalysisResult(List<AnalysisResult> resultList) {
-            	System.out.println("AnalysisResult changed =====================================");
-            	List<Defect> allDefectList = DexterAnalyzer.getAllDefectList(resultList);
-            	for(Defect d : allDefectList){
-        			System.out.println(">>> " + d);
-        		}
-            }
+			public void handleAnalysisResult(List<AnalysisResult> resultList, final IDexterClient client) {
+				System.out.println("AnalysisResult changed =====================================");
 
-            public void execute() throws DexterException{
-        		String pluginName = "dexter-findbugs";
-        		
-        		// 1. customizing rules, then...
-        		CheckerConfig cc = pluginManager.getCheckerConfig(pluginName);
-        		
-        		if(cc == null){
-        			return;
-        		}
-        		
-        		pluginManager.setCheckerConfig(pluginName, cc);
+				this.client = client;
+				List<Defect> allDefectList = DexterAnalyzer.getAllDefectList(resultList);
+				for (Defect d : allDefectList) {
+					System.out.println(">>> " + d);
+				}
+			}
 
-        		
-        		// 2. set static analysis objects : source file, class file path, classpath
-        		IAnalysisEntityFactory analysisFactory = new AnalysisEntityFactory();
-        		AnalysisConfig ac = analysisFactory.createAnalysisConfig();
-        		ac.setProjectName("DefectTest");
-        		ac.setProjectFullPath("C:\\DEV\\workspace\\dexter\\DefectTest");
-        		ac.addSourceBaseDirList("C:\\DEV\\workspace\\dexter\\DefectTest\\src");
-        		ac.addLibDirList("C:\\DEV\\workspace\\dexter\\DefectTest\\lib");
-        		ac.addLibFile("C:/DEV/workspace/dexter/DefectTest/lib/guava-16.0.1.jar");
-        		
-        		
-        		// 3. execution
-        		Stopwatch s = Stopwatch.createStarted();
-        		ac.setResultHandler(this);
-        		
-//        		AnalysisResultManager.getInstance().addListener("defect.example.ConstructorCallsOverridableMethod.java", this);
-        		analyzer.runSync(ac, pluginManager);
-        		System.out.println("first executed : " + s.elapsed(TimeUnit.MILLISECONDS));
-        		
-        		//assertNotNull(this.executor.getResult(exeId));
-            }
+			public void execute() throws DexterException {
+				String pluginName = "dexter-findbugs";
+
+				// 1. customizing rules, then...
+				CheckerConfig cc = pluginManager.getCheckerConfig(pluginName);
+
+				if (cc == null) {
+					return;
+				}
+
+				pluginManager.setCheckerConfig(pluginName, cc);
+
+				// 2. set static analysis objects : source file, class file
+				// path, classpath
+				IAnalysisEntityFactory analysisFactory = new AnalysisEntityFactory();
+				AnalysisConfig ac = analysisFactory.createAnalysisConfig();
+				ac.setProjectName("DefectTest");
+				ac.setProjectFullPath("C:\\DEV\\workspace\\dexter\\DefectTest");
+				ac.addSourceBaseDirList("C:\\DEV\\workspace\\dexter\\DefectTest\\src");
+				ac.addLibDirList("C:\\DEV\\workspace\\dexter\\DefectTest\\lib");
+				ac.addLibFile("C:/DEV/workspace/dexter/DefectTest/lib/guava-16.0.1.jar");
+
+				// 3. execution
+				Stopwatch s = Stopwatch.createStarted();
+				ac.setResultHandler(this);
+
+				// AnalysisResultManager.getInstance().addListener("defect.example.ConstructorCallsOverridableMethod.java",
+				// this);
+				analyzer.runSync(ac, pluginManager, client);
+				System.out.println("first executed : " + s.elapsed(TimeUnit.MILLISECONDS));
+
+				// assertNotNull(this.executor.getResult(exeId));
+			}
 		}
-		
+
 		TempHandler handler = new TempHandler();
 		handler.execute();
-		
-//		AnalysisResultManager.getInstance().removeListener(handler);
+
+		// AnalysisResultManager.getInstance().removeListener(handler);
 	}
 }

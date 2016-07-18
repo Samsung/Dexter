@@ -25,26 +25,31 @@
 */
 package com.samsung.sec.dexter.executor.cli;
 
+import com.samsung.sec.dexter.core.plugin.PluginDescription;
+
 import java.io.File;
 import java.io.PrintStream;
 
-import com.samsung.sec.dexter.core.plugin.PluginDescription;
-
 public interface ICLILog {
 	public void printStartingAnalysisMessage();
-	
+
 	public void info(String message);
+
 	public void warn(String message);
+
 	public void error(String message);
-	
+
 	public void infoln(String message);
+
 	public void warnln(String message);
+
 	public void errorln(String message);
+
 	public void errorln(String message, Throwable t);
 
-	void setPrintStream(PrintStream out);
+	void setPrintStream(final PrintStream out);
 
-	void printMessagePreAsyncAnalysis();
+	void printMessagePreAsyncAnalysis(final String dexterWebUrl);
 
 	void printMessagePreSyncAnalysis();
 
@@ -54,5 +59,5 @@ public interface ICLILog {
 
 	public void printErrorMessageWhenNoPlugins();
 
-	public void printMessageWhenPluginLoaded(PluginDescription desc);
+	public void printMessageWhenPluginLoaded(final PluginDescription desc);
 }

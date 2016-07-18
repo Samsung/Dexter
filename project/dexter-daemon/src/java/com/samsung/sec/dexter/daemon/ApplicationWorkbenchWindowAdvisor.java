@@ -25,6 +25,16 @@
 */
 package com.samsung.sec.dexter.daemon;
 
+import com.google.common.base.Strings;
+import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.job.DexterJobFacade;
+import com.samsung.sec.dexter.core.util.DexterUtil;
+import com.samsung.sec.dexter.core.util.IDexterClient;
+import com.samsung.sec.dexter.daemon.p2.P2Util;
+import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
+import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
@@ -64,17 +74,6 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 
-import com.google.common.base.Strings;
-import com.samsung.sec.dexter.core.config.DexterConfig;
-import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
-import com.samsung.sec.dexter.core.job.DexterJobFacade;
-import com.samsung.sec.dexter.core.util.DexterClient;
-import com.samsung.sec.dexter.core.util.DexterUtil;
-import com.samsung.sec.dexter.core.util.IDexterClient;
-import com.samsung.sec.dexter.daemon.p2.P2Util;
-import com.samsung.sec.dexter.eclipse.ui.login.LoginDialog;
-import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
-
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	private final static Logger LOG = Logger.getLogger(ApplicationWorkbenchWindowAdvisor.class);
 	private IWorkbenchWindow window;
@@ -82,6 +81,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	private Image trayImage;
 	private static String TITLE;
 	private static IWorkbenchWindowConfigurer WIN_CONFIGURE;
+
 	private Job updateJob;
 
 	public ApplicationWorkbenchWindowAdvisor(IWorkbenchWindowConfigurer configurer) {
@@ -94,10 +94,11 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
 	public void preWindowOpen() {
 		// after updating, previous dexter plug-ins should be deleted
-		// but it dosen't work, so we have to delete manually despite of performance issue of starting
+		// but it dosen't work, so we have to delete manually despite of
+		// performance issue of starting
 		deletePreviousDexterPlugins();
 		deletePreviousDexterFeatures();
-		
+
 		setWinConfigure(getWindowConfigurer());
 
 		WIN_CONFIGURE.setInitialSize(new Point(800, 600));
@@ -120,19 +121,19 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 			WIN_CONFIGURE.setTitle(title);
 		}
 	}
-	
+
 	@Override
 	public void postWindowClose() {
-	    super.postWindowClose();
+		super.postWindowClose();
 	}
-	
+
 	private void deletePreviousDexterPlugins() {
 		final File pluginDir = new File("plugins");
 
-		if(!pluginDir.exists()){
+		if (!pluginDir.exists()) {
 			throw new DexterRuntimeException("There is no plugins folder. The Dexter archive file might be invalid.");
 		}
-		
+
 		final Map<String, File> tempList = new HashMap<String, File>();
 
 		File[] files = DexterUtil.getSubFiles(pluginDir);
@@ -141,7 +142,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 				continue;
 
 			final String fileName = pluginFile.getName();
-			
+
 			if (fileName.startsWith("dexter")) {
 				deleteDexterPluginIfHasOldOne(tempList, pluginFile, fileName);
 			}
@@ -149,27 +150,27 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 	}
 
 	private void deleteDexterPluginIfHasOldOne(final Map<String, File> tempList, File pluginFile,
-            final String fileName) {
-	    String pluginPrefixName = getPluginPrefixName(fileName);
-	    File tempPluginFile = tempList.get(pluginPrefixName);
-	    
-	    if(tempPluginFile == null){
-	    	tempList.put(pluginPrefixName, pluginFile);
-	    } else {
-	    	if(pluginFile.lastModified() >= tempPluginFile.lastModified()){
-	    		tempList.remove(pluginPrefixName);
-	    		tempPluginFile.delete();
-	    	} else {
-	    		pluginFile.delete();
-	    	}
-	    }
-    }
+			final String fileName) {
+		String pluginPrefixName = getPluginPrefixName(fileName);
+		File tempPluginFile = tempList.get(pluginPrefixName);
+
+		if (tempPluginFile == null) {
+			tempList.put(pluginPrefixName, pluginFile);
+		} else {
+			if (pluginFile.lastModified() >= tempPluginFile.lastModified()) {
+				tempList.remove(pluginPrefixName);
+				tempPluginFile.delete();
+			} else {
+				pluginFile.delete();
+			}
+		}
+	}
 
 	private void deletePreviousDexterFeatures() {
 		final File featureDir = new File("features");
 		final Map<String, File> tempFeatureList = new HashMap<String, File>();
-		
-		if(!featureDir.exists()){
+
+		if (!featureDir.exists()) {
 			throw new DexterRuntimeException("There is no features folder. The Dexter archive file might be invalid.");
 		}
 
@@ -181,19 +182,19 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 			}
 		}
 	}
-	
-	
-	private void deleteDexterFeatureIfHasOldOne( final Map<String, File> tempFeatureList, File featureFile, final String featureFileName){
+
+	private void deleteDexterFeatureIfHasOldOne(final Map<String, File> tempFeatureList, File featureFile,
+			final String featureFileName) {
 		String pluginPrefixName = getPluginPrefixName(featureFileName);
-		if( pluginPrefixName.equals(DexterConfig.NOT_FOUND_FOLDER_NAME)){
-			return ;
+		if (pluginPrefixName.equals(DexterConfig.NOT_FOUND_FOLDER_NAME)) {
+			return;
 		}
-		
+
 		File tempPluginFile = tempFeatureList.get(pluginPrefixName);
-		if (tempPluginFile == null){
+		if (tempPluginFile == null) {
 			tempFeatureList.put(pluginPrefixName, featureFile);
 		} else {
-			if (featureFile.lastModified() >= tempPluginFile.lastModified()){
+			if (featureFile.lastModified() >= tempPluginFile.lastModified()) {
 				tempFeatureList.remove(pluginPrefixName);
 				try {
 					DexterUtil.deleteDirectory(tempPluginFile);
@@ -206,20 +207,20 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 				} catch (IOException e) {
 					LOG.error(e.getMessage(), e);
 				}
-				
+
 			}
 		}
 	}
-	
+
 	private String getPluginPrefixName(final String fileName) {
-	    int index = fileName.indexOf('_');
-	    if(index == -1){
-	    	return DexterConfig.NOT_FOUND_FOLDER_NAME;
-	    } else {
-	    	String fileNamePrefix = fileName.substring(0, index);
-	    	return fileNamePrefix;
-	    }
-    }
+		int index = fileName.indexOf('_');
+		if (index == -1) {
+			return DexterConfig.NOT_FOUND_FOLDER_NAME;
+		} else {
+			String fileNamePrefix = fileName.substring(0, index);
+			return fileNamePrefix;
+		}
+	}
 
 	/*
 	 * @see org.eclipse.ui.application.WorkbenchWindowAdvisor#postWindowOpen()
@@ -229,139 +230,19 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		super.postWindowOpen();
 
 		window = getWindowConfigurer().getWindow();
-		// window.getShell().setMinimized(true); // if you want start this as a minimized size at starting
+		// window.getShell().setMinimized(true); // if you want start this as a
+		// minimized size at starting
 		trayItem = initTaskItem(window);
 
 		minimizeBehavior();
 		hookPopupMenu();
+
 		startMonitorForLogin();
 	}
-	
-	private void runUpdateJob(){
-		final IDexterClient client = DexterClient.getInstance();
-		
-		updateJob = new Job("Waiting to connect Dexter Server..."){
-			@Override
-            protected IStatus run(final IProgressMonitor monitor) {
-				monitor.beginTask("Checking Dexter Server Update", 10);
-
-				if (client.isServerAlive()) {
-					Display.getDefault().asyncExec(new Runnable() {
-						@Override
-			            public void run() {
-							final String updateUrl = client.getDexterPluginUpdateUrl(); 
-							checkerAndUpdateDexterPlugin(updateUrl, monitor);
-			            }
-					});
-				}
-			
-	            return Status.OK_STATUS;
-            }
-		};
-		
-		updateJob.setUser(true);
-		updateJob.schedule();
-	} 
-	
-	private void checkerAndUpdateDexterPlugin(final String updateUrl, final IProgressMonitor monitor) {
-		IProvisioningAgent agent = getProvisioningAgent();
-		
-		if (agent == null) {
-			DexterDaemonActivator.LOG.error("No agent loaded for Dexter Daemon Update");
-			monitor.done();
-			return;
-		}
-		
-		if (!P2Util.addRepository(agent, updateUrl)) {
-			DexterDaemonActivator.LOG.error("could not add Dexter Daemon Update repostory!");
-			monitor.done();
-			return;
-		}
-
-		checkAndUpdatePluginAndRestart(agent, monitor);
-		monitor.done();
-		updateJob.done(Status.OK_STATUS);
-	}
-	
-	private void checkAndUpdatePluginAndRestart(final IProvisioningAgent agent, IProgressMonitor monitor){
-		ProvisioningSession session = new ProvisioningSession(agent);
-		UpdateOperation operation = new UpdateOperation(session);
-		//SubMonitor sub = SubMonitor.convert(monitor, "Checking for Dexter Daemon updates...", 200);
-		
-        if(checkUpdateExistence(operation, monitor)){
-        	EclipseUtil.infoMessageBox("Dexter Daemon Update", "There is a new version of Dexter Daemon.\nIt will be updated now");
-        	updateDexterPluginAndRestart(operation, monitor);
-        	monitor.done();
-        }
-	}
-
-	private boolean checkUpdateExistence(UpdateOperation operation, IProgressMonitor monitor) {
-	    //IStatus status = operation.resolveModal(sub.newChild(100));
-		IStatus status = operation.resolveModal(monitor);
-		
-		if (status.getCode() == UpdateOperation.STATUS_NOTHING_TO_UPDATE) {
-			DexterDaemonActivator.LOG.info("There is no update for dexter plugin");
-			//sub.done();
-			monitor.done();
-			return false;
-		}
-		
-		if (status.getSeverity() == IStatus.CANCEL || status.getSeverity() == IStatus.ERROR){
-			DexterDaemonActivator.LOG.info("Updating dexter plugins is stopped due to user or error");
-			//sub.done();
-			monitor.done();
-			return false;
-		}
-		
-		monitor.done();
-		return true;
-    }
-	
-	private void updateDexterPluginAndRestart(UpdateOperation operation, IProgressMonitor monitor) {
-	    ProvisioningJob job = operation.getProvisioningJob(monitor);
-		//IStatus status = job.runModal(sub.newChild(100));
-	    IStatus status = job.runModal(monitor);
-		
-		if (status.getSeverity() == IStatus.CANCEL){
-			DexterDaemonActivator.LOG.info("Updating dexter plugins is stopped due to user");
-			// sub.done();
-			monitor.done();
-			return;
-		}
-		
-		EclipseUtil.infoMessageBox("Dexter Daemon Update", "Update is successfully finished!\nDexter Daemon will be terminated and executed again.");
-		//sub.done();
-		monitor.done();
-		PlatformUI.getWorkbench().restart();
-    }
-
-	private IProvisioningAgent getProvisioningAgent() {
-	    BundleContext bundleContext = DexterDaemonActivator.getDefault().getBundle().getBundleContext();
-		ServiceReference<IProvisioningAgent> serviceReference = bundleContext
-		        .getServiceReference(IProvisioningAgent.class);
-		
-		IProvisioningAgent agent = bundleContext.getService(serviceReference);
-
-		return agent;
-    }
 
 	@Override
 	public boolean preWindowShellClose() {
 		return super.preWindowShellClose();
-	}
-
-	private void startMonitorForLogin() {
-		Runnable checkLoginJob = new Runnable() {
-			@Override
-			public void run() {
-				LoginDialog.loginJob(window.getShell());
-				runUpdateJob();
-			}
-		};
-
-		final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-
-		scheduler.scheduleAtFixedRate(checkLoginJob, 1, DexterJobFacade.SLEEP_FOR_LOGIN, TimeUnit.SECONDS);
 	}
 
 	private void minimizeBehavior() {
@@ -423,5 +304,132 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		if (trayItem != null) {
 			trayItem.dispose();
 		}
+	}
+
+	private void startMonitorForLogin() {
+		Runnable checkLoginJob = new Runnable() {
+			@Override
+			public void run() {
+				runUpdateJob();
+			}
+		};
+
+		final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+		scheduler.scheduleAtFixedRate(checkLoginJob, 1, DexterJobFacade.SLEEP_FOR_LOGIN, TimeUnit.SECONDS);
+	}
+
+	private void runUpdateJob() {
+		final IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
+		if (client == null) {
+			throw new DexterRuntimeException("cann't check Dexter Update because DexterClient is null");
+		}
+
+		updateJob = new Job("Waiting to connect Dexter Server...") {
+			@Override
+			protected IStatus run(final IProgressMonitor monitor) {
+				monitor.beginTask("Checking Dexter Server Update", 10);
+
+				if (client.isServerAlive()) {
+					Display.getDefault().asyncExec(new Runnable() {
+						@Override
+						public void run() {
+							final String updateUrl = client.getDexterPluginUpdateUrl();
+							checkerAndUpdateDexterPlugin(updateUrl, monitor);
+						}
+					});
+				}
+
+				return Status.OK_STATUS;
+			}
+		};
+
+		updateJob.setUser(true);
+		updateJob.schedule();
+	}
+
+	private void checkerAndUpdateDexterPlugin(final String updateUrl, final IProgressMonitor monitor) {
+		IProvisioningAgent agent = getProvisioningAgent();
+
+		if (agent == null) {
+			DexterDaemonActivator.LOG.error("No agent loaded for Dexter Daemon Update");
+			monitor.done();
+			return;
+		}
+
+		if (!P2Util.addRepository(agent, updateUrl)) {
+			DexterDaemonActivator.LOG.error("could not add Dexter Daemon Update repostory!");
+			monitor.done();
+			return;
+		}
+
+		checkAndUpdatePluginAndRestart(agent, monitor);
+		monitor.done();
+		updateJob.done(Status.OK_STATUS);
+	}
+
+	private void checkAndUpdatePluginAndRestart(final IProvisioningAgent agent, IProgressMonitor monitor) {
+		ProvisioningSession session = new ProvisioningSession(agent);
+		UpdateOperation operation = new UpdateOperation(session);
+		// SubMonitor sub = SubMonitor.convert(monitor, "Checking for Dexter
+		// Daemon updates...", 200);
+
+		if (checkUpdateExistence(operation, monitor)) {
+			EclipseUtil.infoMessageBox("Dexter Daemon Update",
+					"There is a new version of Dexter Daemon.\nIt will be updated now");
+			updateDexterPluginAndRestart(operation, monitor);
+			monitor.done();
+		}
+	}
+
+	private boolean checkUpdateExistence(UpdateOperation operation, IProgressMonitor monitor) {
+		// IStatus status = operation.resolveModal(sub.newChild(100));
+		IStatus status = operation.resolveModal(monitor);
+
+		if (status.getCode() == UpdateOperation.STATUS_NOTHING_TO_UPDATE) {
+			DexterDaemonActivator.LOG.info("There is no update for dexter plugin");
+			// sub.done();
+			monitor.done();
+			return false;
+		}
+
+		if (status.getSeverity() == IStatus.CANCEL || status.getSeverity() == IStatus.ERROR) {
+			DexterDaemonActivator.LOG.info("Updating dexter plugins is stopped due to user or error");
+			// sub.done();
+			monitor.done();
+			return false;
+		}
+
+		monitor.done();
+		return true;
+	}
+
+	private void updateDexterPluginAndRestart(UpdateOperation operation, IProgressMonitor monitor) {
+		ProvisioningJob job = operation.getProvisioningJob(monitor);
+		// IStatus status = job.runModal(sub.newChild(100));
+		IStatus status = job.runModal(monitor);
+
+		if (status.getSeverity() == IStatus.CANCEL) {
+			DexterDaemonActivator.LOG.info("Updating dexter plugins is stopped due to user");
+			// sub.done();
+			monitor.done();
+			return;
+		}
+
+		EclipseUtil.infoMessageBox("Dexter Daemon Update",
+				"Update is successfully finished!\nDexter Daemon will be terminated and executed again.");
+		// sub.done();
+		monitor.done();
+		PlatformUI.getWorkbench().restart();
+	}
+
+	private IProvisioningAgent getProvisioningAgent() {
+		BundleContext bundleContext = DexterDaemonActivator.getDefault().getBundle().getBundleContext();
+		ServiceReference<IProvisioningAgent> serviceReference = bundleContext
+				.getServiceReference(IProvisioningAgent.class);
+
+		IProvisioningAgent agent = bundleContext.getService(serviceReference);
+
+		return agent;
 	}
 }

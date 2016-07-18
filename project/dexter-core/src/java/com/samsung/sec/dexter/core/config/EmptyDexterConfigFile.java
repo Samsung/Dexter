@@ -1,11 +1,11 @@
 package com.samsung.sec.dexter.core.config;
 
+import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 
 public class EmptyDexterConfigFile implements IDexterConfigFile {
 
@@ -182,6 +182,6 @@ public class EmptyDexterConfigFile implements IDexterConfigFile {
 	}
 
 	@Override
-	public void loadFromFile(File file) {
+	public void loadFromFile(final File file, final String host, final int port) {
 	}
 }

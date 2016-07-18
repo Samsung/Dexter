@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014 Samsung Electronics, Inc.,
+ * Copyright (c) 2016 Samsung Electronics, Inc.,
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -23,21 +23,21 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.samsung.sec.dexter.executor.cli;
+package com.samsung.sec.dexter.core.filter;
 
-import java.io.InputStream;
-import java.io.PrintStream;
+import com.samsung.sec.dexter.core.defect.Defect;
 
-import com.samsung.sec.dexter.core.util.IDexterClient;
+public class EmptyFalseAlarmConfiguration implements IFalseAlarmConfiguration {
+	@Override
+	public boolean isFalseAlarm(Defect defect) {
+		return false;
+	}
 
-public interface IAccount {
-	public void createAccount(String userId, String password);
+	@Override
+	public void addFalseAlarm(DefectFilter filter) {
+	}
 
-	void loginOrCreateAccount(final String userId, final String password);
-
-	void setPrintStream(PrintStream out);
-
-	void setInputStream(InputStream in);
-
-	void setDexterClient(IDexterClient client);
+	@Override
+	public void removeFalseAlarm(DefectFilter filter) {
+	}
 }

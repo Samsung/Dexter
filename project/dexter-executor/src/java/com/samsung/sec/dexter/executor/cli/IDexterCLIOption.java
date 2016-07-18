@@ -29,20 +29,28 @@ import java.io.File;
 import java.util.List;
 
 public interface IDexterCLIOption {
+	public enum CommandMode {
+		NONE, CREATE_ACCOUNT, STATIC_ANALYSIS
+	};
+
 	/**
-	 * @param args it should be parameters from main method.
+	 * @param args
+	 *            it should be parameters from main method.
 	 */
 	void createCliOptionFromArguments(final String[] args);
-	
+
 	/**
-	 * @return full file path of dexter_cfg.json file, 
-	 * which has configurations to run Dexter CLI such as project name, source folder path, etc.
+	 * @return full file path of dexter_cfg.json file, which has configurations
+	 *         to run Dexter CLI such as project name, source folder path, etc.
 	 */
 	String getConfigFilePath();
 
 	boolean isStandAloneMode();
+
 	boolean isAsynchronousMode();
+
 	boolean isSpecifiedCheckerEnabledMode();
+
 	boolean isTargetFilesOptionEnabled();
 
 	List<String> getTargetFileFullPathList();
@@ -52,7 +60,9 @@ public interface IDexterCLIOption {
 	String getUserPassword();
 
 	String[] getEnabledCheckerCodes();
+
 	String[] getEnabledCheckerLanguages();
+
 	String[] getEnabledCheckerToolNames();
 
 	boolean isXml2File();
@@ -67,7 +77,7 @@ public interface IDexterCLIOption {
 
 	File getJsonResultFile();
 
-	boolean isAccountCreationMode();
+	CommandMode getCommandMode();
 
 	int getServerPort();
 

@@ -30,8 +30,13 @@ import java.util.List;
 
 public interface IAnalysisEntityFactory {
 	public AnalysisConfig createAnalysisConfig();
+
 	public AnalysisConfig copyAnalysisConfigWithoutSourcecode(final AnalysisConfig baseAnalysisConfig);
-	public abstract AnalysisConfig createAnalsysiConfigFromDexterConfigFile(final File dexterConfigFilePath);
+
+	public abstract AnalysisConfig createAnalsysiConfigFromDexterConfigFile(final File dexterConfigFilePath,
+			final String host, final int port);
+
 	public abstract AnalysisResult createAnalysisResult(final AnalysisConfig config);
+
 	public AnalysisResult createAnalysisResult(List<AnalysisResult> resultList);
 }

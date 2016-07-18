@@ -26,124 +26,131 @@
 
 package com.samsung.sec.dexter.core.job;
 
+import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.config.IDexterStandaloneListener;
+import com.samsung.sec.dexter.core.util.IDexterClient;
+import com.samsung.sec.dexter.util.ThreadUtil;
+
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
-import com.samsung.sec.dexter.core.config.DexterConfig;
-import com.samsung.sec.dexter.core.config.IDexterStandaloneListener;
-import com.samsung.sec.dexter.util.ThreadUtil;
-
-public class DexterJobFacade implements IDexterStandaloneListener{
-	public static final long SLEEP_FOR_LOGIN = 60*60; // seconds => 1 hour
-	public static final long ALLOWED_FREE_MEMORY_SIZE_FOR_JOBS = 30 * 1024 * 1024; // 50 MB
+public class DexterJobFacade implements IDexterStandaloneListener {
+	public static final long SLEEP_FOR_LOGIN = 60 * 60; // seconds => 1 hour
+	public static final long ALLOWED_FREE_MEMORY_SIZE_FOR_JOBS = 30 * 1024 * 1024; // 50
+																					// MB
 	public static final int MAX_JOB_DELAY_COUNT = 100;
-	
+
 	private static final int INITIAL_DELAY_FOR_DELETING_LOG = 0;
 	private static final int INITIAL_DELAY_FOR_SENDING_RESULT = 10;
 	private static final int INITIAL_DELAY_FOR_MERGING_FILTER = 15;
-	
+
 	private int intervalSendingAnalysisResult = 5;
 	private int intervalMergingFilter = 3;
 	private int intervalDeletingResultLog = 60 * 60; // seconds => 1 hours
-	
+
 	private ScheduledExecutorService scheduledExecutorService;
 	private ScheduledFuture<?> sendingResultScheduledFuture;
 	private ScheduledFuture<?> mergingFilterScheduledFuture;
-	
-	private DexterJobFacade() {
+
+	private IDexterClient client;
+
+	public DexterJobFacade(final IDexterClient client) {
+		assert client != null;
+
+		this.client = client;
 		scheduledExecutorService = Executors.newScheduledThreadPool(1);
 	}
-	
-	private static class LazyHolder {
-		private static final DexterJobFacade INSTANCE = new DexterJobFacade();
-	}
 
-	public static DexterJobFacade getInstance() {
-		return LazyHolder.INSTANCE;
-	}
-	
+	/*
+	 * private static class LazyHolder { private static final DexterJobFacade
+	 * INSTANCE = new DexterJobFacade(); }
+	 * 
+	 * public static DexterJobFacade getInstance() { return LazyHolder.INSTANCE;
+	 * }
+	 */
+
 	public void startGeneralJobs() {
 		createAndRunDeletingLogScheduledFuture();
 	}
-	
+
 	public void startDexterServerJobs() {
 		createAndRunSendingResultScheduledFuture();
 		createAndRunMergeFilterScheduledFuture();
 	}
 
 	private void createAndRunDeletingLogScheduledFuture() {
-		scheduledExecutorService.scheduleAtFixedRate(new DeleteResultLogJob(), 
-				INITIAL_DELAY_FOR_DELETING_LOG, intervalDeletingResultLog, TimeUnit.SECONDS);
+		scheduledExecutorService.scheduleAtFixedRate(new DeleteResultLogJob(), INITIAL_DELAY_FOR_DELETING_LOG,
+				intervalDeletingResultLog, TimeUnit.SECONDS);
 	}
-	
+
 	private void createAndRunSendingResultScheduledFuture() {
-		sendingResultScheduledFuture = scheduledExecutorService.scheduleAtFixedRate(new SendResultJob(), 
+		sendingResultScheduledFuture = scheduledExecutorService.scheduleAtFixedRate(new SendResultJob(client),
 				INITIAL_DELAY_FOR_SENDING_RESULT, intervalSendingAnalysisResult, TimeUnit.SECONDS);
 	}
-	
+
 	private void createAndRunMergeFilterScheduledFuture() {
-		mergingFilterScheduledFuture = scheduledExecutorService.scheduleAtFixedRate(new MergeFilterJob(), 
+		mergingFilterScheduledFuture = scheduledExecutorService.scheduleAtFixedRate(new MergeFilterJob(client),
 				INITIAL_DELAY_FOR_MERGING_FILTER, intervalMergingFilter, TimeUnit.SECONDS);
 	}
-	
-	public void shutdownScheduleService(){
+
+	public void shutdownScheduleService() {
 		scheduledExecutorService.shutdown();
 	}
-	
+
 	public void cancelDexterServerJobs() {
-		if(sendingResultScheduledFuture != null)
+		if (sendingResultScheduledFuture != null)
 			sendingResultScheduledFuture.cancel(false);
-		if(mergingFilterScheduledFuture != null)
+		if (mergingFilterScheduledFuture != null)
 			mergingFilterScheduledFuture.cancel(false);
 	}
-	
+
 	public void resumeDexterServerJobs() {
-		new Thread(){
+		new Thread() {
 			final static int MAX_TRY_COUNT = 30;
-			
+
 			public void run() {
 				resumeSendResultFuture();
 				resumeMergeFilterFuture();
 			}
 
 			private void resumeSendResultFuture() {
-				if(sendingResultScheduledFuture == null){
+				if (sendingResultScheduledFuture == null) {
 					createAndRunSendingResultScheduledFuture();
 					return;
 				}
-				
+
 				int tryCount = 0;
-				while(tryCount++ < MAX_TRY_COUNT){
-					if(sendingResultScheduledFuture.isDone()){
+				while (tryCount++ < MAX_TRY_COUNT) {
+					if (sendingResultScheduledFuture.isDone()) {
 						createAndRunSendingResultScheduledFuture();
 						break;
 					}
-					
+
 					ThreadUtil.sleepOneSecond();
 				}
 			}
 
 			private void resumeMergeFilterFuture() {
-				if(mergingFilterScheduledFuture == null){
+				if (mergingFilterScheduledFuture == null) {
 					createAndRunMergeFilterScheduledFuture();
 					return;
 				}
-				
+
 				int tryCount = 0;
-				while(tryCount++ < MAX_TRY_COUNT){
-					if(mergingFilterScheduledFuture.isDone()){
+				while (tryCount++ < MAX_TRY_COUNT) {
+					if (mergingFilterScheduledFuture.isDone()) {
 						createAndRunMergeFilterScheduledFuture();
 						break;
 					}
-					
+
 					ThreadUtil.sleepOneSecond();
 				}
 			};
 		}.start();
 	}
-	
+
 	/**
 	 * @return the iNTERVAL_SEND_ANALYSIS_RESULT
 	 */
@@ -157,20 +164,22 @@ public class DexterJobFacade implements IDexterStandaloneListener{
 	public int getIntervalMergingFilter() {
 		return intervalMergingFilter;
 	}
-	
+
 	public long getIntervalDeleteResultLog() {
 		return intervalDeletingResultLog;
 	}
-	
+
 	/**
-	 * @param interval the iNTERVAL_SEND_ANALYSIS_RESULT to set
+	 * @param interval
+	 *            the iNTERVAL_SEND_ANALYSIS_RESULT to set
 	 */
 	public void setIntervalSendingAnalysisResult(final int interval) {
 		intervalSendingAnalysisResult = interval;
 	}
 
 	/**
-	 * @param interval the iNTERVAL_MERGE_FILTER to set
+	 * @param interval
+	 *            the iNTERVAL_MERGE_FILTER to set
 	 */
 	public void setIntervalMergingFilter(final int interval) {
 		intervalMergingFilter = interval;
@@ -178,7 +187,7 @@ public class DexterJobFacade implements IDexterStandaloneListener{
 
 	@Override
 	public void handleDexterStandaloneChanged() {
-		if(DexterConfig.getInstance().isStandalone()){
+		if (DexterConfig.getInstance().isStandalone()) {
 			cancelDexterServerJobs();
 		} else {
 			resumeDexterServerJobs();

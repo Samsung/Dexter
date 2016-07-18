@@ -39,12 +39,11 @@ import org.apache.log4j.Logger;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
-import com.samsung.sec.dexter.core.analyzer.AnalysisResultFileManager;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 
 public class DexterConfig {
 	int i = 1;
-	final private static Logger LOG = Logger.getLogger(AnalysisResultFileManager.class);
+	final private static Logger LOG = Logger.getLogger(DexterConfig.class);
     
 	public static final String PLUGIN_FOLDER_NAME = "plugin";
 	public static final String RESULT_FOLDER_NAME = "result";

@@ -1091,7 +1091,7 @@ public class DexterUtil {
 		return Files.getNameWithoutExtension(fileName);
 	}
 
-	public static File[] getSubFiles(final File parentFolder, final String fileNamePrefix) {
+	public static File[] getSubFilesByPrefix(final File parentFolder, final String fileNamePrefix) {
 		return parentFolder.listFiles(new FileFilter(){
 			@Override
 			public boolean accept(File pathname) {
