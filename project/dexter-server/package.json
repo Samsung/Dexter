@@ -6,6 +6,7 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "Q": "0.0.1",
     "express": "3.5.1",
     "json-bigint": "^0.1.4",
     "line-reader": "^0.2.4",

@@ -38,6 +38,7 @@ var analysis = require("./routes/analysis");
 var config = require("./routes/config");
 var codeMetrics = require("./routes/codeMetrics");
 var functionMetrics = require("./routes/functionMetrics");
+var monitor = require("./routes/monitor");
 
 var app = express();
 
@@ -400,6 +401,9 @@ function initRestAPI(){
     app.get('/api/v2/defect/All', analysis.getDefectForCSV);
     app.get('/api/v2/snapshot/All', analysis.getSnapshotDefectForCSV);
 
+    app.get('/api/v2/defect-count', monitor.getDefectCount);
+    app.get('/api/v2/user-count', monitor.getUserCount);
+    app.get('/api/v2/user-list', monitor.getUserList);
 }
 
 function startServer(){
