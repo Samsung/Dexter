@@ -168,3 +168,7 @@ exports.getServerListLastModifiedTime = function(req, res) {
 exports.getServerList = function(req, res) {
     res.send(serverList);
 };
+
+exports.getServerListInternal = function() {
+    return serverList;
+};

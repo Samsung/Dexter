@@ -28,11 +28,14 @@
 monitorApp.controller("CurrentUserCtrl", function($scope, $http, $log, UserService) {
 
     const columnDefs = [
-        {field:'userId',            displayName:'ID',       width: 194,     cellClass: 'grid-align',    headerTooltip: 'ID'},
-        {field:'name',              displayName:'Name',     width: 204,     cellClass: 'grid-align',    headerTooltip: 'Name'},
-        {field:'department',        displayName:'Group',    width: 284,     cellClass: 'grid-align',    headerTooltip: 'Group'},
-        {field:'title',             displayName:'Title',    width: 194,     cellClass: 'grid-align',    headerTooltip: 'Title'},
-        {field:'employeeNumber',    displayName:'Number',   width: 184,     cellClass: 'grid-align',    headerTooltip: 'Number'}
+        {field:'projectName',       displayName:'Project',  width: '20%',   cellClass: 'grid-align',    headerTooltip: 'Project name'},
+        {field:'userId',            displayName:'ID',       width: '15%',   headerTooltip: 'User ID',
+            cellTemplate: '<div class="ui-grid-cell-contents grid-align" uib-tooltip="Click if you want to see extra information of \'{{COL_FIELD}}\'"' +
+            ' tooltip-placement="top" tooltip-append-to-body="true"><a href ng-click="grid.appScope.getExtraInfo(row.entity)">{{COL_FIELD}}</a></div>'},
+        {field:'name',              displayName:'Name',     width: '15%',   cellClass: 'grid-align',    headerTooltip: 'User name'},
+        {field:'department',        displayName:'Group',    width: '20%',   cellClass: 'grid-align',    headerTooltip: 'Group name'},
+        {field:'title',             displayName:'Title',    width: '15%',   cellClass: 'grid-align',    headerTooltip: 'User title'},
+        {field:'employeeNumber',    displayName:'Number',   width: '15%',   cellClass: 'grid-align',    headerTooltip: 'User number'}
     ];
 
     initialize();
@@ -54,12 +57,17 @@ monitorApp.controller("CurrentUserCtrl", function($scope, $http, $log, UserServi
             });
     }
 
-    $scope.getExtraInfo = function() {
-        const userIdList = _.map($scope.gridOptions.data, 'userId');
-        UserService.getExtraInfoByUserIdList(userIdList)
-            .then((rows) => {
-                if(rows) {
-                    $scope.gridOptions.data = _.sortBy(rows, 'userId');
+    $scope.getExtraInfo = function(entity) {
+        if (entity.name && entity.department && entity.title && entity.employeeNumber)
+            return;
+
+        UserService.getExtraInfoByUserId(entity.userId)
+            .then((row) => {
+                if(row) {
+                    entity.name = row.name;
+                    entity.department = row.department;
+                    entity.title = row.title;
+                    entity.employeeNumber = row.employeeNumber;
                 }
             })
             .catch((err) => {

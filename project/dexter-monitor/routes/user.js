@@ -29,6 +29,7 @@ const database = require("../util/database");
 const log = require('../util/logging');
 const route = require('./route');
 const project = require('./project');
+const server = require('./server');
 const http = require('http');
 const fs = require('fs');
 const Promise = require('bluebird');
@@ -78,16 +79,58 @@ function sendUserListInDatabaseNameList(dbNameList, res) {
         });
 }
 
+function sendUserListInActiveServerList(activeServerList, res) {
+    let allRows = [];
+    let promises = [];
+
+    activeServerList.forEach((server) => {
+        promises.push(new Promise((resolve, reject) => {
+            getUserListByProjectDatabaseName(server.dbName)
+                .then((rows) => {
+                    if (rows) {
+                        rows.forEach((row) => {
+                            allRows.push({
+                                projectName: server.projectName,
+                                userId: row.userId
+                            });
+                        });
+                    }
+                    resolve();
+                })
+                .catch((err) => {
+                    log.error(err);
+                    reject();
+                })
+        }));
+    });
+
+    Promise.all(promises)
+        .then(() => {
+            allRows = _.filter(allRows, (row) => row.userId !== 'admin' && row.userId !== 'user');
+            allRows = _.sortBy(allRows, 'projectName');
+            res.send({status:'ok', rows: allRows});
+        })
+        .catch((err) => {
+            log.error(err);
+            res.send({status:"fail", errorMessage: err.message});
+        });
+}
+
 exports.getAll = function(req, res) {
-   project.getDatabaseNameList()
-       .then((rows) => {
-           const dbNameList = _.map(rows, 'dbName');
-           sendUserListInDatabaseNameList(dbNameList, res);
-       })
-       .catch((err) => {
-           log.error('Failed to get the DB name list: ' + err);
-           res.send({status:"fail", errorMessage: err.message});
-       });
+    const activeServerList = _.filter(server.getServerListInternal(), {'active': true});
+
+    Promise.map(activeServerList, (server) => {
+        return project.getDatabaseNameByProjectName(mysql.escape(server.projectName))
+            .then((dbName) => {
+                // Will not be used after creating server API
+                server.dbName = dbName;
+            });
+    }).then(() => {
+        sendUserListInActiveServerList(activeServerList, res);
+    }).catch((err) => {
+        log.error('Failed to get user list: ' + err);
+        res.send({status:"fail", errorMessage: err.message});
+    });
 };
 
 exports.getByProject = function(req, res) {

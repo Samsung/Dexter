@@ -36,14 +36,14 @@ monitorApp.controller("WeeklyGroupCtrl", function($scope, $http, $log, $q, Defec
     };
 
     const columnDefs = [
-        {field:'year',              displayName:'Year',         width: 80,      headerTooltip: 'Year'},
-        {field:'week',              displayName:'Week',         width: 80,      headerTooltip: 'Week'},
-        {field:'groupName',         displayName:'Group',        width: 185,     headerTooltip: 'Group'},
-        {field:'userCount',         displayName:'User',         width: 80,      headerTooltip: 'Number of users'},
-        {field:'projectCount',      displayName:'Project',      width: 80,      headerTooltip: 'Number of projects'},
-        {field:'allDefectCount',    displayName:'Total',        width: 160,     headerTooltip: 'Number of defects'},
-        {field:'allFix',            displayName:'Fixed',        width: 160,     headerTooltip: 'Number of fixed defects'},
-        {field:'allDis',            displayName:'Dismissed',    width: 160,     headerTooltip: 'Number of dismissed defects'}
+        {field:'year',              displayName:'Year',         width: '8%',    headerTooltip: 'Year'},
+        {field:'week',              displayName:'Week',         width: '8%',    headerTooltip: 'Week'},
+        {field:'groupName',         displayName:'Group',        width: '20%',   headerTooltip: 'Group'},
+        {field:'userCount',         displayName:'User',         width: '8%',    headerTooltip: 'Number of users'},
+        {field:'projectCount',      displayName:'Project',      width: '8%',    headerTooltip: 'Number of projects'},
+        {field:'allDefectCount',    displayName:'Total',        width: '16%',   headerTooltip: 'Number of defects'},
+        {field:'allFix',            displayName:'Fixed',        width: '16%',   headerTooltip: 'Number of fixed defects'},
+        {field:'allDis',            displayName:'Dismissed',    width: '16%',   headerTooltip: 'Number of dismissed defects'}
     ];
 
     initialize();

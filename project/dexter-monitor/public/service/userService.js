@@ -65,6 +65,25 @@ monitorApp.service('UserService', function($http, $log, $q) {
             });
     };
 
+    this.getExtraInfoByUserId = function(userId) {
+        if (!userId || userId.length == 0)
+            return $q.reject('User ID is invalid');
+
+        return $http.get('/api/v2/user/extra-info/' + userId)
+            .then((res) => {
+                if (!isHttpResultOK(res)) {
+                    $log.error('Failed to load extra user info');
+                    return null;
+                }
+
+                return res.data.rows[0];
+            })
+            .catch((err) => {
+                $log.error(err);
+                return null;
+            });
+    };
+
     this.getExtraInfoByUserIdList = function(userIdList) {
         if (!userIdList || userIdList.length == 0)
             return $q.reject('User list is empty');
