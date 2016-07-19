@@ -28,19 +28,23 @@
 monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, ProjectService, ServerStatusService, uiGridConstants) {
 
     const columnDefs = [
+        {field:'projectName',           displayName:'Project',          width: '19%',
+            headerTooltip: 'Project name', cellTooltip: true},
         {field:'groupName',             displayName:'Group',            width: '17%',   cellClass: 'grid-align',
             headerTooltip: 'Group name', cellTooltip: true},
-        {field:'projectName',           displayName:'Project',          width: '18%',   cellClass: 'grid-align',
-            headerTooltip: 'Project name', cellTooltip: true, aggregationType: uiGridConstants.aggregationTypes.count},
-        {field:'userCount',             displayName:'User',             width: '12%',   cellClass: 'grid-align',
+        {field:'userCount',             displayName:'User',             width: '10%',   cellClass: 'grid-align',
             headerTooltip: 'Number of users', aggregationType: uiGridConstants.aggregationTypes.sum},
-        {field:'defectCountTotal',      displayName:'Total',            width: '12%',   cellClass: 'grid-align',
+        {field:'defectCountTotal',      displayName:'Total',            width: '9%',    cellClass: 'grid-align',
             headerTooltip: 'Number of all defects', aggregationType: uiGridConstants.aggregationTypes.sum},
-        {field:'defectCountFixed',      displayName:'Fixed',            width: '12%',   cellClass: 'grid-align',
+        {field:'defectCountFixed',      displayName:'Fixed',            width: '9%',    cellClass: 'grid-align',
             headerTooltip: 'Number of fixed defects', aggregationType: uiGridConstants.aggregationTypes.sum},
-        {field:'defectCountDismissed',  displayName:'Dismissed',        width: '12%',   cellClass: 'grid-align',
+        {field:'defectCountDismissed',  displayName:'Dismissed',        width: '9%',    cellClass: 'grid-align',
             headerTooltip: 'Number of dismissed defects', aggregationType: uiGridConstants.aggregationTypes.sum},
-        {field:'serverStatus',          displayName:'Server Status',    width: '17%',   cellClass: 'grid-align',
+        {field:'resolvedRate',          displayName:'Resolved rate',    width: '11%',   cellClass: 'grid-align',
+            headerTooltip: '(Fixed + Dismissed) / Total * 100', footerCellClass: 'grid-align',
+            aggregationType: () => `${$scope.resolvedRateTotal}`,
+            cellTemplate:'<div class="ui-grid-cell-contents">{{grid.appScope.getResolvedRate(row.entity)}}</div>'},
+        {field:'serverStatus',          displayName:'Server Status',    width: '16%',   cellClass: 'grid-align',
             headerTooltip: 'Server status', footerCellClass: 'grid-align',
             aggregationType: () => `Active: ${$scope.activeServerCount} / Inactive: ${$scope.allServerCount-$scope.activeServerCount}`,
             cellTemplate:'<div class="ui-grid-cell-contents"' +
@@ -51,6 +55,7 @@ monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, Projec
     initialize();
 
     function initialize() {
+        $scope.resolvedRateTotal = '';
         $scope.allServerCount = 0;
         $scope.activeServerCount = 0;
         $scope.gridOptions = createGrid(columnDefs);
@@ -68,6 +73,10 @@ monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, Projec
         ProjectService.getAllCurrentStatusList(activeServerList)
             .then((rows) => {
                 $scope.gridOptions.data = rows;
+                const defectCountTotalSum = _.sum(_.map($scope.gridOptions.data, 'defectCountTotal'));
+                const defectCountFixedSum = _.sum(_.map($scope.gridOptions.data, 'defectCountFixed'));
+                const defectCountDismissedSum = _.sum(_.map($scope.gridOptions.data, 'defectCountDismissed'));
+                $scope.resolvedRateTotal = `${((defectCountFixedSum + defectCountDismissedSum) / defectCountTotalSum * 100).toFixed(1)}%`;
                 $scope.allServerCount = rows.length;
                 $scope.activeServerCount = activeServerList.length;
             })
@@ -75,4 +84,10 @@ monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, Projec
                 $log.error(err);
             });
     }
+
+    $scope.getResolvedRate = function(entity) {
+        if (!entity.defectCountTotal)
+            return '';
+        return `${((entity.defectCountFixed + entity.defectCountDismissed) / entity.defectCountTotal * 100).toFixed(1)}%`;
+    };
 });

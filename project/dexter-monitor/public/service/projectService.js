@@ -105,7 +105,7 @@ monitorApp.service('ProjectService', function($http, $log, $q, ServerStatusServi
 
                 return $q.all(promises)
                     .then(() => {
-                        rows = _.sortBy(rows, (row) => row.groupName.toLowerCase());
+                        rows = _.sortBy(rows, (row) => row.projectName.toLowerCase());
                         return rows;
                     })
                     .catch((err) => {

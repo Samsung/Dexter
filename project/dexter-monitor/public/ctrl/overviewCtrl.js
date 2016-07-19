@@ -29,13 +29,17 @@ monitorApp.controller("OverviewCtrl", function($scope, $http, $log, UserService,
 
     const summaryColumnDefs = [
         {field:'installationRate',          width: '25%',       cellClass: 'grid-align',
-            headerCellTemplate:'<div class="grid-align ui-grid-cell-contents">Installation rate</div>'},
+            headerCellTemplate:'<div class="grid-align ui-grid-cell-contents"' +
+            'uib-tooltip="Installed / Target * 100" tooltip-append-to-body="true">Installation rate</div>'},
         {field:'installedDeveloperCount',   width: '25%',       cellClass: 'grid-align',
-            headerCellTemplate:'<div class="grid-align ui-grid-cell-contents">Installed developers</div>'},
-        {field:'fixedDefectRate',           width: '25%',       cellClass: 'grid-align',
-            headerCellTemplate:'<div class="grid-align ui-grid-cell-contents">Fixed defect rate</div>'},
+            headerCellTemplate:'<div class="grid-align ui-grid-cell-contents"' +
+            'uib-tooltip="Installed / Target" tooltip-append-to-body="true">Installed developers</div>'},
+        {field:'resolvedDefectRate',        width: '25%',       cellClass: 'grid-align',
+            headerCellTemplate:'<div class="grid-align ui-grid-cell-contents"' +
+            'uib-tooltip="(Fixed + Dismissed) / Total * 100" tooltip-append-to-body="true">Resolved defect rate</div>'},
         {field:'defectCountTotal',          width: '25%',       cellClass: 'grid-align',
-            headerCellTemplate:'<div class="grid-align ui-grid-cell-contents">Total defects</div>'}
+            headerCellTemplate:'<div class="grid-align ui-grid-cell-contents"' +
+            'uib-tooltip="Total defects" tooltip-append-to-body="true">Total defects</div>'}
     ];
 
     const installationStatusColumnDefs = [
@@ -115,7 +119,8 @@ monitorApp.controller("OverviewCtrl", function($scope, $http, $log, UserService,
                 const installedDeveloperCountTotal = _.sum(_.map($scope.installationStatusGridOptions.data, 'installedDeveloperCount'));
                 $scope.rate = ((installedDeveloperCountTotal / targetDeveloperCountTotal) * 100).toFixed(1);
                 $scope.summaryGridOptions.data[0].installationRate = $scope.rate + '%';
-                $scope.summaryGridOptions.data[0].installedDeveloperCount = installedDeveloperCountTotal;
+                $scope.summaryGridOptions.data[0].installedDeveloperCount
+                    = `${installedDeveloperCountTotal.toLocaleString()} / ${targetDeveloperCountTotal.toLocaleString()}`;
             })
             .catch((err) => {
                 $log.error(err);
@@ -129,8 +134,10 @@ monitorApp.controller("OverviewCtrl", function($scope, $http, $log, UserService,
                 resizeHeightOfGrid('overviewDefectStatusGrid', rows.length);
                 const defectCountTotal = _.sum(_.pull(_.map(rows, 'defectCountTotal'), ""));
                 const defectCountFixed = _.sum(_.pull(_.map(rows, 'defectCountFixed'), ""));
-                $scope.summaryGridOptions.data[0].fixedDefectRate = (defectCountFixed / defectCountTotal * 100).toFixed(1) + '%';
-                $scope.summaryGridOptions.data[0].defectCountTotal = defectCountTotal;
+                const defectCountDismissed =_.sum(_.pull(_.map(rows, 'defectCountDismissed'), ""));
+                $scope.summaryGridOptions.data[0].resolvedDefectRate
+                    = ((defectCountFixed + defectCountDismissed) / defectCountTotal * 100).toFixed(1) + '%';
+                $scope.summaryGridOptions.data[0].defectCountTotal = defectCountTotal.toLocaleString();
             })
             .catch((err) => {
                 $log.error(err);
