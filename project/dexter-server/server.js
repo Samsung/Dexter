@@ -402,6 +402,7 @@ function initRestAPI(){
     app.get('/api/v2/snapshot/All', analysis.getSnapshotDefectForCSV);
 
     app.get('/api/v2/defect-count', monitor.getDefectCount);
+    app.get('/api/v2/detailed-defect-count', monitor.getDetailedDefectCount);
     app.get('/api/v2/user-count', monitor.getUserCount);
     app.get('/api/v2/user-list', monitor.getUserList);
 }
