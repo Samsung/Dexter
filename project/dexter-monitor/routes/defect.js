@@ -26,7 +26,12 @@
 "use strict";
 
 const mysql = require("mysql");
+const moment = require('moment');
+const Promise = require('bluebird');
+const rp = require('request-promise');
+const _ = require("lodash");
 const project = require('./project');
+const server = require('./server');
 const database = require("../util/database");
 const route = require('./route');
 const log = require('../util/logging');
@@ -133,3 +138,77 @@ exports.getDefectCountByProjectName = function(req, res) {
             res.send({status:"fail", errorMessage: err.message});
         });
 };
+
+exports.saveSnapshot = function() {
+    const activeServerList = _.filter(server.getServerListInternal(), {'active': true});
+
+    Promise.map(activeServerList, (server) => {
+        const defectCountUrl = `http://${server.hostIP}:${server.portNumber}/api/v2/detailed-defect-count`;
+        const userCountUrl = `http://${server.hostIP}:${server.portNumber}/api/v2/user-count`;
+        let promises = [];
+        let defectValues = {};
+        let userCount = 0;
+
+        promises.push(new Promise((resolve, reject) => {
+            rp(defectCountUrl)
+                .then((data) => {
+                    defectValues = JSON.parse('' + data).values;
+                    resolve();
+                })
+                .catch((err) => {
+                    log.error(`Failed to get defect count for pid ${server.pid} : ${err}`);
+                    reject();
+                });
+        }));
+        promises.push(new Promise((resolve, reject) => {
+            rp(userCountUrl)
+                .then((data) => {
+                    userCount = JSON.parse('' + data).value;
+                    resolve();
+                })
+                .catch((err) => {
+                    log.error(`Failed to get user count for pid ${server.pid} : ${err}`);
+                    reject();
+                });
+        }));
+
+        Promise.all(promises)
+            .then(() => {
+                insertSnapshotToDatabase(server.pid, defectValues, userCount);
+            })
+            .catch((err) => {
+                log.error(err);
+            });
+    }).catch((err) => {
+        log.error(err);
+    });
+};
+
+function insertSnapshotToDatabase(pid, defectValues, userCount) {
+    const year = moment().get('year');
+    const weekOfYear = moment().isoWeek();
+    const dayOfWeek = moment().isoWeekday();
+    const {allDefectCount, allNew, allFix, allDis, criNew, criFix, criDis,
+        majNew, majFix, majDis, minNew, minFix, minDis,
+        crcNew, crcFix, crcDis, etcNew, etcFix, etcDis,
+        invalidStatusCode, invalidSeverityCode} = defectValues;
+
+    const sql =
+        `INSERT INTO WeeklyStatus(pid, year, week, day, userCount, allDefectCount,
+                                    allNew, allFix, allDis, criNew, criFix, criDis,
+                                    majNew, majFix, majDis, minNew, minFix, minDis,
+                                    crcNew, crcFix, crcDis, etcNew, etcFix, etcDis)
+                     VALUES (${pid}, ${year}, ${weekOfYear}, ${dayOfWeek}, ${userCount}, ${allDefectCount},
+                            ${allNew}, ${allFix}, ${allDis}, ${criNew}, ${criFix}, ${criDis},
+                            ${majNew}, ${majFix}, ${majDis}, ${minNew}, ${minFix}, ${minDis},
+                            ${crcNew}, ${crcFix}, ${crcDis}, ${etcNew}, ${etcFix}, ${etcDis})`;
+
+    database.exec(sql)
+        .then(() => {
+            log.info(`Inserted snapshot for pid ${pid} : # of invalidStatusCode: ${invalidStatusCode}, # of invalidSeverityCode: ${invalidSeverityCode}`);
+
+        })
+        .catch((err) => {
+            log.error(`Failed to insert snapshot for pid ${pid} : ${err}`);
+        });
+}

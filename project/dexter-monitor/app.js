@@ -28,6 +28,7 @@
 const express = require('express');
 const http = require('http');
 const path = require('path');
+const schedule = require('node-schedule');
 const log = require('./util/logging');
 const database = require("./util/database");
 const server = require('./routes/server');
@@ -61,6 +62,7 @@ function initialize(){
     configureApp();
     initModules();
     startServer();
+    setScheduler();
 }
 
 function initConfigFromFile(){
@@ -174,6 +176,14 @@ function startServer(){
 
     http.createServer(app).listen(global.config.port, function(){
         log.info('Dexter Monitor is listening on port ' + global.config.port);
+    });
+}
+
+function setScheduler() {
+    const time = `0 0 * * ${global.config.snapshotDayOfWeek}`;
+    schedule.scheduleJob(time, () => {
+        log.info('Start saving snapshot');
+        defect.saveSnapshot();
     });
 }
 
