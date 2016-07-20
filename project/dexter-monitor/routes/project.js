@@ -35,27 +35,3 @@ exports.getProjectList = function(req, res) {
                 "ORDER BY projectName ASC                               ";
     route.executeSqlAndSendResponseRows(sql, res);
 };
-
-exports.getDatabaseNameByProjectName = function(projectName) {
-    const sql = "SELECT DISTINCT dbName FROM ProjectInfo WHERE projectName=" + projectName;
-    return database.exec(sql)
-        .then((rows) => {
-            return rows[0].dbName;
-        })
-        .catch((err) => {
-            log.error(err);
-            return null;
-        });
-};
-
-exports.getDatabaseNameList = function() {
-    const sql = "SELECT DISTINCT dbName FROM ProjectInfo";
-    return database.exec(sql)
-        .then((rows) => {
-            return rows;
-        })
-        .catch((err) => {
-            log.error(err);
-            return [];
-        });
-};

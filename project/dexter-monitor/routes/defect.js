@@ -115,26 +115,15 @@ exports.getMaxWeek = function(req, res) {
 };
 
 exports.getDefectCountByProjectName = function(req, res) {
-    const projectName = mysql.escape(req.params.projectName);
-    project.getDatabaseNameByProjectName(projectName)
-        .then((dbName) => {
-            const escapedDbName = mysql.escapeId(dbName);
-            const sql =
-                "SELECT                                                                                                 " +
-                "   (SELECT COUNT(did) FROM " + escapedDbName + ".Defect) AS defectCountTotal,                          " +
-                "   (SELECT COUNT(did) FROM " + escapedDbName + ".Defect WHERE statusCode='FIX') AS defectCountFixed,   " +
-                "   COUNT(did) AS defectCountDismissed FROM " + escapedDbName + ".Defect WHERE statusCode='EXC'         ";
-            database.exec(sql)
-                .then((rows) => {
-                    res.send({status:'ok', values: rows[0]});
-                })
-                .catch((err) => {
-                    log.error(err);
-                    res.send({status:"fail", errorMessage: err.message});
-                });
+    const projectServer = _.find(server.getServerListInternal(), {'projectName': req.params.projectName});
+    const defectCountUrl = `http://${projectServer.hostIP}:${projectServer.portNumber}/api/v2/defect-count`;
+    rp(defectCountUrl)
+        .then((data) => {
+            const parsedData = JSON.parse('' + data);
+            res.send({status:'ok', values: parsedData.values});
         })
         .catch((err) => {
-            log.error(err);
+            log.error(`Failed to get defect count for pid ${projectServer.pid} : ${err}`);
             res.send({status:"fail", errorMessage: err.message});
         });
 };
@@ -156,7 +145,7 @@ exports.saveSnapshot = function() {
                     resolve();
                 })
                 .catch((err) => {
-                    log.error(`Failed to get defect count for pid ${server.pid} : ${err}`);
+                    log.error(`Failed to get detailed defect count for pid ${server.pid} : ${err}`);
                     reject();
                 });
         }));

@@ -37,26 +37,17 @@ const rp = require('request-promise');
 const mysql = require("mysql");
 const _ = require("lodash");
 
-function getUserListByProjectDatabaseName(dbName) {
-    const sql = "SELECT userId FROM " + mysql.escapeId(dbName) + ".Account ORDER BY userId ASC";
-    return database.exec(sql)
-        .then((rows) => {
-            return rows;
-        })
-        .catch((err) => {
-            log.error(err);
-            return null;
-        });
-}
-
-function sendUserListInActiveServerList(activeServerList, res) {
+exports.getAll = function(req, res) {
+    const activeServerList = _.filter(server.getServerListInternal(), {'active': true});
     let allRows = [];
     let promises = [];
 
-    activeServerList.forEach((server) => {
-        promises.push(new Promise((resolve, reject) => {
-            getUserListByProjectDatabaseName(server.dbName)
-                .then((rows) => {
+    Promise.map(activeServerList, (server) => {
+        promises.push(new Promise((resolve) => {
+            const userListUrl = `http://${server.hostIP}:${server.portNumber}/api/v2/user-list`;
+            rp(userListUrl)
+                .then((data) => {
+                    const rows = JSON.parse('' + data).rows;
                     if (rows) {
                         rows.forEach((row) => {
                             allRows.push({
@@ -68,15 +59,14 @@ function sendUserListInActiveServerList(activeServerList, res) {
                     resolve();
                 })
                 .catch((err) => {
-                    log.error(err);
-                    reject();
-                })
+                    log.error(`Failed to get user list for pid ${server.pid} : ${err}`);
+                    resolve();
+                });
         }));
     });
 
     Promise.all(promises)
         .then(() => {
-            allRows = _.filter(allRows, (row) => row.userId !== 'admin' && row.userId !== 'user');
             allRows = _.sortBy(allRows, 'projectName');
             res.send({status:'ok', rows: allRows});
         })
@@ -84,23 +74,6 @@ function sendUserListInActiveServerList(activeServerList, res) {
             log.error(err);
             res.send({status:"fail", errorMessage: err.message});
         });
-}
-
-exports.getAll = function(req, res) {
-    const activeServerList = _.filter(server.getServerListInternal(), {'active': true});
-
-    Promise.map(activeServerList, (server) => {
-        return project.getDatabaseNameByProjectName(mysql.escape(server.projectName))
-            .then((dbName) => {
-                // Will not be used after creating server API
-                server.dbName = dbName;
-            });
-    }).then(() => {
-        sendUserListInActiveServerList(activeServerList, res);
-    }).catch((err) => {
-        log.error('Failed to get user list: ' + err);
-        res.send({status:"fail", errorMessage: err.message});
-    });
 };
 
 function processReturnedData(data) {
@@ -161,24 +134,15 @@ function validateUserInfoJson(data, userid) {
 }
 
 exports.getUserCountByProjectName = function(req, res) {
-    const projectName = mysql.escape(req.params.projectName);
-    project.getDatabaseNameByProjectName(projectName)
-        .then((dbName) => {
-            const sql =
-                "SELECT COUNT(userId) AS userCount              " +
-                "FROM " + mysql.escapeId(dbName) + ".Account    " +
-                "WHERE userId!='admin' AND userId!='user'       ";
-            database.exec(sql)
-                .then((rows) => {
-                    res.send({status:'ok', value: rows[0].userCount});
-                })
-                .catch((err) => {
-                    log.error(err);
-                    res.send({status:"fail", errorMessage: err.message});
-                });
+    const projectServer = _.find(server.getServerListInternal(), {'projectName': req.params.projectName});
+    const userCountUrl = `http://${projectServer.hostIP}:${projectServer.portNumber}/api/v2/user-count`;
+    rp(userCountUrl)
+        .then((data) => {
+            const parsedData = JSON.parse('' + data);
+            res.send({status:'ok', value: parsedData.value});
         })
         .catch((err) => {
-            log.error(err);
+            log.error(`Failed to get user count for pid ${projectServer.pid} : ${err}`);
             res.send({status:"fail", errorMessage: err.message});
         });
 };
@@ -196,42 +160,39 @@ function loadUserStatusList() {
 }
 
 function loadUserList() {
-    return project.getDatabaseNameList()
-        .then((rows) => {
-            const dbNameList = _.map(rows, 'dbName');
-            let allRows = [];
-            let promises = [];
+    const activeServerList = _.filter(server.getServerListInternal(), {'active': true});
+    let allRows = [];
+    let promises = [];
 
-            dbNameList.forEach((dbName) => {
-                promises.push(new Promise((resolve, reject) => {
-                    getUserListByProjectDatabaseName(dbName)
-                        .then((rows) => {
-                            allRows = _.union(allRows, rows);
-                            resolve();
-                        })
-                        .catch((err) => {
-                            log.error(err);
-                            reject();
-                        })
-                }));
-            });
-
-            return Promise.all(promises)
-                .then(() => {
-                    allRows = _.uniq(allRows, (row) => {
-                        return row.userId;
-                    });
-                    return allRows;
+    return Promise.map(activeServerList, (server) => {
+        promises.push(new Promise((resolve) => {
+            const userListUrl = `http://${server.hostIP}:${server.portNumber}/api/v2/user-list`;
+            rp(userListUrl)
+                .then((data) => {
+                    const rows = JSON.parse('' + data).rows;
+                    if (rows) {
+                        allRows = _.union(allRows, rows);
+                    }
+                    resolve();
                 })
                 .catch((err) => {
-                    log.error(err);
-                    return [];
+                    log.error(`Failed to get user list for pid ${server.pid} : ${err}`);
+                    resolve();
                 });
-        })
-        .catch((err) => {
-            log.error('Failed to get the DB name list: ' + err);
-            return [];
-        });
+        }));
+
+        return Promise.all(promises)
+            .then(() => {
+                allRows = _.uniq(allRows, (row) => {
+                    return row.userId;
+                });
+                return allRows;
+            })
+            .catch((err) => {
+                log.error(err);
+                return [];
+            });
+    });
 }
 
 function updateUserStatusList() {
