@@ -20,21 +20,22 @@ $ bower install
     - Should be implemented by yourself(Non-Samsung user)
     - This URL should get `userId` as a query parameter and return the user information like the format below
     	- If your `userInfoUrl` is
-          ```
-          "userInfoUrl":"http://yourUserInfoUrl?userId="
-          ```
-          and you call,
-          ```
-          http://yourUserInfoUrl?userId=sangwoo7.lee
-          ```
-          then the URL should return
-          ```
-          [{"userid":"sangwoo7.lee"
-            "cn":"Sangwoo Lee",
-            "department":"Dexter Team",
-            "title":"Software engineer",
-            "employeenumber":"1234"}]
-          ```
+
+         >  "userInfoUrl":"http://yourUserInfoUrl?userId="
+
+
+          and you call
+
+         >  http://yourUserInfoUrl?userId=sangwoo7.lee
+
+          , then the URL should return
+
+         >     [{"userid":"sangwoo7.lee",
+         >     "cn":"Sangwoo Lee",
+         >     "department":"Dexter Team",
+         >     "title":"Software engineer",
+         >     "employeenumber":"1234"}]
+
 
 #### Run dexter-monitor as a web server
 ```
