@@ -23,17 +23,18 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-describe('DefectByGroupCtrl Test', function() {
+describe('WeeklyGroupCtrl Test', function() {
 
     beforeEach(module('dexterMonitorApp'));
 
-    var $controller, $httpBackend, $rootScope, defect;
+    var $controller, $httpBackend, $rootScope, $scope;
 
     beforeEach(inject(function(_$controller_, _$httpBackend_, _$rootScope_) {
         $controller = _$controller_;
         $httpBackend = _$httpBackend_;
         $rootScope = _$rootScope_;
-        defect = $controller('DefectByGroupCtrl', {$scope: {}});
+        $scope = $rootScope.$new();
+        $controller('WeeklyGroupCtrl', {$scope: $scope});
     }));
 
     beforeEach(function() {
@@ -49,50 +50,50 @@ describe('DefectByGroupCtrl Test', function() {
 
     describe('yearChanged()', function() {
         it('should set values properly', function() {
-            defect.yearChanged(2016);
+            $scope.yearChanged(2016);
             $rootScope.$apply();
             $httpBackend.flush();
 
-            assert.equal(defect.years[0], 2014);
-            assert.equal(defect.years[1], 2015);
-            assert.equal(defect.years[2], 2016);
-            assert.equal(defect.curYear, 2016);
-            assert.equal(defect.maxWeekOfCurYear, 25);
-            assert.equal(defect.curWeek, 25);
+            assert.equal($scope.years[0], 2014);
+            assert.equal($scope.years[1], 2015);
+            assert.equal($scope.years[2], 2016);
+            assert.equal($scope.curYear, 2016);
+            assert.equal($scope.maxWeekOfCurYear, 25);
+            assert.equal($scope.curWeek, 25);
 
-            assertGridOptions(defect);
+            assertGridOptions($scope);
         });
     });
 
     describe('weekChanged()', function() {
         it('should set values properly', function() {
-            defect.curYear = 2016;
-            defect.curWeek = 25;
+            $scope.curYear = 2016;
+            $scope.curWeek = 25;
 
-            defect.weekChanged();
+            $scope.weekChanged();
             $rootScope.$apply();
             $httpBackend.flush();
 
-            assertGridOptions(defect);
+            assertGridOptions($scope);
         });
     });
 
-    function assertGridOptions(defect) {
-        assert.equal(defect.gridOptions.data[0].year, 2016);
-        assert.equal(defect.gridOptions.data[0].week, 25);
-        assert.equal(defect.gridOptions.data[0].groupName, 'SamsungG_1');
-        assert.equal(defect.gridOptions.data[0].userCount, 5);
-        assert.equal(defect.gridOptions.data[0].projectCount, 3);
-        assert.equal(defect.gridOptions.data[0].allDefectCount, 24);
-        assert.equal(defect.gridOptions.data[0].allFix, 10);
-        assert.equal(defect.gridOptions.data[0].allDis, 5);
-        assert.equal(defect.gridOptions.data[1].groupName, 'SamsungG_2');
-        assert.equal(defect.gridOptions.data[1].userCount, 7);
-        assert.equal(defect.gridOptions.data[1].projectCount, 2);
-        assert.equal(defect.gridOptions.data[1].allDefectCount, 16);
-        assert.equal(defect.gridOptions.data[1].allFix, 2);
-        assert.equal(defect.gridOptions.data[1].allDis, 4);
-        assert.equal(defect.gridOptions.exporterCsvFilename, DEFECT_FILENAME_PREFIX + '-' + 2016 + '-' + 25 + '.csv');
-        assert.equal(defect.gridOptions.exporterPdfFilename, DEFECT_FILENAME_PREFIX + '-' + 2016 + '-' + 25 + '.pdf');
+    function assertGridOptions($scope) {
+        assert.equal($scope.gridOptions.data[0].year, 2016);
+        assert.equal($scope.gridOptions.data[0].week, 25);
+        assert.equal($scope.gridOptions.data[0].groupName, 'SamsungG_1');
+        assert.equal($scope.gridOptions.data[0].userCount, 5);
+        assert.equal($scope.gridOptions.data[0].projectCount, 3);
+        assert.equal($scope.gridOptions.data[0].allDefectCount, 24);
+        assert.equal($scope.gridOptions.data[0].allFix, 10);
+        assert.equal($scope.gridOptions.data[0].allDis, 5);
+        assert.equal($scope.gridOptions.data[1].groupName, 'SamsungG_2');
+        assert.equal($scope.gridOptions.data[1].userCount, 7);
+        assert.equal($scope.gridOptions.data[1].projectCount, 2);
+        assert.equal($scope.gridOptions.data[1].allDefectCount, 16);
+        assert.equal($scope.gridOptions.data[1].allFix, 2);
+        assert.equal($scope.gridOptions.data[1].allDis, 4);
+        assert.equal($scope.gridOptions.exporterCsvFilename, DEFECT_FILENAME_PREFIX + '-' + 2016 + '-' + 25 + '.csv');
+        assert.equal($scope.gridOptions.exporterPdfFilename, DEFECT_FILENAME_PREFIX + '-' + 2016 + '-' + 25 + '.pdf');
     }
 });

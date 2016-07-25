@@ -23,16 +23,18 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-describe('DefectCtrl Test', function() {
+describe('WeeklyProjectCtrl Test', function() {
 
     beforeEach(module('dexterMonitorApp'));
 
-    var $controller, $httpBackend, defect;
+    var $controller, $httpBackend, $rootScope, $scope;
 
-    beforeEach(inject(function(_$controller_, _$httpBackend_) {
+    beforeEach(inject(function(_$controller_, _$httpBackend_, _$rootScope_) {
         $controller = _$controller_;
         $httpBackend = _$httpBackend_;
-        defect = $controller('DefectCtrl', {$scope: {}});
+        $rootScope = _$rootScope_;
+        $scope = $rootScope.$new();
+        $controller('WeeklyProjectCtrl', {$scope: $scope});
     }));
 
     describe('initialize()', function() {
@@ -51,27 +53,27 @@ describe('DefectCtrl Test', function() {
 
             $httpBackend.flush();
 
-            assert.equal(defect.gridOptions.data[0].year, 2016);
-            assert.equal(defect.gridOptions.data[0].week, 25);
-            assert.equal(defect.gridOptions.data[0].groupName, 'SamsungG_1');
-            assert.equal(defect.gridOptions.data[0].projectName, 'SSP_1');
-            assert.equal(defect.gridOptions.data[0].language, 'CPP');
-            assert.equal(defect.gridOptions.data[0].allDefectCount, 40);
-            assert.equal(defect.gridOptions.data[0].allNew, 15);
-            assert.equal(defect.gridOptions.data[0].allFix, 33);
-            assert.equal(defect.gridOptions.data[0].allDis, 0);
-            assert.equal(defect.gridOptions.data[0].criFix, 16);
-            assert.equal(defect.gridOptions.data[0].majDis, 5);
-            assert.equal(defect.gridOptions.data[1].year, 2015);
-            assert.equal(defect.gridOptions.data[1].week, 3);
-            assert.equal(defect.gridOptions.data[1].groupName, 'SamsungG_2');
-            assert.equal(defect.gridOptions.data[1].projectName, 'SSP_2');
-            assert.equal(defect.gridOptions.data[1].language, 'JAVA');
-            assert.equal(defect.gridOptions.data[1].criNew, 12);
-            assert.equal(defect.gridOptions.data[1].majFix, 4);
-            assert.equal(defect.gridOptions.data[1].minDis, 1);
-            assert.equal(defect.gridOptions.data[1].crcNew, 0);
-            assert.equal(defect.gridOptions.data[1].etcFix, 0);
+            assert.equal($scope.gridOptions.data[0].year, 2016);
+            assert.equal($scope.gridOptions.data[0].week, 25);
+            assert.equal($scope.gridOptions.data[0].groupName, 'SamsungG_1');
+            assert.equal($scope.gridOptions.data[0].projectName, 'SSP_1');
+            assert.equal($scope.gridOptions.data[0].language, 'CPP');
+            assert.equal($scope.gridOptions.data[0].allDefectCount, 40);
+            assert.equal($scope.gridOptions.data[0].allNew, 15);
+            assert.equal($scope.gridOptions.data[0].allFix, 33);
+            assert.equal($scope.gridOptions.data[0].allDis, 0);
+            assert.equal($scope.gridOptions.data[0].criFix, 16);
+            assert.equal($scope.gridOptions.data[0].majDis, 5);
+            assert.equal($scope.gridOptions.data[1].year, 2015);
+            assert.equal($scope.gridOptions.data[1].week, 3);
+            assert.equal($scope.gridOptions.data[1].groupName, 'SamsungG_2');
+            assert.equal($scope.gridOptions.data[1].projectName, 'SSP_2');
+            assert.equal($scope.gridOptions.data[1].language, 'JAVA');
+            assert.equal($scope.gridOptions.data[1].criNew, 12);
+            assert.equal($scope.gridOptions.data[1].majFix, 4);
+            assert.equal($scope.gridOptions.data[1].minDis, 1);
+            assert.equal($scope.gridOptions.data[1].crcNew, 0);
+            assert.equal($scope.gridOptions.data[1].etcFix, 0);
         });
     });
 });

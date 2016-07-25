@@ -27,7 +27,7 @@ describe('UserService Test', function() {
 
     beforeEach(module('dexterMonitorApp'));
 
-    var $rootScope, $httpBackend, DefectService;
+    var $rootScope, $httpBackend, UserService;
 
     beforeEach(inject(function( _$rootScope_, _$httpBackend_, _UserService_) {
         $rootScope = _$rootScope_;
@@ -35,10 +35,10 @@ describe('UserService Test', function() {
         UserService = _UserService_;
     }));
 
-    describe('getExtraInfoByUserIdList()', function() {
+    describe('getExtraInfoByUserId()', function() {
 
-        it('should reject if userIdList is null', function() {
-            UserService.getExtraInfoByUserIdList(null)
+        it('should reject if userId is null', function() {
+            UserService.getExtraInfoByUserId(null)
                 .then(function(rows) {
                     assert.ok(false);
                 })
@@ -48,8 +48,8 @@ describe('UserService Test', function() {
             $rootScope.$apply();
         });
 
-        it('should reject if userIdList is empty', function() {
-            UserService.getExtraInfoByUserIdList([])
+        it('should reject if the length of userId is 0', function() {
+            UserService.getExtraInfoByUserId('')
                 .then(function(rows) {
                     assert.ok(false);
                 })
@@ -57,27 +57,6 @@ describe('UserService Test', function() {
                     assert.ok(true);
                 });
             $rootScope.$apply();
-        });
-
-        it('should return the rows containing extra user information sent from server', function(done) {
-            $httpBackend
-                .whenGET('/api/v2/user/extra-info/' + 'Samsung1,Samsung2,Samsung3,Samsung4')
-                .respond({status:'ok',
-                    rows:[{userId:'Samsung1', department:'VD1', title: 'engineer1', employeeNumber: 1234},
-                          {userId:'Samsung2', department:'VD2', title: 'engineer2', employeeNumber: 5678},
-                          {userId:'Samsung3', department:'VD3', title: 'engineer3', employeeNumber: 9101},
-                          {userId:'Samsung4', department:'VD4', title: 'engineer4', employeeNumber: 1121}]
-                });
-
-            UserService.getExtraInfoByUserIdList(['Samsung1', 'Samsung2', 'Samsung3', 'Samsung4'])
-                .then(function(rows) {
-                    assert.equal(rows[0].userId, 'Samsung1');
-                    assert.equal(rows[1].department, 'VD2');
-                    assert.equal(rows[2].title, 'engineer3');
-                    assert.equal(rows[3].employeeNumber, 1121);
-                    done();
-                });
-            $httpBackend.flush();
         });
     });
 });
