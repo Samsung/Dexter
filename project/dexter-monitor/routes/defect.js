@@ -177,24 +177,22 @@ function insertSnapshotToDatabase(pid, defectValues, userCount) {
     const year = moment().get('year');
     const weekOfYear = moment().isoWeek();
     const dayOfWeek = moment().isoWeekday();
-    const {allDefectCount, allNew, allFix, allDis, criNew, criFix, criDis,
-        majNew, majFix, majDis, minNew, minFix, minDis,
-        crcNew, crcFix, crcDis, etcNew, etcFix, etcDis,
-        invalidStatusCode, invalidSeverityCode} = defectValues;
-
     const sql =
         `INSERT INTO WeeklyStatus(pid, year, week, day, userCount, allDefectCount,
                                     allNew, allFix, allDis, criNew, criFix, criDis,
                                     majNew, majFix, majDis, minNew, minFix, minDis,
                                     crcNew, crcFix, crcDis, etcNew, etcFix, etcDis)
-                     VALUES (${pid}, ${year}, ${weekOfYear}, ${dayOfWeek}, ${userCount}, ${allDefectCount},
-                            ${allNew}, ${allFix}, ${allDis}, ${criNew}, ${criFix}, ${criDis},
-                            ${majNew}, ${majFix}, ${majDis}, ${minNew}, ${minFix}, ${minDis},
-                            ${crcNew}, ${crcFix}, ${crcDis}, ${etcNew}, ${etcFix}, ${etcDis})`;
+                     VALUES (${pid}, ${year}, ${weekOfYear}, ${dayOfWeek}, ${userCount}, ${defectValues.allDefectCount},
+                            ${defectValues.allNew}, ${defectValues.allFix}, ${defectValues.allDis},
+                            ${defectValues.criNew}, ${defectValues.criFix}, ${defectValues.criDis},
+                            ${defectValues.majNew}, ${defectValues.majFix}, ${defectValues.majDis},
+                            ${defectValues.minNew}, ${defectValues.minFix}, ${defectValues.minDis},
+                            ${defectValues.crcNew}, ${defectValues.crcFix}, ${defectValues.crcDis},
+                            ${defectValues.etcNew}, ${defectValues.etcFix}, ${defectValues.etcDis})`;
 
     database.exec(sql)
         .then(() => {
-            log.info(`Inserted snapshot for pid ${pid} : # of invalidStatusCode: ${invalidStatusCode}, # of invalidSeverityCode: ${invalidSeverityCode}`);
+            log.info(`Inserted snapshot for pid ${pid} : # of invalidStatusCode: ${defectValues.invalidStatusCode}, # of invalidSeverityCode: ${defectValues.invalidSeverityCode}`);
 
         })
         .catch((err) => {

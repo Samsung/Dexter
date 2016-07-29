@@ -2,7 +2,7 @@
 Dexter Monitor is a dashboard for monitoring the status of defects and users for all active [Dexter Servers](https://github.com/Samsung/Dexter/tree/master/project/dexter-server)
 
 ## How to use
-#### Install modules for node(v6.0.0) and bower(v1.7.9)
+#### Install modules for node(v4.4.7) and bower(v1.7.9)
 ```
 $ npm install
 $ bower install
