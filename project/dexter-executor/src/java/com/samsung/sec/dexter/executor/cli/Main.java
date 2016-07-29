@@ -85,7 +85,7 @@ public class Main {
 		accountHandler.createAccount(cliOption.getUserId(), cliOption.getUserPassword());
 	}
 
-	private IAccountHandler createAccountHandler(final IDexterClient client, final IDexterCLIOption cliOption) {
+	protected IAccountHandler createAccountHandler(final IDexterClient client, final IDexterCLIOption cliOption) {
 		if (cliOption.isStandAloneMode()) {
 			return new EmptyAccountHandler();
 		} else {
@@ -109,10 +109,10 @@ public class Main {
 		final IDexterClient client = createDexterClient(cliOption);
 		loginOrCreateAccount(client, cliOption);
 
-		final IDexterPluginManager pluginManager = createDexterPlugins(client, cliOption);
+		final AnalysisConfig baseAnalysisConfig = createBaseAnalysisConfig(client, cliOption);
 		final EndOfAnalysisHandler cliAnalysisResultHandler = createCLIAnalysisResultHandler(client.getDexterWebUrl(),
 				cliOption);
-		final AnalysisConfig baseAnalysisConfig = createBaseAnalysisConfig(client, cliOption);
+		final IDexterPluginManager pluginManager = createDexterPlugins(client, cliOption);
 
 		if (cliOption.isAsynchronousMode()) {
 			analyzeAsynchronously(pluginManager, cliAnalysisResultHandler, baseAnalysisConfig, client);

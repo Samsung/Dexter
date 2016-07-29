@@ -25,6 +25,16 @@
 */
 package com.samsung.sec.dexter.core.util;
 
+import com.google.common.base.Charsets;
+import com.google.common.base.Strings;
+import com.google.common.io.BaseEncoding;
+import com.google.common.io.Files;
+import com.google.gson.Gson;
+import com.samsung.sec.dexter.core.analyzer.EndOfAnalysisHandler;
+import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -53,16 +63,6 @@ import java.util.zip.ZipInputStream;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-
-import com.google.common.base.Charsets;
-import com.google.common.base.Strings;
-import com.google.common.io.BaseEncoding;
-import com.google.common.io.Files;
-import com.google.gson.Gson;
-import com.samsung.sec.dexter.core.analyzer.EndOfAnalysisHandler;
-import com.samsung.sec.dexter.core.config.DexterConfig;
-import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
-import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 
 public class DexterUtil {
 	public final static String LINE_SEPARATOR = System.getProperty("line.separator");
@@ -96,7 +96,8 @@ public class DexterUtil {
 
 		if (Strings.isNullOrEmpty(yourOs) == false && yourOs.indexOf("win") >= 0) {
 			return "\\";
-		} else if (Strings.isNullOrEmpty(yourOs) == false && (yourOs.indexOf("nix") >= 0 || yourOs.indexOf("nux") >= 0)) {
+		} else if (Strings.isNullOrEmpty(yourOs) == false
+				&& (yourOs.indexOf("nix") >= 0 || yourOs.indexOf("nux") >= 0)) {
 			return "/";
 		} else {
 			return "/";
@@ -108,7 +109,8 @@ public class DexterUtil {
 
 		if (Strings.isNullOrEmpty(yourOs) == false && yourOs.indexOf("win") >= 0) {
 			return OS.WINDOWS;
-		} else if (Strings.isNullOrEmpty(yourOs) == false && (yourOs.indexOf("nix") >= 0 || yourOs.indexOf("nux") >= 0)) {
+		} else if (Strings.isNullOrEmpty(yourOs) == false
+				&& (yourOs.indexOf("nix") >= 0 || yourOs.indexOf("nux") >= 0)) {
 			return OS.LINUX;
 		} else {
 			return OS.UNKNOWN;
@@ -117,8 +119,8 @@ public class DexterUtil {
 
 	public static BIT getBit() {
 		String bit = System.getProperty("sun.arch.data.model").toLowerCase(); // 32
-																			  // |
-																			  // 64
+																				// |
+																				// 64
 
 		if (Strings.isNullOrEmpty(bit)) {
 			bit = System.getProperty("os.arch").toLowerCase();
@@ -188,7 +190,7 @@ public class DexterUtil {
 		}
 	}
 
-	public static StringBuilder readFile(final String filePath){
+	public static StringBuilder readFile(final String filePath) {
 		assert Strings.isNullOrEmpty(filePath) == false;
 
 		final File file = new File(filePath);
@@ -207,12 +209,11 @@ public class DexterUtil {
 		}
 	}
 
-	private static void checkFileExistence(final String filePath,
-			final File file) {
-		if (file.exists() == false || file.isDirectory()) 
+	private static void checkFileExistence(final String filePath, final File file) {
+		if (file.exists() == false || file.isDirectory())
 			throw new DexterRuntimeException("There is no file to read : " + filePath);
 	}
-	
+
 	public static String getContentsFromFile(final String filePath, final Charset charset) {
 		assert Strings.isNullOrEmpty(filePath) == false;
 
@@ -249,12 +250,13 @@ public class DexterUtil {
 		}
 	}
 
-	public static boolean copyFileInClassPath(final ClassLoader classLoader, String sourceFilePath, String targetFilePath) {
+	public static boolean copyFileInClassPath(final ClassLoader classLoader, String sourceFilePath,
+			String targetFilePath) {
 		sourceFilePath = DexterUtil.refinePath(sourceFilePath);
 		targetFilePath = DexterUtil.refinePath(targetFilePath);
-		
+
 		InputStream is = classLoader.getClass().getResourceAsStream(sourceFilePath);
-		
+
 		if (is == null) {
 			logger.error("can't find file: " + sourceFilePath);
 			return false;
@@ -271,65 +273,66 @@ public class DexterUtil {
 			return false;
 		}
 	}
-	
-	public static boolean copyFilesInClassPath(@SuppressWarnings("rawtypes") Class clazz, final String sourcePath, final String targetPath) {
+
+	public static boolean copyFilesInClassPath(@SuppressWarnings("rawtypes") Class clazz, final String sourcePath,
+			final String targetPath) {
 
 		List<String> fileList = new ArrayList<String>();
 		BufferedReader br = null;
-        try {
-        	br = new BufferedReader(new InputStreamReader(clazz.getResourceAsStream(sourcePath)));
-        	
-        	String fileName;
-        	while( (fileName = br.readLine()) != null){
-        		fileList.add(fileName);
-        	}
-        	
-	        fileList = IOUtils.readLines(clazz.getResourceAsStream(sourcePath), Charsets.UTF_8);
-        } catch (IOException e) {
-        	logger.error(e.getMessage(), e);
-        	return false;
-        } finally {
-        	if(br != null){
-        		try {
-	                br.close();
-                } catch (IOException e) {
-                }
-        	}
-        }
-		
-		if(fileList == null || fileList.size() == 0){
+		try {
+			br = new BufferedReader(new InputStreamReader(clazz.getResourceAsStream(sourcePath)));
+
+			String fileName;
+			while ((fileName = br.readLine()) != null) {
+				fileList.add(fileName);
+			}
+
+			fileList = IOUtils.readLines(clazz.getResourceAsStream(sourcePath), Charsets.UTF_8);
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+			return false;
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+				}
+			}
+		}
+
+		if (fileList == null || fileList.size() == 0) {
 			logger.warn("there is no files to copy : " + sourcePath);
 			return false;
 		}
-		
+
 		boolean isOk = true;
-		
-		for(String filePath : fileList){
+
+		for (String filePath : fileList) {
 			final InputStream is = clazz.getResourceAsStream(filePath);
-			
+
 			if (is == null) {
 				logger.error("can't find file: " + sourcePath);
 				isOk = false;
 				continue;
 			}
-			
+
 			try {
 				FileUtils.copyInputStreamToFile(is, new File(targetPath));
 				logger.debug("file copied:  " + targetPath);
 			} catch (IOException e) {
 				logger.error(e.getMessage(), e);
-				isOk =  false;
+				isOk = false;
 			} catch (Exception e) {
 				logger.error(e.getMessage(), e);
 				isOk = false;
 			} finally {
 				try {
-	                is.close();
-                } catch (IOException e) {
-                }
+					is.close();
+				} catch (IOException e) {
+				}
 			}
 		}
-		
+
 		return isOk;
 	}
 
@@ -411,34 +414,35 @@ public class DexterUtil {
 	 * @param filePath
 	 * @throws IOException
 	 */
-	private static void extractFile(final ZipInputStream zipIn, final String filePath){
+	private static void extractFile(final ZipInputStream zipIn, final String filePath) {
 		BufferedOutputStream bos = null;
-        try {
-	        bos = new BufferedOutputStream(new FileOutputStream(filePath));
-	        byte[] bytesIn = new byte[BUFFER_SIZE];
-	        int read = 0;
-	        while ((read = zipIn.read(bytesIn)) != -1) {
-	        	bos.write(bytesIn, 0, read);
-	        }
-	        
-        } catch (FileNotFoundException e) {
-        	logger.error(e.getMessage(), e);
-        } catch (IOException e) {
-        	logger.error(e.getMessage(), e);
-        } finally {
-        	if(bos != null){
-        		try {
-	                bos.close();
-                } catch (IOException e) {
-                }
-        	}
-        }
+		try {
+			bos = new BufferedOutputStream(new FileOutputStream(filePath));
+			byte[] bytesIn = new byte[BUFFER_SIZE];
+			int read = 0;
+			while ((read = zipIn.read(bytesIn)) != -1) {
+				bos.write(bytesIn, 0, read);
+			}
+
+		} catch (FileNotFoundException e) {
+			logger.error(e.getMessage(), e);
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			if (bos != null) {
+				try {
+					bos.close();
+				} catch (IOException e) {
+				}
+			}
+		}
 	}
 
 	/**
-	 * @param is you have to close InputStream by yourself
-	 * @param targetDir 
-	 * void
+	 * @param is
+	 *            you have to close InputStream by yourself
+	 * @param targetDir
+	 *            void
 	 */
 	public static void copyFileFromJar(final InputStream is, final String targetDir) {
 		if (is == null) {
@@ -466,7 +470,7 @@ public class DexterUtil {
 
 		final StringBuilder cmd = new StringBuilder();
 		cmd.append("REG ADD ").append(homeKey).append(" /f /v ").append(key).append(" /t ").append(type.toString())
-		        .append(" /d ").append(value);
+				.append(" /d ").append(value);
 
 		try {
 			Runtime.getRuntime().exec(cmd.toString());
@@ -486,23 +490,22 @@ public class DexterUtil {
 		Process process;
 		try {
 			process = Runtime.getRuntime().exec("reg query " + '"' + location + "\" /v " + key);
-			
+
 			final StreamReader reader = new StreamReader(process.getInputStream());
 			reader.start();
 			process.waitFor();
 			reader.join();
 
 			// Parse out the value
-			final String[] parsed = reader.getResult().split("\n"); 
-		
-			
-			if (parsed.length > 3) { 
+			final String[] parsed = reader.getResult().split("\n");
+
+			if (parsed.length > 3) {
 				return parsed[2].substring(parsed[2].indexOf("REG_SZ") + 6).trim();
 			}
 		} catch (IOException | InterruptedException e) {
 			logger.warn(e.getMessage(), e);
 		}
-		
+
 		return "";
 	}
 
@@ -544,7 +547,7 @@ public class DexterUtil {
 		assert Strings.isNullOrEmpty(filePath) == false;
 
 		final File file = new File(filePath);
-		
+
 		if (file.exists() == false) {
 			try {
 				file.createNewFile();
@@ -552,7 +555,7 @@ public class DexterUtil {
 				throw new DexterRuntimeException(e.getMessage() + " : " + filePath, e);
 			}
 		}
-		
+
 		return file;
 	}
 
@@ -560,16 +563,16 @@ public class DexterUtil {
 	 * @param dexterHome
 	 * @throws IOException
 	 */
-	public static void createFolderWithParents(final String dir){
-		try{
+	public static void createFolderWithParents(final String dir) {
+		try {
 			if (new File(dir).exists() == false) {
 				Files.createParentDirs(new File(dir));
 				new File(dir).mkdir();
 			}
-		} catch(IOException e){
+		} catch (IOException e) {
 			throw new DexterRuntimeException(e.getMessage(), e);
 		}
-		
+
 	}
 
 	/**
@@ -599,7 +602,7 @@ public class DexterUtil {
 			list.add(str);
 		}
 	}
-	
+
 	public static void addItemFromCommaStrings(final Set<String> list, final String commaStrings) {
 		for (final String str : commaStrings.split(",")) {
 			list.add(str);
@@ -633,14 +636,14 @@ public class DexterUtil {
 			result.add(dir.getPath());
 			return;
 		}
-		
-		for(final File sub : getSubFiles(dir)) { 
+
+		for (final File sub : getSubFiles(dir)) {
 			if (sub.isDirectory()) {
 				addSourceDir(sub, result);
 			}
 		}
 	}
-	
+
 	/**
 	 * @param text
 	 * @return
@@ -658,17 +661,14 @@ public class DexterUtil {
 		return result;
 	}
 
-	/** 
+	/**
 	 * @param dir
 	 * @param result
 	 */
 	private static void addHeaderDir(final File dir, final List<String> result) {
 		final String dirName = dir.getName().toLowerCase();
-		if ("src".equalsIgnoreCase(dirName) 
-				|| "source".equalsIgnoreCase(dirName) 
-				|| "inc".equalsIgnoreCase(dirName) 
-				|| "include".equalsIgnoreCase(dirName) 
-				|| "i".equalsIgnoreCase(dirName)) {
+		if ("src".equalsIgnoreCase(dirName) || "source".equalsIgnoreCase(dirName) || "inc".equalsIgnoreCase(dirName)
+				|| "include".equalsIgnoreCase(dirName) || "i".equalsIgnoreCase(dirName)) {
 			result.add(dir.getPath());
 			return;
 		}
@@ -679,7 +679,7 @@ public class DexterUtil {
 			}
 		}
 	}
-	
+
 	/**
 	 * @param items
 	 * @return
@@ -702,56 +702,57 @@ public class DexterUtil {
 	 * @return
 	 */
 	public static String refinePath(final String path) {
-		if(Strings.isNullOrEmpty(path)){
+		if (Strings.isNullOrEmpty(path)) {
 			return "";
 		}
 		return path.replace("\\", "/").replace(DexterUtil.PATH_SEPARATOR, "/").replace("//", "/");
 	}
-	
+
 	/**
-	 * cf)
-	 * Thread.dumpStack() : prints all stack traces
+	 * cf) Thread.dumpStack() : prints all stack traces
 	 * Thread.getAllStackTraces() : get all stack traces for all live threads
-	 * Thread.getStackTrace() : return an array of stack trace elements for this thread
+	 * Thread.getStackTrace() : return an array of stack trace elements for this
+	 * thread
+	 * 
 	 * @param log
 	 */
-	public static void dumpAllStackTraces(final Logger log){
+	public static void dumpAllStackTraces(final Logger log) {
 		StringBuilder msg = new StringBuilder();
-		
-		for(Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()){
+
+		for (Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
 			msg.append(entry.getKey().getName()).append(":").append(DexterUtil.LINE_SEPARATOR);
-			for(StackTraceElement element: entry.getValue()){
+			for (StackTraceElement element : entry.getValue()) {
 				msg.append("\t").append(element).append(DexterUtil.LINE_SEPARATOR);
 			}
 		}
-		
+
 		log.error(msg.toString());
 	}
-	
-	public static void dumpAllStackTracesForCurrentThread(final Logger log){
+
+	public static void dumpAllStackTracesForCurrentThread(final Logger log) {
 		StringBuilder msg = new StringBuilder();
-		
+
 		msg.append(Thread.currentThread().getName()).append(":").append(DexterUtil.LINE_SEPARATOR);
-		for(StackTraceElement element : Thread.currentThread().getStackTrace()){
+		for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
 			msg.append("\t").append(element).append(DexterUtil.LINE_SEPARATOR);
 		}
-		
+
 		log.error(msg.toString());
 	}
 
 	public static boolean isAvailablePort(final String host, final int port) {
-		if(port <= 1023 || port >= 65535){
+		if (port <= 1023 || port >= 65535) {
 			return false;
 		}
-		
+
 		Socket socket = null;
-		try{
+		try {
 			socket = new Socket(host, port);
 			return false;
-		} catch (IOException e){
+		} catch (IOException e) {
 			return true;
 		} finally {
-			if(socket != null){
+			if (socket != null) {
 				try {
 					socket.close();
 				} catch (IOException e) {
@@ -764,97 +765,100 @@ public class DexterUtil {
 	public static File getFileFullPath(final String base, final String modulePath, final String fileName) {
 		final String filePath = base + "/" + modulePath + "/" + fileName;
 		return new File(filePath.replace("//", "/"));
-    }
+	}
 
 	public static String makePath(final String... names) {
-		if(names == null){
+		if (names == null) {
 			throw new DexterRuntimeException("cannot make a path because of null parameter");
 		}
-		
+
 		StringBuilder path = new StringBuilder();
-		for(int i=0; i<names.length; i++){
-			if(Strings.isNullOrEmpty(names[i])){
+		for (int i = 0; i < names.length; i++) {
+			if (Strings.isNullOrEmpty(names[i])) {
 				continue;
 			}
-			
-			if(i == 0){
+
+			if (i == 0) {
 				path.append(names[i]);
 			} else {
 				path.append("/").append(names[i]);
 			}
 		}
-		
-	    return path.toString();
-    }
+
+		return path.toString();
+	}
 
 	public static void handleClosingFileInputStream(final FileInputStream fis) {
-		if(fis != null) {
+		if (fis != null) {
 			try {
 				fis.close();
 			} catch (IOException e) {
 				// Intentionally empty
 			}
 		}
-    }
-	
+	}
+
 	public static File toFile(final String fileFullPath) {
-	    File excelFile = new File(fileFullPath);
-		if(excelFile.exists() == false){
+		File excelFile = new File(fileFullPath);
+		if (excelFile.exists() == false) {
 			throw new DexterRuntimeException("File is not exist : " + fileFullPath);
 		}
-		
-	    return excelFile;
-    }
-	
+
+		return excelFile;
+	}
+
 	/**
-	 * 'A' --> 0, 'B' --> 1, ...
-	 * 'a' --> 0, 'b' --> 1, ...
+	 * 'A' --> 0, 'B' --> 1, ... 'a' --> 0, 'b' --> 1, ...
 	 */
 	public static int alphabetToInt(final String string) {
-		if(Strings.isNullOrEmpty(string) || "N/A".equals(string)){
+		if (Strings.isNullOrEmpty(string) || "N/A".equals(string)) {
 			return -1;
 		}
-		
+
 		char[] strs = string.toCharArray();
 		int value = 0;
-		
-		for(int i=0; i<strs.length; i++){
-			if('a' <= strs[i] && strs[i] <= 'z'){
+
+		for (int i = 0; i < strs.length; i++) {
+			if ('a' <= strs[i] && strs[i] <= 'z') {
 				value += strs[i] - 'a';
-			} else if('A' <= strs[i] && strs[i] <= 'Z'){
+			} else if ('A' <= strs[i] && strs[i] <= 'Z') {
 				value += strs[i] - 'A';
 			} else {
 				return -1;
 			}
 		}
-		
+
 		return value;
 	}
 
 	public static void closeInputStream(final InputStream input) {
-		if(input == null) return;
-		
+		if (input == null)
+			return;
+
 		try {
-	        input.close();
-        } catch (IOException e) {
-        	// intentionally empty
-        }
-    }
+			input.close();
+		} catch (IOException e) {
+			// intentionally empty
+		}
+	}
 
 	public static void closeOutputStream(final OutputStream output) {
-		if(output == null) return;
-		
+		if (output == null)
+			return;
+
 		try {
-	        output.close();
-        } catch (IOException e) {
-        	// intentionally empty
-        }
-    }
-	
-	public static void unzipInClassPath(final InputStream sourceZipInputStream, final String targetTempZipFile, final String basePath){
+			output.close();
+		} catch (IOException e) {
+			// intentionally empty
+		}
+	}
+
+	public static void unzipInClassPath(final InputStream sourceZipInputStream, final String targetTempZipFile,
+			final String basePath) {
 		final File file = new File(targetTempZipFile);
-		if(file.exists()) return;
-		
+		if (file.exists())
+			return;
+
 		try {
 			FileUtils.copyInputStreamToFile(sourceZipInputStream, file);
 			DexterUtil.unzip(targetTempZipFile, basePath);
@@ -868,89 +872,91 @@ public class DexterUtil {
 	}
 
 	public static void checkFolderExistence(final Map<String, Object> map, final String key) {
-	    if(null == map.get(key)) return;
-	    
-	    final String dir = (String) map.get(key);
-	    checkFolderExistence(dir);
-    }
+		if (null == map.get(key))
+			return;
+
+		final String dir = (String) map.get(key);
+		checkFolderExistence(dir);
+	}
 
 	public static void checkFoldersExistence(final Map<String, Object> map, final String key) {
-		if(null == map.get(key)) return;
+		if (null == map.get(key))
+			return;
 
 		Object dirObject = map.get(key);
-		
-		if(dirObject instanceof ArrayList){
+
+		if (dirObject instanceof ArrayList) {
 			@SuppressWarnings("unchecked")
-            final ArrayList<String> dirs = (ArrayList<String>) dirObject;
-			
-			for(String dir : dirs){
+			final ArrayList<String> dirs = (ArrayList<String>) dirObject;
+
+			for (String dir : dirs) {
 				checkFolderExistence(dir);
 			}
 		}
-		
-    }
+
+	}
 
 	public static void checkFolderExistence(final String dir) {
-		if(new File(dir).exists() == false){
-	    	throw new DexterRuntimeException("Folder(Directory) is not exist : " + dir);
-	    }
-    }
+		if (new File(dir).exists() == false) {
+			throw new DexterRuntimeException("Folder(Directory) is not exist : " + dir);
+		}
+	}
 
 	public static void checkStringField(String fieldName) {
-	    if(Strings.isNullOrEmpty(fieldName)){
-	    	throw new DexterRuntimeException("field is empty or null");
-	    }
-    }
+		if (Strings.isNullOrEmpty(fieldName)) {
+			throw new DexterRuntimeException("field is empty or null");
+		}
+	}
 
 	public static void checkNullField(EndOfAnalysisHandler field) {
-	    if(field == null){
-	    	throw new DexterRuntimeException("field is null");
-	    }
-    }
+		if (field == null) {
+			throw new DexterRuntimeException("field is null");
+		}
+	}
 
 	public static void checkListFieldHasMoreThanOne(@SuppressWarnings("rawtypes") List listField) {
-		if(listField == null){
-	    	throw new DexterRuntimeException("list field is null");
-	    }
-		
-		if(listField.size() == 0){
+		if (listField == null) {
+			throw new DexterRuntimeException("list field is null");
+		}
+
+		if (listField.size() == 0) {
 			throw new DexterRuntimeException("list field size is 0");
 		}
-    }
+	}
 
 	public static int getIntFromMap(Map<String, Object> map, String key) {
 		Object obj = map.get(key);
-		
-		if(obj instanceof Integer){
+
+		if (obj instanceof Integer) {
 			return (int) obj;
-		} else if(obj instanceof String){
+		} else if (obj instanceof String) {
 			return Integer.parseInt((String) obj);
 		} else {
 			throw new DexterRuntimeException("unknown type to convert int");
 		}
-    }
+	}
 
 	public static String addPaths(String... paths) {
 		assert paths != null;
-		
+
 		StringBuilder pathStr = new StringBuilder();
-		for(int i=0; i< paths.length; i++){
+		for (int i = 0; i < paths.length; i++) {
 			String path = paths[i];
-			
-			if(i==0){
+
+			if (i == 0) {
 				pathStr.append(path);
 			} else {
 				pathStr.append("/").append(path);
 			}
 		}
-		
-		return DexterUtil.refinePath(pathStr.toString());
-    }
 
-	public static InputStream getResourceAsStreamInClassPath(@SuppressWarnings("rawtypes") Class clazz, 
+		return DexterUtil.refinePath(pathStr.toString());
+	}
+
+	public static InputStream getResourceAsStreamInClassPath(@SuppressWarnings("rawtypes") Class clazz,
 			String filepath) {
 		return clazz.getClassLoader().getResourceAsStream(filepath);
-    }
+	}
 
 	public static void createDirectoryIfNotExist(String directoryString) {
 		final File directory = new File(directoryString);
@@ -970,29 +976,29 @@ public class DexterUtil {
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> getMapFromJsonString(StringBuilder contents) {
 		assert contents != null && contents.length() > 0;
-		
+
 		Gson gson = new Gson();
 		return gson.fromJson(contents.toString(), Map.class);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> getMapFromJsonString(String contents) {
 		assert Strings.isNullOrEmpty(contents) == false;
-		
+
 		Gson gson = new Gson();
 		return gson.fromJson(contents, Map.class);
 	}
 
 	public static void deleteDirectory(File directory) throws IOException {
-			if (!directory.exists()) {
-				return;
-			}
-			cleanDirectory(directory);
-			if (!directory.delete()) {
-				String message = "Unable to delete directory " + directory + ".";
-				throw new DexterRuntimeException(message);
-			}
+		if (!directory.exists()) {
+			return;
 		}
+		cleanDirectory(directory);
+		if (!directory.delete()) {
+			String message = "Unable to delete directory " + directory + ".";
+			throw new DexterRuntimeException(message);
+		}
+	}
 
 	public static void cleanDirectory(File directory) throws IOException {
 		if (!directory.exists()) {
@@ -1006,7 +1012,7 @@ public class DexterUtil {
 		}
 
 		File[] files = DexterUtil.getSubFiles(directory);
-		
+
 		IOException exception = null;
 		for (int i = 0; i < files.length; i++) {
 			File file = files[i];
@@ -1021,13 +1027,13 @@ public class DexterUtil {
 			throw new DexterRuntimeException("Faile to remove directory");
 		}
 	}
-	
+
 	public static void forceDelete(File file) throws IOException {
 		if (file.isDirectory()) {
 			deleteDirectory(file);
 		} else {
 			if (!file.exists()) {
-			throw new FileNotFoundException("File does not exist: " + file);
+				throw new FileNotFoundException("File does not exist: " + file);
 			}
 			if (!file.delete()) {
 				String message = "Unable to delete file: " + file;
@@ -1038,53 +1044,54 @@ public class DexterUtil {
 
 	public static LANGUAGE getLanguage(String fileExtension) {
 		final String language = fileExtension.toLowerCase();
-		
-		switch(language){
-			case "java":
-				return LANGUAGE.JAVA;
-			case "h":
-			case "c":
-				return LANGUAGE.C;
-			case "hpp":
-			case "cpp":
-				return LANGUAGE.CPP;
-			case "cs":
-				return LANGUAGE.C_SHARP;
-			case "js":
-				return LANGUAGE.JAVASCRIPT;
-			default:
-				return LANGUAGE.UNKNOWN;
+
+		switch (language) {
+		case "java":
+			return LANGUAGE.JAVA;
+		case "h":
+		case "c":
+			return LANGUAGE.C;
+		case "hpp":
+		case "cpp":
+			return LANGUAGE.CPP;
+		case "cs":
+			return LANGUAGE.C_SHARP;
+		case "js":
+			return LANGUAGE.JAVASCRIPT;
+		default:
+			return LANGUAGE.UNKNOWN;
 		}
 	}
 
 	public static File getFile(String fileFullPath) {
 		final File file = new File(fileFullPath);
-		if(file.exists() == false){
+		if (file.exists() == false) {
 			throw new DexterRuntimeException("Cannot open the file because of no exist the file");
 		}
-		
+
 		return file;
 	}
 
 	public static void openSourceInsight(String fileFullPath, int line) {
-		final String sourceInsightExe = PersistenceProperty.getInstance().read(DexterConfig.SOURCE_INSIGHT_EXE_PATH_KEY);
-		if(Strings.isNullOrEmpty(sourceInsightExe)){
+		final String sourceInsightExe = PersistenceProperty.getInstance()
+				.read(DexterConfig.SOURCE_INSIGHT_EXE_PATH_KEY);
+		if (Strings.isNullOrEmpty(sourceInsightExe)) {
 			throw new DexterRuntimeException("Source Insight Exe Path is not set yet");
 		}
-		
-		if(line == -1){
+
+		if (line == -1) {
 			throw new DexterRuntimeException("cannot open the SourceInsight because line is -1");
 		}
-		
+
 		final StringBuilder cmd = new StringBuilder();
-		cmd.append("\"").append(sourceInsightExe).append("/Insight3.exe").append("\"").append(" -i ")
-		.append("+").append(line).append(" ").append(fileFullPath);
-		
+		cmd.append("\"").append(sourceInsightExe).append("/Insight3.exe").append("\"").append(" -i ").append("+")
+				.append(line).append(" ").append(fileFullPath);
+
 		try {
 			Runtime.getRuntime().exec(cmd.toString());
 		} catch (Exception e) {
 			throw new DexterRuntimeException(e.getMessage(), e);
-		}	
+		}
 	}
 
 	public static String getFileNameWithoutExtension(String fileName) {
@@ -1092,10 +1099,10 @@ public class DexterUtil {
 	}
 
 	public static File[] getSubFilesByPrefix(final File parentFolder, final String fileNamePrefix) {
-		return parentFolder.listFiles(new FileFilter(){
+		return parentFolder.listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File pathname) {
-				if(pathname.getName().startsWith(fileNamePrefix))
+				if (pathname.getName().startsWith(fileNamePrefix))
 					return true;
 				else
 					return false;
@@ -1104,45 +1111,51 @@ public class DexterUtil {
 	}
 
 	public static String[] getSubFilenames(String baseDir) {
-		if(Strings.isNullOrEmpty(baseDir)){
+		if (Strings.isNullOrEmpty(baseDir)) {
 			throw new DexterRuntimeException("Parent Folder String is null or empty.");
 		}
-		
-		try{
+
+		try {
 			File parentDirFile = new File(baseDir);
-			String[] filenames = parentDirFile.list(); 
-			
-			if(filenames == null){
+			String[] filenames = parentDirFile.list();
+
+			if (filenames == null) {
 				logger.warn("can't get names of sub folder or file(null) : " + parentDirFile.toString());
 				return new String[0];
 			}
-			
+
 			return filenames;
-		} catch (SecurityException e){
+		} catch (SecurityException e) {
 			throw new DexterRuntimeException("can't get sub folders or files:" + baseDir, e);
 		}
 	}
-	
-	public static File[] getSubFiles(final File baseDir){
-		if(baseDir == null){
+
+	public static File[] getSubFiles(final File baseDir) {
+		if (baseDir == null) {
 			throw new DexterRuntimeException("Parent Folder is null.");
 		}
-		
-		try{
-			File[] files = baseDir.listFiles(); 
-			
-			if(files == null){
+
+		try {
+			File[] files = baseDir.listFiles();
+
+			if (files == null) {
 				logger.warn("can't get sub folders or files(null) : " + baseDir.toString());
 				return new File[0];
 			}
-			
+
 			return files;
-		} catch (SecurityException e){
+		} catch (SecurityException e) {
 			throw new DexterRuntimeException("can't get sub folders or files:" + baseDir.toString(), e);
 		}
 	}
 
 	public static File[] getSubFiles(String baseDir) {
 		return getSubFiles(new File(baseDir));
+	}
+
+	public static void throwExceptionWhenFileNotExist(String filePath) {
+		if (Strings.isNullOrEmpty(filePath) || new File(filePath).exists() == false) {
+			throw new DexterRuntimeException("there is no file : " + filePath);
+		}
 	}
 }
