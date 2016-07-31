@@ -107,12 +107,12 @@ public class SendResultJob implements Runnable {
 	    	final File errorPath = new File(errorResultPath);
 	    	if(errorPath.exists() == false){
 	    		if(errorPath.mkdir()){
-	    			Files.move(resultFile, new File(errorResultPath + DexterUtil.PATH_SEPARATOR + resultFile.getName()));
+	    			Files.move(resultFile, new File(errorResultPath + DexterUtil.FILE_SEPARATOR + resultFile.getName()));
 	    		} else {
 	    			logger.warn("can't make error folder for result: " + errorResultPath + " for file name: " + resultFile.toString());
 	    		}
 	    	} else {
-	    		Files.move(resultFile, new File(errorResultPath + DexterUtil.PATH_SEPARATOR + resultFile.getName()));
+	    		Files.move(resultFile, new File(errorResultPath + DexterUtil.FILE_SEPARATOR + resultFile.getName()));
 	    	}
 	    } catch (IOException e) {
 	        logger.warn(e.getMessage(), e);

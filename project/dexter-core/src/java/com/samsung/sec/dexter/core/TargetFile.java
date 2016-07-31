@@ -77,7 +77,7 @@ public class TargetFile {
     		path = path.replace(".", "/");
     	}
     	
-    	path = path.replace(DexterUtil.PATH_SEPARATOR, "/");
+    	path = path.replace(DexterUtil.FILE_SEPARATOR, "/");
     	
     	
     	if(path.endsWith("/")){
@@ -116,7 +116,7 @@ public class TargetFile {
 	 * eg) MyClass.java, Main.c, Main.cpp
 	 */
     public void setFileName(String fileName) {
-    	fileName = fileName.replace("\\", "").replace("/", "").replace(DexterUtil.PATH_SEPARATOR, "");
+    	fileName = fileName.replace("\\", "").replace("/", "").replace(DexterUtil.FILE_SEPARATOR, "");
     	
 	    this.fileName = fileName.replace("/", "");
     }
