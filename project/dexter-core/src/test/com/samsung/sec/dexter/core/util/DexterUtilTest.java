@@ -133,14 +133,4 @@ public class DexterUtilTest {
 		assertNotNull(testFile);
 	}
 	
-	@Test
-	public void test_getPathSeparator(){
-		String pathSep = DexterUtil.getPathSeparator();
-		String sysFileSep = System.getProperty("file.separator"); 
-		
-		System.out.println(pathSep);
-		System.out.println(sysFileSep);
-		
-		assertTrue(pathSep.equals(sysFileSep));
-	}
 }
