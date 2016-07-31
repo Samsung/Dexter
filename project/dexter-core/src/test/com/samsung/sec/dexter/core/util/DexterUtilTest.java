@@ -32,6 +32,8 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+
 public class DexterUtilTest {
 	@Test
 	public void test_createDirectoryIfNotExist(){
@@ -114,4 +116,21 @@ public class DexterUtilTest {
 		assertNotNull(files);
 		assertTrue(files.length == 0);
 	}
+	
+	@Test
+	public void test_ToFile_should_throw_exception_when_no_file(){
+		try{
+			DexterUtil.toFile("./text.txt");
+			fail();
+		} catch (Exception e){
+			assertTrue(e instanceof DexterRuntimeException);
+		}
+	}
+	
+	@Test
+	public void test_toFile_valid_working(){
+		File testFile = DexterUtil.toFile("./build.gradle");
+		assertNotNull(testFile);
+	}
+	
 }
