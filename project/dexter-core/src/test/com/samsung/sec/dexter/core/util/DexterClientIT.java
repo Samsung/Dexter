@@ -138,7 +138,7 @@ public class DexterClientIT {
 			throw new Exception("Unknown OS to run Dexter Server for Unit Test");
 		}
 		
-		cmd.append(dexterServerPath).append(DexterUtil.PATH_SEPARATOR).append("server.js ");
+		cmd.append(dexterServerPath).append(DexterUtil.FILE_SEPARATOR).append("server.js ");
 		cmd.append(" -p=").append(dexterServerPort);
 		cmd.append(" -database.host=").append(dbHost);
 		cmd.append(" -database.port=").append(dbPort);

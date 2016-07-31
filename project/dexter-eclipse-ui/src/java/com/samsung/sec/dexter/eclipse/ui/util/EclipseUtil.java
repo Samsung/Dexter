@@ -86,7 +86,7 @@ public class EclipseUtil {
 			path = path.substring(1);
 		}
 		
-		if(!path.endsWith("/") && !path.endsWith("\\") && !path.endsWith(DexterUtil.PATH_SEPARATOR)){
+		if(!path.endsWith("/") && !path.endsWith("\\") && !path.endsWith(DexterUtil.FILE_SEPARATOR)){
 			path = path + "/";
 		}
 		
@@ -152,7 +152,7 @@ public class EclipseUtil {
 				path = path.substring(1);
 			}
 			
-			if(!path.endsWith("/") && !path.endsWith("\\") && !path.endsWith(DexterUtil.PATH_SEPARATOR)){
+			if(!path.endsWith("/") && !path.endsWith("\\") && !path.endsWith(DexterUtil.FILE_SEPARATOR)){
 				path = path + "/";
 			}
 			
