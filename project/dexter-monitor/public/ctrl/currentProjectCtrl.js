@@ -61,7 +61,7 @@ monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, $inter
         $scope.gridOptions = createGrid(columnDefs);
         $scope.gridOptions.showColumnFooter = true;
         refreshData();
-        $interval(refreshData, 10000);
+        $scope.refreshDataTimer = $interval(refreshData, 10000);
     }
 
     function refreshData() {
@@ -104,4 +104,13 @@ monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, $inter
             return '';
         return `${((entity.defectCountFixed + entity.defectCountDismissed) / entity.defectCountTotal * 100).toFixed(1)}%`;
     };
+
+    $scope.$on("$destroy", () => {
+        if ($scope.refreshDataTimer) {
+            $interval.cancel($scope.refreshDataTimer);
+        }
+        if ($scope.dotAdder) {
+            $interval.cancel($scope.dotAdder);
+        }
+    });
 });
