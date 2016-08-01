@@ -63,15 +63,18 @@ monitorApp.controller("CurrentUserCtrl", function($scope, $http, $log, UserServi
 
         UserService.getExtraInfoByUserId(user.userId)
             .then((row) => {
-                if(row) {
+                if(row && row.name) {
                     user.name = row.name;
                     user.department = row.department;
                     user.title = row.title;
                     user.employeeNumber = row.employeeNumber;
+                } else {
+                    alert(`Failed to load extra information of '${user.userId}'.\nPlease contact the system administrator.`);
                 }
             })
             .catch((err) => {
                 $log.error(err);
+                alert(`Failed to load extra information of '${user.userId}'.\nPlease contact the system administrator.\n${err}`);
             });
     };
 });

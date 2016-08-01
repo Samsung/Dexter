@@ -71,6 +71,7 @@ monitorApp.service('ServerStatusService', function($http, $log) {
             })
             .catch((err) => {
                 $log.error(err);
+                alert(`Failed to load active server list.\nPlease contact the system administrator.\n${err}`);
                 return [];
             });
     };
