@@ -267,7 +267,7 @@ function loadAndCreateUserStatusTable() {
         .then((rows) => {
             rows.forEach((row) => {
                 row.targetDeveloperCount = row.allDeveloperCount - row.nonTargetDeveloperCount;
-                row.installationRate = (row.installedDeveloperCount / row.targetDeveloperCount * 100).toFixed(1);
+                row.installationRatio = (row.installedDeveloperCount / row.targetDeveloperCount * 100).toFixed(1);
             });
             return rows;
         });

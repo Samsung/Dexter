@@ -40,10 +40,10 @@ monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, Projec
             headerTooltip: 'Number of fixed defects', aggregationType: uiGridConstants.aggregationTypes.sum},
         {field:'defectCountDismissed',  displayName:'Dismissed',        width: '9%',    cellClass: 'grid-align',
             headerTooltip: 'Number of dismissed defects', aggregationType: uiGridConstants.aggregationTypes.sum},
-        {field:'resolvedRate',          displayName:'Resolved rate',    width: '11%',   cellClass: 'grid-align',
+        {field:'resolvedRatio',         displayName:'Resolved ratio',   width: '11%',   cellClass: 'grid-align',
             headerTooltip: '(Fixed + Dismissed) / Total * 100', footerCellClass: 'grid-align',
-            aggregationType: () => `${$scope.resolvedRateTotal}`,
-            cellTemplate:'<div class="ui-grid-cell-contents">{{grid.appScope.getResolvedRate(row.entity)}}</div>'},
+            aggregationType: () => `${$scope.resolvedRatioTotal}`,
+            cellTemplate:'<div class="ui-grid-cell-contents">{{grid.appScope.getResolvedRatio(row.entity)}}</div>'},
         {field:'serverStatus',          displayName:'Server Status',    width: '16%',   cellClass: 'grid-align',
             headerTooltip: 'Server status', footerCellClass: 'grid-align',
             aggregationType: () => `Active: ${$scope.activeServerCount} / Inactive: ${$scope.allServerCount-$scope.activeServerCount}`,
@@ -55,7 +55,7 @@ monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, Projec
     initialize();
 
     function initialize() {
-        $scope.resolvedRateTotal = '';
+        $scope.resolvedRatioTotal = '';
         $scope.allServerCount = 0;
         $scope.activeServerCount = 0;
         $scope.gridOptions = createGrid(columnDefs);
@@ -76,7 +76,7 @@ monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, Projec
                 const defectCountTotalSum = _.sum(_.map($scope.gridOptions.data, 'defectCountTotal'));
                 const defectCountFixedSum = _.sum(_.map($scope.gridOptions.data, 'defectCountFixed'));
                 const defectCountDismissedSum = _.sum(_.map($scope.gridOptions.data, 'defectCountDismissed'));
-                $scope.resolvedRateTotal = `${((defectCountFixedSum + defectCountDismissedSum) / defectCountTotalSum * 100).toFixed(1)}%`;
+                $scope.resolvedRatioTotal = `${((defectCountFixedSum + defectCountDismissedSum) / defectCountTotalSum * 100).toFixed(1)}%`;
                 $scope.allServerCount = rows.length;
                 $scope.activeServerCount = activeServerList.length;
             })
@@ -85,7 +85,7 @@ monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, Projec
             });
     }
 
-    $scope.getResolvedRate = function(entity) {
+    $scope.getResolvedRatio = function(entity) {
         if (!entity.defectCountTotal)
             return '';
         return `${((entity.defectCountFixed + entity.defectCountDismissed) / entity.defectCountTotal * 100).toFixed(1)}%`;

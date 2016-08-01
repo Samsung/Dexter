@@ -58,8 +58,8 @@ describe('OverviewCtrl Test', function() {
             assert.equal($scope.installationStatusGridOptions.data[1].nonTargetDeveloperCount, 30);
             assert.equal($scope.installationStatusGridOptions.data[0].targetDeveloperCount, 80);
             assert.equal($scope.installationStatusGridOptions.data[1].targetDeveloperCount, 120);
-            assert.equal($scope.installationStatusGridOptions.data[0].installationRate, '100.0');
-            assert.equal($scope.installationStatusGridOptions.data[1].installationRate, '41.6');
+            assert.equal($scope.installationStatusGridOptions.data[0].installationRatio, '100.0');
+            assert.equal($scope.installationStatusGridOptions.data[1].installationRatio, '41.6');
 
             assert.equal($scope.defectStatusGridOptions.data.length, 2);
             assert.equal($scope.defectStatusGridOptions.data[0].groupName, 'B-group');
@@ -87,7 +87,7 @@ describe('OverviewCtrl Test', function() {
                     installedDeveloperCount: 80,
                     nonTargetDeveloperCount: 5,
                     targetDeveloperCount: 80,
-                    installationRate: '100.0'
+                    installationRatio: '100.0'
                 },
                 {
                     groupName: 'C-group',
@@ -95,7 +95,7 @@ describe('OverviewCtrl Test', function() {
                     installedDeveloperCount: 50,
                     nonTargetDeveloperCount: 30,
                     targetDeveloperCount: 120,
-                    installationRate: '41.6'
+                    installationRatio: '41.6'
                 }
             ]});
 

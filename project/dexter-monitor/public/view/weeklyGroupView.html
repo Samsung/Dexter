@@ -10,14 +10,14 @@
                     </button>
                     <ul class="dropdown-menu year-change" uib-dropdown-menu role="menu" aria-labelledby="year-change">
                         <li ng-repeat="year in years">
-                            <a ng-click="yearChanged(year)" href>{{year}}</a>
+                            <a ng-click="setCurrentYearAndReloadData(year)" href>{{year}}</a>
                         </li>
                     </ul>
                 </div>
             </td>
             <td>
                 <uib-pagination boundary-link-numbers="true" direction-links="false" max-size="21" items-per-page="1"
-                                total-items="maxWeekOfCurYear" ng-model="curWeek" ng-change="weekChanged()">
+                                total-items="maxWeekOfCurYear" ng-model="curWeek" ng-change="setCurrentWeekAndReloadData()">
                 </uib-pagination>
             </td>
         </tr>

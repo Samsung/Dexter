@@ -57,17 +57,17 @@ monitorApp.controller("CurrentUserCtrl", function($scope, $http, $log, UserServi
             });
     }
 
-    $scope.getExtraInfo = function(entity) {
-        if (entity.name && entity.department && entity.title && entity.employeeNumber)
+    $scope.getExtraInfo = function(user) {
+        if (user.name && user.department && user.title && user.employeeNumber)
             return;
 
-        UserService.getExtraInfoByUserId(entity.userId)
+        UserService.getExtraInfoByUserId(user.userId)
             .then((row) => {
                 if(row) {
-                    entity.name = row.name;
-                    entity.department = row.department;
-                    entity.title = row.title;
-                    entity.employeeNumber = row.employeeNumber;
+                    user.name = row.name;
+                    user.department = row.department;
+                    user.title = row.title;
+                    user.employeeNumber = row.employeeNumber;
                 }
             })
             .catch((err) => {

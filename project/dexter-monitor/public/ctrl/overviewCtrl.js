@@ -28,37 +28,50 @@
 monitorApp.controller("OverviewCtrl", function($scope, $http, $log, UserService, ProjectService, uiGridConstants) {
 
     const summaryColumnDefs = [
-        {field:'installationRate',          width: '25%',       cellClass: 'grid-align',
+        {field:'installationRatio',         width: '25%',       cellClass: 'grid-align',
             headerCellTemplate:'<div class="grid-align ui-grid-cell-contents"' +
-            'uib-tooltip="Installed / Target * 100" tooltip-append-to-body="true">Installation rate</div>'},
+            'uib-tooltip="Installed / Target * 100" tooltip-append-to-body="true">Installation ratio</div>'},
         {field:'installedDeveloperCount',   width: '25%',       cellClass: 'grid-align',
             headerCellTemplate:'<div class="grid-align ui-grid-cell-contents"' +
-            'uib-tooltip="Installed / Target" tooltip-append-to-body="true">Installed developers</div>'},
-        {field:'resolvedDefectRate',        width: '25%',       cellClass: 'grid-align',
+            'uib-tooltip="Installed / Target" tooltip-append-to-body="true">Number of users</div>'},
+        {field:'resolvedDefectRatio',       width: '25%',       cellClass: 'grid-align',
             headerCellTemplate:'<div class="grid-align ui-grid-cell-contents"' +
-            'uib-tooltip="(Fixed + Dismissed) / Total * 100" tooltip-append-to-body="true">Resolved defect rate</div>'},
+            'uib-tooltip="(Fixed + Dismissed) / Total * 100" tooltip-append-to-body="true">Defect removal ratio</div>'},
         {field:'defectCountTotal',          width: '25%',       cellClass: 'grid-align',
             headerCellTemplate:'<div class="grid-align ui-grid-cell-contents"' +
-            'uib-tooltip="Total defects" tooltip-append-to-body="true">Total defects</div>'}
+            'uib-tooltip="Total defects" tooltip-append-to-body="true">Total number of defects</div>'}
     ];
 
     const installationStatusColumnDefs = [
-        {field:'groupName',                 displayName:'Group',                    width: '17%',
-            cellClass: 'grid-align',    headerTooltip: 'Group name'},
-        {field:'allDeveloperCount',         displayName:'Developers',               width: '16%',
-            cellClass: 'grid-align',    headerTooltip: 'Number of developers',
+        {field:'groupName',                 width: '17%',
+            cellClass: 'grid-align',    displayName: 'Group name',
+            headerCellTemplate:
+                '<div class="grid-align ui-grid-cell-contents">Group name</div>'},
+        {field:'allDeveloperCount',         width: '16%',
+            cellClass: 'grid-align',    displayName: 'Total number of developers',
+            headerCellTemplate:
+                '<div class="grid-align ui-grid-cell-contents">Total number of<br>developers</div>',
             aggregationType: uiGridConstants.aggregationTypes.sum},
-        {field:'targetDeveloperCount',      displayName:'Target developers',        width: '16%',
-            cellClass: 'grid-align',    headerTooltip: 'Number of developers who should install Dexter',
+        {field:'targetDeveloperCount',      width: '16%',
+            cellClass: 'grid-align',    displayName: 'Number of developers subject to installation',
+            headerCellTemplate:
+                '<div class="grid-align ui-grid-cell-contents">Number of developers<br>subject to installation</div>',
             aggregationType: uiGridConstants.aggregationTypes.sum},
-        {field:'installedDeveloperCount',   displayName:'Installed developers',     width: '16%',
-            cellClass: 'grid-align',    headerTooltip: 'Number of developers who installed Dexter',
+        {field:'installedDeveloperCount',   width: '16%',
+            cellClass: 'grid-align',    displayName: 'Number of developers finished with installation',
+            headerCellTemplate:
+                '<div class="grid-align ui-grid-cell-contents">Number of developers<br>finished with installation</div>',
             aggregationType: uiGridConstants.aggregationTypes.sum},
-        {field:'installationRate',          displayName:'Installation rate (%)',    width: '16%',
-            cellClass: 'grid-align',    headerTooltip: 'Installation rate',
-            aggregationType: () => $scope.rate, footerCellClass: 'grid-align'},
-        {field:'nonTargetDeveloperCount',   displayName:'Non-target developers',    width: '19%',
-            cellClass: 'grid-align',    headerTooltip: 'Number of developers not applicable to install Dexter',
+        {field:'installationRatio',         width: '16%',
+            cellClass: 'grid-align',    displayName: 'Installation ratio (%)',
+            headerCellTemplate:
+                '<div class="grid-align ui-grid-cell-contents">Installation ratio (%)</div>',
+            cellTemplate:'<div class="ui-grid-cell-contents">{{COL_FIELD}}%</div>',
+            aggregationType: () => $scope.ratio, footerCellClass: 'grid-align'},
+        {field:'nonTargetDeveloperCount',   width: '19%',
+            cellClass: 'grid-align',    displayName: 'Number of developers impossible to install',
+            headerCellTemplate:
+                '<div class="grid-align ui-grid-cell-contents">Number of developers<br>impossible to install</div>',
             aggregationType: uiGridConstants.aggregationTypes.sum}
     ];
 
@@ -117,8 +130,8 @@ monitorApp.controller("OverviewCtrl", function($scope, $http, $log, UserService,
                 resizeHeightOfGrid('overviewInstallationStatusGrid', rows.length);
                 const targetDeveloperCountTotal = _.sum(_.map($scope.installationStatusGridOptions.data, 'targetDeveloperCount'));
                 const installedDeveloperCountTotal = _.sum(_.map($scope.installationStatusGridOptions.data, 'installedDeveloperCount'));
-                $scope.rate = ((installedDeveloperCountTotal / targetDeveloperCountTotal) * 100).toFixed(1);
-                $scope.summaryGridOptions.data[0].installationRate = $scope.rate + '%';
+                $scope.ratio = ((installedDeveloperCountTotal / targetDeveloperCountTotal) * 100).toFixed(1) + '%';
+                $scope.summaryGridOptions.data[0].installationRatio = $scope.ratio;
                 $scope.summaryGridOptions.data[0].installedDeveloperCount
                     = `${installedDeveloperCountTotal.toLocaleString()} / ${targetDeveloperCountTotal.toLocaleString()}`;
             })
@@ -135,7 +148,7 @@ monitorApp.controller("OverviewCtrl", function($scope, $http, $log, UserService,
                 const defectCountTotal = _.sum(_.pull(_.map(rows, 'defectCountTotal'), ""));
                 const defectCountFixed = _.sum(_.pull(_.map(rows, 'defectCountFixed'), ""));
                 const defectCountDismissed =_.sum(_.pull(_.map(rows, 'defectCountDismissed'), ""));
-                $scope.summaryGridOptions.data[0].resolvedDefectRate
+                $scope.summaryGridOptions.data[0].resolvedDefectRatio
                     = ((defectCountFixed + defectCountDismissed) / defectCountTotal * 100).toFixed(1) + '%';
                 $scope.summaryGridOptions.data[0].defectCountTotal = defectCountTotal.toLocaleString();
             })

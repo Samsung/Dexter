@@ -98,7 +98,7 @@ monitorApp.controller("WeeklyGroupCtrl", function($scope, $http, $log, $q, Defec
         });
     }
 
-    $scope.yearChanged = function(year) {
+    $scope.setCurrentYearAndReloadData = function(year) {
         $scope.curYear = year;
         DefectService.getMaxWeek($scope.curYear)
             .then((week) => {
@@ -111,7 +111,7 @@ monitorApp.controller("WeeklyGroupCtrl", function($scope, $http, $log, $q, Defec
             });
     };
 
-    $scope.weekChanged = function() {
+    $scope.setCurrentWeekAndReloadData = function() {
         loadDefectListByGroup($scope.curYear, $scope.curWeek);
         setGridExportingFileNames($scope.gridOptions, currentFileName());
     };

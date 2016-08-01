@@ -70,10 +70,10 @@ describe('CurrentProjectCtrl Test', function() {
             assert.equal($scope.gridOptions.data[1].defectCountDismissed, 3);
             assert.equal($scope.gridOptions.data[2].defectCountDismissed, 9);
             assert.equal($scope.gridOptions.data[3].defectCountDismissed, undefined);
-            assert.equal($scope.getResolvedRate($scope.gridOptions.data[0]), '');
-            assert.equal($scope.getResolvedRate($scope.gridOptions.data[1]), ((7+3)/15*100).toFixed(1) + '%');
-            assert.equal($scope.getResolvedRate($scope.gridOptions.data[2]), ((5+9)/20*100).toFixed(1) + '%');
-            assert.equal($scope.getResolvedRate($scope.gridOptions.data[3]), '');
+            assert.equal($scope.getResolvedRatio($scope.gridOptions.data[0]), '');
+            assert.equal($scope.getResolvedRatio($scope.gridOptions.data[1]), ((7+3)/15*100).toFixed(1) + '%');
+            assert.equal($scope.getResolvedRatio($scope.gridOptions.data[2]), ((5+9)/20*100).toFixed(1) + '%');
+            assert.equal($scope.getResolvedRatio($scope.gridOptions.data[3]), '');
             assert.equal($scope.gridOptions.data[0].serverStatus, 'Inactive');
             assert.equal($scope.gridOptions.data[1].serverStatus, 'Active');
             assert.equal($scope.gridOptions.data[2].serverStatus, 'Active');

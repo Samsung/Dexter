@@ -48,9 +48,9 @@ describe('WeeklyGroupCtrl Test', function() {
             ]});
     });
 
-    describe('yearChanged()', function() {
+    describe('setCurrentYearAndReloadData()', function() {
         it('should set values properly', function() {
-            $scope.yearChanged(2016);
+            $scope.setCurrentYearAndReloadData(2016);
             $rootScope.$apply();
             $httpBackend.flush();
 
@@ -65,12 +65,12 @@ describe('WeeklyGroupCtrl Test', function() {
         });
     });
 
-    describe('weekChanged()', function() {
+    describe('setCurrentWeekAndReloadData()', function() {
         it('should set values properly', function() {
             $scope.curYear = 2016;
             $scope.curWeek = 25;
 
-            $scope.weekChanged();
+            $scope.setCurrentWeekAndReloadData();
             $rootScope.$apply();
             $httpBackend.flush();
 
