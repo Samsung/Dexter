@@ -25,7 +25,7 @@
  */
 "use strict";
 
-monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, ProjectService, ServerStatusService, uiGridConstants) {
+monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, $interval, ProjectService, ServerStatusService, uiGridConstants) {
 
     const columnDefs = [
         {field:'projectName',           displayName:'Project',          width: '19%',
@@ -60,12 +60,22 @@ monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, Projec
         $scope.activeServerCount = 0;
         $scope.gridOptions = createGrid(columnDefs);
         $scope.gridOptions.showColumnFooter = true;
+        refreshData();
+        $interval(refreshData, 10000);
+    }
+
+    function refreshData() {
+        if ($scope.dotAdder) {
+            $interval.cancel($scope.dotAdder);
+        }
         ServerStatusService.getActiveServerList()
             .then(loadData)
             .catch((err) => {
                 $log.error(err);
             });
         $scope.time = new Date().toLocaleString();
+        $scope.dots = '.';
+        $scope.dotAdder = $interval(() => {$scope.dots += '.';}, 1000);
         setGridExportingFileNames($scope.gridOptions, CURRENT_STATUS_FILENAME_PREFIX + '-' + $scope.time);
     }
 
