@@ -20,13 +20,9 @@
                                 total-items="maxWeekOfCurYear" ng-model="curWeek" ng-change="setCurrentWeekAndReloadData()">
                 </uib-pagination>
             </td>
-        </tr>
-            <tr>
-                <td></td>
-                <td><div class="grid-weekly-group" id='weeklyGroupGrid' ui-grid="gridOptions"
-                         ui-grid-resize-columns ui-grid-move-columns ui-grid-selection ui-grid-exporter ui-grid-auto-resize>
-                </div></td>
-            </tr>
-        </table>
+        </tr></table>
+        <div class="grid-weekly-group" id='weeklyGroupGrid' ui-grid="gridOptions"
+             ui-grid-resize-columns ui-grid-move-columns ui-grid-selection ui-grid-exporter ui-grid-auto-resize>
+        </div>
     </div>
 </div>

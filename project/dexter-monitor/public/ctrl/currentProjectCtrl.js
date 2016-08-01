@@ -76,7 +76,11 @@ monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, Projec
                 const defectCountTotalSum = _.sum(_.map($scope.gridOptions.data, 'defectCountTotal'));
                 const defectCountFixedSum = _.sum(_.map($scope.gridOptions.data, 'defectCountFixed'));
                 const defectCountDismissedSum = _.sum(_.map($scope.gridOptions.data, 'defectCountDismissed'));
-                $scope.resolvedRatioTotal = `${((defectCountFixedSum + defectCountDismissedSum) / defectCountTotalSum * 100).toFixed(1)}%`;
+                if (defectCountTotalSum > 0) {
+                    $scope.resolvedRatioTotal = `${((defectCountFixedSum + defectCountDismissedSum) / defectCountTotalSum * 100).toFixed(1)}%`;
+                } else {
+                    $scope.resolvedRatioTotal = '';
+                }
                 $scope.allServerCount = rows.length;
                 $scope.activeServerCount = activeServerList.length;
             })

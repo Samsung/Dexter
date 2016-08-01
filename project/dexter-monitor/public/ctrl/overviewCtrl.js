@@ -130,7 +130,11 @@ monitorApp.controller("OverviewCtrl", function($scope, $http, $log, UserService,
                 resizeHeightOfGrid('overviewInstallationStatusGrid', rows.length);
                 const targetDeveloperCountTotal = _.sum(_.map($scope.installationStatusGridOptions.data, 'targetDeveloperCount'));
                 const installedDeveloperCountTotal = _.sum(_.map($scope.installationStatusGridOptions.data, 'installedDeveloperCount'));
-                $scope.ratio = ((installedDeveloperCountTotal / targetDeveloperCountTotal) * 100).toFixed(1) + '%';
+                if (targetDeveloperCountTotal > 0) {
+                    $scope.ratio = ((installedDeveloperCountTotal / targetDeveloperCountTotal) * 100).toFixed(1) + '%';
+                } else {
+                    $scope.ratio = '';
+                }
                 $scope.summaryGridOptions.data[0].installationRatio = $scope.ratio;
                 $scope.summaryGridOptions.data[0].installedDeveloperCount
                     = `${installedDeveloperCountTotal.toLocaleString()} / ${targetDeveloperCountTotal.toLocaleString()}`;
