@@ -283,3 +283,15 @@ exports.getUserStatus = function(req, res) {
             res.send({status:"fail", errorMessage: err.message});
         });
 };
+
+exports.getUserStatusInternal = function() {
+    return updateUserStatusList()
+        .then(loadAndCreateUserStatusTable)
+        .then((userStatusTable) => {
+            return userStatusTable;
+        })
+        .catch((err) => {
+            log.error(`Failed to get user status : ${err}`);
+            return [];
+        });
+};

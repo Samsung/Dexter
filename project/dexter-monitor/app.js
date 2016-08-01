@@ -184,6 +184,7 @@ function setScheduler() {
     schedule.scheduleJob(time, () => {
         log.info('Start saving snapshot');
         defect.saveSnapshot();
+        project.saveSnapshotSummary();
     });
 }
 
