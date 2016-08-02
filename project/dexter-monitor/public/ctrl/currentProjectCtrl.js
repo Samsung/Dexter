@@ -83,20 +83,26 @@ monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, $inter
         ProjectService.getAllCurrentStatusList(activeServerList)
             .then((rows) => {
                 $scope.gridOptions.data = rows;
-                const defectCountTotalSum = _.sum(_.map($scope.gridOptions.data, 'defectCountTotal'));
-                const defectCountFixedSum = _.sum(_.map($scope.gridOptions.data, 'defectCountFixed'));
-                const defectCountDismissedSum = _.sum(_.map($scope.gridOptions.data, 'defectCountDismissed'));
-                if (defectCountTotalSum > 0) {
-                    $scope.resolvedRatioTotal = `${((defectCountFixedSum + defectCountDismissedSum) / defectCountTotalSum * 100).toFixed(1)}%`;
-                } else {
-                    $scope.resolvedRatioTotal = '';
-                }
+                $scope.resolvedRatioTotal = getResolvedRatioTotal(rows);
                 $scope.allServerCount = rows.length;
                 $scope.activeServerCount = activeServerList.length;
             })
             .catch((err) => {
                 $log.error(err);
             });
+    }
+
+    function getResolvedRatioTotal(rows) {
+        const defectCountTotalSum = _.sum(_.map(rows, 'defectCountTotal'));
+
+        if (defectCountTotalSum <= 0) {
+            return '';
+        }
+
+        const defectCountFixedSum = _.sum(_.map(rows, 'defectCountFixed'));
+        const defectCountDismissedSum = _.sum(_.map(rows, 'defectCountDismissed'));
+
+        return `${((defectCountFixedSum + defectCountDismissedSum) / defectCountTotalSum * 100).toFixed(1)}%`;
     }
 
     $scope.getResolvedRatio = function(entity) {

@@ -266,11 +266,19 @@ function loadAndCreateUserStatusTable() {
     return database.exec(sql)
         .then((rows) => {
             rows.forEach((row) => {
-                row.targetDeveloperCount = row.allDeveloperCount - row.nonTargetDeveloperCount;
-                row.installationRatio = (row.installedDeveloperCount / row.targetDeveloperCount * 100).toFixed(1);
+                row.targetDeveloperCount = getTargetDeveloperCount(row);
+                row.installationRatio = getInstallationRatio(row);
             });
             return rows;
         });
+}
+
+function getTargetDeveloperCount(row) {
+    return row.allDeveloperCount - row.nonTargetDeveloperCount;
+}
+
+function getInstallationRatio(row) {
+    return (row.installedDeveloperCount / row.targetDeveloperCount * 100).toFixed(1);
 }
 
 exports.getUserStatus = function(req, res) {
