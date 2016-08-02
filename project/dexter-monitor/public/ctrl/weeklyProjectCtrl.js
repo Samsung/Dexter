@@ -25,13 +25,15 @@
  */
 "use strict";
 
-monitorApp.controller("WeeklyProjectCtrl", function($scope, $http, $log) {
+monitorApp.controller("WeeklyProjectCtrl", function($scope, $http, $log, $location, $anchorScroll) {
 
     const columnDefs = [
         {field:'year',              displayName:'Year',         width: '5%',    headerTooltip: 'Year'},
         {field:'week',              displayName:'Week',         width: '5%',    headerTooltip: 'Week'},
         {field:'groupName',         displayName:'Group',        width: '12%',   headerTooltip: 'Group'},
-        {field:'projectName',       displayName:'Project',      width: '12%',   headerTooltip: 'Project'},
+        {field:'projectName',       displayName:'Project',      width: '12%',   headerTooltip: 'Project',
+            cellTemplate:'<div class="ui-grid-cell-contents grid-align" uib-tooltip="Click if you want to see \'{{COL_FIELD}}\' project chart"' +
+            ' tooltip-placement="top" tooltip-append-to-body="true"><a href ng-click="grid.appScope.drawChart(row.entity.projectName)">{{COL_FIELD}}</a></div>'},
         {field:'language',          displayName:'Lang',         width: '5%',    headerTooltip: 'Language'},
         {field:'allDefectCount',    displayName:'All',          width: '7%',    headerTooltip: 'All defects'},
         {field:'allNew',            width: '3%',    headerCellTemplate:'<div style="text-align: center" uib-tooltip="[New] All types of defects" tooltip-append-to-body="true">All<br>New</div>'},
@@ -71,9 +73,84 @@ monitorApp.controller("WeeklyProjectCtrl", function($scope, $http, $log) {
                 }
 
                 $scope.gridOptions.data = res.data.rows;
+                $scope.drawChart();
             })
             .catch((err) => {
                 $log.error(err);
             });
+    }
+
+    let chart;
+
+    $scope.drawChart = function(projectName) {
+        const gridData = $scope.gridOptions.data;
+        if (!gridData || gridData.length <= 0) {
+            return;
+        }
+
+        scrollTop();
+        destroyChart();
+
+        if (!projectName) {
+            projectName = gridData[0].projectName;
+        }
+
+        const projectData = _.filter(gridData, data => data.projectName == projectName);
+        chart = new Chart($("#weekly-project"), {
+            type: 'line',
+            data: {
+                labels: _.map(projectData, row => '' + row.year + '-' + row.week).reverse(),
+                datasets: [{
+                    label: 'All defects',
+                    borderColor: 'red',
+                    backgroundColor: 'red',
+                    fill: false,
+                    data: _.map(projectData, 'allDefectCount').reverse(),
+                    spanGaps: false
+                },{
+                    label: 'Fixed defects',
+                    borderColor: 'blue',
+                    backgroundColor: 'blue',
+                    fill: false,
+                    data: _.map(projectData, 'allFix').reverse(),
+                    spanGaps: false
+                },{
+                    label: 'Dismissed defects',
+                    borderColor: 'green',
+                    backgroundColor: 'green',
+                    fill: false,
+                    data: _.map(projectData, 'allDis').reverse(),
+                    spanGaps: false
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: `'${projectName}' project chart`,
+                    fontSize: 20
+                },
+                legend: {
+                    display: true,
+                    labels: {
+                        fontSize: 20
+                    }
+                },
+                tooltips: {
+                    titleFontSize: 20,
+                    bodyFontSize: 20
+                }
+            }
+        });
+    };
+
+    function scrollTop() {
+        $location.hash('top');
+        $anchorScroll();
+    }
+
+    function destroyChart() {
+        if(chart) {
+            chart.destroy();
+        }
     }
 });
