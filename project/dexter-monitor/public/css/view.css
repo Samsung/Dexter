@@ -11,6 +11,8 @@ body {
   float: left;
   padding-top: 30px;
   padding-left: 200px;
+  padding-right: 50px;
+  width: 100%;
 }
 
 .grid-weekly-project {
@@ -19,22 +21,7 @@ body {
 }
 
 .grid-weekly-group {
-  width: 99%;
-  height: 650px;
-}
-
-.grid-defect-project {
-  width: 920px;
-  height: 650px;
-}
-
-.grid-user-project {
-  width: 920px;
-  height: 650px;
-}
-
-.grid-user-group {
-  width: 920px;
+  width: 100%;
   height: 650px;
 }
 
@@ -45,11 +32,6 @@ body {
 
 .grid-current-project {
   width: 100%;
-  height: 650px;
-}
-
-.grid-weekly-change {
-  width: 920px;
   height: 650px;
 }
 
@@ -66,10 +48,6 @@ body {
 .grid-overview-defect-status {
   width: 100%;
   height: 350px;
-}
-
-.grid-user-id {
-  text-align: center;
 }
 
 .grid-align {
@@ -91,35 +69,6 @@ body {
   max-width: 80px;
 }
 
-.project-change {
-  min-width: 170px;
-  max-width: 170px;
-}
-
-.group-change {
-  min-width: 170px;
-  max-width: 170px;
-}
-
 td.inner {
   padding-right:10px;
-}
-
-/*
- * Placeholder dashboard ideas
- */
-
-.placeholders {
-  margin-bottom: 30px;
-  text-align: center;
-}
-.placeholders h4 {
-  margin-bottom: 0;
-}
-.placeholder {
-  margin-bottom: 20px;
-}
-.placeholder img {
-  display: inline-block;
-  border-radius: 50%;
 }
