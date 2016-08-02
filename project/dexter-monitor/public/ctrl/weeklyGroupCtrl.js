@@ -125,9 +125,115 @@ monitorApp.controller("WeeklyGroupCtrl", function($scope, $http, $log, $q, Defec
                 }
 
                 $scope.gridOptions.data = res.data.rows;
+                resizeHeightOfGrid('weeklyGroupGrid', res.data.rows.length);
+
+                drawChart();
             })
             .catch((err) => {
                 $log.error(err);
             });
+    }
+
+    function drawChart() {
+        destroyAllCharts();
+        const gridData = $scope.gridOptions.data;
+        if (!gridData || gridData.length <= 0) {
+            return;
+        }
+
+        const backgroundColor = getColorArray(gridData.length);
+        drawUserChart(gridData, backgroundColor);
+        drawProjectChart(gridData, backgroundColor);
+        drawDefectChart(gridData);
+    }
+
+    let userChart;
+    let projectChart;
+    let defectChart;
+
+    function destroyAllCharts() {
+        if (userChart) {
+            userChart.destroy();
+        }
+        if (projectChart) {
+            projectChart.destroy();
+        }
+        if (defectChart) {
+            defectChart.destroy();
+        }
+    }
+
+    function drawUserChart(gridData, backgroundColor) {
+        userChart = new Chart($("#weekly-group-user"), {
+            type: 'pie',
+            data: {
+                labels: _.map(gridData, 'groupName'),
+                datasets: [{
+                    data: _.map(gridData, 'userCount'),
+                    backgroundColor: backgroundColor
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Number of users'
+                }
+            }
+        });
+    }
+
+    function drawProjectChart(gridData, backgroundColor) {
+        projectChart = new Chart($("#weekly-group-project"), {
+            type: 'pie',
+            data: {
+                labels: _.map(gridData, 'groupName'),
+                datasets: [{
+                    data: _.map(gridData, 'projectCount'),
+                    backgroundColor: backgroundColor
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Number of projects'
+                }
+            }
+        });
+    }
+
+    function drawDefectChart(gridData) {
+        defectChart = new Chart($("#weekly-group-defect"), {
+            type: 'radar',
+            data: {
+                labels: _.map(gridData, 'groupName'),
+                datasets: [{
+                    label: 'Total',
+                    data: _.map(gridData, 'allDefectCount'),
+                    backgroundColor: "rgba(179,181,198,0.2)",
+                    borderColor: "rgba(179,181,198,1)",
+                    pointBackgroundColor: "rgba(179,181,198,1)",
+                    pointBorderColor: "#fff",
+                    pointHoverBackgroundColor: "#fff",
+                    pointHoverBorderColor: "rgba(179,181,198,1)"
+                },{
+                    label: 'Removal (Fixed+Dismissed)',
+                    data: _.map(gridData, (data) => {
+                        return data.allFix + data.allDis;
+                    }),
+                    backgroundColor: "rgba(255,99,132,0.2)",
+                    borderColor: "rgba(255,99,132,1)",
+                    pointBackgroundColor: "rgba(255,99,132,1)",
+                    pointBorderColor: "#fff",
+                    pointHoverBackgroundColor: "#fff",
+                    pointHoverBorderColor: "rgba(255,99,132,1)"
+                }]
+            },
+            options: {
+                title: {
+                    display: true,
+                    text: 'Number of defects'
+                }
+            }
+        });
     }
 });

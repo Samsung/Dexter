@@ -160,9 +160,4 @@ monitorApp.controller("OverviewCtrl", function($scope, $http, $log, UserService,
                 $log.error(err);
             });
     }
-
-    function resizeHeightOfGrid(gridId, rowCount) {
-        angular.element(document.getElementById(gridId))
-            .css('height', (rowCount * ROW_HEIGHT + HEADER_HEIGHT) + 'px');
-    }
 });

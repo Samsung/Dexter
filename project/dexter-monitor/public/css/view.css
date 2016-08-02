@@ -22,7 +22,8 @@ body {
 
 .grid-weekly-group {
   width: 100%;
-  height: 650px;
+  margin-top: 30px;
+  margin-bottom: 30px;
 }
 
 .grid-current-user {
