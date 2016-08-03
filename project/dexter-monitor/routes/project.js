@@ -42,6 +42,14 @@ exports.getProjectList = function(req, res) {
     route.executeSqlAndSendResponseRows(sql, res);
 };
 
+exports.getSnapshotSummary = function(req, res) {
+    const sql =
+        `SELECT year, week, installationRatio, resolvedDefectRatio
+        FROM WeeklyStatusSummary
+        ORDER BY year ASC, week ASC`;
+    route.executeSqlAndSendResponseRows(sql, res);
+};
+
 exports.saveSnapshotSummary = function() {
     let promises = [];
     const summary = {};

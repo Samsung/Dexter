@@ -109,6 +109,8 @@ monitorApp.controller("OverviewCtrl", function($scope, $http, $log, UserService,
         loadDataForDefectStatusGrid();
         setGridExportingFileNames($scope.installationStatusGridOptions, INSTALLATION_STATUS_FILENAME_PREFIX + '-' + $scope.time);
         setGridExportingFileNames($scope.defectStatusGridOptions, DEFECT_STATUS_FILENAME_PREFIX + '-' + $scope.time);
+
+        drawChart();
     }
 
     function removeScrollbarFromGrid(gridOptions) {
@@ -159,5 +161,57 @@ monitorApp.controller("OverviewCtrl", function($scope, $http, $log, UserService,
             .catch((err) => {
                 $log.error(err);
             });
+    }
+
+    let chart;
+
+    function drawChart() {
+        ProjectService.getSnapshotSummary()
+            .then(reduceData)
+            .then(draw);
+    }
+
+    function reduceData(chartData) {
+        return _.takeRight(chartData, OVERVIEW_SUMMARY_CHART_MAX);
+    }
+
+    function draw(chartData) {
+        if (!chartData || chartData.length <= 0) {
+            return;
+        }
+        destroyChart();
+
+        chart = new Chart($("#overview-summary"), {
+            type: 'line',
+            data: {
+                labels: _.map(chartData, row => '' + row.year + '-' + row.week),
+                datasets: [{
+                    label: 'Installation ratio (%)',
+                    borderColor: 'blue',
+                    backgroundColor: 'blue',
+                    fill: false,
+                    data: _.map(chartData, 'installationRatio'),
+                    spanGaps: false
+                },{
+                    label: 'Defect removal ratio (%)',
+                    borderColor: 'red',
+                    backgroundColor: 'red',
+                    fill: false,
+                    data: _.map(chartData, 'resolvedDefectRatio'),
+                    spanGaps: false
+                }]
+            },
+            options: {
+                legend: {
+                    display: true
+                }
+            }
+        });
+    }
+
+    function destroyChart() {
+        if(chart) {
+            chart.destroy();
+        }
     }
 });

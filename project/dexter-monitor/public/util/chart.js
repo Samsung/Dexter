@@ -25,12 +25,15 @@
  */
 "use strict";
 
+const OVERVIEW_SUMMARY_CHART_MAX = 5;
+
 function randomColorFactor() {
     return Math.round(Math.random() * 255);
-};
+}
+
 function randomColor(opacity) {
     return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
-};
+}
 
 function getColorArray(length) {
     let array = [];

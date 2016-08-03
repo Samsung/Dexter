@@ -173,4 +173,20 @@ monitorApp.service('ProjectService', function($http, $log, $q, ServerStatusServi
             return _.sortBy(statusListByGroup, 'groupName');
         }
     };
+
+    this.getSnapshotSummary = function() {
+        return $http.get('/api/v2/snapshot-summary')
+            .then((res) => {
+                if (!isHttpResultOK(res)) {
+                    $log.error('Failed to get snapshot summary');
+                    return [];
+                }
+
+                return res.data.rows;
+            })
+            .catch((err) => {
+                $log.error(err);
+                return [];
+            });
+    };
 });

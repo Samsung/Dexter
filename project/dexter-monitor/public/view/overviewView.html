@@ -4,8 +4,15 @@
             <span style="font-size:18pt">Summary</span>
             <span style="font-size:11pt"> ({{time}})</span>
         </div>
-        <div class="grid-overview-summary" id='overviewSummaryGrid' ui-grid="summaryGridOptions"
-             ui-grid-resize-columns ui-grid-move-columns ui-grid-selection ui-grid-exporter ui-grid-auto-resize>
+        <div class="row">
+            <div class="col-md-10">
+                <div class="grid-overview-summary" id='overviewSummaryGrid' ui-grid="summaryGridOptions"
+                     ui-grid-resize-columns ui-grid-move-columns ui-grid-selection ui-grid-exporter ui-grid-auto-resize>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <canvas id="overview-summary" width="100%" height="100%"></canvas>
+            </div>
         </div>
         <br><br>
         <div>

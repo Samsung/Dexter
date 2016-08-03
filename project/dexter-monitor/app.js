@@ -161,6 +161,7 @@ function setWebApis(){
     app.get('/api/v2/defect-status-count/:projectName', defect.getDefectCountByProjectName);
 
     app.get('/api/v2/project-list', project.getProjectList);
+    app.get('/api/v2/snapshot-summary', project.getSnapshotSummary);
 }
 
 function initModules(){
