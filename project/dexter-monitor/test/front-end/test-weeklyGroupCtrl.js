@@ -27,14 +27,15 @@ describe('WeeklyGroupCtrl Test', function() {
 
     beforeEach(module('dexterMonitorApp'));
 
-    var $controller, $httpBackend, $rootScope, $scope;
+    var $controller, $httpBackend, $rootScope, $scope, $compile;
 
-    beforeEach(inject(function(_$controller_, _$httpBackend_, _$rootScope_) {
+    beforeEach(inject(function(_$controller_, _$httpBackend_, _$rootScope_, _$compile_) {
         $controller = _$controller_;
         $httpBackend = _$httpBackend_;
         $rootScope = _$rootScope_;
         $scope = $rootScope.$new();
         $controller('WeeklyGroupCtrl', {$scope: $scope});
+        $compile = _$compile_;
     }));
 
     beforeEach(function() {
@@ -46,6 +47,15 @@ describe('WeeklyGroupCtrl Test', function() {
                 {year:2016, week:25, groupName:'SamsungG_1', userCount:5, projectCount:3, allDefectCount:24, allFix:10, allDis:5},
                 {year:2016, week:25, groupName:'SamsungG_2', userCount:7, projectCount:2, allDefectCount:16, allFix:2, allDis:4}
             ]});
+
+        const elements = $compile(
+            "<canvas id='weekly-group-user'></canvas>" +
+            "<canvas id='weekly-group-project'></canvas>" +
+            "<canvas id='weekly-group-defect'></canvas>")($scope);
+        $scope.$digest();
+        document.body.appendChild(elements[0]);
+        document.body.appendChild(elements[1]);
+        document.body.appendChild(elements[2]);
     });
 
     describe('setCurrentYearAndReloadData()', function() {

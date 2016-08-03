@@ -27,24 +27,29 @@ describe('OverviewCtrl Test', function() {
 
     beforeEach(module('dexterMonitorApp'));
 
-    var $controller, $httpBackend, $rootScope, $scope;
+    var $controller, $httpBackend, $rootScope, $scope, $compile;
     var PROJECT_NAME_1 = 'SamsungProject1';
     var PROJECT_NAME_2 = 'SamsungProject2';
     var PROJECT_NAME_3 = 'SamsungProject3';
     var PROJECT_NAME_4 = 'SamsungProject4';
     var PROJECT_NAME_5 = 'SamsungProject5';
 
-    beforeEach(inject(function(_$controller_, _$httpBackend_, _$rootScope_) {
+    beforeEach(inject(function(_$controller_, _$httpBackend_, _$rootScope_, _$compile_) {
         $controller = _$controller_;
         $httpBackend = _$httpBackend_;
         $rootScope = _$rootScope_;
         $scope = $rootScope.$new();
         $controller('OverviewCtrl', {$scope: $scope});
+        $compile = _$compile_;
         setHttpBackend();
     }));
 
     describe('initialize()', function() {
         it('should set values properly', function() {
+            const element = $compile("<canvas id='overview-summary'></canvas>")($scope);
+            $scope.$digest();
+            document.body.appendChild(element[0]);
+
             $httpBackend.flush();
 
             assert.equal($scope.installationStatusGridOptions.data.length, 2);
@@ -214,5 +219,25 @@ describe('OverviewCtrl Test', function() {
         $httpBackend
             .whenGET('/api/v2/defect-status-count/' + PROJECT_NAME_5)
             .respond({status:'ok', values:{defectCountTotal:17, defectCountFixed:9, defectCountDismissed:1}});
+
+        $httpBackend
+            .whenGET('/api/v2/snapshot-summary')
+            .respond({
+                status: 'ok',
+                rows: [
+                    {
+                        year: 2016,
+                        week: 30,
+                        installationRatio: 85.3,
+                        resolvedDefectRatio: 77.5
+                    },
+                    {
+                        year: 2016,
+                        week: 31,
+                        installationRatio: 92.3,
+                        resolvedDefectRatio: 89.7
+                    }
+                ]
+            });
     }
 });

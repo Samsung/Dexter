@@ -27,14 +27,15 @@ describe('WeeklyProjectCtrl Test', function() {
 
     beforeEach(module('dexterMonitorApp'));
 
-    var $controller, $httpBackend, $rootScope, $scope;
+    var $controller, $httpBackend, $rootScope, $scope, $compile;
 
-    beforeEach(inject(function(_$controller_, _$httpBackend_, _$rootScope_) {
+    beforeEach(inject(function(_$controller_, _$httpBackend_, _$rootScope_, _$compile_) {
         $controller = _$controller_;
         $httpBackend = _$httpBackend_;
         $rootScope = _$rootScope_;
         $scope = $rootScope.$new();
         $controller('WeeklyProjectCtrl', {$scope: $scope});
+        $compile = _$compile_;
     }));
 
     describe('initialize()', function() {
@@ -50,6 +51,10 @@ describe('WeeklyProjectCtrl Test', function() {
                         majNew : 3, majFix : 4, majDis : 5, minNew : 5, minFix : 3, minDis : 1,
                         crcNew : 0, crcFix : 3, crcDis : 14, etcNew : 0, etcFix : 0, etcDis : 7}
                 ]});
+
+            const element = $compile("<canvas id='weekly-project'></canvas>")($scope);
+            $scope.$digest();
+            document.body.appendChild(element[0]);
 
             $httpBackend.flush();
 
