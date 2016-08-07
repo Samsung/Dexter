@@ -6,11 +6,11 @@
  * modification, are permitted provided that the following conditions are met:
  * 
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  * 
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -22,7 +22,7 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.samsung.sec.dexter.daemon;
 
 import com.google.common.base.Strings;
@@ -55,232 +55,231 @@ import org.osgi.framework.BundleContext;
  */
 public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHomeListener, IDexterLoginInfoListener {
 
-	// The plug-in ID
-	public static final String PLUGIN_ID = "dexter-daemon"; //$NON-NLS-1$
-	public static final String APP_NAME = "Dexter Daemon";
-	public final static EclipseLog LOG = new EclipseLog(PLUGIN_ID);
-	private static final int SERVER_TIMEOUT = 500;
-	private static final String SOURCE_INSIGHT_EXE_KEY = "sourceInsightExe";
-	private String sourceInsiteExe;
+    // The plug-in ID
+    public static final String PLUGIN_ID = "dexter-daemon"; //$NON-NLS-1$
+    public static final String APP_NAME = "Dexter Daemon";
+    public final static EclipseLog LOG = new EclipseLog(PLUGIN_ID);
+    private static final int SERVER_TIMEOUT = 500;
+    private static final String SOURCE_INSIGHT_EXE_KEY = "sourceInsightExe";
+    private String sourceInsiteExe;
 
-	MonitorForDexterConfigFile monitorJob;
-	MonitorForPlatzKeywordFile monitorKeywordJob;
+    MonitorForDexterConfigFile monitorJob;
+    MonitorForPlatzKeywordFile monitorKeywordJob;
 
-	private static DexterDaemonActivator plugin;
+    private static DexterDaemonActivator plugin;
 
-	static {
-		DexterConfig.getInstance().setRunMode(DexterConfig.RunMode.DAEMON);
-	}
+    static {
+        DexterConfig.getInstance().setRunMode(DexterConfig.RunMode.DAEMON);
+    }
 
-	public DexterDaemonActivator() {
-	}
+    public DexterDaemonActivator() {}
 
-	/*
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.
-	 * BundleContext )
-	 */
-	public void start(BundleContext context) throws Exception {
+    /*
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.
+     * BundleContext )
+     */
+    public void start(BundleContext context) throws Exception {
 
-		super.start(context);
-		plugin = this;
-		LOG.setPlugin(this);
-		checkOS();
-		checkPlatzServer();
-		initializeAfterSettingDexterHome();
-		DexterConfig.getInstance().addDexterHomeListener(this);
-		DexterUIActivator.getDefault().getDexterClient().addLoginInfoListener(this);
-	}
+        super.start(context);
+        plugin = this;
+        LOG.setPlugin(this);
+        checkOS();
+        checkPlatzServer();
+        initializeAfterSettingDexterHome();
+        DexterConfig.getInstance().addDexterHomeListener(this);
+        DexterUIActivator.getDefault().addLoginInfoListener(this);
+    }
 
-	private void checkOS() {
-		if (DexterUtil.getOS() != DexterUtil.OS.WINDOWS) {
-			throw new DexterRuntimeException("I am sorry we do not support LINUX or MAC OSX yet.");
-		}
-	}
+    private void checkOS() {
+        if (DexterUtil.getOS() != DexterUtil.OS.WINDOWS) {
+            throw new DexterRuntimeException("I am sorry we do not support LINUX or MAC OSX yet.");
+        }
+    }
 
-	/*
-	 * @see com.samsung.sec.dexter.core.config.IDexterHomeListener#
-	 * handleDexterHomeChanged()
-	 */
-	@Override
-	public void handleDexterHomeChanged(final String oldPath, final String newPath) {
-		initializeAfterSettingDexterHome();
-	}
+    /*
+     * @see com.samsung.sec.dexter.core.config.IDexterHomeListener#
+     * handleDexterHomeChanged()
+     */
+    @Override
+    public void handleDexterHomeChanged(final String oldPath, final String newPath) {
+        initializeAfterSettingDexterHome();
+    }
 
-	@Override
-	public void handleDexterLoginInfoChanged() {
-		setWindowTitleWithLoginInformation();
-	}
+    @Override
+    public void handleDexterLoginInfoChanged() {
+        setWindowTitleWithLoginInformation();
+    }
 
-	private void initializeAfterSettingDexterHome() {
-		if (Strings.isNullOrEmpty(DexterConfig.getInstance().getDexterHome())) {
-			return;
-		}
+    private void initializeAfterSettingDexterHome() {
+        if (Strings.isNullOrEmpty(DexterConfig.getInstance().getDexterHome())) {
+            return;
+        }
 
-		unzipDexterCliZipFile();
-		setWindowTitleWithLoginInformation();
-		initializeSourceInsightEnvironment();
-		startMonitorForDexterConfigFile();
-		if ("true".equals(java.lang.System.getProperty("isPlatzAlive"))) {
-			startMonitorForPlatzKeywordFile();
-		}
-		setSourceInsightStatusRegistryAsRunning();
-	}
+        unzipDexterCliZipFile();
+        setWindowTitleWithLoginInformation();
+        initializeSourceInsightEnvironment();
+        startMonitorForDexterConfigFile();
+        if ("true".equals(java.lang.System.getProperty("isPlatzAlive"))) {
+            startMonitorForPlatzKeywordFile();
+        }
+        setSourceInsightStatusRegistryAsRunning();
+    }
 
-	private void unzipDexterCliZipFile() {
-		final String dexterHome = DexterConfig.getInstance().getDexterHome();
-		final String pluginVersion = DexterDaemonActivator.getDefault().getBundle().getVersion().toString();
-		final String targetTempZipPath = dexterHome + "/temp/dexter-cli_" + pluginVersion + ".zip";
+    private void unzipDexterCliZipFile() {
+        final String dexterHome = DexterConfig.getInstance().getDexterHome();
+        final String pluginVersion = DexterDaemonActivator.getDefault().getBundle().getVersion().toString();
+        final String targetTempZipPath = dexterHome + "/temp/dexter-cli_" + pluginVersion + ".zip";
 
-		final InputStream is = getInputStreamForDexterCliZipFile("/dexter-cli.zip");
-		DexterUtil.unzipInClassPath(is, targetTempZipPath, dexterHome);
-	}
+        final InputStream is = getInputStreamForDexterCliZipFile("/dexter-cli.zip");
+        DexterUtil.unzipInClassPath(is, targetTempZipPath, dexterHome);
+    }
 
-	private InputStream getInputStreamForDexterCliZipFile(String sourceZipFileInClasspath) {
-		final InputStream is = getClass().getResourceAsStream(sourceZipFileInClasspath);
+    private InputStream getInputStreamForDexterCliZipFile(String sourceZipFileInClasspath) {
+        final InputStream is = getClass().getResourceAsStream(sourceZipFileInClasspath);
 
-		if (is == null) {
-			throw new DexterRuntimeException("can't find dexter-cli.zip file: " + sourceZipFileInClasspath);
-		}
+        if (is == null) {
+            throw new DexterRuntimeException("can't find dexter-cli.zip file: " + sourceZipFileInClasspath);
+        }
 
-		return is;
-	}
+        return is;
+    }
 
-	private void setWindowTitleWithLoginInformation() {
-		final IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
-		String serverString, userId, loginString;
+    private void setWindowTitleWithLoginInformation() {
+        final IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
+        String serverString, userId, loginString;
 
-		try {
-			serverString = client.getServerHost() + ":" + client.getServerPort();
-			userId = client.getCurrentUserId();
-			loginString = "(" + serverString + " - " + userId + ")";
+        try {
+            serverString = client.getServerHost() + ":" + client.getServerPort();
+            userId = client.getCurrentUserId();
+            loginString = "(" + serverString + " - " + userId + ")";
 
-			getPreferenceStore().putValue("serverAddress", serverString);
-			getPreferenceStore().putValue("userId", userId);
-		} catch (DexterRuntimeException e) {
-			loginString = "(offline)";
-		}
+            getPreferenceStore().putValue("serverAddress", serverString);
+            getPreferenceStore().putValue("userId", userId);
+        } catch (DexterRuntimeException e) {
+            loginString = "(offline)";
+        }
 
-		ApplicationWorkbenchWindowAdvisor.setWindowTitle(DexterDaemonActivator.APP_NAME + " v"
-				+ DexterDaemonActivator.getDefault().getBundle().getVersion().toString() + " " + loginString);
-	}
+        ApplicationWorkbenchWindowAdvisor.setWindowTitle(DexterDaemonActivator.APP_NAME + " v"
+                + DexterDaemonActivator.getDefault().getBundle().getVersion().toString() + " " + loginString);
+    }
 
-	private void initializeSourceInsightEnvironment() {
-		if (DexterUtil.getOS() == DexterUtil.OS.WINDOWS) {
-			setDexterHomeInWindowsRegistry();
-			setSourceInsightExeFilePath();
-		}
-	}
+    private void initializeSourceInsightEnvironment() {
+        if (DexterUtil.getOS() == DexterUtil.OS.WINDOWS) {
+            setDexterHomeInWindowsRegistry();
+            setSourceInsightExeFilePath();
+        }
+    }
 
-	private void setDexterHomeInWindowsRegistry() {
-		final String rootKey = "\"HKEY_CURRENT_USER\\Software\\Source Dynamics\\Source Insight\\3.0\"";
-		final String dexterHomeKey = "dexterHomeRegKey";
+    private void setDexterHomeInWindowsRegistry() {
+        final String rootKey = "\"HKEY_CURRENT_USER\\Software\\Source Dynamics\\Source Insight\\3.0\"";
+        final String dexterHomeKey = "dexterHomeRegKey";
 
-		DexterUtil.setRegistry(rootKey, dexterHomeKey, DexterConfig.getInstance().getDexterHome(),
-				DexterUtil.REG_TYPE.REG_SZ);
-	}
+        DexterUtil.setRegistry(rootKey, dexterHomeKey, DexterConfig.getInstance().getDexterHome(),
+                DexterUtil.REG_TYPE.REG_SZ);
+    }
 
-	private void setSourceInsightExeFilePath() {
-		final PersistenceProperty property = PersistenceProperty.getInstance();
-		sourceInsiteExe = property.read(SOURCE_INSIGHT_EXE_KEY);
+    private void setSourceInsightExeFilePath() {
+        final PersistenceProperty property = PersistenceProperty.getInstance();
+        sourceInsiteExe = property.read(SOURCE_INSIGHT_EXE_KEY);
 
-		if (Strings.isNullOrEmpty(sourceInsiteExe)) {
-			final String homeKey = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\insight3.exe";
-			final String key = "Path";
-			final String sourceInsightPath = DexterUtil.readRegistry(homeKey, key);
+        if (Strings.isNullOrEmpty(sourceInsiteExe)) {
+            final String homeKey = "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\insight3.exe";
+            final String key = "Path";
+            final String sourceInsightPath = DexterUtil.readRegistry(homeKey, key);
 
-			if (Strings.isNullOrEmpty(sourceInsightPath)) {
-				LOG.error("cannot find source insight exe file path in windows registry");
-				return;
-			}
+            if (Strings.isNullOrEmpty(sourceInsightPath)) {
+                LOG.error("cannot find source insight exe file path in windows registry");
+                return;
+            }
 
-			this.sourceInsiteExe = "\"" + sourceInsightPath + "/insight3.exe\"";
-			try {
-				property.write(SOURCE_INSIGHT_EXE_KEY, sourceInsightPath);
-			} catch (NullPointerException e) {
-				LOG.error(e.getMessage());
-			}
-		}
-	}
+            this.sourceInsiteExe = "\"" + sourceInsightPath + "/insight3.exe\"";
+            try {
+                property.write(SOURCE_INSIGHT_EXE_KEY, sourceInsightPath);
+            } catch (NullPointerException e) {
+                LOG.error(e.getMessage());
+            }
+        }
+    }
 
-	private void startMonitorForDexterConfigFile() {
-		monitorJob = new MonitorForDexterConfigFile();
-		monitorJob.setUser(false);
-		monitorJob.setPriority(Job.LONG);
-		monitorJob.setSystem(true);
-		monitorJob.schedule();
-	}
+    private void startMonitorForDexterConfigFile() {
+        monitorJob = new MonitorForDexterConfigFile();
+        monitorJob.setUser(false);
+        monitorJob.setPriority(Job.LONG);
+        monitorJob.setSystem(true);
+        monitorJob.schedule();
+    }
 
-	private void startMonitorForPlatzKeywordFile() {
-		monitorKeywordJob = new MonitorForPlatzKeywordFile();
-		monitorKeywordJob.setUser(false);
-		monitorKeywordJob.setPriority(Job.LONG);
-		monitorKeywordJob.setSystem(true);
-		monitorKeywordJob.schedule();
-	}
+    private void startMonitorForPlatzKeywordFile() {
+        monitorKeywordJob = new MonitorForPlatzKeywordFile();
+        monitorKeywordJob.setUser(false);
+        monitorKeywordJob.setPriority(Job.LONG);
+        monitorKeywordJob.setSystem(true);
+        monitorKeywordJob.schedule();
+    }
 
-	private void setSourceInsightStatusRegistryAsRunning() {
-		Job job = new Job("set registry for sourceinsight") {
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				final String rootKey = "\"HKEY_CURRENT_USER\\Software\\Source Dynamics\\Source Insight\\3.0\"";
-				final String dexterDaemonHomeKey = "g_dexterDaemon";
-				DexterUtil.setRegistry(rootKey, dexterDaemonHomeKey, "1", DexterUtil.REG_TYPE.REG_SZ);
-				return Status.OK_STATUS;
-			}
+    private void setSourceInsightStatusRegistryAsRunning() {
+        Job job = new Job("set registry for sourceinsight") {
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+                final String rootKey = "\"HKEY_CURRENT_USER\\Software\\Source Dynamics\\Source Insight\\3.0\"";
+                final String dexterDaemonHomeKey = "g_dexterDaemon";
+                DexterUtil.setRegistry(rootKey, dexterDaemonHomeKey, "1", DexterUtil.REG_TYPE.REG_SZ);
+                return Status.OK_STATUS;
+            }
 
-		};
+        };
 
-		job.schedule();
-	}
+        job.schedule();
+    }
 
-	private void setSourceInsightStatusRegistryAsStopped() {
-		Job job = new Job("set registry for sourceinsight") {
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				final String rootKey = "\"HKEY_CURRENT_USER\\Software\\Source Dynamics\\Source Insight\\3.0\"";
-				final String dexterDaemonHomeKey = "g_dexterDaemon";
-				DexterUtil.setRegistry(rootKey, dexterDaemonHomeKey, "0", DexterUtil.REG_TYPE.REG_SZ);
-				return Status.OK_STATUS;
-			}
+    private void setSourceInsightStatusRegistryAsStopped() {
+        Job job = new Job("set registry for sourceinsight") {
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+                final String rootKey = "\"HKEY_CURRENT_USER\\Software\\Source Dynamics\\Source Insight\\3.0\"";
+                final String dexterDaemonHomeKey = "g_dexterDaemon";
+                DexterUtil.setRegistry(rootKey, dexterDaemonHomeKey, "0", DexterUtil.REG_TYPE.REG_SZ);
+                return Status.OK_STATUS;
+            }
 
-		};
+        };
 
-		job.schedule();
-	}
+        job.schedule();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.
-	 * BundleContext )
-	 */
-	public void stop(BundleContext context) throws Exception {
-		setSourceInsightStatusRegistryAsStopped();
-		if (monitorJob != null)
-			monitorJob.cancel();
-		DexterConfig.getInstance().removeDexterHomeListener(this);
-		DexterUIActivator.getDefault().getDexterClient().removeLoginInfoListener(this);
-		super.stop(context);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.
+     * BundleContext )
+     */
+    public void stop(BundleContext context) throws Exception {
+        setSourceInsightStatusRegistryAsStopped();
+        if (monitorJob != null)
+            monitorJob.cancel();
+        DexterConfig.getInstance().removeDexterHomeListener(this);
+        DexterUIActivator.getDefault().removeLoginInfoListener(this);
+        super.stop(context);
+    }
 
-	/**
-	 * Returns the shared instance
-	 * 
-	 * @return the shared instance
-	 */
-	public static DexterDaemonActivator getDefault() {
-		return plugin;
-	}
+    /**
+     * Returns the shared instance
+     * 
+     * @return the shared instance
+     */
+    public static DexterDaemonActivator getDefault() {
+        return plugin;
+    }
 
-	private void checkPlatzServer() {
-		try {
-			if (!InetAddress.getByName(DexterConfig.PLATZ_DOMAIN).isReachable(SERVER_TIMEOUT)) {
-				java.lang.System.setProperty("isPlatzAlive", "true");
-			}
-		} catch (UnknownHostException e) {
-			java.lang.System.setProperty("isPlatzAlive", "False");
-		} catch (IOException e) {
-			java.lang.System.setProperty("isPlatzAlive", "False");
-		}
-	}
+    private void checkPlatzServer() {
+        try {
+            if (!InetAddress.getByName(DexterConfig.PLATZ_DOMAIN).isReachable(SERVER_TIMEOUT)) {
+                java.lang.System.setProperty("isPlatzAlive", "true");
+            }
+        } catch (UnknownHostException e) {
+            java.lang.System.setProperty("isPlatzAlive", "False");
+        } catch (IOException e) {
+            java.lang.System.setProperty("isPlatzAlive", "False");
+        }
+    }
 }

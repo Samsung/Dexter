@@ -6,11 +6,11 @@
  * modification, are permitted provided that the following conditions are met:
  * 
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  * 
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -22,218 +22,184 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.samsung.sec.dexter.core.util;
 
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.config.DefectGroup;
 import com.samsung.sec.dexter.core.config.DexterCode;
-import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.IDexterStandaloneListener;
 import com.samsung.sec.dexter.core.defect.Defect;
-import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.filter.IFalseAlarmConfiguration;
 import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
-import com.sun.jersey.api.client.UniformInterfaceException;
 
 import java.util.List;
 
 public interface IDexterClient extends IDexterStandaloneListener {
-	public String getDexterDashboardUrl();
+    public String getDexterDashboardUrl();
 
-	public String getDexterWebUrl();
+    public String getDexterWebUrl();
 
-	public boolean isCurrentUserAdmin();
+    public boolean isCurrentUserAdmin();
 
-	public int getCurrentUserNo();
+    public int getCurrentUserNo();
 
-	public void setCurrentUserNo(final int userNo);
+    public void setCurrentUserNo(final int userNo);
 
-	public void setCurrentUserPwd(final String currentUserPwd);
+    public int getServerPort();
 
-	public void setCurrentUserId(final String currentUserId);
+    public String getServerHost();
 
-	public void setServerPort(final int serverPort);
+    public String getCurrentUserPwd();
 
-	public void setServerHost(final String serverHost);
+    public String getSourceCode(final String modulePath, final String fileName);
 
-	public int getServerPort();
+    public List<DexterCode> getCodes(final String codeKey);
 
-	public String getServerHost();
+    public List<DefectGroup> getDefectGroupList();
 
-	public void setUserPwd(final String userPwd);
+    public boolean deleteDefectGroup(final long defectGroupId);
 
-	public void setUserId(final String userId);
+    public boolean updateDefectGroup(final DefectGroup defectGroup);
 
-	public String getCurrentUserPwd();
+    /**
+     * create new DefectGroup
+     * 
+     * @param defectGroup
+     * @return void
+     */
+    public void insertDefectGroup(final DefectGroup defectGroup);
 
-	public String getSourceCode(final String modulePath, final String fileName);
+    /**
+     * get defect group defect group is a kind of key to analyze defects status
+     * as a whole project
+     * 
+     * @param groupName
+     * @return
+     * @return List<DefectGroup>
+     */
+    public List<DefectGroup> getDefectGroupByGroupName(final String groupName);
 
-	public List<DexterCode> getCodes(final String codeKey);
+    /**
+     * delete all defects in a given file
+     * 
+     * @param modulePath
+     * @param fileName
+     * @return void
+     */
+    public void deleteDefects(final String modulePath, final String fileName);
 
-	public List<DefectGroup> getDefectGroupList();
+    public long getGlobalDid(final Defect defect);
 
-	public boolean deleteDefectGroup(final long defectGroupId);
+    /**
+     * return false alarm object from Dexter Server
+     * 
+     * @return
+     * @return IFalseAlarmConfiguration
+     */
+    public IFalseAlarmConfiguration getFalseAlarmTree();
 
-	public boolean updateDefectGroup(final DefectGroup defectGroup);
+    /**
+     * get last version of false alarm information that indicates the change of
+     * false alarm list to be merged to local
+     * 
+     * @return
+     * @return int > 0 : Ok -2 : Error while executing Client module. it can be
+     * caused by the dead of Dexter Server. -3 : Return-value is not
+     * number -4 : Unknown error
+     */
+    public int getLastFalseAlarmVersion();
 
-	/**
-	 * create new DefectGroup
-	 * 
-	 * @param defectGroup
-	 * @return void
-	 */
-	public void insertDefectGroup(final DefectGroup defectGroup);
+    public void insertDefectFilter(final Defect defect);
 
-	/**
-	 * get defect group defect group is a kind of key to analyze defects status
-	 * as a whole project
-	 * 
-	 * @param groupName
-	 * @return
-	 * @return List<DefectGroup>
-	 */
-	public List<DefectGroup> getDefectGroupByGroupName(final String groupName);
+    /**
+     * remove defect filter(false positive) on Dexter Server
+     * 
+     * @param defect
+     * @return void
+     */
+    public void removeDefectFilter(final Defect defect);
 
-	/**
-	 * delete all defects in a given file
-	 * 
-	 * @param modulePath
-	 * @param fileName
-	 * @return void
-	 */
-	public void deleteDefects(final String modulePath, final String fileName);
+    public void changeDefectStatus(final Defect defect, final String status);
 
-	public long getGlobalDid(final Defect defect);
+    /**
+     * create new account for Dexter Server
+     * 
+     * @param id
+     * @param pwd
+     * @param isAdmin
+     * @return void
+     */
+    public void createAccount(final String id, final String pwd, final boolean isAdmin);
 
-	/**
-	 * return false alarm object from Dexter Server
-	 * 
-	 * @return
-	 * @return IFalseAlarmConfiguration
-	 */
-	public IFalseAlarmConfiguration getFalseAlarmTree();
+    public boolean hasAccount(final String id);
 
-	/**
-	 * get last version of false alarm information that indicates the change of
-	 * false alarm list to be merged to local
-	 * 
-	 * @return
-	 * @return int > 0 : Ok -2 : Error while executing Client module. it can be
-	 *         caused by the dead of Dexter Server. -3 : Return-value is not
-	 *         number -4 : Unknown error
-	 */
-	public int getLastFalseAlarmVersion();
+    public boolean isServerAlive();
 
-	public void insertDefectFilter(final Defect defect);
+    public boolean isServerAlive(final String serverAddress);
 
-	/**
-	 * remove defect filter(false positive) on Dexter Server
-	 * 
-	 * @param defect
-	 * @return void
-	 */
-	public void removeDefectFilter(final Defect defect);
+    public String getCurrentUserId();
 
-	public void changeDefectStatus(final Defect defect, final String status);
+    public boolean isLogin();
 
-	/**
-	 * create new account for Dexter Server
-	 * 
-	 * @param id
-	 * @param pwd
-	 * @param isAdmin
-	 * @return void
-	 */
-	public void createAccount(final String id, final String pwd, final boolean isAdmin);
+    /**
+     * add source codes into Dexter Server
+     * 
+     * @param snapshotId
+     * option. -1: not use snapshot, timestamp: use snapshot
+     * @param defectGroupId
+     * option. -1: not use defect group. timestamp: use defect group
+     * @param modulePath
+     * mandatory. "": no modulePath, "a/b/": has module path
+     * @param fileName
+     * mandatory. not including path. only filename + extension
+     * @param sourceCode
+     * mandatory. the contents of file (text. UTF-8)
+     * @return
+     */
+    public void insertSourceCode(final long snapshotId, final long defectGroupId, final String modulePath,
+            final String fileName, final String sourceCode);
 
-	public boolean hasAccount(final String id);
+    /**
+     * @param resultJson
+     * @return void
+     */
+    public void sendAnalsysisResult(final String resultJson);
 
-	public void setDexterServer(final String serverAddress);
+    /**
+     * log in to Dexter Server with current user ID and Password in a object
+     */
+    public void login();
 
-	public boolean isServerAlive();
+    /**
+     * log in to Dexter Server
+     * 
+     * @param id
+     * @param pwd
+     * @return void
+     */
+    public void login(final String id, final String pwd);
 
-	public boolean isServerAddressOk(final String serverAddress);
+    /**
+     * set the current user as an administrator or not. If admin, the user can
+     * do administrator things such as create a snapshot
+     * 
+     * @param isAdmin
+     */
+    void setCurrentUserAdmin(boolean isAdmin);
 
-	public String getCurrentUserId();
+    void setLogin(boolean b);
 
-	public boolean isLogin();
+    public String getDexterPluginUpdateUrl();
 
-	public void setDexterServer(final String serverHost, final int serverPort);
+    public CheckerConfig getDexterPluginChecker(IDexterPlugin plugin, String pluginName);
 
-	/**
-	 * add source codes into Dexter Server
-	 * 
-	 * @param snapshotId
-	 *            option. -1: not use snapshot, timestamp: use snapshot
-	 * @param defectGroupId
-	 *            option. -1: not use defect group. timestamp: use defect group
-	 * @param modulePath
-	 *            mandatory. "": no modulePath, "a/b/": has module path
-	 * @param fileName
-	 *            mandatory. not including path. only filename + extension
-	 * @param sourceCode
-	 *            mandatory. the contents of file (text. UTF-8)
-	 * @return
-	 */
-	public void insertSourceCode(final long snapshotId, final long defectGroupId, final String modulePath,
-			final String fileName, final String sourceCode);
+    String getDexterCodeMetricsUrl();
 
-	/**
-	 * [Mandatory] Method���듭떖 湲곕뒫 諛��ъ슜���뚭퀬由ъ쬁���꾩쟾��臾몄옣�쇰줈 湲곗닠�쒕떎.
-	 * 
-	 * @param resultJson
-	 * @return void
-	 */
-	public void sendAnalsysisResult(final String resultJson);
+    String getDexterFunctionMetricsUrl();
 
-	/**
-	 * log in to Dexter Server with current user ID and Password in a object
-	 */
-	public void login();
+    boolean hasSupportedHelpHtmlFile(final StringBuilder url);
 
-	/**
-	 * log in to Dexter Server
-	 * 
-	 * @param id
-	 * @param pwd
-	 * @return void
-	 */
-	public void login(final String id, final String pwd);
-
-	/**
-	 * If you want to your own WebResource object, use this method. Unless you
-	 * use this method, DexterClient will use DefaultWebResource object which is
-	 * built-in
-	 * 
-	 * @param resource
-	 */
-	public void setWebResource(IDexterWebResource resource);
-
-	/**
-	 * set the current user as an administrator or not. If admin, the user can
-	 * do administrator things such as create a snapshot
-	 * 
-	 * @param isAdmin
-	 */
-	void setCurrentUserAdmin(boolean isAdmin);
-
-	void setLogin(boolean b);
-
-	public String getDexterPluginUpdateUrl();
-
-	public CheckerConfig getDexterPluginChecker(IDexterPlugin plugin, String pluginName);
-
-	public void addLoginInfoListener(final IDexterLoginInfoListener listener);
-
-	public void removeLoginInfoListener(final IDexterLoginInfoListener listener);
-
-	public void runLoginInfoHandler(String oldServerHost, int oldServerPort, String oldUserId);
-
-	String getDexterCodeMetricsUrl();
-
-	String getDexterFunctionMetricsUrl();
-
-	boolean hasSupportedHelpHtmlFile(final StringBuilder url);
+    void setWebResource(IDexterWebResource webResource);
 
 }
