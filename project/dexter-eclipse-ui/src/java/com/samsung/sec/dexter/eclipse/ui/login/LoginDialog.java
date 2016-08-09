@@ -330,7 +330,8 @@ public class LoginDialog extends TitleAreaDialog {
         } else {
             setMessage(Messages.LoginDialog_CHECK_SERVER_MSG);
             DexterUIActivator.getDefault().initDexter(dexterHome, isStandalone, id, pwd, serverAddress);
-            loginAfterCheck(id, pwd);
+            if (loginAfterCheck(id, pwd) == false)
+                return;
             DexterUIActivator.getDefault().runLoginInfoHandler();
             DexterUIActivator.getDefault().setDexterPreferences(serverAddress, id, pwd, isStandalone, dexterHome);
         }
@@ -423,16 +424,18 @@ public class LoginDialog extends TitleAreaDialog {
         return true;
     }
 
-    private void loginAfterCheck(final String id, final String pwd) {
+    private boolean loginAfterCheck(final String id, final String pwd) {
         try {
             if (client.hasAccount(id) == false) {
                 createAccount(id, pwd);
             }
 
             client.login(id, pwd);
+
+            return true;
         } catch (DexterRuntimeException e) {
             setMessage(Messages.LoginDialog_LOGIN_ERROR_MSG, IMessageProvider.ERROR);
-            return;
+            return false;
         }
     }
 
