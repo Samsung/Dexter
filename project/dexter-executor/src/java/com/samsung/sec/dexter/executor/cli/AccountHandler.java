@@ -6,11 +6,11 @@
  * modification, are permitted provided that the following conditions are met:
  * 
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  * 
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -22,161 +22,183 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.samsung.sec.dexter.executor.cli;
 
 import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.core.util.IDexterClient;
 
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
 
+import org.apache.log4j.Logger;
+
 public class AccountHandler implements IAccountHandler {
-	private IDexterClient client;
-	private InputStream in = System.in;
-	private ICLILog cliLog = new CLILog(System.out);
+    private IDexterClient client;
+    private InputStream in = System.in;
+    private ICLILog cliLog = new CLILog(System.out);
+    private final static Logger log = Logger.getLogger(AccountHandler.class);
 
-	private static int MAX_TRY_COUNT = 5;
+    private static int MAX_TRY_COUNT = 5;
 
-	public AccountHandler(final IDexterClient client, final ICLILog cliLog) {
-		assert client != null;
-		assert cliLog != null;
+    public AccountHandler(final IDexterClient client, final ICLILog cliLog) {
+        assert client != null;
+        assert cliLog != null;
 
-		this.client = client;
-		this.cliLog = cliLog;
-	}
+        this.client = client;
+        this.cliLog = cliLog;
+    }
 
-	@Override
-	public boolean loginOrCreateAccount() {
-		try {
-			client.login(client.getCurrentUserId(), client.getCurrentUserPwd());
-			return true;
-		} catch (DexterRuntimeException e) {
-			cliLog.errorln("Invalid userId ID(" + client.getCurrentUserId() + ") or password("
-					+ client.getCurrentUserPwd() + ")");
-			cliLog.infoln("You can create your account by the following command:");
-			cliLog.infoln("$ chmod 755 create-user.sh");
-			cliLog.infoln("$ create-user.sh -u your_id -p your_password -h dexter_server_ip -o dexter_server_port");
-			cliLog.infoln("OR");
-			cliLog.infoln(
-					"$ java -jar dexter-executor.jar -c -u your_id -p your_password -h dexter_server_ip -o dexter_server_port");
-			cliLog.infoln("If you want reset your password:");
-			cliLog.infoln("$ java -jar dexter-executor.jar -r -u your_id -h dexter_server_ip -o dexter_server_port");
-			return false;
-		}
-	}
+    @Override
+    public boolean loginOrCreateAccount() {
+        try {
+            client.login(client.getCurrentUserId(), client.getCurrentUserPwd());
+            return true;
+        } catch (DexterRuntimeException e) {
+            log.error(e.getMessage(), e);
+            StringBuilder msg = new StringBuilder(500);
 
-	@Override
-	public void createAccount(String userId, String password) {
-		try {
-			if (isValidUserId(userId) == false) {
-				userId = readUserId();
-			}
+            if (e.getMessage().contains("Connection refused connect")) {
+                msg.append("Dexter Server IP or Port is invalid.").append(DexterUtil.LINE_SEPARATOR)
+                        .append("Check 'dexterServerIp' and 'dexterServerPort' fields in your dexter_cfg.json file.")
+                        .append(DexterUtil.LINE_SEPARATOR)
+                        .append("If you used 'localhost', please use real IP address.")
+                        .append(DexterUtil.LINE_SEPARATOR)
+                        .append("Or check if Dexter Server is running.");
+                cliLog.errorln(msg.toString());
+            } else {
+                msg.append("Invalid userId ID(").append(client.getCurrentUserId()).append(") or password(")
+                        .append(client.getCurrentUserPwd()).append(")").append(DexterUtil.LINE_SEPARATOR)
+                        .append("You can create your account by the following command:")
+                        .append(DexterUtil.LINE_SEPARATOR)
+                        .append("$ chmod 755 create-user.sh").append(DexterUtil.LINE_SEPARATOR)
+                        .append("$ create-user.sh -u your_id -p your_password -h dexter_server_ip -o dexter_server_port")
+                        .append(DexterUtil.LINE_SEPARATOR)
+                        .append("OR").append(DexterUtil.LINE_SEPARATOR)
+                        .append("$ java -jar dexter-executor.jar -c -u your_id -p your_password -h dexter_server_ip -o dexter_server_port")
+                        .append(DexterUtil.LINE_SEPARATOR)
+                        .append("If you want reset your password:").append(DexterUtil.LINE_SEPARATOR)
+                        .append("$ java -jar dexter-executor.jar -r -u your_id -h dexter_server_ip -o dexter_server_port");
 
-			if (isValidUserId(password) == false) {
-				password = readPassword();
-			}
+                cliLog.errorln(msg.toString());
+            }
 
-			client.createAccount(userId, password, false);
-			cliLog.infoln("Your account is created: " + userId);
-			client.login(userId, password);
-		} catch (DexterRuntimeException e1) {
-			throw new RuntimeException("Can't make new account. try it again. " + e1.getMessage(), e1);
-		}
-	}
+            return false;
+        }
+    }
 
-	private String readUserId() {
-		Scanner input = new Scanner(in);
-		try {
-			String userId = "";
-			int tryCount = 0;
+    @Override
+    public void createAccount(String userId, String password) {
+        try {
+            if (isValidUserId(userId) == false) {
+                userId = readUserId();
+            }
 
-			do {
-				cliLog.info("Enter your ID (4 - 20 length, 'CTRL + C' to exit): ");
-				userId = input.nextLine().trim();
+            if (isValidUserId(password) == false) {
+                password = readPassword();
+            }
 
-				if (++tryCount >= MAX_TRY_COUNT) {
-					throw new DexterRuntimeException("Invalid User ID");
-				}
-			} while (isValidUserId(userId) == false);
+            client.createAccount(userId, password, false);
+            cliLog.infoln("Your account is created: " + userId);
+            client.login(userId, password);
+        } catch (DexterRuntimeException e1) {
+            throw new RuntimeException("Can't make new account. try it again. " + e1.getMessage(), e1);
+        }
+    }
 
-			return userId;
-		} catch (Exception e) {
-			throw new DexterRuntimeException(e.getMessage(), e);
-		} finally {
-			input.close();
-		}
+    private String readUserId() {
+        Scanner input = new Scanner(in);
+        try {
+            String userId = "";
+            int tryCount = 0;
 
-	}
+            do {
+                cliLog.info("Enter your ID (4 - 20 length, 'CTRL + C' to exit): ");
+                userId = input.nextLine().trim();
 
-	private boolean isValidUserId(final String userId) {
-		if (Strings.isNullOrEmpty(userId))
-			return false;
+                if (++tryCount >= MAX_TRY_COUNT) {
+                    throw new DexterRuntimeException("Invalid User ID");
+                }
+            } while (isValidUserId(userId) == false);
 
-		if (userId.length() < 4 || userId.length() > 20)
-			return false;
+            return userId;
+        } catch (Exception e) {
+            throw new DexterRuntimeException(e.getMessage(), e);
+        } finally {
+            input.close();
+        }
 
-		if (client.hasAccount(userId)) {
-			cliLog.infoln("Your account is already exist: " + userId);
-			return false;
-		}
+    }
 
-		return true;
-	}
+    private boolean isValidUserId(final String userId) {
+        if (Strings.isNullOrEmpty(userId))
+            return false;
 
-	private String readPassword() {
-		Scanner input = new Scanner(in);
-		try {
-			String password = "";
-			int tryCount = 0;
+        if (userId.length() < 4 || userId.length() > 20)
+            return false;
 
-			do {
-				cliLog.info("Enter your password('CTRL + C' to exit): ");
-				password = input.nextLine().trim();
+        if (client.hasAccount(userId)) {
+            cliLog.infoln("Your account is already exist: " + userId);
+            return false;
+        }
 
-				String password2 = "";
-				cliLog.info("Enter your password again('CTRL + C' to exit): ");
-				password2 = input.nextLine().trim();
+        return true;
+    }
 
-				if (password.equals(password2) == false) {
-					cliLog.infoln("Passwords are not same.");
-					password = "";
-				}
+    private String readPassword() {
+        Scanner input = new Scanner(in);
+        try {
+            String password = "";
+            int tryCount = 0;
 
-				if (++tryCount >= MAX_TRY_COUNT) {
-					throw new DexterRuntimeException("Invalid Passowrd");
-				}
-			} while (isValidPassword(password) == false);
+            do {
+                cliLog.info("Enter your password('CTRL + C' to exit): ");
+                password = input.nextLine().trim();
 
-			return password;
-		} catch (Exception e) {
-			throw new DexterRuntimeException(e.getMessage(), e);
-		} finally {
-			input.close();
-		}
-	}
+                String password2 = "";
+                cliLog.info("Enter your password again('CTRL + C' to exit): ");
+                password2 = input.nextLine().trim();
 
-	private boolean isValidPassword(final String password) {
-		if (Strings.isNullOrEmpty(password))
-			return false;
+                if (password.equals(password2) == false) {
+                    cliLog.infoln("Passwords are not same.");
+                    password = "";
+                }
 
-		return true;
-	}
+                if (++tryCount >= MAX_TRY_COUNT) {
+                    throw new DexterRuntimeException("Invalid Passowrd");
+                }
+            } while (isValidPassword(password) == false);
 
-	@Override
-	public void setDexterClient(IDexterClient client) {
-		this.client = client;
-	}
+            return password;
+        } catch (Exception e) {
+            throw new DexterRuntimeException(e.getMessage(), e);
+        } finally {
+            input.close();
+        }
+    }
 
-	@Override
-	public void setInputStream(InputStream in) {
-		this.in = in;
-	}
+    private boolean isValidPassword(final String password) {
+        if (Strings.isNullOrEmpty(password))
+            return false;
 
-	@Override
-	public void setPrintStream(PrintStream out) {
-		this.cliLog.setPrintStream(out);
-	}
+        return true;
+    }
+
+    @Override
+    public void setDexterClient(IDexterClient client) {
+        this.client = client;
+    }
+
+    @Override
+    public void setInputStream(InputStream in) {
+        this.in = in;
+    }
+
+    @Override
+    public void setPrintStream(PrintStream out) {
+        this.cliLog.setPrintStream(out);
+    }
 }

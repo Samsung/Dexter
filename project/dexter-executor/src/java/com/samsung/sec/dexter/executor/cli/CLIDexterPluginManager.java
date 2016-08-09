@@ -6,11 +6,11 @@
  * modification, are permitted provided that the following conditions are met:
  * 
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  * 
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -22,7 +22,7 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.samsung.sec.dexter.executor.cli;
 
 import com.google.common.base.Strings;
@@ -39,71 +39,70 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CLIDexterPluginManager extends BaseDexterPluginManager {
-	private ICLILog cliLog;
-	private IDexterCLIOption cliOption;
+    private ICLILog cliLog;
+    private IDexterCLIOption cliOption;
 
-	public CLIDexterPluginManager(final IDexterPluginInitializer pluginInitializer, final IDexterClient client,
-			final ICLILog cliLog, final IDexterCLIOption cliOption) {
-		super(pluginInitializer, client);
+    public CLIDexterPluginManager(final IDexterPluginInitializer pluginInitializer, final IDexterClient client,
+            final ICLILog cliLog, final IDexterCLIOption cliOption) {
+        super(pluginInitializer, client);
 
-		assert cliLog != null;
-		assert cliOption != null;
+        assert cliLog != null;
+        assert cliOption != null;
 
-		this.cliLog = cliLog;
-		this.cliOption = cliOption;
-	}
+        this.cliLog = cliLog;
+        this.cliOption = cliOption;
+    }
 
-	@Override
-	public void initDexterPlugins() throws DexterRuntimeException {
-		assert initializer != null;
+    @Override
+    public void initDexterPlugins() throws DexterRuntimeException {
+        assert initializer != null;
 
-		pluginList = new ArrayList<IDexterPlugin>(0);
-		initializer.init(pluginList);
+        pluginList = new ArrayList<IDexterPlugin>(0);
+        initializer.init(pluginList);
 
-		if (getPluginList().size() == 0) {
-			cliLog.printErrorMessageWhenNoPlugins();
-			System.exit(1);
-		}
+        if (getPluginList().size() == 0) {
+            cliLog.printErrorMessageWhenNoPlugins();
+            System.exit(1);
+        }
 
-		initSupportingFileExetensions();
+        initSupportingFileExetensions();
 
-		if (!cliOption.isStandAloneMode() && client.isServerAlive()) {
-			updateCheckerConfig();
-		}
+        if (!cliOption.isStandAloneMode() && client.isServerAlive()) {
+            updateCheckerConfig();
+        }
 
-		for (IDexterPlugin plugin : getPluginList()) {
-			PluginDescription desc = plugin.getDexterPluginDescription();
-			cliLog.printMessageWhenPluginLoaded(desc);
+        for (IDexterPlugin plugin : getPluginList()) {
+            PluginDescription desc = plugin.getDexterPluginDescription();
 
-			resetCheckerEnable(desc.getPluginName(), desc.getLanguage().toString(),
-					plugin.getCheckerConfig().getCheckerList());
-		}
-	}
+            resetCheckerEnable(desc.getPluginName(), desc.getLanguage().toString(),
+                    plugin.getCheckerConfig().getCheckerList());
+        }
+    }
 
-	private void resetCheckerEnable(final String toolName, final String language, final List<Checker> checkers) {
-		if (cliOption.isSpecifiedCheckerEnabledMode() == false)
-			return;
+    private void resetCheckerEnable(final String toolName, final String language, final List<Checker> checkers) {
+        if (cliOption.isSpecifiedCheckerEnabledMode() == false)
+            return;
 
-		for (Checker checker : checkers) {
-			boolean isEnable = checkCheckerEnablenessByCliOption(toolName, language, checker);
-			checker.setActive(isEnable);
-		}
-	}
+        for (Checker checker : checkers) {
+            boolean isEnable = checkCheckerEnablenessByCliOption(toolName, language, checker);
+            checker.setActive(isEnable);
+        }
+    }
 
-	private boolean checkCheckerEnablenessByCliOption(final String toolName, final String language, Checker checker) {
-		int index = Arrays.binarySearch(cliOption.getEnabledCheckerCodes(), checker.getCode());
+    private boolean checkCheckerEnablenessByCliOption(final String toolName, final String language, Checker checker) {
+        int index = Arrays.binarySearch(cliOption.getEnabledCheckerCodes(), checker.getCode());
 
-		if (index == -1)
-			return false;
+        if (index == -1)
+            return false;
 
-		final String enableToolName = cliOption.getEnabledCheckerToolNames()[index];
-		if (Strings.isNullOrEmpty(enableToolName) == false && enableToolName.equals(toolName) == false)
-			return false;
+        final String enableToolName = cliOption.getEnabledCheckerToolNames()[index];
+        if (Strings.isNullOrEmpty(enableToolName) == false && enableToolName.equals(toolName) == false)
+            return false;
 
-		final String enableLanguage = cliOption.getEnabledCheckerLanguages()[index];
-		if (Strings.isNullOrEmpty(enableLanguage) == false && enableLanguage.equals(language) == false)
-			return false;
+        final String enableLanguage = cliOption.getEnabledCheckerLanguages()[index];
+        if (Strings.isNullOrEmpty(enableLanguage) == false && enableLanguage.equals(language) == false)
+            return false;
 
-		return true;
-	}
+        return true;
+    }
 }

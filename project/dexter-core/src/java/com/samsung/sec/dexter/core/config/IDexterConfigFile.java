@@ -8,99 +8,99 @@ import java.util.List;
 import java.util.Map;
 
 public interface IDexterConfigFile {
-	public enum Type {
-		FILE, FOLDER, PROJECT, SNAPSHOT;
+    public enum Type {
+        FILE, FOLDER, PROJECT, SNAPSHOT;
 
-		public static boolean hasValue(final String value) {
-			if (Strings.isNullOrEmpty(value))
-				return false;
+        public static boolean hasValue(final String value) {
+            if (Strings.isNullOrEmpty(value))
+                return false;
 
-			for (Type type : Type.values()) {
-				if (type.toString().equals(value)) {
-					return true;
-				}
-			}
+            for (Type type : Type.values()) {
+                if (type.toString().equals(value)) {
+                    return true;
+                }
+            }
 
-			return false;
-		}
-	};
+            return false;
+        }
+    };
 
-	void setSnapshotId(String snapshotId);
+    void setSnapshotId(String snapshotId);
 
-	String getSnapshotId();
+    String getSnapshotId();
 
-	String getFirstFileName();
+    String getFirstFileName();
 
-	List<String> generateSourceFileFullPathList();
+    List<String> generateSourceFileFullPathList();
 
-	void setType(Type type);
+    void setType(Type type);
 
-	Type getType();
+    Type getType();
 
-	void setResultFileFullPath(String resultFileFullPath);
+    void setResultFileFullPath(String resultFileFullPath);
 
-	String getResultFileFullPath();
+    String getResultFileFullPath();
 
-	void setFileNameList(List<String> fileNameList);
+    void setFileNameList(List<String> fileNameList);
 
-	List<String> getFileNameList();
+    List<String> getFileNameList();
 
-	void setModulePath(String modulePath);
+    void setModulePath(String modulePath);
 
-	String getModulePath();
+    String getModulePath();
 
-	void setLanguage(String language);
+    void setLanguage(String language);
 
-	String getLanguage();
+    String getLanguage();
 
-	void setBinDir(String binDir);
+    void setBinDir(String binDir);
 
-	String getBinDir();
+    String getBinDir();
 
-	void setLibDirList(List<String> libDirList);
+    void setLibDirList(List<String> libDirList);
 
-	List<String> getLibDirList();
+    List<String> getLibDirList();
 
-	void setSourceEncoding(String sourceEncoding);
+    void setSourceEncoding(String sourceEncoding);
 
-	String getSourceEncoding();
+    String getSourceEncoding();
 
-	void setFunctionList(List<String> functionList);
+    void setFunctionList(List<String> functionList);
 
-	List<String> getFunctionList();
+    List<String> getFunctionList();
 
-	void setHeaderDirList(List<String> headerDirList);
+    void setHeaderDirList(List<String> headerDirList);
 
-	List<String> getHeaderDirList();
+    List<String> getHeaderDirList();
 
-	void setSourceDirList(List<String> sourceDirList);
+    void setSourceDirList(List<String> sourceDirList);
 
-	List<String> getSourceDirList();
+    List<String> getSourceDirList();
 
-	void setProjectFullPath(String projectFullPath);
+    void setProjectFullPath(String projectFullPath);
 
-	String getProjectFullPath();
+    String getProjectFullPath();
 
-	void setProjectName(String projectName);
+    void setProjectName(String projectName);
 
-	String getProjectName();
+    String getProjectName();
 
-	void setDexterServerPort(int dexterServerPort);
+    void setDexterServerPort(int dexterServerPort);
 
-	int getDexterServerPort();
+    int getDexterServerPort();
 
-	void setDexterServerIp(String dexterServerIp);
+    void setDexterServerIp(String dexterServerIp);
 
-	String getDexterServerIp();
+    String getDexterServerIp();
 
-	void setDexterHome(String dexterHome);
+    void setDexterHome(String dexterHome);
 
-	String getDexterHome();
+    String getDexterHome();
 
-	void setFields(final Map<String, Object> params);
+    void setFields(final Map<String, Object> params);
 
-	AnalysisConfig toAnalysisConfig();
+    AnalysisConfig toAnalysisConfig();
 
-	void loadFromFile(final File file, final String host, final int port);
+    void loadFromFile(final File file);
 
 }

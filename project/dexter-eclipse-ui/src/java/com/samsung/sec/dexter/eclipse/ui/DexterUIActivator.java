@@ -178,6 +178,7 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
     }
 
     private void startLoginScheduler() {
+        // TODO check the UI/non-UI Thread
         if (loginFuture == null || loginFuture.isDone()) {
             Runnable checkLoginJob = new Runnable() {
                 @Override
