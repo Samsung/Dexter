@@ -32,6 +32,7 @@ import com.samsung.sec.dexter.core.analyzer.EndOfAnalysisHandler;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.RunMode;
 import com.samsung.sec.dexter.core.config.DexterConfigFile;
+import com.samsung.sec.dexter.core.config.EmptyDexterConfigFile;
 import com.samsung.sec.dexter.core.config.IDexterConfigFile;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginInitializer;
@@ -62,13 +63,14 @@ public class Main {
 
         try {
             final IDexterCLIOption cliOption = new DexterCLIOption(args);
+            final IDexterConfigFile configFile = cliMain.createDexterConfigFile(cliOption);
 
             switch (cliOption.getCommandMode()) {
                 case CREATE_ACCOUNT:
-                    cliMain.createAccount(cliOption);
+                    cliMain.createAccount(cliOption, configFile);
                     break;
                 case STATIC_ANALYSIS:
-                    cliMain.analyze(cliOption);
+                    cliMain.analyze(cliOption, configFile);
                     break;
                 default:
                     break;
@@ -83,8 +85,7 @@ public class Main {
         DexterConfig.getInstance().setRunMode(RunMode.CLI);
     }
 
-    public void createAccount(final IDexterCLIOption cliOption) {
-        final IDexterConfigFile configFile = createDexterConfigFile(cliOption);
+    public void createAccount(final IDexterCLIOption cliOption, final IDexterConfigFile configFile) {
         final IDexterClient client = createDexterClient(cliOption, configFile);
         final IAccountHandler accountHandler = createAccountHandler(client, cliOption);
         accountHandler.createAccount(cliOption.getUserId(), cliOption.getUserPassword());
@@ -99,7 +100,7 @@ public class Main {
     }
 
     protected IDexterClient createDexterClient(final IDexterCLIOption cliOption, final IDexterConfigFile configFile) {
-        if (cliOption.isStandAloneMode()) {
+        if (cliOption.isStandAloneMode() || configFile instanceof EmptyDexterConfigFile) {
             return new EmptyDexterClient();
         } else {
             return new DexterClient.DexterClientBuilder(cliOption.getUserId(), cliOption.getUserPassword())
@@ -108,11 +109,10 @@ public class Main {
         }
     }
 
-    public void analyze(final IDexterCLIOption cliOption) {
+    public void analyze(final IDexterCLIOption cliOption, final IDexterConfigFile configFile) {
         final Stopwatch timer = Stopwatch.createStarted();
         cliLog.printStartingAnalysisMessage();
 
-        final IDexterConfigFile configFile = createDexterConfigFile(cliOption);
         final IDexterClient client = createDexterClient(cliOption, configFile);
         loginOrCreateAccount(client, cliOption);
 
@@ -164,7 +164,7 @@ public class Main {
         return baseAnalysisConfig;
     }
 
-    private IDexterConfigFile createDexterConfigFile(final IDexterCLIOption cliOption) {
+    protected IDexterConfigFile createDexterConfigFile(final IDexterCLIOption cliOption) {
         IDexterConfigFile configFile = new DexterConfigFile();
         configFile.loadFromFile(new File(cliOption.getConfigFilePath()));
 

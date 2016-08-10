@@ -6,11 +6,11 @@
  * modification, are permitted provided that the following conditions are met:
  * 
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  * 
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -22,7 +22,7 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.samsung.sec.dexter.executor.cli;
 
 import static org.junit.Assert.assertEquals;
@@ -33,6 +33,8 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.samsung.sec.dexter.core.config.EmptyDexterConfigFile;
+import com.samsung.sec.dexter.core.config.IDexterConfigFile;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.EmptyDexterClient;
 import com.samsung.sec.dexter.core.util.IDexterClient;
@@ -105,13 +107,14 @@ public class MainTest {
         Main cliMain = new Main();
         Main spyMain = spy(cliMain);
         IDexterCLIOption cliOption = new DexterCLIOption(args);
+        final IDexterConfigFile configFile = new EmptyDexterConfigFile();
         IDexterClient client = new EmptyDexterClient();
-        when(spyMain.createDexterClient(cliOption)).thenReturn(client);
+        when(spyMain.createDexterClient(cliOption, configFile)).thenReturn(client);
 
-        spyMain.createAccount(cliOption);
+        spyMain.createAccount(cliOption, configFile);
 
-        verify(spyMain).createAccount(cliOption);
-        verify(spyMain).createDexterClient(cliOption);
+        verify(spyMain).createAccount(cliOption, configFile);
+        verify(spyMain).createDexterClient(cliOption, configFile);
         verify(spyMain).createAccountHandler(client, cliOption);
 
         assertTrue(cliOption.getCommandMode() == IDexterCLIOption.CommandMode.CREATE_ACCOUNT);
@@ -137,10 +140,11 @@ public class MainTest {
             Main cliMain = new Main();
             Main spyMain = spy(cliMain);
             IDexterCLIOption cliOption = new DexterCLIOption(args);
+            final IDexterConfigFile configFile = cliMain.createDexterConfigFile(cliOption);
             IDexterClient client = new EmptyDexterClient();
-            when(spyMain.createDexterClient(cliOption)).thenReturn(client);
+            when(spyMain.createDexterClient(cliOption, configFile)).thenReturn(client);
 
-            spyMain.analyze(cliOption);
+            spyMain.analyze(cliOption, configFile);
             fail();
         } catch (DexterRuntimeException e) {
             assertTrue(e.getMessage().startsWith("there is no file : ./dexter_cfg.json"));
@@ -160,10 +164,11 @@ public class MainTest {
             Main cliMain = new Main();
             Main spyMain = spy(cliMain);
             IDexterCLIOption cliOption = new DexterCLIOption(args);
+            final IDexterConfigFile configFile = cliMain.createDexterConfigFile(cliOption);
             IDexterClient client = new EmptyDexterClient();
-            when(spyMain.createDexterClient(cliOption)).thenReturn(client);
+            when(spyMain.createDexterClient(cliOption, configFile)).thenReturn(client);
 
-            spyMain.analyze(cliOption);
+            spyMain.analyze(cliOption, configFile);
             fail();
         } catch (DexterRuntimeException e) {
             assertTrue(e.getMessage().startsWith("there is no file : ./dexter_conf_java1.json"));
@@ -184,12 +189,13 @@ public class MainTest {
             Main cliMain = new Main();
             Main spyMain = spy(cliMain);
             IDexterCLIOption cliOption = new DexterCLIOption(args);
+            final IDexterConfigFile configFile = cliMain.createDexterConfigFile(cliOption);
             IDexterClient client = Mockito.mock(IDexterClient.class);
-            when(spyMain.createDexterClient(cliOption)).thenReturn(client);
+            when(spyMain.createDexterClient(cliOption, configFile)).thenReturn(client);
             when(client.getServerHost()).thenReturn(ip);
             when(client.getServerPort()).thenReturn(port);
 
-            spyMain.analyze(cliOption);
+            spyMain.analyze(cliOption, configFile);
             fail();
         } catch (DexterRuntimeException e) {
             assertTrue(e.getMessage().startsWith("Folder(Directory) is not exist : ./src/test/myproject1"));
@@ -210,12 +216,13 @@ public class MainTest {
             Main cliMain = new Main();
             Main spyMain = spy(cliMain);
             IDexterCLIOption cliOption = new DexterCLIOption(args);
+            final IDexterConfigFile configFile = cliMain.createDexterConfigFile(cliOption);
             IDexterClient client = Mockito.mock(IDexterClient.class);
-            when(spyMain.createDexterClient(cliOption)).thenReturn(client);
+            when(spyMain.createDexterClient(cliOption, configFile)).thenReturn(client);
             when(client.getServerHost()).thenReturn(ip);
             when(client.getServerPort()).thenReturn(port);
 
-            spyMain.analyze(cliOption);
+            spyMain.analyze(cliOption, configFile);
             fail();
         } catch (DexterRuntimeException e) {
             assertTrue(e.getMessage().startsWith("not supported file : dexter_conf_java.json"));
