@@ -27,7 +27,7 @@ package com.samsung.sec.dexter.executor.cli;
 
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResultFileManager;
-import com.samsung.sec.dexter.core.analyzer.EndOfAnalysisHandler;
+import com.samsung.sec.dexter.core.analyzer.IAnalysisResultHandler;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.defect.Occurence;
 import com.samsung.sec.dexter.core.job.SendResultJob;
@@ -37,7 +37,7 @@ import com.samsung.sec.dexter.executor.DexterAnalyzer;
 import java.io.IOException;
 import java.util.List;
 
-public class CLIAnalysisResultHandler implements EndOfAnalysisHandler {
+public class CLIAnalysisResultHandler implements IAnalysisResultHandler {
     private ICLILog cliLog;
     private IDexterCLIOption cliOption;
     private ICLIResultFile cliResultFile;

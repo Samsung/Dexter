@@ -30,7 +30,7 @@ import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
-import com.samsung.sec.dexter.core.analyzer.EndOfAnalysisHandler;
+import com.samsung.sec.dexter.core.analyzer.IAnalysisResultHandler;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfigFile;
 import com.samsung.sec.dexter.core.config.IDexterConfigFile;
@@ -196,8 +196,8 @@ public class MonitorForDexterConfigFile extends Job implements IDexterHomeListen
         addSourceDir(dir.getParentFile(), sourceBaseDirList);
     }
 
-    private EndOfAnalysisHandler createResultChanageHandler() {
-        return new EndOfAnalysisHandler() {
+    private IAnalysisResultHandler createResultChanageHandler() {
+        return new IAnalysisResultHandler() {
             @Override
             public void handleAnalysisResult(final List<AnalysisResult> resultList, final IDexterClient client) {
                 try {
@@ -231,6 +231,9 @@ public class MonitorForDexterConfigFile extends Job implements IDexterHomeListen
                     DexterDaemonActivator.LOG.error(e.getMessage(), e);
                 }
             }
+
+            @Override
+            public void printLogAfterAnalyze() {}
         };
     }
 

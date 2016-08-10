@@ -28,7 +28,7 @@ package com.samsung.sec.dexter.executor.cli;
 import com.google.common.base.Stopwatch;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
-import com.samsung.sec.dexter.core.analyzer.EndOfAnalysisHandler;
+import com.samsung.sec.dexter.core.analyzer.IAnalysisResultHandler;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.RunMode;
 import com.samsung.sec.dexter.core.config.DexterConfigFile;
@@ -117,7 +117,7 @@ public class Main {
         loginOrCreateAccount(client, cliOption);
 
         final AnalysisConfig baseAnalysisConfig = createBaseAnalysisConfig(client, cliOption, configFile);
-        final EndOfAnalysisHandler cliAnalysisResultHandler = createCLIAnalysisResultHandler(client.getDexterWebUrl(),
+        final IAnalysisResultHandler cliAnalysisResultHandler = createCLIAnalysisResultHandler(client.getDexterWebUrl(),
                 cliOption);
         final IDexterPluginManager pluginManager = createDexterPlugins(client, cliOption);
         initSourceFileFullPathList(configFile, cliOption);
@@ -146,7 +146,7 @@ public class Main {
         return pluginManager;
     }
 
-    protected EndOfAnalysisHandler createCLIAnalysisResultHandler(final String dexterWebUrl,
+    private IAnalysisResultHandler createCLIAnalysisResultHandler(final String dexterWebUrl,
             final IDexterCLIOption cliOption) {
         ICLIResultFile cliResultFile = new CLIResultFile();
         return new CLIAnalysisResultHandler(dexterWebUrl, cliResultFile, cliOption, cliLog);
@@ -188,7 +188,7 @@ public class Main {
     }
 
     private void analyzeSynchronously(final IDexterPluginManager pluginManager,
-            final EndOfAnalysisHandler cliAnalysisResultHandler, final AnalysisConfig baseAnalysisConfig,
+            final IAnalysisResultHandler cliAnalysisResultHandler, final AnalysisConfig baseAnalysisConfig,
             final IDexterClient client) {
         assert pluginManager != null;
 
@@ -204,7 +204,7 @@ public class Main {
     }
 
     private void analyzeAsynchronously(final IDexterPluginManager pluginManager,
-            final EndOfAnalysisHandler cliAnalysisResultHandler, final AnalysisConfig baseAnalysisConfig,
+            final IAnalysisResultHandler cliAnalysisResultHandler, final AnalysisConfig baseAnalysisConfig,
             final IDexterClient client) {
         assert pluginManager != null;
 
@@ -218,7 +218,7 @@ public class Main {
     }
 
     private AnalysisConfig createAnalysisConfig(final String fileFullPath,
-            final EndOfAnalysisHandler cliAnalysisResultHandler, final AnalysisConfig baseAnalysisConfig) {
+            final IAnalysisResultHandler cliAnalysisResultHandler, final AnalysisConfig baseAnalysisConfig) {
         final AnalysisConfig config = new AnalysisEntityFactory()
                 .copyAnalysisConfigWithoutSourcecode(baseAnalysisConfig);
 

@@ -30,7 +30,7 @@ import com.google.common.base.Strings;
 import com.google.common.io.BaseEncoding;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
-import com.samsung.sec.dexter.core.analyzer.EndOfAnalysisHandler;
+import com.samsung.sec.dexter.core.analyzer.IAnalysisResultHandler;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
@@ -904,7 +904,7 @@ public class DexterUtil {
         }
     }
 
-    public static void checkNullField(EndOfAnalysisHandler field) {
+    public static void checkNullField(IAnalysisResultHandler field) {
         if (field == null) {
             throw new DexterRuntimeException("field is null");
         }

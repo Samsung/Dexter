@@ -33,9 +33,11 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.EmptyDexterConfigFile;
 import com.samsung.sec.dexter.core.config.IDexterConfigFile;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.core.util.EmptyDexterClient;
 import com.samsung.sec.dexter.core.util.IDexterClient;
 
@@ -125,6 +127,89 @@ public class MainTest {
         assertNotNull(spyMain.createAccountHandler(client, cliOption));
         assertNotNull(spyMain.createAccountHandler(client, cliOption));
         assertTrue(spyMain.createAccountHandler(client, cliOption) instanceof AccountHandler);
+    }
+
+    @Test
+    public void test_CreateAccountHandler_should_return_empty_object_when_standalone_mode() {
+        String[] args = { "-s", "-f", "./src/test/dexter_conf_java.json" };
+
+        Main cliMain = new Main();
+        IDexterCLIOption cliOption = new DexterCLIOption(args);
+        IDexterClient client = new EmptyDexterClient();
+
+        IAccountHandler accountHandler = cliMain.createAccountHandler(client, cliOption);
+
+        assertNotNull(accountHandler);
+        assertTrue(accountHandler instanceof EmptyAccountHandler);
+    }
+
+    @Test
+    public void test_CreateAccountHandler_should_return_valid_object_when_not_standalone_mode() {
+        String id = "user";
+        String password = "password";
+        String[] args = { "-u", id, "-p", password, "-f", "./src/test/dexter_conf_java.json" };
+
+        Main cliMain = new Main();
+        IDexterCLIOption cliOption = new DexterCLIOption(args);
+        IDexterClient client = new EmptyDexterClient();
+
+        IAccountHandler accountHandler = cliMain.createAccountHandler(client, cliOption);
+
+        assertNotNull(accountHandler);
+        assertTrue(accountHandler instanceof AccountHandler);
+    }
+
+    @Test
+    public void test_CreateDexterClient_should_return_valid_object_when_not_standalone_mode() {
+        String id = "user";
+        String password = "password";
+        String[] args = { "-u", id, "-p", password, "-f", "./src/test/dexter_conf_java.json" };
+
+        Main cliMain = new Main();
+        IDexterCLIOption cliOption = new DexterCLIOption(args);
+        DexterConfig.getInstance().addSupprotingFileExtensions(new String[] { "java" });
+        final IDexterConfigFile configFile = cliMain.createDexterConfigFile(cliOption);
+
+        IDexterClient client = cliMain.createDexterClient(cliOption, configFile);
+
+        assertNotNull(client);
+        assertTrue(client instanceof DexterClient);
+    }
+
+    @Test
+    public void test_CreateDexterClient_should_return_empty_object_when_standalone_mode() {
+        String[] args = { "-s", "-f", "./src/test/dexter_conf_java.json" };
+
+        Main cliMain = new Main();
+        IDexterCLIOption cliOption = new DexterCLIOption(args);
+        DexterConfig.getInstance().addSupprotingFileExtensions(new String[] { "java" });
+        final IDexterConfigFile configFile = cliMain.createDexterConfigFile(cliOption);
+
+        IDexterClient client = cliMain.createDexterClient(cliOption, configFile);
+
+        assertNotNull(client);
+        assertTrue(client instanceof EmptyDexterClient);
+    }
+
+    @Test
+    public void test_CreateAccountHandler_should_throw_exception_when_standalone_mode_and_u_option() {
+        String id = "user";
+        String password = "password";
+        String ip = "100.100.100.100";
+        int port = 1234;
+
+        String[] args = { "-u", id, "-p", password, "-h", ip, "-o", "" + port, "-s" };
+
+        try {
+            Main cliMain = new Main();
+            IDexterCLIOption cliOption = new DexterCLIOption(args);
+            IDexterClient client = new EmptyDexterClient();
+            cliMain.createAccountHandler(client, cliOption);
+            fail();
+        } catch (DexterRuntimeException e) {
+            assertTrue(e.getMessage().startsWith("you cannot use option '-s' and with '-u'"));
+        }
+
     }
 
     @Test

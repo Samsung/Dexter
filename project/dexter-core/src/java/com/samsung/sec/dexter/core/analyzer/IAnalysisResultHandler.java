@@ -29,7 +29,7 @@ import com.samsung.sec.dexter.core.util.IDexterClient;
 
 import java.util.List;
 
-public interface EndOfAnalysisHandler {
+public interface IAnalysisResultHandler {
 
     /**
      * handle the AnalysisResult object after making it by a static analysis

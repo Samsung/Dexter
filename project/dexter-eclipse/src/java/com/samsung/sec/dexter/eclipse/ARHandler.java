@@ -6,11 +6,11 @@
  * modification, are permitted provided that the following conditions are met:
  * 
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  * 
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -22,11 +22,11 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.samsung.sec.dexter.eclipse;
 
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
-import com.samsung.sec.dexter.core.analyzer.EndOfAnalysisHandler;
+import com.samsung.sec.dexter.core.analyzer.IAnalysisResultHandler;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.defect.Occurence;
 import com.samsung.sec.dexter.core.filter.AnalysisFilterHandler;
@@ -39,45 +39,48 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.swt.widgets.Display;
 
-class ARHandler implements EndOfAnalysisHandler {
-	private IFile targetFile;
+class ARHandler implements IAnalysisResultHandler {
+    private IFile targetFile;
 
-	public ARHandler(final IFile file) {
-		this.targetFile = file;
-	}
+    public ARHandler(final IFile file) {
+        this.targetFile = file;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.samsung.sec.dexter.core.analyzer.EndOfAnalysisHandler#
-	 * handleAnalysisResult(com.samsung.sec.dexter.core.analyzer.AnalysisResult)
-	 */
-	@Override
-	public void handleAnalysisResult(final List<AnalysisResult> resultList, final IDexterClient client) {
-		if (Display.getCurrent() != null) {
-			addDefectMarkers(resultList);
-			return;
-		}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.samsung.sec.dexter.core.analyzer.EndOfAnalysisHandler#
+     * handleAnalysisResult(com.samsung.sec.dexter.core.analyzer.AnalysisResult)
+     */
+    @Override
+    public void handleAnalysisResult(final List<AnalysisResult> resultList, final IDexterClient client) {
+        if (Display.getCurrent() != null) {
+            addDefectMarkers(resultList);
+            return;
+        }
 
-		Display.getDefault().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				addDefectMarkers(resultList);
-			}
-		});
-	}
+        Display.getDefault().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                addDefectMarkers(resultList);
+            }
+        });
+    }
 
-	private void addDefectMarkers(final List<AnalysisResult> resultList) {
-		DexterMarker.deleteMarkers(targetFile);
+    private void addDefectMarkers(final List<AnalysisResult> resultList) {
+        DexterMarker.deleteMarkers(targetFile);
 
-		List<Defect> allDefectList = DexterAnalyzer.getAllDefectList(resultList);
+        List<Defect> allDefectList = DexterAnalyzer.getAllDefectList(resultList);
 
-		for (final Defect d : allDefectList) {
-			boolean isDefectDissmissed = AnalysisFilterHandler.getInstance().isDefectDismissed(d);
+        for (final Defect d : allDefectList) {
+            boolean isDefectDissmissed = AnalysisFilterHandler.getInstance().isDefectDismissed(d);
 
-			for (final Occurence o : d.getOccurences()) {
-				DexterMarker.addMarker(targetFile, d, o, isDefectDissmissed);
-			}
-		}
-	}
+            for (final Occurence o : d.getOccurences()) {
+                DexterMarker.addMarker(targetFile, d, o, isDefectDissmissed);
+            }
+        }
+    }
+
+    @Override
+    public void printLogAfterAnalyze() {}
 }
