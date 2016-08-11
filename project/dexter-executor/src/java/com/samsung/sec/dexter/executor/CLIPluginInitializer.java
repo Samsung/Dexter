@@ -70,7 +70,7 @@ public class CLIPluginInitializer implements IDexterPluginInitializer {
 
         File[] files = DexterUtil.getSubFiles(pluginBaseDir);
         if (files.length == 0) {
-            throw new DexterRuntimeException("there is no existing plug-in(s)");
+            return;
         }
 
         for (final File file : files) {

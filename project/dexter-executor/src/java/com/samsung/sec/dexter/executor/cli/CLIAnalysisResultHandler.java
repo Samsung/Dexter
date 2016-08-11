@@ -40,7 +40,7 @@ import java.util.List;
 public class CLIAnalysisResultHandler implements IAnalysisResultHandler {
     private ICLILog cliLog;
     private IDexterCLIOption cliOption;
-    private ICLIResultFile cliResultFile;
+    private ICLIResultFile cliResultFile = new CLIResultFile();;
     private String dexterWebUrl = "";
 
     private int totalCnt = 0;
@@ -51,10 +51,8 @@ public class CLIAnalysisResultHandler implements IAnalysisResultHandler {
     private int etcCnt = 0;
     private int crcCnt = 0;
 
-    public CLIAnalysisResultHandler(final String dexterWebUrl, final ICLIResultFile cliResultFile,
-            final IDexterCLIOption cliOption, final ICLILog cliLog) {
+    public CLIAnalysisResultHandler(final String dexterWebUrl, final IDexterCLIOption cliOption, final ICLILog cliLog) {
         this.dexterWebUrl = dexterWebUrl;
-        this.cliResultFile = cliResultFile;
         this.cliLog = cliLog;
         this.cliOption = cliOption;
     }

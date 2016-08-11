@@ -62,7 +62,7 @@ public class CLIDexterPluginManager extends BaseDexterPluginManager {
 
         if (getPluginList().size() == 0) {
             cliLog.printErrorMessageWhenNoPlugins();
-            System.exit(1);
+            //System.exit(1);
         }
 
         initSupportingFileExetensions();
