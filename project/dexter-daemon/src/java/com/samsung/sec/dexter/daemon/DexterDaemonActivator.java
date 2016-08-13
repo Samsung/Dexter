@@ -149,12 +149,14 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
         String serverString, userId, loginString;
 
         try {
-            serverString = client.getServerHost() + ":" + client.getServerPort();
-            userId = client.getCurrentUserId();
-            loginString = "(" + serverString + " - " + userId + ")";
+            if (DexterConfig.getInstance().isStandalone()) {
+                loginString = "(Standalone Mode)";
+            } else {
+                serverString = client.getServerHost() + ":" + client.getServerPort();
+                userId = client.getCurrentUserId();
+                loginString = "(" + serverString + " - " + userId + ")";
+            }
 
-            getPreferenceStore().putValue("serverAddress", serverString);
-            getPreferenceStore().putValue("userId", userId);
         } catch (DexterRuntimeException e) {
             loginString = "(offline)";
         }

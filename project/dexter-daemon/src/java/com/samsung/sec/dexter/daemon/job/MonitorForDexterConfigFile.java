@@ -32,7 +32,7 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisResultHandler;
 import com.samsung.sec.dexter.core.config.DexterConfig;
-import com.samsung.sec.dexter.core.config.DexterConfigFile;
+import com.samsung.sec.dexter.core.config.EclipseDexterConfigFile;
 import com.samsung.sec.dexter.core.config.IDexterConfigFile;
 import com.samsung.sec.dexter.core.config.IDexterHomeListener;
 import com.samsung.sec.dexter.core.defect.Defect;
@@ -110,17 +110,21 @@ public class MonitorForDexterConfigFile extends Job implements IDexterHomeListen
             return;
         }
 
-        final IDexterConfigFile dexterConfigFile = new DexterConfigFile();
-        dexterConfigFile.loadFromFile(configFile);
-        //IDexterClient client = 
+        try {
+            final IDexterConfigFile dexterConfigFile = new EclipseDexterConfigFile(
+                    DexterUIActivator.getDefault().getDexterClient());
+            dexterConfigFile.loadFromFile(configFile);
+            //IDexterClient client = 
 
-        final AnalysisConfig analysisConfig = dexterConfigFile.toAnalysisConfig();
+            final AnalysisConfig analysisConfig = dexterConfigFile.toAnalysisConfig();
 
-        analysisConfig.setSourceFileFullPath(dexterConfigFile.getFirstFileName());
-        analysisConfig.generateFileNameWithSourceFileFullPath();
-        handleConfigFileChanged(analysisConfig);
+            analysisConfig.setSourceFileFullPath(dexterConfigFile.getFirstFileName());
+            analysisConfig.generateFileNameWithSourceFileFullPath();
+            handleConfigFileChanged(analysisConfig);
+        } finally {
+            LAST_CONF_CHANAGED_TIME = lastModified;
+        }
 
-        LAST_CONF_CHANAGED_TIME = lastModified;
     }
 
     private void handleConfigFileChanged(final AnalysisConfig analysisConfig) {

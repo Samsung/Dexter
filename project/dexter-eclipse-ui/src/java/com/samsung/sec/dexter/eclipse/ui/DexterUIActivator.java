@@ -173,7 +173,6 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
     }
 
     public void startJobs() {
-        //startLoginScheduler();
         initDexterJobFacade();
         startMonitorForLogin();
     }
@@ -183,27 +182,6 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
         stopDexterJobFacade();
         stopMonitorForLogin();
     }
-
-    //    private void startLoginScheduler() {
-    //        // TODO check the UI/non-UI Thread
-    //        if (loginFuture == null || loginFuture.isDone()) {
-    //            Runnable checkLoginJob = new Runnable() {
-    //                @Override
-    //                public void run() {
-    //                    Display.getDefault().asyncExec(new Runnable() {
-    //                        @Override
-    //                        public void run() {
-    //                            if (!DexterConfig.getInstance().getRunMode().equals(DexterConfig.RunMode.DAEMON))
-    //                                loginJob(null);
-    //                        }
-    //                    });
-    //                }
-    //            };
-    //
-    //            loginFuture = getDefault().scheduler.scheduleAtFixedRate(checkLoginJob, 5, DexterJobFacade.SLEEP_FOR_LOGIN,
-    //                    TimeUnit.SECONDS);
-    //        }
-    //    }
 
     private void stopLoginScheduler() {
         if (loginFuture != null)
@@ -235,8 +213,8 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
             }
         };
 
-        scheduler.scheduleWithFixedDelay(checkLoginJob, 10, DexterJobFacade.SLEEP_FOR_LOGIN, TimeUnit.SECONDS);
-        //scheduler.scheduleWithFixedDelay(checkLoginJob, 10, 10, TimeUnit.SECONDS);
+        scheduler.scheduleWithFixedDelay(checkLoginJob, 5, DexterJobFacade.SLEEP_FOR_LOGIN, TimeUnit.SECONDS);
+        //scheduler.scheduleWithFixedDelay(checkLoginJob, 5, 10, TimeUnit.SECONDS);
     }
 
     static class CheckLoginJob implements Runnable {
@@ -278,38 +256,6 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 
     public void loginJob() {
         Display.getDefault().syncExec(loginJob);
-        /*
-         * Display.getDefault().syncExec(new Runnable() {
-         * 
-         * @Override
-         * public void run() {
-         * if (client.isLogin() &&
-         * DexterUtil.notNullAndNotEmpty(DexterConfig.getInstance().getDexterHome())
-         * && DexterUtil.notNullAndNotEmpty(client.getCurrentUserId())) {
-         * return;
-         * }
-         * 
-         * if (DexterConfig.getInstance().getRunMode() == DexterConfig.RunMode.DAEMON) {
-         * if (PlatformUI.getWorkbench().getActiveWorkbenchWindow() == null) {
-         * return;
-         * }
-         * }
-         * 
-         * Shell shell = Display.getDefault().getActiveShell();
-         * if (shell == null)
-         * return;
-         * 
-         * final LoginDialog dialog = new LoginDialog(shell);
-         * 
-         * final int ret = dialog.open();
-         * 
-         * if (ret == InputDialog.CANCEL) {
-         * MessageDialog.openError(shell, "Dexter Login Error", //$NON-NLS-1$
-         * Messages.LoginDialog_LOGIN_GUIDE_MSG);
-         * }
-         * }
-         * });
-         */
     }
 
     /*
