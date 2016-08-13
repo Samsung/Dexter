@@ -129,7 +129,6 @@ public class Main {
             analyzeSynchronously(pluginManager, cliAnalysisResultHandler, baseAnalysisConfig, client);
             cliLog.printElapsedTime(timer.elapsed(TimeUnit.SECONDS));
         }
-
     }
 
     private void loginOrCreateAccount(final IDexterClient client, final IDexterCLIOption cliOption) {

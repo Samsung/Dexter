@@ -166,14 +166,14 @@ public class DexterConfigFile implements IDexterConfigFile {
         setDexterServerIp((String) params.get("dexterServerIp"));
     }
 
-    private void setType(String value) {
+    protected void setType(String value) {
         if (Type.hasValue(value)) {
             this.type = Type.valueOf(value);
         }
     }
 
     @SuppressWarnings("unchecked")
-    private List<String> getStringListFromMap(final Map<String, Object> map, String key) {
+    protected List<String> getStringListFromMap(final Map<String, Object> map, String key) {
         if (null == map.get(key) || (map.get(key) instanceof ArrayList) == false) {
             return new ArrayList<String>(0);
         }
@@ -193,7 +193,7 @@ public class DexterConfigFile implements IDexterConfigFile {
         }
     }
 
-    private void checkDexterConfigMap(final Map<String, Object> map) {
+    protected void checkDexterConfigMap(final Map<String, Object> map) {
         checkNullofMap(map);
         checkFieldExistence(map);
         checkFolderExistence(map);

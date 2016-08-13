@@ -88,7 +88,8 @@ public class PluginVersion {
     public PluginVersion(final String version) {
         if (Strings.isNullOrEmpty(version)) {
             logger.error(new DexterRuntimeException("Invalid Parameter : version is null or empty"));
-            return;
+            throw new DexterRuntimeException("Invalid Parameter : version is null or empty");
+            //return;
         }
 
         final Iterator<String> iter = Splitter.on('.').trimResults().omitEmptyStrings().split(version).iterator();

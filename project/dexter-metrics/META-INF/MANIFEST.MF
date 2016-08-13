@@ -5,8 +5,7 @@ Bundle-SymbolicName: dexter-metrics;singleton:=true
 Bundle-Version: 0.10.2
 Bundle-Activator: DexterMetricsActivator
 Require-Bundle: org.eclipse.core.runtime,
- dexter-core,
- org.eclipse.cdt.core
+ dexter-core
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Samsung Electronics VD SE

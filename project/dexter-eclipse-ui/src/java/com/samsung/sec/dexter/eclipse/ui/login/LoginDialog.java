@@ -337,6 +337,7 @@ public class LoginDialog extends TitleAreaDialog {
         }
 
         runStandaloneListeners(isStandaloneModeChanged, isStandalone);
+
         super.okPressed();
     }
 

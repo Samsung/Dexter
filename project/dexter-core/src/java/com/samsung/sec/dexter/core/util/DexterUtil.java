@@ -1154,4 +1154,8 @@ public class DexterUtil {
             throw new DexterRuntimeException("there is no file : " + filePath);
         }
     }
+
+    public static boolean notNullAndNotEmpty(String value) {
+        return Strings.isNullOrEmpty(value) == false;
+    }
 }

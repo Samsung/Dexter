@@ -35,13 +35,13 @@ import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginInitializer;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
 import com.samsung.sec.dexter.core.util.DexterClient;
+import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.core.util.EmptyDexterClient;
 import com.samsung.sec.dexter.core.util.IDexterClient;
 import com.samsung.sec.dexter.core.util.IDexterLoginInfoListener;
 import com.samsung.sec.dexter.eclipse.ui.login.LoginDialog;
 import com.samsung.sec.dexter.eclipse.ui.login.Messages;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseLog;
-import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 import com.samsung.sec.dexter.executor.DexterExecutorActivator;
 
 import java.util.ArrayList;
@@ -59,6 +59,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -79,6 +80,8 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 
     private IDexterPluginManager pluginManager;
 
+    CheckLoginJob loginJob = new CheckLoginJob();
+
     private final List<IDexterLoginInfoListener> loginInfoListenerList = new ArrayList<IDexterLoginInfoListener>();
 
     /**
@@ -97,6 +100,10 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
         plugin = this;
         LOG.setPlugin(this);
 
+        init();
+    }
+
+    public void init() {
         final boolean isStandalone = getPreferenceStore().getBoolean("isStandalone");
         final String dexterHome = getPreferenceStore().getString(DexterConfig.DEXTER_HOME_KEY);
         final String id = getPreferenceStore().getString("userId");
@@ -165,38 +172,38 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
         DexterConfig.getInstance().addDexterStandaloneListener(this);
     }
 
-    private void startJobs() {
-        startLoginScheduler();
+    public void startJobs() {
+        //startLoginScheduler();
         initDexterJobFacade();
         startMonitorForLogin();
     }
 
-    private void stopJobs() {
+    public void stopJobs() {
         stopLoginScheduler();
         stopDexterJobFacade();
-        scheduler.shutdown();
+        stopMonitorForLogin();
     }
 
-    private void startLoginScheduler() {
-        // TODO check the UI/non-UI Thread
-        if (loginFuture == null || loginFuture.isDone()) {
-            Runnable checkLoginJob = new Runnable() {
-                @Override
-                public void run() {
-                    Display.getDefault().asyncExec(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (!DexterConfig.getInstance().getRunMode().equals(DexterConfig.RunMode.DAEMON))
-                                loginJob(null);
-                        }
-                    });
-                }
-            };
-
-            loginFuture = getDefault().scheduler.scheduleAtFixedRate(checkLoginJob, 5, DexterJobFacade.SLEEP_FOR_LOGIN,
-                    TimeUnit.SECONDS);
-        }
-    }
+    //    private void startLoginScheduler() {
+    //        // TODO check the UI/non-UI Thread
+    //        if (loginFuture == null || loginFuture.isDone()) {
+    //            Runnable checkLoginJob = new Runnable() {
+    //                @Override
+    //                public void run() {
+    //                    Display.getDefault().asyncExec(new Runnable() {
+    //                        @Override
+    //                        public void run() {
+    //                            if (!DexterConfig.getInstance().getRunMode().equals(DexterConfig.RunMode.DAEMON))
+    //                                loginJob(null);
+    //                        }
+    //                    });
+    //                }
+    //            };
+    //
+    //            loginFuture = getDefault().scheduler.scheduleAtFixedRate(checkLoginJob, 5, DexterJobFacade.SLEEP_FOR_LOGIN,
+    //                    TimeUnit.SECONDS);
+    //        }
+    //    }
 
     private void stopLoginScheduler() {
         if (loginFuture != null)
@@ -224,43 +231,85 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
         Runnable checkLoginJob = new Runnable() {
             @Override
             public void run() {
-                loginJob(EclipseUtil.getActiveWorkbenchWindowShell());
+                loginJob();
             }
         };
 
-        scheduler.scheduleAtFixedRate(checkLoginJob, 1, DexterJobFacade.SLEEP_FOR_LOGIN, TimeUnit.SECONDS);
+        scheduler.scheduleWithFixedDelay(checkLoginJob, 10, DexterJobFacade.SLEEP_FOR_LOGIN, TimeUnit.SECONDS);
+        //scheduler.scheduleWithFixedDelay(checkLoginJob, 10, 10, TimeUnit.SECONDS);
     }
 
-    private void loginJob(final Shell shell) {
-        final Shell localShell;
+    static class CheckLoginJob implements Runnable {
 
-        if (shell == null || shell.isDisposed()) {
-            if (Display.getDefault() != null && Display.getDefault().getActiveShell() != null) {
-                localShell = Display.getDefault().getActiveShell();
-            } else {
+        @Override
+        public void run() {
+            IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
+
+            if (client.isLogin() &&
+                    DexterUtil.notNullAndNotEmpty(DexterConfig.getInstance().getDexterHome())
+                    && DexterUtil.notNullAndNotEmpty(client.getCurrentUserId())) {
                 return;
             }
-        } else {
-            localShell = shell;
-        }
 
-        localShell.getDisplay().syncExec(new Runnable() {
-            @Override
-            public void run() {
-                if (Strings.isNullOrEmpty(DexterConfig.getInstance().getDexterHome()) == false
-                        && Strings.isNullOrEmpty(client.getCurrentUserId()) == false) {
+            if (DexterConfig.getInstance().getRunMode() == DexterConfig.RunMode.DAEMON) {
+                if (PlatformUI.getWorkbench().getActiveWorkbenchWindow() == null) {
                     return;
                 }
-
-                final LoginDialog dialog = new LoginDialog(localShell);
-                final int ret = dialog.open();
-
-                if (ret == InputDialog.CANCEL) {
-                    MessageDialog.openError(localShell, "Dexter Login Error", //$NON-NLS-1$
-                            Messages.LoginDialog_LOGIN_GUIDE_MSG);
-                }
             }
-        });
+
+            Shell shell = Display.getDefault().getActiveShell();
+            if (shell == null)
+                return;
+
+            final LoginDialog dialog = new LoginDialog(shell);
+
+            final int ret = dialog.open();
+
+            if (ret == InputDialog.CANCEL) {
+                MessageDialog.openError(shell, "Dexter Login Error", //$NON-NLS-1$
+                        Messages.LoginDialog_LOGIN_GUIDE_MSG);
+            }
+        }
+    }
+
+    private void stopMonitorForLogin() {
+        scheduler.shutdown();
+    }
+
+    public void loginJob() {
+        Display.getDefault().syncExec(loginJob);
+        /*
+         * Display.getDefault().syncExec(new Runnable() {
+         * 
+         * @Override
+         * public void run() {
+         * if (client.isLogin() &&
+         * DexterUtil.notNullAndNotEmpty(DexterConfig.getInstance().getDexterHome())
+         * && DexterUtil.notNullAndNotEmpty(client.getCurrentUserId())) {
+         * return;
+         * }
+         * 
+         * if (DexterConfig.getInstance().getRunMode() == DexterConfig.RunMode.DAEMON) {
+         * if (PlatformUI.getWorkbench().getActiveWorkbenchWindow() == null) {
+         * return;
+         * }
+         * }
+         * 
+         * Shell shell = Display.getDefault().getActiveShell();
+         * if (shell == null)
+         * return;
+         * 
+         * final LoginDialog dialog = new LoginDialog(shell);
+         * 
+         * final int ret = dialog.open();
+         * 
+         * if (ret == InputDialog.CANCEL) {
+         * MessageDialog.openError(shell, "Dexter Login Error", //$NON-NLS-1$
+         * Messages.LoginDialog_LOGIN_GUIDE_MSG);
+         * }
+         * }
+         * });
+         */
     }
 
     /*
@@ -276,6 +325,7 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
         DexterConfig.getInstance().removeDexterStandaloneListener(this);
         DexterConfig.getInstance().removeDexterStandaloneListener(jobFacade);
         stopDexterJobFacade();
+        stopMonitorForLogin();
         super.stop(context);
     }
 
@@ -357,7 +407,7 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 
     @Override
     public void handleWhenNotStandaloneMode() {
-        startLoginScheduler();
+        startJobs();
     }
 
     public synchronized void addLoginInfoListener(final IDexterLoginInfoListener listener) {

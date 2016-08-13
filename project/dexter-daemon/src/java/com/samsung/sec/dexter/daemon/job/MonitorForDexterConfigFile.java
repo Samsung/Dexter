@@ -112,6 +112,8 @@ public class MonitorForDexterConfigFile extends Job implements IDexterHomeListen
 
         final IDexterConfigFile dexterConfigFile = new DexterConfigFile();
         dexterConfigFile.loadFromFile(configFile);
+        //IDexterClient client = 
+
         final AnalysisConfig analysisConfig = dexterConfigFile.toAnalysisConfig();
 
         analysisConfig.setSourceFileFullPath(dexterConfigFile.getFirstFileName());
