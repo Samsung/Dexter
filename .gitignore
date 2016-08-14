@@ -35,7 +35,12 @@ project/dexter-server/**/*.log
 project/dexter-server/**/workspace.xml
 project/dexter-server/.idea/workspace.xml
 project/dexter-server/log/
+project/.gradle
 project/.gradle/
+project/.gradle/2.6/
+**/.gradle
+**/.gralde/
+**/.gradle/**
 project/dexter-monitor/node_modules/
 project/dexter-monitor/.idea/
 project/dexter-monitor/log/
@@ -44,3 +49,5 @@ project/dexter-monitor/public/js/
 project/dexter.eclipse.update.64/
 project/dexter-eclipse-cdt/bin/
 project/dexter-eclipse-jdt/bin/
+**/*.DS_Store
+	**/*.DS_Store?
