@@ -1368,20 +1368,6 @@ Public License instead of this License.  But first, please read
 [http://www.gnu.org/philosophy/why-not-lgpl.html].
    </license>
 
-   <requires>
-      <import plugin="com.ibm.icu"/>
-      <import plugin="org.eclipse.cdt.core"/>
-      <import plugin="org.eclipse.core.filesystem"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.jface.text"/>
-      <import plugin="org.eclipse.mylyn.commons.ui"/>
-      <import plugin="org.eclipse.platform"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.ui.workbench.texteditor"/>
-      <import plugin="org.eclipse.core.resources"/>
-   </requires>
-
    <plugin
          id="dexter-core"
          download-size="0"

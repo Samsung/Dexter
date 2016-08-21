@@ -7,6 +7,10 @@ a {
   color: #5bc0de;
 }
 
+.fileTree .glyphicon {
+    padding-right: 5px;
+}
+
 .attentionList {
     border-left:5px solid white;
     border-top: 1px solid white;

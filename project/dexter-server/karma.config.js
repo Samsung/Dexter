@@ -37,7 +37,7 @@ module.exports = function(config) {
 
         plugins: [
             'karma-mocha',
-            'karma-firefox-launcher',
+            'karma-chrome-launcher',
             'karma-chai'
         ],
 
@@ -55,6 +55,7 @@ module.exports = function(config) {
             {pattern: 'public/admin/**/*.js'},
             {pattern: 'public/dashboard/**/*.js'},
             {pattern: 'public/defect/**/*.js'},
+            {pattern: 'public/defect/**/defectIdCtrl.js'},
             {pattern: 'test/front-end/**/*.js'}
         ],
         exclude: [
@@ -85,7 +86,7 @@ module.exports = function(config) {
 
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-        browsers: ['Firefox'],
+        browsers: ['Chrome'],
 
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits
