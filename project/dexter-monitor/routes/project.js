@@ -25,9 +25,15 @@
  */
 "use strict";
 
+const _ = require("lodash");
+const moment = require('moment');
+const Promise = require('bluebird');
+const rp = require('request-promise');
 const log = require('../util/logging');
 const database = require("../util/database");
 const route = require('./route');
+const user = require('./user');
+const server = require('./server');
 
 exports.getProjectList = function(req, res) {
     const sql = "SELECT projectName, projectType, groupName, language   "+
@@ -36,43 +42,107 @@ exports.getProjectList = function(req, res) {
     route.executeSqlAndSendResponseRows(sql, res);
 };
 
-exports.getGroupList = function(req, res) {
-    const sql = "SELECT DISTINCT groupName FROM ProjectInfo ORDER BY groupName ASC";
+exports.getSnapshotSummary = function(req, res) {
+    const sql =
+        `SELECT year, week, installationRatio, resolvedDefectRatio
+        FROM WeeklyStatusSummary
+        ORDER BY year ASC, week ASC`;
     route.executeSqlAndSendResponseRows(sql, res);
 };
 
-exports.getDatabaseNameByProjectName = function(projectName) {
-    const sql = "SELECT DISTINCT dbName FROM ProjectInfo WHERE projectName=" + projectName;
-    return database.exec(sql)
-        .then((rows) => {
-            return rows[0].dbName;
+exports.saveSnapshotSummary = function() {
+    let promises = [];
+    const summary = {};
+
+    promises.push(new Promise((resolve) => {
+        loadUserStatusSummary(resolve, summary);
+    }));
+
+    promises.push(new Promise((resolve) => {
+        loadDefectStatusSummary(resolve, summary);
+    }));
+
+    Promise.all(promises)
+        .then(() => {
+            insertSnapshotSummaryToDatabase(summary);
         })
         .catch((err) => {
             log.error(err);
-            return null;
-        });
+        })
 };
 
-exports.getDatabaseNameListByGroupName = function(groupName) {
-    const sql = "SELECT DISTINCT dbName FROM ProjectInfo WHERE groupName=" + groupName;
-    return database.exec(sql)
-        .then((rows) => {
-            return rows;
-        })
-        .catch((err) => {
-            log.error(err);
-            return [];
-        });
-};
+function insertSnapshotSummaryToDatabase(summary) {
+    const year = moment().get('year');
+    const weekOfYear = moment().isoWeek();
+    const dayOfWeek = moment().isoWeekday();
+    const sql =
+        `INSERT INTO WeeklyStatusSummary(year, week, day,
+                                    installationRatio, installedDeveloperCount,
+                                    resolvedDefectRatio, defectCountTotal)
+                     VALUES (${year}, ${weekOfYear}, ${dayOfWeek},
+                            ${summary.installationRatio}, '${summary.installedDeveloperCount}',
+                            ${summary.resolvedDefectRatio}, ${summary.defectCountTotal})`;
 
-exports.getDatabaseNameList = function() {
-    const sql = "SELECT DISTINCT dbName FROM ProjectInfo";
-    return database.exec(sql)
-        .then((rows) => {
-            return rows;
+    database.exec(sql)
+        .then(() => {
+            log.info(`Inserted snapshot summary`);
+
         })
         .catch((err) => {
-            log.error(err);
-            return [];
+            log.error(`Failed to insert snapshot summary : ${err}`);
         });
-};
+}
+
+function loadUserStatusSummary(resolve, summary) {
+    user.getUserStatusInternal()
+        .then((userStatusTable) => {
+            const targetDeveloperCountTotal = _.sum(_.map(userStatusTable, 'targetDeveloperCount'));
+            const installedDeveloperCountTotal = _.sum(_.map(userStatusTable, 'installedDeveloperCount'));
+            if (targetDeveloperCountTotal > 0) {
+                summary.installationRatio = ((installedDeveloperCountTotal / targetDeveloperCountTotal) * 100).toFixed(1);
+                summary.installedDeveloperCount = `${installedDeveloperCountTotal.toLocaleString()} / ${targetDeveloperCountTotal.toLocaleString()}`;
+            } else {
+                summary.installationRatio = '';
+                summary.installedDeveloperCount = `0 / 0`;
+            }
+            resolve();
+        })
+        .catch((err) => {
+            log.error(`Failed to get user status summary. null values are inserted. : ${err}`);
+            summary.installationRatio = null;
+            summary.installedDeveloperCount = null;
+            resolve();
+        });
+}
+
+function loadDefectStatusSummary(resolve, summary) {
+    const activeServerList = _.filter(server.getServerListInternal(), {'active': true});
+
+    Promise.map(activeServerList, (server) => {
+        const defectCountUrl = `http://${server.hostIP}:${server.portNumber}/api/v2/defect-count`;
+        return rp(defectCountUrl)
+            .then((data) => {
+                server.defectValues = JSON.parse('' + data).values;
+            })
+            .catch((err) => {
+                log.error(`Failed to get defect count for pid ${server.pid} : ${err}`);
+            });
+    }).then(() => {
+        const defectValues = _.map(activeServerList, 'defectValues');
+        const defectCountFixed = _.sum(_.map(defectValues, 'defectCountFixed'));
+        const defectCountDismissed =_.sum(_.map(defectValues, 'defectCountDismissed'));
+        summary.defectCountTotal = _.sum(_.map(defectValues, 'defectCountTotal'));
+
+        if (summary.defectCountTotal > 0) {
+            summary.resolvedDefectRatio = ((defectCountFixed + defectCountDismissed) / summary.defectCountTotal * 100).toFixed(1);
+        } else {
+            summary.resolvedDefectRatio = '';
+        }
+        resolve();
+    }).catch(() => {
+        log.error(`Failed to get defect status summary. null values are inserted. : ${err}`);
+        summary.resolvedDefectRatio = null;
+        summary.defectCountTotal = null;
+        resolve();
+    });
+}

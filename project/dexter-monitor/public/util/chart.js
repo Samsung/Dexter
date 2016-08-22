@@ -25,42 +25,20 @@
  */
 "use strict";
 
-const DEFECT_FILENAME_PREFIX = 'defect-list';
-const USER_FILENAME_PREFIX = 'user-list';
-const INSTALLATION_STATUS_FILENAME_PREFIX = 'installation-status';
-const DEFECT_STATUS_FILENAME_PREFIX = 'defect-status';
-const CURRENT_STATUS_FILENAME_PREFIX = 'current-status-list';
-const WEEKLY_STATUS_FILENAME_PREFIX = 'weekly-status-list';
+const OVERVIEW_SUMMARY_CHART_MAX = 5;
 
-const ROW_HEIGHT = 32;
-const HEADER_HEIGHT = 110;
-
-function createGrid(columnDefs) {
-    return {
-        enableSorting: true,
-        enableFiltering: true,
-        showGridFooter: true,
-        enableGridMenu: true,
-        enableSelectAll: true,
-        exporterOlderExcelCompatibility: true,
-        exporterCsvFilename: 'list.csv',
-        exporterPdfFilename: 'list.pdf',
-        exporterPdfDefaultStyle: {fontSize: 8},
-        exporterTableStyle: {margin: [5,5,5,5]},
-        exporterPdfTableHeaderStyle: {fontSize: 10, bold: true, italics: true, color: 'red'},
-        exporterPdfOrientation: 'landscape',
-        exporterPdfPageSize: 'A4',
-        columnDefs: columnDefs,
-        data: []
-    };
+function randomColorFactor() {
+    return Math.round(Math.random() * 255);
 }
 
-function setGridExportingFileNames(gridOptions, fileName) {
-    gridOptions.exporterCsvFilename = fileName + '.csv';
-    gridOptions.exporterPdfFilename = fileName + '.pdf';
+function randomColor(opacity) {
+    return 'rgba(' + randomColorFactor() + ',' + randomColorFactor() + ',' + randomColorFactor() + ',' + (opacity || '.3') + ')';
 }
 
-function resizeHeightOfGrid(gridId, rowCount) {
-    angular.element(document.getElementById(gridId))
-        .css('height', (rowCount * ROW_HEIGHT + HEADER_HEIGHT) + 'px');
+function getColorArray(length) {
+    let array = [];
+    for(let i=0 ; i<length ; i++) {
+        array.push(randomColor(0.7));
+    }
+    return array;
 }

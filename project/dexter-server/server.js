@@ -38,6 +38,7 @@ var analysis = require("./routes/analysis");
 var config = require("./routes/config");
 var codeMetrics = require("./routes/codeMetrics");
 var functionMetrics = require("./routes/functionMetrics");
+var monitor = require("./routes/monitor");
 var adminSE = require("./routes/adminSE");
 
 var app = express();
@@ -424,6 +425,10 @@ function initRestAPI(){
     app.get('/api/v2/module-path-list', adminSE.getModulePathList);
     app.delete('/api/v2/module-path-list', auth, adminSE.deleteModulePathList);
 
+    app.get('/api/v2/defect-count', monitor.getDefectCount);
+    app.get('/api/v2/detailed-defect-count', monitor.getDetailedDefectCount);
+    app.get('/api/v2/user-count', monitor.getUserCount);
+    app.get('/api/v2/user-list', monitor.getUserList);
 }
 
 function startServer(){

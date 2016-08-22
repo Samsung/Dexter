@@ -64,6 +64,17 @@ monitorApp.service('ServerStatusService', function($http, $log) {
         return inactiveServers.length;
     };
 
+    service.getActiveServerList = function() {
+        return $http.get("/api/v1/server")
+            .then((results) => {
+                return _.filter(results.data, {'active': true});
+            })
+            .catch((err) => {
+                $log.error(err);
+                alert(`Failed to load active server list.\nPlease contact the system administrator.\n${err}`);
+                return [];
+            });
+    };
 
     var localLastModifiedTimeOfServers = new Date();
     var currentLoadingCount = 0;

@@ -23,49 +23,60 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-describe('UserCtrl Test', function() {
+describe('CurrentUserCtrl Test', function() {
 
     beforeEach(module('dexterMonitorApp'));
 
-    var $controller, $httpBackend, user;
+    var $controller, $httpBackend, $rootScope, $scope;
+    var PROJECT_NAME_1 = 'SamsungProject1';
+    var PROJECT_NAME_2 = 'SamsungProject2';
 
-    beforeEach(inject(function(_$controller_, _$httpBackend_) {
+    beforeEach(inject(function(_$controller_, _$httpBackend_, _$rootScope_) {
         $controller = _$controller_;
         $httpBackend = _$httpBackend_;
-        user = $controller('UserCtrl', {$scope: {}});
+        $rootScope = _$rootScope_;
+        $scope = $rootScope.$new();
+        $controller('CurrentUserCtrl', {$scope: $scope});
     }));
 
     describe('initialize()', function() {
         it('should set values properly', function() {
             $httpBackend.whenGET('/api/v2/user')
                 .respond({status:'ok', rows:[
-                    {userId: 'testid1'}, {userId: 'testid2'}
+                    {projectName: PROJECT_NAME_1, userId: 'testid1'},
+                    {projectName: PROJECT_NAME_2, userId: 'testid2'}
                 ]});
             $httpBackend
-                .whenGET('/api/v2/user/extra-info/' + 'testid1,testid2')
+                .whenGET('/api/v2/user/extra-info/' + 'testid1')
                 .respond({status:'ok', rows:[
-                    {userId:'testid1', name:'myname1', department:'VD1', title: 'engineer1', employeeNumber: 1234},
+                    {userId:'testid1', name:'myname1', department:'VD1', title: 'engineer1', employeeNumber: 1234}
+                ]});
+            $httpBackend
+                .whenGET('/api/v2/user/extra-info/' + 'testid2')
+                .respond({status:'ok', rows:[
                     {userId:'testid2', name:'myname2', department:'VD2', title: 'engineer2', employeeNumber: 5678}
                 ]});
 
             $httpBackend.flush();
 
-            assert.equal(user.gridOptions.data[0].userId, 'testid1');
-            assert.equal(user.gridOptions.data[1].userId, 'testid2');
+            assert.equal($scope.gridOptions.data[0].userId, 'testid1');
+            assert.equal($scope.gridOptions.data[1].userId, 'testid2');
 
-            user.getExtraInfo();
+            $scope.getExtraInfo($scope.gridOptions.data[0]);
             $httpBackend.flush();
+            assert.equal($scope.gridOptions.data[0].userId, 'testid1');
+            assert.equal($scope.gridOptions.data[0].name, 'myname1');
+            assert.equal($scope.gridOptions.data[0].department, 'VD1');
+            assert.equal($scope.gridOptions.data[0].title, 'engineer1');
+            assert.equal($scope.gridOptions.data[0].employeeNumber, 1234);
 
-            assert.equal(user.gridOptions.data[0].userId, 'testid1');
-            assert.equal(user.gridOptions.data[0].name, 'myname1');
-            assert.equal(user.gridOptions.data[0].department, 'VD1');
-            assert.equal(user.gridOptions.data[0].title, 'engineer1');
-            assert.equal(user.gridOptions.data[0].employeeNumber, 1234);
-            assert.equal(user.gridOptions.data[1].userId, 'testid2');
-            assert.equal(user.gridOptions.data[1].name, 'myname2');
-            assert.equal(user.gridOptions.data[1].department, 'VD2');
-            assert.equal(user.gridOptions.data[1].title, 'engineer2');
-            assert.equal(user.gridOptions.data[1].employeeNumber, 5678);
+            $scope.getExtraInfo($scope.gridOptions.data[1]);
+            $httpBackend.flush();
+            assert.equal($scope.gridOptions.data[1].userId, 'testid2');
+            assert.equal($scope.gridOptions.data[1].name, 'myname2');
+            assert.equal($scope.gridOptions.data[1].department, 'VD2');
+            assert.equal($scope.gridOptions.data[1].title, 'engineer2');
+            assert.equal($scope.gridOptions.data[1].employeeNumber, 5678);
         });
     });
 });

@@ -1,0 +1,39 @@
+<div class="view">
+    <div>
+        <h3>Weekly status of all groups</h3>
+
+        <table><tr>
+            <td class="inner">
+                <div class="dropdown" uib-dropdown>
+                    <button type="button" class="btn btn-primary year-change" data-toggle="dropdown" id="year-change">
+                        {{curYear}} <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu year-change" uib-dropdown-menu role="menu" aria-labelledby="year-change">
+                        <li ng-repeat="year in years">
+                            <a ng-click="setCurrentYearAndReloadData(year)" href>{{year}}</a>
+                        </li>
+                    </ul>
+                </div>
+            </td>
+            <td>
+                <uib-pagination boundary-link-numbers="true" direction-links="false" max-size="21" items-per-page="1"
+                                total-items="maxWeekOfCurYear" ng-model="curWeek" ng-change="setCurrentWeekAndReloadData()">
+                </uib-pagination>
+            </td>
+        </tr></table>
+        <div class="row">
+            <div class="col-md-4">
+                <canvas id="weekly-group-user" width="100%" height="100%"></canvas>
+            </div>
+            <div class="col-md-4">
+                <canvas id="weekly-group-project" width="100%" height="100%"></canvas>
+            </div>
+            <div class="col-md-4">
+                <canvas id="weekly-group-defect" width="100%" height="100%"></canvas>
+            </div>
+        </div>
+        <div class="grid-weekly-group" id='weeklyGroupGrid' ui-grid="gridOptions"
+             ui-grid-resize-columns ui-grid-move-columns ui-grid-selection ui-grid-exporter ui-grid-auto-resize>
+        </div>
+    </div>
+</div>

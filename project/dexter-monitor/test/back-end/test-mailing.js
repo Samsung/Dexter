@@ -1,7 +1,8 @@
-var expect = require('chai').expect;
 var assert = require('chai').assert;
 var sinon = require('sinon');
 var proxyquire = require('proxyquire');
+var database = require("../../util/database");
+var Q = require('q');
 
 describe('tests for mailing.js', function(){
     var mailing;
@@ -9,8 +10,22 @@ describe('tests for mailing.js', function(){
 
     before(function (){
         server = proxyquire('../../routes/server', {  });
-        server.setServerListJsonFilePath("./server-list.sample.json");
         global.config = { email: 'test@samsungtest.com' };
+        var queryResult = [{
+            pid: 1,
+            projectName: 'Test_Project1',
+            hostIP: '1.2.3.4',
+            portNumber: 5001,
+            emailList: ['admin1@test1.com', 'admin2@test1.com'],
+            emailingWhenServerDead: 'Y',
+            projectType: 'Preceding',
+            groupName: 'TestGroup1',
+            administrator: 'Admin - admin3@test1.com'
+        }];
+        sinon.stub(database, 'exec', function (sql) {
+            return Q(queryResult);
+        });
+
         server.init(true);
         var logStub = createLogStub();
 
@@ -22,6 +37,7 @@ describe('tests for mailing.js', function(){
 
     after(function(){
         if(server) server.stopServerChecking();
+        database.exec.restore();
     });
 
     function createLogStub(){

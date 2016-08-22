@@ -38,6 +38,7 @@ module.exports = function(config) {
         'public/service/*.js',
         'public/js/angular-mocks/angular-mocks.js',
         'public/js/DateJS/build/production/date.min.js',
+        'public/js/chart.js/dist/Chart.min.js',
         {pattern: 'test/front-end/**/*.js'}
     ],
 
