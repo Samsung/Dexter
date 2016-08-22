@@ -604,27 +604,6 @@ public class RunDexterAnalysisDialog extends TitleAreaDialog {
         });
     }
 
-    /*
-     * private void addSourceEncodingFields(final Composite container) {
-     * final Label idLabel = new Label(container, SWT.NONE);
-     * idLabel.setLayoutData(new GridData(GridData.END, GridData.CENTER, false, false));
-     * idLabel.setText("Source Encoding:"); //$NON-NLS-1$
-     * 
-     * sourceEncodingList = new List(container, SWT.BORDER | SWT.SINGLE);
-     * sourceEncodingList.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false, 2, 1));
-     * 
-     * for(String enc : Charset.)
-     * 
-     * sourceEncodingText.addFocusListener(new FocusAdapter() {
-     * 
-     * @Override
-     * public void focusLost(FocusEvent arg0) {
-     * validate();
-     * }
-     * });
-     * }
-     */
-
     private void addCfgListFields(final Composite container) {
         final String tooltip = "Save your configuration information and reload it.";
         final Label label = new Label(container, SWT.NONE);
