@@ -580,7 +580,7 @@ public class RunDexterAnalysisDialog extends TitleAreaDialog {
 
             @Override
             public void widgetDefaultSelected(SelectionEvent event) {
-                int[] selected = headerDirList.getSelectionIndices();
+                int[] selected = targetDirList.getSelectionIndices();
                 targetDirList.remove(selected);
                 validate();
             }
