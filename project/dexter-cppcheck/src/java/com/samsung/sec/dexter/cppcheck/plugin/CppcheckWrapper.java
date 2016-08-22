@@ -131,7 +131,7 @@ public class CppcheckWrapper {
 
     private void setCppcheckCommand(final StringBuilder cmd) {
 	    final String dexterHome = DexterConfig.getInstance().getDexterHome();
-    	final String tempFolder = dexterHome + DexterUtil.PATH_SEPARATOR + "temp";
+    	final String tempFolder = dexterHome + DexterUtil.FILE_SEPARATOR + "temp";
     	    	
     	if((new File(tempFolder)).exists() == false){
     		if(new File(tempFolder).mkdir() == false) {
@@ -139,15 +139,15 @@ public class CppcheckWrapper {
     		}
     	}
     	
-    	final String cppcheckHome = dexterHome + DexterUtil.PATH_SEPARATOR + "bin" + DexterUtil.PATH_SEPARATOR + "cppcheck";
+    	final String cppcheckHome = dexterHome + DexterUtil.FILE_SEPARATOR + "bin" + DexterUtil.FILE_SEPARATOR + "cppcheck";
     	if(new File(cppcheckHome).exists() == false){
     		throw new DexterRuntimeException("There is no cppcheck home folder : " + cppcheckHome);
     	}
     	
     	if(DexterUtil.getOsBit() == DexterUtil.OS_BIT.WIN32 || DexterUtil.getOsBit() == DexterUtil.OS_BIT.WIN64){
-    		cmd.append("cmd /C ").append(cppcheckHome).append(DexterUtil.PATH_SEPARATOR).append("cppcheck");
+    		cmd.append("cmd /C ").append(cppcheckHome).append(DexterUtil.FILE_SEPARATOR).append("cppcheck");
     	} else if(DexterUtil.getOsBit() == DexterUtil.OS_BIT.LINUX32 || DexterUtil.getOsBit() == DexterUtil.OS_BIT.LINUX64){
-    		cmd.append(cppcheckHome).append(DexterUtil.PATH_SEPARATOR).append("cppcheck");
+    		cmd.append(cppcheckHome).append(DexterUtil.FILE_SEPARATOR).append("cppcheck");
     	} else {
     		throw new DexterRuntimeException("This command supports only Windows and Linux('bin/bash')");
     	}
@@ -156,11 +156,11 @@ public class CppcheckWrapper {
 	
 	private void setCustomRuleOption(final StringBuilder cmd){
 		final String dexterHome = DexterConfig.getInstance().getDexterHome();
-		final String cppcheckHome = dexterHome + DexterUtil.PATH_SEPARATOR + "bin" + DexterUtil.PATH_SEPARATOR + "cppcheck";
+		final String cppcheckHome = dexterHome + DexterUtil.FILE_SEPARATOR + "bin" + DexterUtil.FILE_SEPARATOR + "cppcheck";
 		
 		final String customRuleFileName = "custom_rule.xml";
 		cmd.append(" --rule-file=");
-		cmd.append(cppcheckHome).append(DexterUtil.PATH_SEPARATOR).append(customRuleFileName);
+		cmd.append(cppcheckHome).append(DexterUtil.FILE_SEPARATOR).append(customRuleFileName);
     	
 	}
 

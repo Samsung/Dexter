@@ -29,6 +29,8 @@ CREATE TABLE Defect (
 	chargerNo			int,
 	reviewerNo			int,
 	approvalNo			int,
+	INDEX `idx_defect_creatorNo` (creatorNo),
+    INDEX `idx_defect_modifierNo` (modifierNo),
 	CONSTRAINT pk_Defect PRIMARY KEY (did)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -52,7 +54,9 @@ CREATE TABLE Occurence (
 	chargerNo			int,
 	reviewerNo			int,
 	approvalNo			int,
-	CONSTRAINT pk_Occurence PRIMARY KEY (oid)
+	INDEX `idx_occurence_cretorNo` (creatorNo),
+    INDEX `idx_occurence_modifierNo` (modifierNo),
+    CONSTRAINT pk_Occurence PRIMARY KEY (oid)
 /*	FOREIGN KEY (localDid) REFERENCES Defect(localDid) ON DELETE CASCADE */
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -102,6 +106,8 @@ CREATE TABLE SnapshotDefectMap (
 	chargerNo			int,
 	reviewerNo			int,
 	approvalNo			int,
+	INDEX `idx_defect_creatorNo` (creatorNo),
+    INDEX `idx_defect_modifierNo` (modifierNo),
 	CONSTRAINT pk_SnapshotDefect PRIMARY KEY (snapshotId, did),
 	FOREIGN KEY (snapshotId) REFERENCES Snapshot(id) ON DELETE CASCADE,
 	FOREIGN KEY (did) REFERENCES Defect(did)
@@ -126,7 +132,8 @@ CREATE TABLE SnapshotOccurenceMap (
 	chargerNo			int,
 	reviewerNo			int,
 	approvalNo			int,
-
+	INDEX `idx_snapshotoccurencemap_creatorNo` (creatorNO),
+    INDEX `idx_snapshotoccurencemap_modifierNo` (modifierNo),
 	CONSTRAINT pk_SnapshotOccurenceMap PRIMARY KEY (snapshotId, did, startLine, endLine, charStart, charEnd),
 	FOREIGN KEY (snapshotId) REFERENCES Snapshot(id) ON DELETE CASCADE,
 	FOREIGN KEY (did) REFERENCES Defect(did)
@@ -140,7 +147,8 @@ CREATE TABLE SourceCodeMap (
 	sourceCode			mediumtext NOT NULL,
 	createdDateTime 	timestamp NOT NULL DEFAULT now(),
 	creatorNo			int,
-
+	INDEX `idx_sourcecodemap_creatorNo` (creatorNo),
+	INDEX `idx_sourcecodemap_modulePath` (modulePath),
 	CONSTRAINT pk_SnapshotSourceCodeMap PRIMARY KEY (id),
 	FOREIGN KEY (snapshotId) REFERENCES Snapshot(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

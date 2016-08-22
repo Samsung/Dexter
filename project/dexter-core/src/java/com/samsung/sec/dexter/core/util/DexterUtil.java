@@ -66,7 +66,7 @@ import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 
 public class DexterUtil {
 	public final static String LINE_SEPARATOR = System.getProperty("line.separator");
-	public final static String PATH_SEPARATOR = getPathSeparator();
+	public final static String FILE_SEPARATOR = System.getProperty("file.separator"); 
 	private final static Logger logger = Logger.getLogger(DexterUtil.class);
 
 	public static enum OS {
@@ -89,18 +89,6 @@ public class DexterUtil {
 	public final static String currentDateTimeMillis() {
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmssSSS");
 		return format.format(Calendar.getInstance().getTime());
-	}
-
-	private static String getPathSeparator() {
-		String yourOs = System.getProperty("os.name").toLowerCase();
-
-		if (Strings.isNullOrEmpty(yourOs) == false && yourOs.indexOf("win") >= 0) {
-			return "\\";
-		} else if (Strings.isNullOrEmpty(yourOs) == false && (yourOs.indexOf("nix") >= 0 || yourOs.indexOf("nux") >= 0)) {
-			return "/";
-		} else {
-			return "/";
-		}
 	}
 
 	public static OS getOS() {
@@ -370,7 +358,7 @@ public class DexterUtil {
 		while (entry != null) {
 			String filePath = destDirectory + File.separator + entry.getName();
 			filePath = filePath.replace("\\", "/");
-			filePath = filePath.replace(DexterUtil.PATH_SEPARATOR, "/");
+			filePath = filePath.replace(DexterUtil.FILE_SEPARATOR, "/");
 
 			if (Strings.isNullOrEmpty(filePath)) {
 				continue;
@@ -705,7 +693,7 @@ public class DexterUtil {
 		if(Strings.isNullOrEmpty(path)){
 			return "";
 		}
-		return path.replace("\\", "/").replace(DexterUtil.PATH_SEPARATOR, "/").replace("//", "/");
+		return path.replace("\\", "/").replace(DexterUtil.FILE_SEPARATOR, "/").replace("//", "/");
 	}
 	
 	/**

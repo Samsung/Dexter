@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+</head>
+<div class="wrapper">
+    <div class="box box-default">
+        <div class="box-header with-border">
+            <h3 class="box-title">Remove Module Path For SE</h3>
+
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Multi select the Module Path(s) which you want to remove defect</label>
+                        <select id="removeModulePath" class="form-control select2" multiple="multiple" data-placeholder="Select a modulePath" style="width: 100%;" >
+                        </select>
+                    </div>
+                </div>
+
+                <a class="btn btn-app" ng-click="deleteModulePathList()">
+                    <span id="removeModuleCount" class="badge bg-teal">0</span>
+                    <i id="isModuleSelected" class="fa fa-folder"></i> Remove
+                </a>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+
+
+
+</div>
