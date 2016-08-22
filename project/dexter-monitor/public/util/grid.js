@@ -33,7 +33,7 @@ const CURRENT_STATUS_FILENAME_PREFIX = 'current-status-list';
 const WEEKLY_STATUS_FILENAME_PREFIX = 'weekly-status-list';
 
 const ROW_HEIGHT = 32;
-const HEADER_HEIGHT = 110;
+const HEADER_HEIGHT = 120;
 
 function createGrid(columnDefs) {
     return {
@@ -61,6 +61,9 @@ function setGridExportingFileNames(gridOptions, fileName) {
 }
 
 function resizeHeightOfGrid(gridId, rowCount) {
+    if (!rowCount) {
+        rowCount = 1;
+    }
     angular.element(document.getElementById(gridId))
         .css('height', (rowCount * ROW_HEIGHT + HEADER_HEIGHT) + 'px');
 }

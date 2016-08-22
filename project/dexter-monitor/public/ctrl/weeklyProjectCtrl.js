@@ -71,7 +71,6 @@ monitorApp.controller("WeeklyProjectCtrl", function($scope, $http, $log, $locati
                     $log.error('Failed to load defect list');
                     return;
                 }
-
                 $scope.gridOptions.data = res.data.rows;
                 $scope.drawChart();
             })
@@ -88,11 +87,12 @@ monitorApp.controller("WeeklyProjectCtrl", function($scope, $http, $log, $locati
             return;
         }
 
-        scrollTop();
         destroyChart();
 
         if (!projectName) {
             projectName = gridData[0].projectName;
+        } else {
+            scrollTop();
         }
 
         const projectData = _.filter(gridData, data => data.projectName == projectName);
@@ -126,18 +126,10 @@ monitorApp.controller("WeeklyProjectCtrl", function($scope, $http, $log, $locati
             options: {
                 title: {
                     display: true,
-                    text: `'${projectName}' project chart`,
-                    fontSize: 20
+                    text: `'${projectName}' project chart`
                 },
                 legend: {
-                    display: true,
-                    labels: {
-                        fontSize: 20
-                    }
-                },
-                tooltips: {
-                    titleFontSize: 20,
-                    bodyFontSize: 20
+                    display: true
                 }
             }
         });
