@@ -45,8 +45,6 @@ import org.eclipse.swt.widgets.Text;
  */
 public class LoginDialog extends TitleAreaDialog {
     private DexterConfig config = DexterConfig.getInstance();
-    final private IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
-
     private Text idText;
     private Text pwdText;
     private Text serverText;
@@ -70,6 +68,8 @@ public class LoginDialog extends TitleAreaDialog {
         super.create();
 
         setTitle(Messages.LoginDialog_DEXTER_LOGIN_DIALOG_TITLE);
+
+        IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
         if (client.isLogin()) {
             setMessage(Messages.LoginDialog_LOGIN_STATUS_MSG + client.getCurrentUserId());
         } else {
@@ -162,6 +162,7 @@ public class LoginDialog extends TitleAreaDialog {
         serverText.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false));
 
         try {
+            IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
             if (client instanceof EmptyDexterClient == false)
                 serverText.setText(client.getServerHost() + ":" + client.getServerPort()); //$NON-NLS-1$
         } catch (DexterRuntimeException e) {
@@ -195,6 +196,7 @@ public class LoginDialog extends TitleAreaDialog {
             public void widgetDefaultSelected(SelectionEvent arg0) {
                 setMessage(Messages.LoginDialog_NETWORK_TEST_MSG, IMessageProvider.INFORMATION);
 
+                IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
                 if (client.isServerAlive(serverText.getText().trim())) {
                     setMessage(Messages.LoginDialog_NETWORK_OK_MSG, IMessageProvider.INFORMATION);
                 } else {
@@ -212,6 +214,7 @@ public class LoginDialog extends TitleAreaDialog {
         pwdText = new Text(container, SWT.BORDER | SWT.PASSWORD);
         pwdText.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false, 2, 1));
 
+        IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
         if (Strings.isNullOrEmpty(client.getCurrentUserPwd()) == false) {
             pwdText.setText(client.getCurrentUserPwd());
         }
@@ -238,6 +241,8 @@ public class LoginDialog extends TitleAreaDialog {
 
         idText = new Text(container, SWT.BORDER);
         idText.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false, 2, 1));
+
+        IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
         if (Strings.isNullOrEmpty(client.getCurrentUserId()) == false) {
             idText.setText(client.getCurrentUserId());
         }
@@ -393,6 +398,8 @@ public class LoginDialog extends TitleAreaDialog {
         }
 
         setMessage(Messages.LoginDialog_NETWORK_TESTING_MSG, IMessageProvider.INFORMATION);
+
+        IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
         if (client.isServerAlive(serverAddress) == false) {
             setMessage(Messages.LoginDialog_NETWORK_ERROR_MSG, IMessageProvider.ERROR);
             return false;
@@ -427,6 +434,7 @@ public class LoginDialog extends TitleAreaDialog {
 
     private boolean loginAfterCheck(final String id, final String pwd) {
         try {
+            IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
             if (client.hasAccount(id) == false) {
                 createAccount(id, pwd);
             }
@@ -458,6 +466,7 @@ public class LoginDialog extends TitleAreaDialog {
 
     private boolean handleCreateAccount(final String id, final String pwd) {
         try {
+            IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
             client.createAccount(id, pwd, false);
             return true;
         } catch (DexterRuntimeException e) {

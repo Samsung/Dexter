@@ -71,12 +71,11 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
     public final static EclipseLog LOG = new EclipseLog(PLUGIN_ID);
 
     private static DexterUIActivator plugin;
-    private IDexterClient client = new EmptyDexterClient();;
+    private static IDexterClient client = new EmptyDexterClient();;
 
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(6);
-
+    private ScheduledExecutorService scheduler;
     private DexterJobFacade jobFacade;
-    private ScheduledFuture<?> loginFuture = null;
+    static ScheduledFuture<?> loginFuture;
 
     private IDexterPluginManager pluginManager;
 
@@ -111,7 +110,6 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
         final String serverAddress = getPreferenceStore().getString("serverAddress");
 
         initDexter(dexterHome, isStandalone, id, pwd, serverAddress);
-        client.login();
     }
 
     // TODO 아래 실행 순서 다시 확인하기
@@ -137,9 +135,9 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
             pluginManager = new BaseDexterPluginManager(this, client);
             pluginManager.initDexterPlugins();
 
-            if (isStandalone) {
-                stopJobs();
-            } else {
+            stopJobs();
+
+            if (isStandalone == false) {
                 startJobs();
             }
         } catch (DexterRuntimeException e) {
@@ -147,7 +145,7 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
         }
     }
 
-    private void initDexterClient(final boolean isStandalone, final String id,
+    private synchronized void initDexterClient(final boolean isStandalone, final String id,
             final String pwd, final String serverAddress) {
         if (isStandalone) {
             client = new EmptyDexterClient();
@@ -160,8 +158,8 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
             return;
         }
 
-        // TODO:
         client = new DexterClient.DexterClientBuilder(id, pwd).dexterServerAddress(serverAddress).build();
+        client.login();
     }
 
     private void initDexterConfig(final String dexterHome, final boolean isStandalone) {
@@ -178,22 +176,11 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
     }
 
     public void stopJobs() {
-        stopLoginScheduler();
         stopDexterJobFacade();
         stopMonitorForLogin();
     }
 
-    private void stopLoginScheduler() {
-        if (loginFuture != null)
-            loginFuture.cancel(false);
-    }
-
     private void initDexterJobFacade() {
-        if (jobFacade != null) {
-            DexterConfig.getInstance().removeDexterStandaloneListener(jobFacade);
-            jobFacade.shutdownScheduleService();
-        }
-
         jobFacade = new DexterJobFacade(client);
         jobFacade.startDexterServerJobs();
         jobFacade.startGeneralJobs();
@@ -201,11 +188,17 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
     }
 
     private void stopDexterJobFacade() {
-        if (jobFacade != null)
+        if (jobFacade != null) {
+            DexterConfig.getInstance().removeDexterStandaloneListener(jobFacade);
             jobFacade.shutdownScheduleService();
+            jobFacade = null;
+        }
     }
 
-    private void startMonitorForLogin() {
+    private synchronized void startMonitorForLogin() {
+        if (loginFuture != null)
+            return;
+
         Runnable checkLoginJob = new Runnable() {
             @Override
             public void run() {
@@ -213,16 +206,15 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
             }
         };
 
-        scheduler.scheduleWithFixedDelay(checkLoginJob, 5, DexterJobFacade.SLEEP_FOR_LOGIN, TimeUnit.SECONDS);
-        //scheduler.scheduleWithFixedDelay(checkLoginJob, 5, 10, TimeUnit.SECONDS);
+        scheduler = Executors.newScheduledThreadPool(1);
+        loginFuture = scheduler.scheduleWithFixedDelay(checkLoginJob, 5, DexterJobFacade.SLEEP_FOR_LOGIN,
+                TimeUnit.SECONDS);
+        //loginFuture = scheduler.scheduleWithFixedDelay(checkLoginJob, 5, 10, TimeUnit.SECONDS);
     }
 
     static class CheckLoginJob implements Runnable {
-
         @Override
         public void run() {
-            IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
-
             if (client.isLogin() &&
                     DexterUtil.notNullAndNotEmpty(DexterConfig.getInstance().getDexterHome())
                     && DexterUtil.notNullAndNotEmpty(client.getCurrentUserId())) {
@@ -236,8 +228,9 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
             }
 
             Shell shell = Display.getDefault().getActiveShell();
-            if (shell == null)
+            if (shell == null) {
                 return;
+            }
 
             final LoginDialog dialog = new LoginDialog(shell);
 
@@ -250,8 +243,15 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
         }
     }
 
-    private void stopMonitorForLogin() {
-        scheduler.shutdown();
+    protected synchronized void stopMonitorForLogin() {
+        if (scheduler != null) {
+            scheduler.shutdown();
+        }
+
+        if (loginFuture != null) {
+            loginFuture.cancel(true);
+            loginFuture = null;
+        }
     }
 
     public void loginJob() {
@@ -348,7 +348,7 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 
     @Override
     public void handleWhenStandaloneMode() {
-        stopLoginScheduler();
+        stopMonitorForLogin();
     }
 
     @Override
@@ -378,8 +378,8 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
         }
     }
 
-    public IDexterClient getDexterClient() {
-        return this.client;
+    public synchronized IDexterClient getDexterClient() {
+        return client;
     }
 
     public void setDexterPreferences(final String serverAddress, final String id, final String pwd,

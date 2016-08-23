@@ -75,6 +75,8 @@ public class DexterJobFacade implements IDexterStandaloneListener {
     }
 
     public void startDexterServerJobs() {
+        scheduledExecutorService = Executors.newScheduledThreadPool(1);
+
         createAndRunSendingResultScheduledFuture();
         createAndRunMergeFilterScheduledFuture();
     }

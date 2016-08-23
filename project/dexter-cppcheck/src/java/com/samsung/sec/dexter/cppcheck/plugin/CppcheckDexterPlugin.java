@@ -52,9 +52,15 @@ import net.xeoh.plugins.base.annotations.PluginImplementation;
 @PluginImplementation
 public class CppcheckDexterPlugin implements IDexterPlugin {
     public final static String PLUGIN_NAME = "cppcheck";
-    private PluginDescription pluginDescription;
+    public final static PluginVersion PLUGIN_VERSION = new PluginVersion("0.10.2");
+
     private CppcheckWrapper cppcheck = new CppcheckWrapper();
     private final static Logger logger = Logger.getLogger(CppcheckWrapper.class);
+
+    private static PluginDescription PLUGIN_DESCRIPTION = new PluginDescription(CppcheckDexterPlugin.PLUGIN_NAME,
+            PLUGIN_NAME,
+            PLUGIN_VERSION,
+            DexterConfig.LANGUAGE.CPP, "Dexter plug-in for Cppcheck");;
 
     /*
      * (non-Javadoc)
@@ -171,12 +177,17 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
      */
     @Override
     public PluginDescription getDexterPluginDescription() {
-        if (this.pluginDescription == null) {
-            this.pluginDescription = new PluginDescription(CppcheckDexterPlugin.PLUGIN_NAME, PLUGIN_NAME,
-                    PluginVersion.fromImplementationVersion(CppcheckDexterPlugin.class),
-                    DexterConfig.LANGUAGE.CPP, "Dexter plug-in for Cppcheck");
-        }
-        return this.pluginDescription;
+        /*
+         * it does not work on Eclipse Plugin version
+         * if (this.pluginDescription == null) {
+         * this.pluginDescription = new PluginDescription(CppcheckDexterPlugin.PLUGIN_NAME, PLUGIN_NAME,
+         * PluginVersion.fromImplementationVersion(CppcheckDexterPlugin.class),
+         * DexterConfig.LANGUAGE.CPP, "Dexter plug-in for Cppcheck");
+         * }
+         * return this.pluginDescription;
+         */
+
+        return PLUGIN_DESCRIPTION;
     }
 
     /*
