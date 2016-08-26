@@ -25,7 +25,6 @@
  */
 package com.samsung.sec.dexter.executor.cli;
 
-import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.checker.Checker;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.plugin.BaseDexterPluginManager;
@@ -35,7 +34,6 @@ import com.samsung.sec.dexter.core.plugin.PluginDescription;
 import com.samsung.sec.dexter.core.util.IDexterClient;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class CLIDexterPluginManager extends BaseDexterPluginManager {
@@ -84,25 +82,8 @@ public class CLIDexterPluginManager extends BaseDexterPluginManager {
             return;
 
         for (Checker checker : checkers) {
-            boolean isEnable = checkCheckerEnablenessByCliOption(toolName, language, checker);
+            boolean isEnable = cliOption.checkCheckerEnablenessByCliOption(toolName, language, checker);
             checker.setActive(isEnable);
         }
-    }
-
-    private boolean checkCheckerEnablenessByCliOption(final String toolName, final String language, Checker checker) {
-        int index = Arrays.binarySearch(cliOption.getEnabledCheckerCodes(), checker.getCode());
-
-        if (index == -1)
-            return false;
-
-        final String enableToolName = cliOption.getEnabledCheckerToolNames()[index];
-        if (Strings.isNullOrEmpty(enableToolName) == false && enableToolName.equals(toolName) == false)
-            return false;
-
-        final String enableLanguage = cliOption.getEnabledCheckerLanguages()[index];
-        if (Strings.isNullOrEmpty(enableLanguage) == false && enableLanguage.equals(language) == false)
-            return false;
-
-        return true;
     }
 }

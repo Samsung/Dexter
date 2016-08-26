@@ -65,7 +65,7 @@ public class EclipseAnalysis {
 			final AnalysisConfig config = getAnalysisConfig(file);
 
 			config.setSnapshotId(snapshotId);
-			config.setResultHandler(new ARHandler(file));
+			config.setResultHandler(new AnalysisResultHandler(file));
 			config.setProjectName(config.getProjectName());
 			config.setSnapshotId(snapshotId);
 			config.setDefectGroupId(defectGroupId);

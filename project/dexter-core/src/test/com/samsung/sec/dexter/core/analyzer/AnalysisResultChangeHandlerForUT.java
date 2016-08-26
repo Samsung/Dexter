@@ -281,4 +281,10 @@ public class AnalysisResultChangeHandlerForUT implements IAnalysisResultHandler 
 
     @Override
     public void printLogAfterAnalyze() {}
+
+    @Override
+    public void handleBeginnigOfResultFile() {}
+
+    @Override
+    public void handleEndOfResultFile() {}
 }

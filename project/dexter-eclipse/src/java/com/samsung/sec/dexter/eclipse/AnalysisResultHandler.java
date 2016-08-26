@@ -39,10 +39,10 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.swt.widgets.Display;
 
-class ARHandler implements IAnalysisResultHandler {
+class AnalysisResultHandler implements IAnalysisResultHandler {
     private IFile targetFile;
 
-    public ARHandler(final IFile file) {
+    public AnalysisResultHandler(final IFile file) {
         this.targetFile = file;
     }
 
@@ -83,4 +83,10 @@ class ARHandler implements IAnalysisResultHandler {
 
     @Override
     public void printLogAfterAnalyze() {}
+
+    @Override
+    public void handleBeginnigOfResultFile() {}
+
+    @Override
+    public void handleEndOfResultFile() {}
 }

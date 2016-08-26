@@ -1158,4 +1158,8 @@ public class DexterUtil {
     public static boolean notNullAndNotEmpty(String value) {
         return Strings.isNullOrEmpty(value) == false;
     }
+
+    public static String getStringOrEmptyString(String value) {
+        return Strings.isNullOrEmpty(value) ? "" : value;
+    }
 }

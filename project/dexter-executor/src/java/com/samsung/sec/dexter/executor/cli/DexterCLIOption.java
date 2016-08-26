@@ -27,6 +27,7 @@ package com.samsung.sec.dexter.executor.cli;
 
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
+import com.samsung.sec.dexter.core.checker.Checker;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterUtil;
@@ -56,9 +57,7 @@ public class DexterCLIOption implements IDexterCLIOption {
     private File jsonResultFile;
     private File xmlResultFile;
     private File xml2ResultFile;
-    private String[] enabledCheckerCodes = new String[0];
-    private String[] enabledCheckerLanguages = new String[0];
-    private String[] enabledCheckerToolNames = new String[0];
+    private List<EnabledChecker> enabledCheckerList = new ArrayList<EnabledChecker>();
     private String[] targetFiles = new String[0];
     private String configFilePath;
     private String userId = "";
@@ -208,9 +207,8 @@ public class DexterCLIOption implements IDexterCLIOption {
     private void setEnabledCheckers(final String[] values) {
         for (int i = 0; i < values.length; i++) {
             String[] checkerUnits = values[i].split(":");
-            this.enabledCheckerCodes[i] = getStringFromStringArray(checkerUnits, 0);
-            this.enabledCheckerLanguages[i] = getStringFromStringArray(checkerUnits, 1);
-            this.enabledCheckerToolNames[i] = getStringFromStringArray(checkerUnits, 2);
+            enabledCheckerList.add(new EnabledChecker(getStringFromStringArray(checkerUnits, 2),
+                    getStringFromStringArray(checkerUnits, 1), getStringFromStringArray(checkerUnits, 0)));
         }
     }
 
@@ -353,21 +351,6 @@ public class DexterCLIOption implements IDexterCLIOption {
     }
 
     @Override
-    public String[] getEnabledCheckerCodes() {
-        return this.enabledCheckerCodes;
-    }
-
-    @Override
-    public String[] getEnabledCheckerLanguages() {
-        return this.enabledCheckerCodes;
-    }
-
-    @Override
-    public String[] getEnabledCheckerToolNames() {
-        return this.enabledCheckerCodes;
-    }
-
-    @Override
     public String getServerHostIp() {
         return this.serverHost;
     }
@@ -395,5 +378,15 @@ public class DexterCLIOption implements IDexterCLIOption {
     @Override
     public boolean isXml2File() {
         return isXml2File;
+    }
+
+    @Override
+    public boolean checkCheckerEnablenessByCliOption(String toolName, String language, Checker checker) {
+        for (EnabledChecker enabledChecker : enabledCheckerList) {
+            if (enabledChecker.isSameChecker(toolName, language, checker.getCode()))
+                return true;
+        }
+
+        return false;
     }
 }

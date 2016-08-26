@@ -240,6 +240,12 @@ public class MonitorForDexterConfigFile extends Job implements IDexterHomeListen
 
             @Override
             public void printLogAfterAnalyze() {}
+
+            @Override
+            public void handleBeginnigOfResultFile() {}
+
+            @Override
+            public void handleEndOfResultFile() {}
         };
     }
 

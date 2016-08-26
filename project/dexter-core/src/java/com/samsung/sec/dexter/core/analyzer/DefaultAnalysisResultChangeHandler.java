@@ -122,4 +122,10 @@ public class DefaultAnalysisResultChangeHandler implements IAnalysisResultHandle
 
     @Override
     public void printLogAfterAnalyze() {}
+
+    @Override
+    public void handleBeginnigOfResultFile() {}
+
+    @Override
+    public void handleEndOfResultFile() {}
 }
