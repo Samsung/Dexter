@@ -409,9 +409,9 @@ public class DexterConfigFile implements IDexterConfigFile {
         for (int i = 0; i < fileNameList.size(); i++) {
             final String fileName = fileNameList.get(0);
 
-            if (DexterConfig.getInstance().isAnalysisAllowedFile(fileName) == false) {
-                throw new DexterRuntimeException("not supported file : " + fileName);
-            }
+            //            if (DexterConfig.getInstance().isAnalysisAllowedFile(fileName) == false) {
+            //                throw new DexterRuntimeException("not supported file : " + fileName);
+            //            }
         }
 
         this.fileNameList = fileNameList;

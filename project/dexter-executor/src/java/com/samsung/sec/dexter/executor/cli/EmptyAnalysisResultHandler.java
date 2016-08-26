@@ -13,4 +13,10 @@ public class EmptyAnalysisResultHandler implements IAnalysisResultHandler {
 
     @Override
     public void printLogAfterAnalyze() {}
+
+    @Override
+    public void handleBeginnigOfResultFile() {}
+
+    @Override
+    public void handleEndOfResultFile() {}
 }

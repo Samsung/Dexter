@@ -197,12 +197,14 @@ public class Main {
 
         cliLog.printMessagePreSyncAnalysis();
 
+        cliAnalysisResultHandler.handleBeginnigOfResultFile();
         for (final String fileFullPath : sourceFileFullPathList) {
             final AnalysisConfig analysisConfig = createAnalysisConfig(fileFullPath, cliAnalysisResultHandler,
                     baseAnalysisConfig);
             DexterAnalyzer.getInstance().runSync(analysisConfig, pluginManager, client);
         }
 
+        cliAnalysisResultHandler.handleEndOfResultFile();
         cliAnalysisResultHandler.printLogAfterAnalyze();
     }
 

@@ -59,10 +59,6 @@ public class CLIAnalysisResultHandler implements IAnalysisResultHandler {
 
     @Override
     public void handleAnalysisResult(List<AnalysisResult> resultList, final IDexterClient client) {
-        assert resultList.size() > 0;
-
-        handleBeginnigOfResultFile();
-
         List<Defect> allDefectList = DexterAnalyzer.getAllDefectList(resultList);
         final AnalysisResult firstAnalysisResult = resultList.get(0);
         final String sourceFileFullPath = firstAnalysisResult.getSourceFileFullPath();
@@ -91,11 +87,9 @@ public class CLIAnalysisResultHandler implements IAnalysisResultHandler {
         }
 
         printDefect(allDefectList);
-
-        handleEndOfResultFile();
     }
 
-    private void handleBeginnigOfResultFile() {
+    public void handleBeginnigOfResultFile() {
         try {
             if (cliOption.isJsonFile()) {
                 cliResultFile.writeJsonResultFilePrefix(cliOption.getJsonResultFile());
@@ -106,14 +100,14 @@ public class CLIAnalysisResultHandler implements IAnalysisResultHandler {
             }
 
             if (cliOption.isXml2File()) {
-                cliResultFile.writeXml2ResultFilePrefix(cliOption.getXmlResultFile());
+                cliResultFile.writeXml2ResultFilePrefix(cliOption.getXml2ResultFile());
             }
         } catch (IOException e) {
             cliLog.errorln(e.getMessage(), e);
         }
     }
 
-    private void handleEndOfResultFile() {
+    public void handleEndOfResultFile() {
         try {
             if (cliOption.isJsonFile()) {
                 cliResultFile.writeJsonResultFilePostfix(cliOption.getJsonResultFile());
@@ -126,7 +120,7 @@ public class CLIAnalysisResultHandler implements IAnalysisResultHandler {
             }
 
             if (cliOption.isXml2File()) {
-                cliResultFile.writeXml2ResultFilePostfix(cliOption.getXmlResultFile());
+                cliResultFile.writeXml2ResultFilePostfix(cliOption.getXml2ResultFile());
                 cliLog.printResultFileLocation(cliOption.getXml2ResultFile());
             }
         } catch (IOException e) {

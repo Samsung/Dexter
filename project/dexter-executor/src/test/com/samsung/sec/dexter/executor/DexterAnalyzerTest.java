@@ -29,8 +29,8 @@ import com.google.common.base.Stopwatch;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
-import com.samsung.sec.dexter.core.analyzer.IAnalysisResultHandler;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
+import com.samsung.sec.dexter.core.analyzer.IAnalysisResultHandler;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.exception.DexterException;
@@ -129,10 +129,13 @@ public class DexterAnalyzerTest {
             }
 
             @Override
-            public void printLogAfterAnalyze() {
-                // TODO Auto-generated method stub
+            public void printLogAfterAnalyze() {}
 
-            }
+            @Override
+            public void handleBeginnigOfResultFile() {}
+
+            @Override
+            public void handleEndOfResultFile() {}
         }
 
         TempHandler handler = new TempHandler();
@@ -192,10 +195,13 @@ public class DexterAnalyzerTest {
             }
 
             @Override
-            public void printLogAfterAnalyze() {
-                // TODO Auto-generated method stub
+            public void printLogAfterAnalyze() {}
 
-            }
+            @Override
+            public void handleBeginnigOfResultFile() {}
+
+            @Override
+            public void handleEndOfResultFile() {}
         }
 
         TempHandler handler = new TempHandler();

@@ -70,6 +70,12 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
     @Override
     public void init() {
         cppcheck.initCheckerConfig();
+
+        if (DexterUtil.getOS() == DexterUtil.OS.LINUX || DexterUtil.getOS() == DexterUtil.OS.MAC) {
+            checkCppcheckPermission();
+        }
+
+        copyCppcheckRunModule();
     }
 
     /*
@@ -119,12 +125,11 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
         return true;
     }
 
-    public boolean copyCppcheckRunModule() {
+    private void copyCppcheckRunModule() {
         String dexterHome = DexterConfig.getInstance().getDexterHome();
         if (Strings.isNullOrEmpty(dexterHome)) {
-            logger.error(new DexterRuntimeException(
-                    "Can't initialize Cppcheck plugin, because the dexter_home is not initialized"));
-            return false;
+            throw new DexterRuntimeException(
+                    "Can't initialize Cppcheck plugin, because the dexter_home is not initialized");
         }
 
         // copy %DEXTER_HOME%/bin/cppcheck
@@ -144,19 +149,14 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
         if (!file.exists()) {
             final InputStream is = getClass().getResourceAsStream(cppcheckPath);
             if (is == null) {
-                logger.error(new DexterRuntimeException("can't find cppcheck.zip file: " + cppcheckPath));
-                return false;
+                throw new DexterRuntimeException("can't find cppcheck.zip file: " + cppcheckPath);
             }
 
             try {
                 FileUtils.copyInputStreamToFile(is, file);
                 DexterUtil.unzip(zipFilePath, dexterHome + CppcheckWrapper.CPPCHECK_HOME_DIR);
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-                return false;
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
-                return false;
+                throw new DexterRuntimeException(e.getMessage(), e);
             } finally {
                 try {
                     is.close();
@@ -165,8 +165,6 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
                 }
             }
         }
-
-        return true;
     }
 
     /*
@@ -206,14 +204,20 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
             throw new DexterRuntimeException("analysis config is null");
         }
 
-        File bin = new File(DexterConfig.getInstance().getDexterHome() + "/bin");
-        if (bin.exists() == false) {
-            DexterConfig.getInstance().createInitialFolderAndFiles();
-            copyCppcheckRunModule();
-            if (DexterUtil.getOS() == DexterUtil.OS.LINUX || DexterUtil.getOS() == DexterUtil.OS.MAC) {
-                checkCppcheckPermission();
-            }
-        }
+        /*
+         * File bin = new File(DexterConfig.getInstance().getDexterHome() + "/bin");
+         * if (bin.exists() == false) {
+         * copyCppcheckRunModule();
+         * if (DexterUtil.getOS() == DexterUtil.OS.LINUX || DexterUtil.getOS() == DexterUtil.OS.MAC) {
+         * checkCppcheckPermission();
+         * }
+         * }
+         * 
+         * File cppcheckFolder = new File(DexterConfig.getInstance().getDexterHome() +
+         * CppcheckWrapper.CPPCHECK_HOME_DIR);
+         * if (cppcheckFolder.exists() == false)
+         * DexterConfig.getInstance().createInitialFolderAndFiles();
+         */
 
         IAnalysisEntityFactory factory = new AnalysisEntityFactory();
         AnalysisResult result = factory.createAnalysisResult(config);

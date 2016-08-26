@@ -42,4 +42,8 @@ public interface IAnalysisResultHandler {
     void handleAnalysisResult(final List<AnalysisResult> analysisResult, final IDexterClient client);
 
     public void printLogAfterAnalyze();
+
+    void handleBeginnigOfResultFile();
+
+    void handleEndOfResultFile();
 }
