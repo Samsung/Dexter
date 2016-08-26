@@ -66,13 +66,12 @@ public class CLIAnalysisResultHandler implements IAnalysisResultHandler {
         try {
             writeResultFile(allDefectList, sourceFileFullPath);
 
-            if (cliOption.isStandAloneMode()) {
-                return;
+            if (cliOption.isStandAloneMode() == false) {
+                final String resultFilePrefix = AnalysisResultFileManager.getInstance()
+                        .getResultFilePrefixName(firstAnalysisResult.getModulePath(),
+                                firstAnalysisResult.getFileName());
+                SendResultJob.sendResultFileThenDelete(client, resultFilePrefix);
             }
-
-            final String resultFilePrefix = AnalysisResultFileManager.getInstance()
-                    .getResultFilePrefixName(firstAnalysisResult.getModulePath(), firstAnalysisResult.getFileName());
-            SendResultJob.sendResultFileThenDelete(client, resultFilePrefix);
         } catch (IOException e) {
             cliLog.errorln(e.getMessage(), e);
         }

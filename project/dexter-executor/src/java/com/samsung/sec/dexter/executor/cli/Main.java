@@ -132,8 +132,12 @@ public class Main {
     }
 
     private void loginOrCreateAccount(final IDexterClient client, final IDexterCLIOption cliOption) {
+        if (cliOption.isStandAloneMode())
+            return;
+
         final IAccountHandler accountHandler = createAccountHandler(client, cliOption);
         if (accountHandler.loginOrCreateAccount() == false) {
+            cliLog.error("Failed to login or create new account");
             System.exit(1);
         }
     }
@@ -148,11 +152,7 @@ public class Main {
 
     protected IAnalysisResultHandler createCLIAnalysisResultHandler(final IDexterClient client,
             final IDexterCLIOption cliOption) {
-        if (client instanceof EmptyDexterClient) {
-            return new EmptyAnalysisResultHandler();
-        } else {
-            return new CLIAnalysisResultHandler(client.getDexterWebUrl(), cliOption, cliLog);
-        }
+        return new CLIAnalysisResultHandler(client.getDexterWebUrl(), cliOption, cliLog);
     }
 
     private AnalysisConfig createBaseAnalysisConfig(final IDexterClient client, final IDexterCLIOption cliOption,
