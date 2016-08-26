@@ -389,4 +389,14 @@ public class DexterCLIOption implements IDexterCLIOption {
 
         return false;
     }
+
+    @Override
+    public void setDexterServerIP(String dexterServerIp) {
+        this.serverHost = dexterServerIp;
+    }
+
+    @Override
+    public void setDexterServerPort(int dexterServerPort) {
+        this.serverPort = dexterServerPort;
+    }
 }

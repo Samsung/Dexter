@@ -59,6 +59,11 @@ public class CLIAnalysisResultHandler implements IAnalysisResultHandler {
 
     @Override
     public void handleAnalysisResult(List<AnalysisResult> resultList, final IDexterClient client) {
+        if (resultList.size() == 0) {
+            cliLog.warn("no defect result");
+            return;
+        }
+
         List<Defect> allDefectList = DexterAnalyzer.getAllDefectList(resultList);
         final AnalysisResult firstAnalysisResult = resultList.get(0);
         final String sourceFileFullPath = firstAnalysisResult.getSourceFileFullPath();

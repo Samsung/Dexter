@@ -101,4 +101,10 @@ public class EmptyDexterCLIOption implements IDexterCLIOption {
         return false;
     }
 
+    @Override
+    public void setDexterServerIP(String dexterServerIp) {}
+
+    @Override
+    public void setDexterServerPort(int dexterServerPort) {}
+
 }

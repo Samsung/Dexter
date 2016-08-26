@@ -81,4 +81,8 @@ public interface IDexterCLIOption {
 
     String getServerHostIp();
 
+    void setDexterServerIP(final String dexterServerIp);
+
+    void setDexterServerPort(final int dexterServerPort);
+
 }

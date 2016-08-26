@@ -63,14 +63,18 @@ public class Main {
 
         try {
             final IDexterCLIOption cliOption = new DexterCLIOption(args);
-            final IDexterConfigFile configFile = cliMain.createDexterConfigFile(cliOption);
-            final IDexterClient client = cliMain.createDexterClient(cliOption, configFile);
+            IDexterConfigFile configFile;
 
             switch (cliOption.getCommandMode()) {
                 case CREATE_ACCOUNT:
-                    cliMain.createAccount(cliOption, configFile);
+                    configFile = new EmptyDexterConfigFile();
+                    cliMain.createAccount(cliOption);
                     break;
                 case STATIC_ANALYSIS:
+                    configFile = cliMain.createDexterConfigFile(cliOption);
+                    cliOption.setDexterServerIP(configFile.getDexterServerIp());
+                    cliOption.setDexterServerPort(configFile.getDexterServerPort());
+                    final IDexterClient client = cliMain.createDexterClient(cliOption);
                     cliMain.analyze(cliOption, configFile, client);
                     break;
                 default:
@@ -86,8 +90,8 @@ public class Main {
         DexterConfig.getInstance().setRunMode(RunMode.CLI);
     }
 
-    public void createAccount(final IDexterCLIOption cliOption, final IDexterConfigFile configFile) {
-        final IDexterClient client = createDexterClient(cliOption, configFile);
+    public void createAccount(final IDexterCLIOption cliOption) {
+        final IDexterClient client = createDexterClient(cliOption);
         final IAccountHandler accountHandler = createAccountHandler(client, cliOption);
         accountHandler.createAccount(cliOption.getUserId(), cliOption.getUserPassword());
     }
@@ -100,12 +104,12 @@ public class Main {
         }
     }
 
-    protected IDexterClient createDexterClient(final IDexterCLIOption cliOption, final IDexterConfigFile configFile) {
-        if (cliOption.isStandAloneMode() || configFile instanceof EmptyDexterConfigFile) {
+    protected IDexterClient createDexterClient(final IDexterCLIOption cliOption) {
+        if (cliOption.isStandAloneMode()) {
             return new EmptyDexterClient();
         } else {
             return new DexterClient.DexterClientBuilder(cliOption.getUserId(), cliOption.getUserPassword())
-                    .dexterServerIp(configFile.getDexterServerIp()).dexterServerPort(configFile.getDexterServerPort())
+                    .dexterServerIp(cliOption.getServerHostIp()).dexterServerPort(cliOption.getServerPort())
                     .build();
         }
     }
