@@ -164,7 +164,7 @@ function loadUserList() {
     let allRows = [];
     let promises = [];
 
-    return Promise.map(activeServerList, (server) => {
+    Promise.map(activeServerList, (server) => {
         promises.push(new Promise((resolve) => {
             const userListUrl = `http://${server.hostIP}:${server.portNumber}/api/v2/user-list`;
             rp(userListUrl)
@@ -180,19 +180,19 @@ function loadUserList() {
                     resolve();
                 });
         }));
-
-        return Promise.all(promises)
-            .then(() => {
-                allRows = _.uniq(allRows, (row) => {
-                    return row.userId;
-                });
-                return allRows;
-            })
-            .catch((err) => {
-                log.error(err);
-                return [];
-            });
     });
+
+    return Promise.all(promises)
+        .then(() => {
+            allRows = _.uniq(allRows, (row) => {
+                return row.userId;
+            });
+            return allRows;
+        })
+        .catch((err) => {
+            log.error(err);
+            return [];
+        });
 }
 
 function updateUserStatusList() {
