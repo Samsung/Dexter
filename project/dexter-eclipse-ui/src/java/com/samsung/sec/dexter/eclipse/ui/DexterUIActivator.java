@@ -112,20 +112,6 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
         initDexter(dexterHome, isStandalone, id, pwd, serverAddress);
     }
 
-    // TODO 아래 실행 순서 다시 확인하기
-    /**
-     * Initialize belows:
-     * 1. DexterConfig
-     * 2. DexterClient
-     * 3. DexterPluginManager
-     * 4. Jobs -
-     * 
-     * @param dexterHome
-     * @param isStandalone
-     * @param id
-     * @param pwd
-     * @param serverAddress
-     */
     public void initDexter(final String dexterHome, final boolean isStandalone, final String id,
             final String pwd, final String serverAddress) {
         try {
@@ -269,7 +255,6 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 
         DexterConfig.getInstance().removeDexterStandaloneListener(client);
         DexterConfig.getInstance().removeDexterStandaloneListener(this);
-        DexterConfig.getInstance().removeDexterStandaloneListener(jobFacade);
         stopDexterJobFacade();
         stopMonitorForLogin();
         super.stop(context);

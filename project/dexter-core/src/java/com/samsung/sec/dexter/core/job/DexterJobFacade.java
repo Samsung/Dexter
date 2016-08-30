@@ -62,14 +62,6 @@ public class DexterJobFacade implements IDexterStandaloneListener {
         scheduledExecutorService = Executors.newScheduledThreadPool(1);
     }
 
-    /*
-     * private static class LazyHolder { private static final DexterJobFacade
-     * INSTANCE = new DexterJobFacade(); }
-     * 
-     * public static DexterJobFacade getInstance() { return LazyHolder.INSTANCE;
-     * }
-     */
-
     public void startGeneralJobs() {
         createAndRunDeletingLogScheduledFuture();
     }
