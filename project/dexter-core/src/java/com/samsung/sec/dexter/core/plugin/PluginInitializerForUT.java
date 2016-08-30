@@ -23,7 +23,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.samsung.sec.dexter.executor;
+package com.samsung.sec.dexter.core.plugin;
 
 import java.io.File;
 import java.util.List;
@@ -33,16 +33,11 @@ import net.xeoh.plugins.base.impl.PluginManagerFactory;
 
 import org.apache.log4j.Logger;
 
-import com.google.common.base.Strings;
-import com.samsung.sec.dexter.core.analyzer.IDexterPluginInitializer;
-import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
-import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
-import com.samsung.sec.dexter.core.plugin.PluginDescription;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 
-public class CliPluginInitializer implements IDexterPluginInitializer {
-	private final static Logger logger = Logger.getLogger(CliPluginInitializer.class);
+public class PluginInitializerForUT implements IDexterPluginInitializer {
+	static Logger logger = Logger.getLogger(PluginInitializerForUT.class);
 
 	/*
 	 * (non-Javadoc)
@@ -50,9 +45,9 @@ public class CliPluginInitializer implements IDexterPluginInitializer {
 	 * @see com.samsung.sec.dexter.executor.DexterPluginInitializer#init(java.util.List)
 	 */
 	@Override
-	public void init(final List<IDexterPlugin> pluginHandlerList) {
-		final String pluginBasePath = DexterConfig.getInstance().getDexterHome() + "/plugin";
-		final File pluginBaseDir = new File(pluginBasePath);
+	public void init(final List<IDexterPlugin> pluginHandlerList){
+		String pluginBasePath = "lib";
+		File pluginBaseDir = new File(pluginBasePath);
 		
 		if(pluginBaseDir.exists() == false){
 			throw new DexterRuntimeException("there is no exist DEXTER_HOME : " + pluginBasePath);
@@ -63,33 +58,40 @@ public class CliPluginInitializer implements IDexterPluginInitializer {
 			throw new DexterRuntimeException("there is no exist plug-in(s)");
 		}
 
-		for(final File file : files){
-			if(file.isFile() == false){
+		for(File file : files){
+			if(file.exists() == false || file.isFile() == false){
 				continue; 
 			}
 			
 			logger.info("reading plugin info from " + file.toPath());
+			PluginManager pm = PluginManagerFactory.createPluginManager();
 
-			final PluginManager pm = PluginManagerFactory.createPluginManager();
 			pm.addPluginsFrom(file.toURI());
-			final IDexterPlugin plugin = pm.getPlugin(IDexterPlugin.class);
+			IDexterPlugin handler = pm.getPlugin(IDexterPlugin.class);
 
-			if (plugin == null) {
+			if (handler == null) {
 				logger.error("There is no plugin file in path: " + file.toURI());
 				continue;
 			}
-			addHandler(pluginHandlerList, plugin);
+			
+			// IDexterPlugin handler = new PluginManagerImpl(); // delete this line when deploy
+
+			addHandler(pluginHandlerList, handler);
 		}
 		
-		initAllHandler(pluginHandlerList);
+		if(pluginHandlerList.size() > 0){
+			initAllHandler(pluginHandlerList);
+		} else {
+			throw new DexterRuntimeException("There are no dexter plug-ins to add");
+		}
 	}
 	
 	private void addHandler(final List<IDexterPlugin> pluginHandlerList, final IDexterPlugin handler){
-		final PluginDescription pd = handler.getDexterPluginDescription();
+		PluginDescription pd = handler.getDexterPluginDescription();
 
 		for(int i = 0; i < pluginHandlerList.size(); i++){
-			final IDexterPlugin h = pluginHandlerList.get(i);
-			final PluginDescription pd1 = h.getDexterPluginDescription();
+			IDexterPlugin h = pluginHandlerList.get(i);
+			PluginDescription pd1 = h.getDexterPluginDescription();
 			
 			if(pd.getPluginName().equals(pd1.getPluginName())){
 				if(pd.getVersion().compare(pd1.getVersion()) > 0){	// if it has bigger version, replace it.
@@ -108,27 +110,13 @@ public class CliPluginInitializer implements IDexterPluginInitializer {
 	/**
 	 * @param pluginHandlerList 
 	 */
-    private void initAllHandler(final List<IDexterPlugin> pluginHandlerList){
-    	if(pluginHandlerList.size() == 0){
-			throw new DexterRuntimeException("There are no dexter plug-ins to add");
-    	}
-
-    	StringBuilder err = new StringBuilder();
-			
+    private void initAllHandler(final List<IDexterPlugin> pluginHandlerList) {
     	for(int i = 0; i < pluginHandlerList.size(); i++){
-    		final IDexterPlugin plugin = pluginHandlerList.get(i);
+    		IDexterPlugin handler = pluginHandlerList.get(i);
 
-    		try{
-    			plugin.init();
-    			logger.info(plugin.getDexterPluginDescription().getPluginName() + " plugin is loaded successfully.\n");
-    		} catch(DexterRuntimeException e){
-    			err.append("Failed to initialize " + plugin.getDexterPluginDescription().getPluginName());
-    			pluginHandlerList.remove(i--);
-    		}
-    	}
-    	
-    	if(!Strings.isNullOrEmpty(err.toString())){
-    		throw new DexterRuntimeException(err.toString());
+   			handler.init();
+			
+			logger.info(handler.getDexterPluginDescription().getPluginName() + " plugin is loaded successfully");
     	}
     }
 }

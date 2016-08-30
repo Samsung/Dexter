@@ -84,7 +84,7 @@ public class DexterUtilTest {
 		DexterUtil.createEmptyFileIfNotExist(folder + "/" +noOldFileName1);
 		DexterUtil.createEmptyFileIfNotExist(folder + "/" +noOldFileName2);
 		
-		File files[] = DexterUtil.getSubFiles(new File(folder), fileName);
+		File files[] = DexterUtil.getSubFilesByPrefix(new File(folder), fileName);
 		
 		for(File file : files){
 			final String name = file.getName();

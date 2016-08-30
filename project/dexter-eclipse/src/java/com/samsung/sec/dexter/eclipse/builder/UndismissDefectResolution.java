@@ -25,20 +25,22 @@
 */
 package com.samsung.sec.dexter.eclipse.builder;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.IMarkerResolution2;
-
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.exception.DexterException;
 import com.samsung.sec.dexter.core.filter.AnalysisFilterHandler;
 import com.samsung.sec.dexter.eclipse.DexterEclipseActivator;
 import com.samsung.sec.dexter.eclipse.EclipseAnalysis;
+import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.IMarkerResolution2;
+
 public class UndismissDefectResolution implements IMarkerResolution2 {
-	//static Image image = DexterEclipseActivator.getImageDescriptor("/icons/dismissedQuickFix.gif").createImage();
+	// static Image image =
+	// DexterEclipseActivator.getImageDescriptor("/icons/dismissedQuickFix.gif").createImage();
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -57,17 +59,18 @@ public class UndismissDefectResolution implements IMarkerResolution2 {
 	 */
 	@Override
 	public void run(IMarker marker) {
-		if(marker == null || marker.exists() == false){
+		if (marker == null || marker.exists() == false) {
 			return;
 		}
-		
+
 		final Defect incompleteDefect = DexterMarker.markerToIncompleteDefect(marker);
-		if(incompleteDefect == null){
+		if (incompleteDefect == null) {
 			DexterEclipseActivator.LOG.error("Cannot create defect filter because the incompleteDefect is null");
 			return;
 		}
 
-		AnalysisFilterHandler.getInstance().removeDefectFilter(incompleteDefect);
+		AnalysisFilterHandler.getInstance().removeDefectFilter(incompleteDefect,
+				DexterUIActivator.getDefault().getDexterClient());
 		final IFile file = (IFile) marker.getResource();
 		try {
 			EclipseAnalysis.analysis(file, -1, -1);

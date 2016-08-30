@@ -96,7 +96,7 @@ public class AnalysisConfig extends BaseAnalysisEntity{
 	private boolean shouldSendSourceCode = false;
 	
 	/** this object will be called after making AnalysisResult such as defectList */
-	protected transient EndOfAnalysisHandler resultHandler;
+	protected transient IAnalysisResultHandler resultHandler;
 	
     protected AnalysisConfig() {
     	initAllListTypeFields();
@@ -576,11 +576,11 @@ public class AnalysisConfig extends BaseAnalysisEntity{
 		DexterUtil.checkListFieldHasMoreThanOne(sourceBaseDirList);
     }
 	
-	public void setResultHandler(final EndOfAnalysisHandler resultHandler) {
+	public void setResultHandler(final IAnalysisResultHandler resultHandler) {
 		this.resultHandler = resultHandler;
 	}
 	
-	public EndOfAnalysisHandler getResultHandler(){
+	public IAnalysisResultHandler getResultHandler(){
 		return this.resultHandler;
 	}
 }

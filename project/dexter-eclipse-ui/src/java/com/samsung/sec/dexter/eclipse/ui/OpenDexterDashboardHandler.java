@@ -25,6 +25,11 @@
 */
 package com.samsung.sec.dexter.eclipse.ui;
 
+import com.google.common.base.Strings;
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.util.DexterUtil;
+import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -36,55 +41,54 @@ import org.eclipse.core.commands.IHandler;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
-import com.google.common.base.Strings;
-import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
-import com.samsung.sec.dexter.core.util.DexterClient;
-import com.samsung.sec.dexter.core.util.DexterUtil;
-import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
-
 public class OpenDexterDashboardHandler extends AbstractHandler implements IHandler {
 
 	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
-		
+
 		try {
-			final String url = DexterClient.getInstance().getDexterDashboardUrl();
-			
-			if(DexterUtil.getOS() == DexterUtil.OS.WINDOWS){
-				String exePath = DexterUtil.readRegistry("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\firefox.exe", "Path");
-				
-				if(!Strings.isNullOrEmpty(exePath)){
+			final String url = DexterUIActivator.getDefault().getDexterClient().getDexterDashboardUrl();
+
+			if (DexterUtil.getOS() == DexterUtil.OS.WINDOWS) {
+				String exePath = DexterUtil.readRegistry(
+						"HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\firefox.exe",
+						"Path");
+
+				if (!Strings.isNullOrEmpty(exePath)) {
 					Runtime.getRuntime().exec("\"" + exePath + "\\firefox.exe\" " + url);
 					return null;
 				}
-				
-				exePath = DexterUtil.readRegistry("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe", "Path");
-				
-				if(!Strings.isNullOrEmpty(exePath)){
+
+				exePath = DexterUtil.readRegistry(
+						"HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\chrome.exe",
+						"Path");
+
+				if (!Strings.isNullOrEmpty(exePath)) {
 					Runtime.getRuntime().exec("\"" + exePath + "\\chrome.exe\" " + url);
 					return null;
 				}
-				
+
 				PlatformUI.getWorkbench().getBrowserSupport().getExternalBrowser().openURL(new URL(url));
 			} else {
 				PlatformUI.getWorkbench().getBrowserSupport().getExternalBrowser().openURL(new URL(url));
 			}
-        } catch (PartInitException e) {
-        	handleCommonError(e);
-        } catch (MalformedURLException e) {
-        	handleCommonError(e);
-        } catch (IOException e) {
-        	handleCommonError(e);
-        } catch (DexterRuntimeException e){
-        	DexterUIActivator.LOG.error(e.getMessage(), e);
-        	EclipseUtil.errorMessageBox("Open Error", "Failed to open web page. This is because you didn't log-in Dexter Server or Server is not running.");
-        }
-		
+		} catch (PartInitException e) {
+			handleCommonError(e);
+		} catch (MalformedURLException e) {
+			handleCommonError(e);
+		} catch (IOException e) {
+			handleCommonError(e);
+		} catch (DexterRuntimeException e) {
+			DexterUIActivator.LOG.error(e.getMessage(), e);
+			EclipseUtil.errorMessageBox("Open Error",
+					"Failed to open web page. This is because you didn't log-in Dexter Server or Server is not running.");
+		}
+
 		return null;
 	}
 
 	private void handleCommonError(Exception e) {
-	    DexterUIActivator.LOG.error(e.getMessage(), e);
-	    EclipseUtil.errorMessageBox("Open Error", "Failed to open web page due to " + e.getMessage());
-    }
+		DexterUIActivator.LOG.error(e.getMessage(), e);
+		EclipseUtil.errorMessageBox("Open Error", "Failed to open web page due to " + e.getMessage());
+	}
 }

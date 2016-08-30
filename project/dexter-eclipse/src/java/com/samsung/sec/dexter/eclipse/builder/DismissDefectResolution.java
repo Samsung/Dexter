@@ -25,23 +25,26 @@
 */
 package com.samsung.sec.dexter.eclipse.builder;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IMarker;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.ui.IMarkerResolution2;
-
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.exception.DexterException;
 import com.samsung.sec.dexter.core.filter.AnalysisFilterHandler;
 import com.samsung.sec.dexter.eclipse.DexterEclipseActivator;
 import com.samsung.sec.dexter.eclipse.EclipseAnalysis;
+import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.ui.IMarkerResolution2;
 
 public class DismissDefectResolution implements IMarkerResolution2 {
-	//static Image image =  DexterEclipseActivator.getImageDescriptor("/icons/dismissed.gif").createImage();
-	
-	/* (non-Javadoc)
+	// static Image image =
+	// DexterEclipseActivator.getImageDescriptor("/icons/dismissed.gif").createImage();
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ui.IMarkerResolution#getLabel()
 	 */
 	@Override
@@ -49,22 +52,26 @@ public class DismissDefectResolution implements IMarkerResolution2 {
 		return Messages.DismissDefectResolution_DISMISS_LABEL;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IMarkerResolution#run(org.eclipse.core.resources.IMarker)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ui.IMarkerResolution#run(org.eclipse.core.resources.IMarker)
 	 */
 	@Override
 	public void run(final IMarker marker) {
-		if (marker == null || marker.exists() == false){
+		if (marker == null || marker.exists() == false) {
 			return;
 		}
-		
+
 		final Defect incompleteDefect = DexterMarker.markerToIncompleteDefect(marker);
-		if(incompleteDefect == null){
+		if (incompleteDefect == null) {
 			DexterEclipseActivator.LOG.error("Cannot create defect filter because the incompleteDefect is null");
 			return;
 		}
-		
-		AnalysisFilterHandler.getInstance().addDefectFilter(incompleteDefect);
+
+		AnalysisFilterHandler.getInstance().addDefectFilter(incompleteDefect,
+				DexterUIActivator.getDefault().getDexterClient());
 		final IFile file = (IFile) marker.getResource();
 		try {
 			EclipseAnalysis.analysis(file, -1, -1);
@@ -73,7 +80,9 @@ public class DismissDefectResolution implements IMarkerResolution2 {
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ui.IMarkerResolution2#getDescription()
 	 */
 	@Override
@@ -81,12 +90,14 @@ public class DismissDefectResolution implements IMarkerResolution2 {
 		return Messages.DismissDefectResolution_DISMISS_DESC;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ui.IMarkerResolution2#getImage()
 	 */
 	@Override
 	public Image getImage() {
 		return EclipseUtil.getImage(DexterEclipseActivator.PLUGIN_ID, "/icons/dismissed.gif"); //$NON-NLS-1$
 	}
-	
+
 }

@@ -23,17 +23,16 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.samsung.sec.dexter.executor.cli;
+package com.samsung.sec.dexter.core.plugin;
 
-public interface ICliLog {
-	public void startMessage();
-	
-	public void info(String message);
-	public void warn(String message);
-	public void error(String message);
-	
-	public void infoln(String message);
-	public void warnln(String message);
-	public void errorln(String message);
-	public void errorln(String message, Throwable t);
+import java.util.List;
+
+import com.samsung.sec.dexter.core.exception.DexterException;
+
+public interface IDexterPluginInitializer {
+	/**
+	 * @param pluginHandlerList
+	 * @throws DexterException 
+	 */
+	public void init(final List<IDexterPlugin> pluginHandlerList);
 }

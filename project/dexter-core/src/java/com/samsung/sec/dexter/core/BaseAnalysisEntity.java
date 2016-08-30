@@ -201,8 +201,8 @@ public class BaseAnalysisEntity extends TargetFile {
 	}
 	
 	public void setNoDefectGroupAndSnapshotId() {
-		this.snapshotId = -1;
-		this.defectGroupId = -1;
+		this.snapshotId = -1L;
+		this.defectGroupId = -1L;
     }
 	
 	

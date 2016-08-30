@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2014 Samsung Electronics, Inc.,
+ * Copyright (c) 2016 Samsung Electronics, Inc.,
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -25,67 +25,30 @@
 */
 package com.samsung.sec.dexter.executor.cli;
 
+import com.samsung.sec.dexter.core.util.IDexterClient;
+
+import java.io.InputStream;
 import java.io.PrintStream;
 
-import org.apache.log4j.Logger;
-
-public class CliLogger implements ICliLog {
-	private PrintStream out;
-	private final static Logger log = Logger.getLogger(CliLogger.class);
-	private final static String errorPrefix = "★ ERROR : ";
-	private final static String moreInfoDesc = " (see ../log/dexter-executor.log file for more information)";
-	private final static String warnPrefix = "  [WARN] ";
-	
+public class EmptyAccountHandler implements IAccountHandler {
 	@Override
-    public void startMessage() {
-		infoln("");
-		infoln("===== Starting Dexter Analysis =====");   
-    }
-	
-	public CliLogger(PrintStream out){
-		this.out = out;
+	public void createAccount(String userId, String password) {
 	}
 
 	@Override
-    public void info(String message) {
-		out.print(message);
-		log.info(message);
-    }
+	public boolean loginOrCreateAccount() {
+		return false;
+	}
 
 	@Override
-    public void warn(String message) {
-		out.print(message);
-		log.warn(message);
-    }
+	public void setPrintStream(PrintStream out) {
+	}
 
 	@Override
-    public void error(String message) {
-		out.print(errorPrefix + message);
-		log.error(message);
-    }
+	public void setInputStream(InputStream in) {
+	}
 
 	@Override
-    public void infoln(String message) {
-		out.println(message);
-		log.info(message);
-    }
-
-	@Override
-    public void warnln(String message) {
-		out.println(warnPrefix + message);
-		log.warn(message);
-    }
-
-	@Override
-    public void errorln(String message) {
-		out.println(errorPrefix + message + moreInfoDesc);
-		log.error(message);
-    }
-	
-	@Override
-    public void errorln(String message, Throwable t) {
-		out.println(errorPrefix + message + moreInfoDesc);
-		log.error(message);
-		log.error(t.getMessage(), t);
-    }
+	public void setDexterClient(IDexterClient client) {
+	}
 }
