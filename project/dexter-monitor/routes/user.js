@@ -248,9 +248,9 @@ function updateUserStatusList() {
 
 function loadAndCreateUserStatusTable() {
     const sql = `SELECT DexterUserList.userLab AS groupName,
-                        COUNT(DexterUserList.userId) AS allDeveloperCount,
-                        installedDeveloperCount,
-                        nonTargetDeveloperCount
+                        IFNULL(COUNT(DexterUserList.userId), 0) AS allDeveloperCount,
+                        IFNULL(installedDeveloperCount, 0) AS installedDeveloperCount,
+                        IFNULL(nonTargetDeveloperCount, 0) AS nonTargetDeveloperCount
                  FROM DexterUserList
                  LEFT JOIN (SELECT userLab, COUNT(DUL1.userId) AS installedDeveloperCount
                             FROM DexterUserList AS DUL1
@@ -266,9 +266,6 @@ function loadAndCreateUserStatusTable() {
     return database.exec(sql)
         .then((rows) => {
             rows.forEach((row) => {
-                if (!row.installedDeveloperCount) {
-                    row.installedDeveloperCount = 0;
-                }
                 row.targetDeveloperCount = getTargetDeveloperCount(row);
                 row.installationRatio = getInstallationRatio(row);
             });
