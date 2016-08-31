@@ -266,6 +266,9 @@ function loadAndCreateUserStatusTable() {
     return database.exec(sql)
         .then((rows) => {
             rows.forEach((row) => {
+                if (!row.installedDeveloperCount) {
+                    row.installedDeveloperCount = 0;
+                }
                 row.targetDeveloperCount = getTargetDeveloperCount(row);
                 row.installationRatio = getInstallationRatio(row);
             });
