@@ -1,23 +1,22 @@
 package com.samsung.sec.dexter.daemon.job;
 
+import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.config.IDexterHomeListener;
+import com.samsung.sec.dexter.core.config.PlatzKeywordFile;
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.util.DexterUtil;
+import com.samsung.sec.dexter.daemon.DexterDaemonActivator;
+import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
+import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
+import com.samsung.sec.dexter.eclipse.ui.view.PlatzView;
+
 import java.io.File;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import com.samsung.sec.dexter.core.config.DexterConfig;
-import com.samsung.sec.dexter.core.config.IDexterHomeListener;
-import com.samsung.sec.dexter.core.config.PlatzKeywordFile;
-import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
-import com.samsung.sec.dexter.core.util.DexterClient;
-import com.samsung.sec.dexter.core.util.DexterUtil;
-import com.samsung.sec.dexter.daemon.DexterDaemonActivator;
-import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
-import com.samsung.sec.dexter.eclipse.ui.view.PlatzView;
 import org.eclipse.ui.progress.UIJob;
 
 public class MonitorForPlatzKeywordFile extends Job implements IDexterHomeListener {
@@ -41,7 +40,7 @@ public class MonitorForPlatzKeywordFile extends Job implements IDexterHomeListen
 	}
 
 	@Override
-	public void handleDexterHomeChanged() {
+	public void handleDexterHomeChanged(final String oldPath, final String newPath) {
 		initPlatzKeywordFile();
 	}
 
@@ -81,7 +80,7 @@ public class MonitorForPlatzKeywordFile extends Job implements IDexterHomeListen
 					final PlatzView platzView = (PlatzView) EclipseUtil.findView(PlatzView.ID);
 					StringBuilder url = new StringBuilder();
 					url.append(DexterConfig.PLATZ_SEARCH_API_URL).append(keyword).append("?dexterId=")
-							.append(DexterClient.getInstance().getCurrentUserId());
+							.append(DexterUIActivator.getDefault().getDexterClient().getCurrentUserId());
 					platzView.setUrl(url.toString());
 					return Status.OK_STATUS;
 				} catch (DexterRuntimeException e) {

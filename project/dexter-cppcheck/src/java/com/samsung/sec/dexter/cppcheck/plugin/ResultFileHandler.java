@@ -122,7 +122,7 @@ public class ResultFileHandler extends DefaultHandler {
 	    	} catch (DexterRuntimeException e){
 	    		logger.info(e.getMessage());
 				if (!(DexterConfig.getInstance().getRunMode().equals(DexterConfig.RunMode.CLI)
-						&& DexterConfig.getInstance().isCheckerEnableOption())) {
+						&& DexterConfig.getInstance().isSpecifiedCheckerOptionEnabledByCli())) {
 					Checker checker = new Checker(checkerCode, checkerCode,
 							PluginVersion.fromImplementationVersion(CppcheckDexterPlugin.class).getVersion(), true);
 

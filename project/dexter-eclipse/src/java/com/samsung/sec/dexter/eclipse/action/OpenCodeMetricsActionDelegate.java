@@ -1,11 +1,17 @@
 package com.samsung.sec.dexter.eclipse.action;
 
-import java.util.Iterator;
+import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.util.IDexterClient;
 import com.samsung.sec.dexter.eclipse.DexterEclipseActivator;
+import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
+import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
+import com.samsung.sec.dexter.eclipse.ui.view.CodeMetricsView;
+
+import java.util.Iterator;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -13,16 +19,10 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPart;
 
-import com.samsung.sec.dexter.core.config.DexterConfig;
-import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
-import com.samsung.sec.dexter.core.util.DexterClient;
-import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
-import com.samsung.sec.dexter.eclipse.ui.view.CodeMetricsView;
-
 public class OpenCodeMetricsActionDelegate implements IObjectActionDelegate {
 
 	ISelection selection;
-	
+
 	@Override
 	public void run(IAction action) {
 		if (selection instanceof StructuredSelection) {
@@ -50,17 +50,18 @@ public class OpenCodeMetricsActionDelegate implements IObjectActionDelegate {
 			} else if (EclipseUtil.isValidCAndCppResource(resource)) {
 				modulePath = DexterEclipseActivator.getCDTUtil().getModulePath(targetFile);
 			}
-			
+
 			StringBuilder createCodeMetricsUrl = new StringBuilder();
 			try {
 				IViewPart view = EclipseUtil.findView(CodeMetricsView.ID);
 				final CodeMetricsView codeMetricsView = (CodeMetricsView) view;
+				final IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
 
-				createCodeMetricsUrl.append("http://").append(DexterClient.getInstance().getServerHost()).append(":") //$NON-NLS-1$ //$NON-NLS-2$
-						.append(DexterClient.getInstance().getServerPort()).append(DexterConfig.CODE_METRICS_BASE)// $NON-NLS-1$
+				createCodeMetricsUrl.append("http://").append(client.getServerHost()).append(":") //$NON-NLS-1$ //$NON-NLS-2$
+						.append(client.getServerPort()).append(DexterConfig.CODE_METRICS_BASE)// $NON-NLS-1$
 						.append("?").append(DexterConfig.CODE_METRICS_FILE_NAME).append("=") //$NON-NLS-1$
-						.append(targetFile.getName())
-						.append("&").append(DexterConfig.CODE_METRICS_MODULE_PATH).append("=").append(modulePath);//$NON-NLS-1$
+						.append(targetFile.getName()).append("&").append(DexterConfig.CODE_METRICS_MODULE_PATH) //$NON-NLS-1$
+						.append("=").append(modulePath);
 
 				codeMetricsView.setUrl(createCodeMetricsUrl.toString());
 				EclipseUtil.showView(CodeMetricsView.ID);

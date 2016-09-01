@@ -23,17 +23,32 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package com.samsung.sec.dexter.core.analyzer;
+package com.samsung.sec.dexter.executor.cli;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
-public interface EndOfAnalysisHandler {
+import com.samsung.sec.dexter.core.defect.Defect;
 
-    /**
-     * handle the AnalysisResult object after making it by a static analysis plug-ins such as cppcheck and findbugs
-     * 
-     * @param analysisResult the result of static analsyis 
-     * @return void
-     */
-    void handleAnalysisResult(final List<AnalysisResult> analysisResult);
+public interface ICLIResultFile {
+
+	void writeXml2ResultFilePostfix(final File file) throws IOException;
+
+	void writeXmlResultFilePostfix(final File file) throws IOException;
+
+	void writeJsonResultFilePostfix(final File file) throws IOException;
+
+	void writeXml2ResultFilePrefix(final File file) throws IOException;
+
+	void writeXmlResultFilePrefix(final File file) throws IOException;
+
+	void writeJsonResultFilePrefix(final File file) throws IOException;
+
+	void writeJsonResultFileBody(final File file, final List<Defect> allDefectList) throws IOException;
+
+	void writeXmlResultFileBody(final File file, final List<Defect> allDefectList, final String sourceFileFullPath) throws IOException;
+
+	void writeXml2ResultFileBody(final File file, final List<Defect> allDefectList, final String sourceFileFullPath) throws IOException;
+
 }

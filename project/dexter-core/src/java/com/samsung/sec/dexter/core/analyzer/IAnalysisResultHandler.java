@@ -6,11 +6,11 @@
  * modification, are permitted provided that the following conditions are met:
  * 
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  * 
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -22,18 +22,28 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.samsung.sec.dexter.core.analyzer;
+
+import com.samsung.sec.dexter.core.util.IDexterClient;
 
 import java.util.List;
 
-import com.samsung.sec.dexter.core.exception.DexterException;
-import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
+public interface IAnalysisResultHandler {
 
-public interface IDexterPluginInitializer {
-	/**
-	 * @param pluginHandlerList
-	 * @throws DexterException 
-	 */
-	public void init(final List<IDexterPlugin> pluginHandlerList);
+    /**
+     * handle the AnalysisResult object after making it by a static analysis
+     * plug-ins such as cppcheck and findbugs
+     * 
+     * @param analysisResult
+     * the result of static analsyis
+     * @return void
+     */
+    void handleAnalysisResult(final List<AnalysisResult> analysisResult, final IDexterClient client);
+
+    public void printLogAfterAnalyze();
+
+    void handleBeginnigOfResultFile();
+
+    void handleEndOfResultFile();
 }

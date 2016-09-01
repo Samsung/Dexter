@@ -103,7 +103,7 @@ public class PersistenceProperty implements IDexterHomeListener{
 	}
 
 	@Override
-    public void handleDexterHomeChanged() {
+    public void handleDexterHomeChanged(final String oldPath, final String newPath) {
 		initProperty();
     }
 
