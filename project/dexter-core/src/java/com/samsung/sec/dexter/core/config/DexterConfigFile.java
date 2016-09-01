@@ -424,8 +424,8 @@ public class DexterConfigFile implements IDexterConfigFile {
 
     @Override
     public void setResultFileFullPath(String resultFileFullPath) {
-        if (Strings.isNullOrEmpty(resultFileFullPath) == false && new File(resultFileFullPath).exists() == false)
-            throw new DexterRuntimeException("there is no result file path : " + resultFileFullPath);
+        if (Strings.isNullOrEmpty(resultFileFullPath))
+            throw new DexterRuntimeException("there is no result file path");
 
         this.resultFileFullPath = resultFileFullPath;
     }

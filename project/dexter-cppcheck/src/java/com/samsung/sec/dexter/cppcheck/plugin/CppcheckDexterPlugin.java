@@ -94,8 +94,8 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
         Process changePermissionProcess = null;
         StringBuilder changePermissionCmd = new StringBuilder(500);
 
-        String dexterBin = dexterHome + DexterUtil.PATH_SEPARATOR + "bin";
-        String cppcheckHome = dexterBin + DexterUtil.PATH_SEPARATOR + "cppcheck";
+        String dexterBin = dexterHome + DexterUtil.FILE_SEPARATOR + "bin";
+        String cppcheckHome = dexterBin + DexterUtil.FILE_SEPARATOR + "cppcheck";
 
         if (Strings.isNullOrEmpty(dexterBin)) {
             logger.error("Can't initialize Cppcheck plugin, because the dexter_home/bin is not initialized");
@@ -108,7 +108,7 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
         }
 
         String baseCommand = DexterConfig.EXECUTION_PERMISSION + " ";
-        changePermissionCmd.append(baseCommand).append(cppcheckHome).append(DexterUtil.PATH_SEPARATOR)
+        changePermissionCmd.append(baseCommand).append(cppcheckHome).append(DexterUtil.FILE_SEPARATOR)
                 .append("cppcheck");
 
         try {

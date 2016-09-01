@@ -114,7 +114,7 @@ public class BaseAnalysisEntity extends TargetFile {
 //			return;
 //		}
 		
-		projectFullPath = projectFullPath.replace("\\", "/").replace(DexterUtil.PATH_SEPARATOR, "/");
+		projectFullPath = projectFullPath.replace("\\", "/").replace(DexterUtil.FILE_SEPARATOR, "/");
 		
 		if(projectFullPath.endsWith("\\") || projectFullPath.endsWith("/")){
 			this.projectFullPath = projectFullPath.substring(0, projectFullPath.length() -1);

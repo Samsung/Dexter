@@ -99,6 +99,31 @@ exports.getProjectDefectStatus = function (req, res){
     });
 };
 
+
+exports.getProjectDefectStatusV2 = function (req, res){
+    var statusCode = req.query.statusCode;
+
+    var sql = "select "
+        + "'all-module' as modulePath, count(did) as defectCount, "
+        + "sum(if(statusCode = 'NEW', 1, 0)) as newCount, "
+        + "sum(if(statusCode = 'FIX', 1, 0)) as fixCount, "
+        + "sum(if(statusCode = 'EXC', 1, 0)) as excCount "
+        + "from Defect ";
+
+    if(statusCode != undefined && statusCode != ""){
+        sql += "where statusCode = " + statusCode;
+    }
+
+    return database.execV2(sql)
+        .then(function(rows) {
+            res.send({status:'ok', rows: rows} );
+        })
+        .catch(function(err) {
+            logging.error(err);
+            res.send({status:"fail", errorMessage: err.message});
+        });
+};
+
 // todo : Consider View for performance
 exports.getModuleDefectStatus = function (req, res){
     var statusCode = req.query.statusCode;
@@ -125,6 +150,33 @@ exports.getModuleDefectStatus = function (req, res){
             res.send(200, result);
         }
     });
+};
+
+// todo : Consider View for performance
+exports.getModuleDefectStatusV2 = function (req, res){
+    var statusCode = req.query.statusCode;
+
+    var sql = "select "
+        + "ifnull(modulePath, '') as modulePath, count(did) as defectCount, "
+        + "sum(if(statusCode = 'NEW', 1, 0)) as newCount, "
+        + "sum(if(statusCode = 'FIX', 1, 0)) as fixCount, "
+        + "sum(if(statusCode = 'EXC', 1, 0)) as excCount "
+        + "from Defect ";
+
+    if(statusCode != undefined && statusCode != ""){
+        sql += "where statusCode = " + database.toSqlValue(statusCode);
+    }
+
+    sql += " group by modulePath order by modulePath ";
+
+    database.execV2(sql)
+        .then(function(rows) {
+            res.send({status:'ok', rows: rows} );
+        })
+        .catch(function(err) {
+            logging.error(err);
+            res.send({status:"fail", errorMessage: err.message});
+        });
 };
 
 // todo : Consider View for performance
@@ -156,8 +208,40 @@ exports.getFileDefectStatus = function (req, res){
     });
 };
 
+
+exports.getFileDefectStatusV2 = function (req, res){
+
+    var modulePath = req.query.modulePath;
+
+    var sql = "select "
+        + "ifnull(modulePath, '') as modulePath, fileName, count(did) as defectCount, "
+        + "sum(if(statusCode = 'NEW', 1, 0)) as newCount, "
+        + "sum(if(statusCode = 'FIX', 1, 0)) as fixCount, "
+        + "sum(if(statusCode = 'EXC', 1, 0)) as excCount "
+        + "from Defect ";
+
+    if(modulePath != undefined && modulePath != ""){
+        sql += " where modulePath = " + database.toSqlValue(modulePath);
+    } else {
+        sql += " where modulePath is null ";
+    }
+
+    sql += " group by modulePath, fileName order by modulePath, fileName";
+
+    database.execV2(sql)
+        .then(function(rows) {
+            res.send({status:'ok', rows: rows} );
+        })
+        .catch(function(err) {
+            logging.error(err);
+            res.send({status:"fail", errorMessage: err.message});
+        });
+
+};
+
+
 exports.getModuleAndFileName = function (req, res) {
-    var sql = "select ifnull(modulePath,'') as modulePath, fileName from Defect GROUP BY modulePath, fileName; "
+    var sql = "select ifnull(modulePath,'') as modulePath, fileName from Defect GROUP BY modulePath, fileName; ";
     database.exec(sql, function (err, result){
         if(err){
             logging.error(err.message);
@@ -181,7 +265,84 @@ exports.getDefectForSecurity = function(req, res){
         + " from "
         + " Defect A WHERE categoryName='SECURITY' order by checkerCode, fileName, className, methodName ";
 
-    database.exec(sql, function (err, result){
+    return database.execV2(sql)
+        .then(function(rows) {
+            res.send({status:'ok', rows: rows} );
+        })
+        .catch(function(err) {
+            logging.error(err);
+            res.send({status:"fail", errorMessage: err.message});
+        });
+
+};
+
+exports.getDefectForCSV = function(req, res){
+    var sql = "select "
+        + "did, toolName, language, checkerCode, ifnull(modulePath,'') as modulePath, fileName, ifnull(className,'') as className,"
+        + "ifnull(methodName,'') as methodName, severityCode, ifnull(categoryName,'') as categoryName, statusCode, message, "
+        + "createdDateTime, modifiedDateTime, creatorNo, modifierNo, "
+        + "(select count(B.oid) from Occurence B where B.did = A.did) as occurenceCount, "
+        + "ifnull((select group_concat(if(B.startLine = -1,'1', B.startLine) ORDER BY B.startLine SEPARATOR '|') from Occurence B where B.did = A.did),'') as occurenceLine,"
+        + "(select userId from Account where userNo = A.creatorNo) as creatorId, "
+        + "(select userId from Account where userNo = A.modifierNo) as modifierId "
+        + "from "
+        + "Defect A ";
+
+    sql += " order by checkerCode, fileName, className, methodName ";
+    return database.execV2(sql)
+        .then(function(rows) {
+            res.send({status:'ok', rows: rows} );
+        })
+        .catch(function(err) {
+            logging.error(err);
+            res.send({status:"fail", errorMessage: err.message});
+        });
+};
+
+exports.getDidDefectForCSV = function(req, res){
+    var sql = "select "
+        + "did, toolName, language, checkerCode, ifnull(modulePath,'') as modulePath, fileName, ifnull(className,'') as className,"
+        + "ifnull(methodName,'') as methodName, severityCode, ifnull(categoryName,'') as categoryName, statusCode, message, "
+        + "createdDateTime, modifiedDateTime, creatorNo, modifierNo, "
+        + "(select count(B.oid) from Occurence B where B.did = A.did) as occurenceCount, "
+        + "ifnull((select group_concat(if(B.startLine = -1,'1', B.startLine) ORDER BY B.startLine SEPARATOR '|') from Occurence B where B.did = A.did),'') as occurenceLine,"
+        + "(select userId from Account where userNo = A.creatorNo) as creatorId, "
+        + "(select userId from Account where userNo = A.modifierNo) as modifierId "
+        + "from "
+        + "Defect A ";
+
+    sql += " order by checkerCode, fileName, className, methodName ";
+    return database.execV2(sql)
+        .then(function(rows) {
+            res.send({status:'ok', rows: rows} );
+        })
+        .catch(function(err) {
+            logging.error(err);
+            res.send({status:"fail", errorMessage: err.message});
+        });
+};
+
+exports.getSnapshotDefectForCSV = function(req, res){
+    if(req == undefined || req.query== undefined || req.query.snapshotId == undefined){
+        res.send({status:"fail", errorMessage: "Input(parameter) error"});
+        return;
+    }
+
+    var snapshotId = req.query.snapshotId;
+
+    var sql = "SELECT "
+        + "snapshotId, did, toolName, language, checkerCode, fileName, ifnull(modulePath,'') as modulePath , ifnull(className,'') as className ,"
+        + "ifnull(methodName,'') as methodName, severityCode, ifnull(categoryName,'') as categoryName, statusCode, message, createdDateTime, modifiedDateTime, creatorNo, modifierNo,"
+        + "(select count(B.startLine) from SnapshotOccurenceMap B where B.did = A.did and snapshotId = "+ database.toSqlValue(snapshotId)+ ") as occurenceCount,"
+        + " ifnull((select group_concat(if(B.startLine = -1,'1', B.startLine) ORDER BY B.startLine SEPARATOR '|') "
+        + "from SnapshotOccurenceMap B where B.did = A.did and snapshotId = "+ database.toSqlValue(snapshotId)+ "),'') as occurenceLine,"
+        + "(select statusCode from Defect B where B.did = A.did) as currentStatusCode,"
+        + "(select userId from Account where userNo = A.creatorNo) as creatorId,"
+        + "(select userId from Account where userNo = A.modifierNo) as modifierId, "
+        + "ifnull(chargerNo,'') as chargerNo, ifnull(reviewerNo,'') as reviewerNo, ifnull(approvalNo,'') as approvalNo "
+        + "From SnapshotDefectMap AS A WHERE snapshotId =" + database.toSqlValue(snapshotId) ;
+
+   /* database.exec(sql, function (err, result){
         if(err){
             logging.error(err.message);
             res.send(401, {status:"fail", errorMessage: err.message});
@@ -189,19 +350,56 @@ exports.getDefectForSecurity = function(req, res){
         if(result){
             res.send(200, result);
         }
-    });
+    });*/
+
+    return database.execV2(sql)
+        .then(function(rows) {
+            res.send({status:'ok', rows: rows} );
+        })
+        .catch(function(err) {
+            logging.error(err);
+            res.send({status:"fail", errorMessage: err.message});
+        });
+
 };
 
-exports.getDefectForCSV = function(req, res){
-    var did = req.query.did;
-    var modulePath = base64.decode(req.query.modulePath);
-    var fileName = req.query.fileName;
-    var statusCode = req.query.statusCode;
-    var severityCode = req.query.severityCode;
-    var categoryName = req.query.categoryName;
-    var checkerCode = req.query.checkerCode;
-    var modifierNo = req.query.modifierNo;
-    var message = req.query.message;
+
+
+exports.getSnapshotDefectForSecurity = function(req, res){
+    if(req == undefined || req.query== undefined || req.query.snapshotId == undefined){
+        res.send({status:"fail", errorMessage: "Input(parameter) error"});
+        return;
+    }
+
+    var snapshotId = req.query.snapshotId;
+
+    var sql = "SELECT "
+        + "snapshotId, did, toolName, language, checkerCode, fileName, ifnull(modulePath,'') as modulePath , ifnull(className,'') as className ,"
+        + "ifnull(methodName,'') as methodName, severityCode, ifnull(categoryName,'') as categoryName, statusCode, message, createdDateTime, modifiedDateTime, creatorNo, modifierNo,"
+        + "(select count(B.startLine) from SnapshotOccurenceMap B where B.did = A.did and snapshotId = "+ database.toSqlValue(snapshotId)+ ") as occurenceCount,"
+        + " ifnull((select group_concat(if(B.startLine = -1,'1', B.startLine) ORDER BY B.startLine SEPARATOR '|') "
+        + "from SnapshotOccurenceMap B where B.did = A.did and snapshotId = "+ database.toSqlValue(snapshotId)+ "),'') as occurenceLine,"
+        + "(select statusCode from Defect B where B.did = A.did) as currentStatusCode,"
+        + "(select userId from Account where userNo = A.creatorNo) as creatorId,"
+        + "(select userId from Account where userNo = A.modifierNo) as modifierId, "
+        + "ifnull(chargerNo,'') as chargerNo, ifnull(reviewerNo,'') as reviewerNo, ifnull(approvalNo,'') as approvalNo "
+        + "From SnapshotDefectMap AS A WHERE snapshotId =" + database.toSqlValue(snapshotId) + " and categoryName = 'SECURITY'" ;
+
+    return database.execV2(sql)
+        .then(function(rows) {
+            res.send({status:'ok', rows: rows} );
+        })
+        .catch(function(err) {
+            logging.error(err);
+            res.send({status:"fail", errorMessage: err.message});
+        });
+};
+
+
+exports.getDefectsByModuleAndFileForDid = getDefectsByModuleAndFileForDid;
+
+function getDefectsByModuleAndFileForDid(req, res){
+    var did = req.params.did;
 
     var sql = "select "
         + "did, toolName, language, checkerCode, ifnull(modulePath,'') as modulePath, fileName, ifnull(className,'') as className,"
@@ -214,92 +412,20 @@ exports.getDefectForCSV = function(req, res){
         + "from "
         + "Defect A ";
 
-    if(modulePath != "" || fileName != "" || statusCode != "" || severityCode != "" || checkerCode != ""
-        ||  (modifierNo != "" && modifierNo != undefined) || (did != "" && did != undefined ) ){
-        sql += " where 1 = 1 ";
-    }
-    if(did != "" && did != undefined ){
-        sql += "and did = " + did;
+    if( did !== undefined || did !== null || did == ""){
+        sql += "WHERE did =" + database.toSqlValue(did);
     }
 
-    if(modulePath == "##HAS-NO-MODULE##"){
-        sql += "and modulePath is null ";
-    } else if(modulePath != ""){
-        sql += " and modulePath = " + database.toSqlValue(modulePath);
-    }
-
-    if(fileName != ""){
-        sql += " and fileName = " + database.toSqlValue(fileName);
-    }
-
-    if(statusCode != ""){
-        sql += " and statusCode = " + database.toSqlValue(statusCode);
-    }
-
-    if(severityCode != ""){
-        sql += " and severityCode = " + database.toSqlValue(severityCode);
-    }
-
-    if(severityCode != ""){
-        sql += " and categoryName = " + database.toSqlValue(categoryName);
-    }
-
-    if(checkerCode != ""){
-        sql += "and checkerCode = " + database.toSqlValue(checkerCode);
-    }
-
-    if(modifierNo != ""){
-        sql += "and modifierNo = " + modifierNo;
-    }
-
-    sql += " order by checkerCode, fileName, className, methodName ";
-
-    console.log(sql);
-
-    database.exec(sql, function (err, result){
+    return database.exec(sql, function (err, result){
         if(err){
             logging.error(err.message);
             res.send(401, {status:"fail", errorMessage: err.message});
         }
         if(result){
-            res.send(200, result);
+            res.send({status:'ok', defect: result});
         }
     });
-};
-
-exports.getSnapshotDefectForCSV = function(req, res){
-
-};
-
-
-
-exports.getSnapshotDefectForSecurity = function(req, res){
-    if(req == undefined || req.query== undefined || req.query.snapshotId == undefined){
-        res.send({status:"fail", errorMessage: "Input(parameter) error"});
-        return;
-    }
-
-    var sql = "SELECT "
-        + "snapshotId, did, toolName, language, checkerCode, fileName, ifnull(modulePath,'') as modulePath , ifnull(className,'') as className ,"
-        + "ifnull(methodName,'') as methodName, severityCode, ifnull(categoryName,'') as categoryName, statusCode, message, createdDateTime, modifiedDateTime, creatorNo, modifierNo,"
-        + "(select count(B.startLine) from SnapshotOccurenceMap B where B.did = A.did and snapshotId = "+ database.toSqlValue(req.query.snapshotId)+ ") as occurenceCount,"
-        + " ifnull((select group_concat(if(B.startLine = -1,'1', B.startLine) ORDER BY B.startLine SEPARATOR '|') from SnapshotOccurenceMap B where B.did = A.did and snapshotId = "+ database.toSqlValue(req.query.snapshotId)+ "),'') as occurenceLine,"
-        + "(select statusCode from Defect B where B.did = A.did) as currentStatusCode,"
-        + "(select userId from Account where userNo = A.creatorNo) as creatorId,"
-        + "(select userId from Account where userNo = A.modifierNo) as modifierId, "
-        + "ifnull(chargerNo,'') as chargerNo, ifnull(reviewerNo,'') as reviewerNo, ifnull(approvalNo,'') as approvalNo "
-        + "From SnapshotDefectMap AS A WHERE snapshotId =" + database.toSqlValue(req.query.snapshotId) + " and categoryName = 'SECURITY'";
-
-    database.exec(sql, function (err, result){
-        if(err){
-            logging.error(err.message);
-            res.send(401, {status:"fail", errorMessage: err.message});
-        }
-        if(result){
-            res.send(200, result);
-        }
-    });
-};
+}
 
 
 exports.getDefectsByModuleAndFileV2 = getDefectsByModuleAndFileV2;
@@ -1257,7 +1383,7 @@ exports.getSnapshotSourceCode = function(req, res) {
     }
 
     if(fileName == undefined || fileName == -1){
-        res.send({status:"fail", errorMessage: "Invalid Data"})
+        res.send({status:"fail", errorMessage: "Invalid Data"});
 		return;
     }
 
@@ -1311,7 +1437,7 @@ exports.checkSnapshotSourceCode = function(req, res) {
 
 
     if(fileName == undefined || fileName == -1){
-        res.send({status:"fail", errorMessage: "Invalid Data"})
+        res.send({status:"fail", errorMessage: "Invalid Data"});
 		return;
     }
 
@@ -2647,7 +2773,7 @@ exports.getAllSnapshotV2 = function (req, res){
 };
 
 exports.getOccurencesByFileNameInSnapshot = function(req, res){
-    if(req == undefined || req.query == undefined || req.query.fileName == undefined){
+    if(req == undefined || req.query == undefined || req.query.fileName == undefined || req.query.snapshotId){
         res.send({status:"fail", errorMessage: "Input(parameter) error"});
         return;
     }
@@ -2656,6 +2782,7 @@ exports.getOccurencesByFileNameInSnapshot = function(req, res){
         modulePath = base64.decode(req.query.modulePath);
 
     var fileName = req.query.fileName;
+    var snapshotId = req.query.snapshotId;
 
     var sql = "SELECT "
         + " did, if(startLine = -1, 1, startLine) as startLine, endLine, if(charStart = -1,'N/A', charStart) as charStart, "
@@ -2675,7 +2802,9 @@ exports.getOccurencesByFileNameInSnapshot = function(req, res){
     else{
         sql += "     modulePath = " + database.toSqlValue(modulePath);
     }
-    sql += "     and fileName = " + database.toSqlValue(fileName) + ") group by did order by startLine" ;
+    sql += "     and fileName = " + database.toSqlValue(fileName) + ") and snapshotId = "+ database.toSqlValue(snapshotId) + "group by did order by startLine" ;
+
+    console.log(sql);
     database.exec(sql, function (err, result) {
         if(err){
             res.send({result:'fail', errorMessage: err.message, errorCode: -1});
@@ -2724,21 +2853,24 @@ exports.getDefectListInSnapshot = function (req, res){
 };
 
 exports.getDefectListInSnapshotV2 = function (req, res){
-    if(req == undefined || req.query== undefined || req.query.snapshotId == undefined){
+    if(req == undefined || req.params== undefined || req.params.snapshotId == undefined){
         res.send({status:"fail", errorMessage: "Input(parameter) error"});
         return;
     }
 
-    sql = "SELECT "
+    var snapshotId = req.params.snapshotId;
+
+    var sql = "SELECT "
         + "snapshotId, did, toolName, language, checkerCode, fileName, ifnull(modulePath,'') as modulePath , ifnull(className,'') as className ,"
         + "ifnull(methodName,'') as methodName, severityCode, ifnull(categoryName,'') as categoryName, statusCode, message, createdDateTime, modifiedDateTime, creatorNo, modifierNo,"
-        + "(select count(B.startLine) from SnapshotOccurenceMap B where B.did = A.did and snapshotId = "+ database.toSqlValue(req.query.snapshotId)+ ") as occurenceCount,"
-        + " ifnull((select group_concat(if(B.startLine = -1,'1', B.startLine) ORDER BY B.startLine SEPARATOR '|') from SnapshotOccurenceMap B where B.did = A.did and snapshotId = "+ database.toSqlValue(req.query.snapshotId)+ "),'') as occurenceLine,"
+        + "(select count(B.startLine) from SnapshotOccurenceMap B where B.did = A.did and snapshotId = "+ database.toSqlValue(snapshotId)+ ") as occurenceCount,"
+        + " ifnull((select group_concat(if(B.startLine = -1,'1', B.startLine) ORDER BY B.startLine SEPARATOR '|') "
+        + " FROM SnapshotOccurenceMap B where B.did = A.did and snapshotId = "+ database.toSqlValue(snapshotId)+ "),'') as occurenceLine,"
         + "(select statusCode from Defect B where B.did = A.did) as currentStatusCode,"
         + "(select userId from Account where userNo = A.creatorNo) as creatorId,"
         + "(select userId from Account where userNo = A.modifierNo) as modifierId, "
         + "ifnull(chargerNo,'') as chargerNo, ifnull(reviewerNo,'') as reviewerNo, ifnull(approvalNo,'') as approvalNo "
-        + "From SnapshotDefectMap AS A WHERE snapshotId =" + database.toSqlValue(req.query.snapshotId);
+        + "From SnapshotDefectMap AS A WHERE snapshotId =" + database.toSqlValue(snapshotId);
 
     database.exec(sql, function (err, result) {
         if(err) {
@@ -2751,6 +2883,45 @@ exports.getDefectListInSnapshotV2 = function (req, res){
         }
     });
 };
+
+exports.getDefectListInSnapshotForDid = function (req, res){
+    if(req === undefined || req.params === undefined || req.params.snapshotId === undefined || req.params.did === undefined){
+        res.send({status:"fail", errorMessage: "Input(parameter) error"});
+        return;
+    }
+
+    var snapshotId = req.params.snapshotId;
+    var did = req.params.did;
+
+
+    var sql = "SELECT "
+        + "snapshotId, did, toolName, language, checkerCode, fileName, ifnull(modulePath,'') as modulePath , ifnull(className,'') as className ,"
+        + "ifnull(methodName,'') as methodName, severityCode, ifnull(categoryName,'') as categoryName, statusCode, message, createdDateTime, modifiedDateTime, creatorNo, modifierNo,"
+        + "(select count(B.startLine) from SnapshotOccurenceMap B where B.did = A.did and snapshotId = "+ database.toSqlValue(snapshotId)+ ") as occurenceCount,"
+        + " ifnull((select group_concat(if(B.startLine = -1,'1', B.startLine) ORDER BY B.startLine SEPARATOR '|') "
+        + " FROM SnapshotOccurenceMap B where B.did = A.did and snapshotId = "+ database.toSqlValue(snapshotId)+ "),'') as occurenceLine,"
+        + "(select statusCode from Defect B where B.did = A.did) as currentStatusCode,"
+        + "(select userId from Account where userNo = A.creatorNo) as creatorId,"
+        + "(select userId from Account where userNo = A.modifierNo) as modifierId, "
+        + "ifnull(chargerNo,'') as chargerNo, ifnull(reviewerNo,'') as reviewerNo, ifnull(approvalNo,'') as approvalNo "
+        + "From SnapshotDefectMap AS A WHERE snapshotId =" + database.toSqlValue(snapshotId);
+
+    if(did !== undefined || did !== "" || did === null){
+        sql += " and did = " + database.toSqlValue(did);
+    }
+
+    database.exec(sql, function (err, result) {
+        if(err) {
+            logging.error(err.message);
+            res.send({status:'fail', errMessage: err.message});
+        } else if(result) {
+            res.send({status:'ok', defectInSnapshot : result});
+        } else {
+            res.send({status:'fail', errMessage: 'Unknown Error'});
+        }
+    });
+};
+
 
 
 exports.getOccurencesByFileName = function(req, res) {

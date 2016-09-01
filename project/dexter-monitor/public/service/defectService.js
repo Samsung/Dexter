@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 Samsung Electronics, Inc.,
+ * Copyright (c) 2016 Samsung Electronics, Inc.,
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,7 +35,7 @@ monitorApp.service('DefectService', function($http, $log, $q) {
         }
 
         return $http.get('/api/v2/defect/min-year')
-            .then(function (res) {
+            .then((res) => {
                 if (!isHttpResultOK(res)) {
                     $log.error('Failed to load min year');
                     return -1;
@@ -44,7 +44,7 @@ monitorApp.service('DefectService', function($http, $log, $q) {
                 minYear = res.data.value;
                 return minYear;
             })
-            .catch(function (err) {
+            .catch((err) => {
                 $log.error(err);
                 return -1;
             });
@@ -56,7 +56,7 @@ monitorApp.service('DefectService', function($http, $log, $q) {
         }
 
         return $http.get('/api/v2/defect/max-year')
-            .then(function (res) {
+            .then((res) => {
                 if (!isHttpResultOK(res)) {
                     $log.error('Failed to load max year');
                     return new Date().getFullYear();
@@ -65,7 +65,7 @@ monitorApp.service('DefectService', function($http, $log, $q) {
                 maxYear = res.data.value;
                 return maxYear;
             })
-            .catch(function (err) {
+            .catch((err) => {
                 $log.error(err);
                 return new Date().getFullYear();
             });
@@ -73,7 +73,7 @@ monitorApp.service('DefectService', function($http, $log, $q) {
 
     this.getMaxWeek = function(year) {
         return $http.get('/api/v2/defect/max-week/' + year)
-            .then(function (res) {
+            .then((res) => {
                 if (!isHttpResultOK(res)) {
                     $log.error('Failed to load max week');
                     return getMaxWeekOfYear(year);
@@ -81,7 +81,7 @@ monitorApp.service('DefectService', function($http, $log, $q) {
 
                 return res.data.value;
             })
-            .catch(function (err) {
+            .catch((err) => {
                 $log.error(err);
                 return getMaxWeekOfYear(year);
             });

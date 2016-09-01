@@ -37,10 +37,11 @@ describe('defectApp ', function(){
         });
     }));
 
-    it('test run', function(){
+    /*it('test run', function(){
         var testVar = 'abc';
+        console.log("EEEEEEEEEEEEEEE")
         assert.equal(testVar, 'abc');
 
         scope.checkLogin('admin');
-    });
+    });*/
 });

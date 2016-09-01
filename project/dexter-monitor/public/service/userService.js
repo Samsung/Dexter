@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015 Samsung Electronics, Inc.,
+ * Copyright (c) 2016 Samsung Electronics, Inc.,
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,60 +27,54 @@
 
 monitorApp.service('UserService', function($http, $log, $q) {
 
-    this.getUserListByProject = function(projectName) {
-        if (!projectName)
-            return $q.reject('Project name is null');
+    this.getExtraInfoByUserId = function(userId) {
+        if (!userId || userId.length == 0)
+            return $q.reject('User ID is invalid');
 
-        return $http.get('/api/v2/user/project/' + projectName)
-            .then((res) => {
-                if (!isHttpResultOK(res)) {
-                    $log.error('Failed to get user list');
-                    return;
-                }
-
-                return res.data.rows;
-            })
-            .catch((err) => {
-                $log.error(err);
-                return null;
-            });
-    };
-
-    this.getUserListByGroup = function(groupName) {
-        if (!groupName)
-            return $q.reject('Group name is null');
-
-        return $http.get('/api/v2/user/group/' + groupName)
-            .then((res) => {
-                if (!isHttpResultOK(res)) {
-                    $log.error('Failed to get user list');
-                    return;
-                }
-
-                return res.data.rows;
-            })
-            .catch((err) => {
-                $log.error(err);
-                return null;
-            });
-    };
-
-    this.getExtraInfoByUserIdList = function(userIdList) {
-        if (!userIdList || userIdList.length == 0)
-            return $q.reject('User list is empty');
-
-        return $http.get('/api/v2/user/extra-info/' + userIdList)
+        return $http.get('/api/v2/user/extra-info/' + userId)
             .then((res) => {
                 if (!isHttpResultOK(res)) {
                     $log.error('Failed to load extra user info');
                     return null;
                 }
 
-                return res.data.rows;
+                return res.data.rows[0];
             })
             .catch((err) => {
                 $log.error(err);
                 return null;
+            });
+    };
+
+    this.getUserList = function() {
+        return $http.get('/api/v2/user')
+            .then((res) => {
+                if (!isHttpResultOK(res)) {
+                    $log.error('Failed to get user list');
+                    return [];
+                }
+
+                return res.data.rows;
+            })
+            .catch((err) => {
+                $log.error(err);
+                return [];
+            });
+    };
+
+    this.getUserStatus = function() {
+        return $http.get('/api/v2/user-status')
+            .then((res) => {
+                if (!isHttpResultOK(res)) {
+                    $log.error('Failed to get user status list');
+                    return [];
+                }
+
+                return res.data.rows;
+            })
+            .catch((err) => {
+                $log.error(err);
+                return [];
             });
     };
 });

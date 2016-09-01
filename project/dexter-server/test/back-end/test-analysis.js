@@ -27,6 +27,7 @@ var assert = require("assert");
 var should = require('should');
 var sinon = require('sinon');
 var database = require("../../util/database");
+var Q = require('q');
 var logging = require('../../util/logging');
 var account = require('../../routes/account');
 var fs = require('fs');
@@ -68,11 +69,15 @@ describe('Test analysis.js', function() {
 
     afterEach(function(){
 		res.send.restore();
-		database.exec.restore();
+		//database.exec.restore();
 		logging.error.restore();
     });
 
 	describe('For add()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
+
 		it('Should sccess in normal case', function (done) {
 			sinon.stub(logging, 'error');
 			sinon.stub(database, 'exec', function (sql, callback) {
@@ -117,8 +122,7 @@ describe('Test analysis.js', function() {
 			});
 			
 			var spyDBInsert = database.exec.withArgs(sinon.match('INSERT INTO Defect'));
-			var spyDBUpdate = database.exec.withArgs(
-				sinon.match('UPDATE Defect SET'));
+			var spyDBUpdate = database.exec.withArgs(sinon.match('UPDATE Defect SET'));
 			
 			req = {body:{result: defectTwoData}, currentUserId:'testId'};
 
@@ -203,6 +207,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For addSnapshotSourceCode()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 			
 		it('Should sccess when snapshotId is valid', function (done) {
 			sinon.stub(logging, 'error');
@@ -256,6 +263,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For getSnapshotSourceCode()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should return a source code in normal case', function (done) {
 			var resultCode = {sourceCode:'testResultCode'};
 			sinon.stub(logging, 'error');
@@ -292,6 +302,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For checkSnapshotSourceCode()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should check the source code in normal case', function (done) {
 			sinon.stub(logging, 'error');
 			sinon.stub(database, 'exec', function (sql, callback) {
@@ -327,6 +340,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For getAllFalseAlarm()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should return all false alarms in normal case', function (done) {
 			var falseAlarms = [{fid:1, toolName:'test'}, {fid:2, toolName:'test2'}];
 			sinon.stub(logging, 'error');
@@ -346,6 +362,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For getAllFalseAlarmList()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should return all false alarm list in normal case', function (done) {
 			var falseAlarmList = {languageList:['testLang', 'testLang2'],
 								  toolNameList:['testTool', 'testTool2']};
@@ -366,6 +385,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For addFalseAlarm()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should success when defect is valid', function (done) {
 			sinon.stub(logging, 'error');
 			sinon.stub(database, 'exec', function (sql, callback) {
@@ -434,6 +456,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For removeFalseAlarm()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should success when defect is valid', function (done) {
 			sinon.stub(logging, 'error');
 			sinon.stub(database, 'exec', function (sql, callback) {
@@ -484,6 +509,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For removeFileTree()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should success in normal case', function (done) {
 			sinon.stub(logging, 'error');
 			sinon.stub(database, 'exec', function (sql, callback) {
@@ -532,6 +560,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For getGlobalDid()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should success in normal case', function (done) {
 			sinon.stub(logging, 'error');
 			sinon.stub(database, 'exec', function (sql, callback) {
@@ -599,6 +630,10 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For deleteDefect()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
+
 		// TODO check below test
 		//it('Should success in normal case', function (done) {
 		//	sinon.stub(logging, 'error');
@@ -635,6 +670,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For changeDefectStatus()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should success in normal case', function (done) {
 			sinon.stub(logging, 'error');
 			sinon.stub(database, 'exec', function (sql, callback) {
@@ -685,6 +723,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For getModuleAndFileName()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should success in normal case', function (done) {
 			sinon.stub(logging, 'error');
 			sinon.stub(database, 'exec', function (sql, callback) {
@@ -703,6 +744,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For changeDefectToDismiss()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		// TODO check below test
 		//it('Should success in normal case', function (done) {
 		//	sinon.stub(logging, 'error');
@@ -774,6 +818,9 @@ describe('Test analysis.js', function() {
     //
 	//});
 	describe('For changeDefectToFix()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		//it('Should success in normal case', function (done) {
 		//	sinon.stub(logging, 'error');
 		//	var testResult = ['test'];
@@ -808,6 +855,9 @@ describe('Test analysis.js', function() {
 	});
 	
 	describe('For getProjectDefectStatus()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should success in normal case', function (done) {
 			sinon.stub(logging, 'error');
 			sinon.stub(database, 'exec', function (sql, callback) {
@@ -826,6 +876,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For getModuleDefectStatus()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should success in normal case', function (done) {
 			sinon.stub(logging, 'error');
 			sinon.stub(database, 'exec', function (sql, callback) {
@@ -844,6 +897,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For getFileDefectStatus()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should success in normal case', function (done) {
 			sinon.stub(logging, 'error');
 			sinon.stub(database, 'exec', function (sql, callback) {
@@ -862,6 +918,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For getDefectsByModuleAndFile()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should success in normal case', function (done) {
 			sinon.stub(logging, 'error');
 			sinon.stub(database, 'exec', function (sql, callback) {
@@ -882,6 +941,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For getDefectCount()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should success in normal case', function (done) {
 			sinon.stub(logging, 'error');
 			var testResult = {defectCount:1};
@@ -901,6 +963,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For getOccurencesByDid()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should success in normal case', function (done) {
 			sinon.stub(logging, 'error');
 			var testResult = {oid:2};
@@ -936,6 +1001,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For getOccurencesByFileName()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should success in normal case', function (done) {
 			sinon.stub(logging, 'error');
 			var testResult = {oid:2};
@@ -986,6 +1054,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For getAllSnapshot()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should success in normal case', function (done) {
 			sinon.stub(logging, 'error');
 			var testResult = {id:'testId'};
@@ -1006,6 +1077,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For getDefectListInSnapshot()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should success in normal case', function (done) {
 			sinon.stub(logging, 'error');
 			var testResult = {did:'testDid'};
@@ -1042,6 +1116,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For getCodeMetrics()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should success in normal case', function (done) {
 			sinon.stub(logging, 'error');
 			var testResult = {id:'testId'};
@@ -1078,6 +1155,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For getCodeMetricsAndDefects()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should succuss in normal case', function (done) {
 			sinon.stub(logging, 'error');
 			var testResult = {loc:123};
@@ -1097,6 +1177,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For getCodeMetricsAndDefectsLimit()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should success in normal case', function (done) {
 			sinon.stub(logging, 'error');
 			var testResult = {sloc:123};
@@ -1133,6 +1216,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For getCheckerAndDefects()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should succuss in normal case', function (done) {
 			sinon.stub(logging, 'error');
 			var testResult = {modulePath:'testModule'};
@@ -1152,6 +1238,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For getDevelopers()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should succuss in normal case', function (done) {
 			sinon.stub(logging, 'error');
 			var testResult = {modulePath:'testModule'};
@@ -1171,6 +1260,9 @@ describe('Test analysis.js', function() {
 	});
 
 	describe('For getFalseAlarmVersion()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
 		it('Should succuss always', function (done) {
 			sinon.stub(logging, 'error');
 			sinon.stub(database, 'exec', function (sql, callback) {
@@ -1188,4 +1280,115 @@ describe('Test analysis.js', function() {
 			done();
 		});
 	});
+
+	describe('For getDefectsByModuleAndFileV2()', function() {
+		afterEach(function() {
+			database.exec.restore();
+		});
+		it('Should success in normal case', function (done) {
+			sinon.stub(logging, 'error');
+			sinon.stub(database, 'exec', function (sql, callback) {
+				callback(null, ['test']);
+			});
+
+			req = {query:{did:1, modulePath:'testModule', fileName:'testFile', statusCode:'NEW',
+				serverityCode:'CRI', checkerCode:'test', modifierNo:1, currentPage:1,
+				pageSize:1, message:'test'}};
+
+			analysis.getDefectsByModuleAndFileV2(req, res);
+
+			assert.equal(result, 200);
+			res.send.calledOnce.should.be.true;
+			logging.error.called.should.be.false;
+			done();
+		});
+	});
+
+	describe('For getProjectDefectStatusV2()', function() {
+		afterEach(function() {
+			database.execV2.restore();
+		});
+
+		it('Should success in normal case', function(done) {
+			sinon.stub(logging, 'error');
+
+			var queryResult = ['test'];
+			sinon.stub(database, 'execV2', function(sql) {
+				return Q.resolve(queryResult);
+			});
+
+			req = {query:{
+				statusCode:'NEW'}
+			};
+
+			analysis.getProjectDefectStatusV2(req, res)
+				.done(function(){
+					assert.equal(result.status, 'ok');
+					assert.equal(res.send.calledOnce, true);
+					assert.equal(logging.error.called,false);
+					done();
+				});
+		});
+	});
+
+	describe('For getDefectsByModuleAndFileForDid()', function (){
+		afterEach(function(){
+			database.exec.restore();
+		});
+
+		it('Should success in just one selected defect', function(done){
+			sinon.stub(logging,'error');
+			sinon.stub(database, 'exec', function (sql, callback) {
+				callback(null, []);
+			});
+
+			req = {
+				params : {
+					did : 1444
+				}
+			};
+
+			analysis.getDefectsByModuleAndFileForDid(req, res);
+
+			const query = database.exec.args[0][0];
+			const paramDid = /1444/;
+			assert.equal(result.status, 'ok');
+			assert.equal(paramDid.test(query), true);
+
+			done();
+		});
+	});
+
+	describe('For getDefectListInSnapshotForDid()', function (){
+		afterEach(function(){
+			database.exec.restore();
+		});
+
+		it('Should success in just one selected defect in Snapshot', function(done){
+			sinon.stub(logging,'error');
+			sinon.stub(database, 'exec', function (sql, callback) {
+				callback(null, []);
+			});
+
+			var snapshotId = 15000000;
+			var did = 1444;
+			req = {
+				params : {
+					snapshotId : snapshotId,
+					did : did
+				}
+			};
+
+			analysis.getDefectListInSnapshotForDid(req, res);
+
+			const query = database.exec.args[0][0];
+			const paramDid = /1444/;
+			const paramSnapshotId = /15000000/;
+			assert.equal(result.status, 'ok');
+			assert.equal((paramDid.test(query) && paramSnapshotId.test(query)), true);
+
+			done();
+		});
+	});
+
 });

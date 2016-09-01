@@ -191,7 +191,7 @@ public class MonitorForDexterConfigFile extends Job implements IDexterHomeListen
         final String dirName = dir.getName().toLowerCase();
 
         if ("source".equals(dirName) || "src".equals(dirName)) {
-            final String sourceDir = dir.getPath().replace("\\", "/").replace(DexterUtil.PATH_SEPARATOR, "/")
+            final String sourceDir = dir.getPath().replace("\\", "/").replace(DexterUtil.FILE_SEPARATOR, "/")
                     .replace("//", "/");
             if (!sourceBaseDirList.contains(sourceDir)) {
                 sourceBaseDirList.add(sourceDir);

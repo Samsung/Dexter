@@ -136,11 +136,11 @@ public class DexterCLIOption implements IDexterCLIOption {
             setTargetFiles(cmd.getOptionValue("t").split(";"));
         }
 
-        String filename = "." + DexterUtil.PATH_SEPARATOR + "dexter-result";
+        String filename = "." + DexterUtil.FILE_SEPARATOR + "dexter-result";
         if (cmd.hasOption("n")) {
             filename = cmd.getOptionValue("n");
-            if (Strings.isNullOrEmpty(filename) == false && filename.contains(DexterUtil.PATH_SEPARATOR) == false) {
-                filename = "." + DexterUtil.PATH_SEPARATOR + filename;
+            if (Strings.isNullOrEmpty(filename) == false && filename.contains(DexterUtil.FILE_SEPARATOR) == false) {
+                filename = "." + DexterUtil.FILE_SEPARATOR + filename;
             }
         }
 

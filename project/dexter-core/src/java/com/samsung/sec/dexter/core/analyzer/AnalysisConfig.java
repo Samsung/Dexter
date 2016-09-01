@@ -131,7 +131,7 @@ public class AnalysisConfig extends BaseAnalysisEntity{
     		return;
     	}
     	
-    	libFilePath = libFilePath.replace("\\", "/").replace(DexterUtil.PATH_SEPARATOR, "/");
+    	libFilePath = libFilePath.replace("\\", "/").replace(DexterUtil.FILE_SEPARATOR, "/");
     	if(libFileList.contains(libFilePath)){
     		logger.warn("duplicated libFilePath : " + libFilePath);
     		return;
@@ -247,7 +247,7 @@ public class AnalysisConfig extends BaseAnalysisEntity{
 			return;
 		}
 		
-		dir = dir.replace("\\", "/").replace(DexterUtil.PATH_SEPARATOR, "/");
+		dir = dir.replace("\\", "/").replace(DexterUtil.FILE_SEPARATOR, "/");
 		
 		if(dir.endsWith("\\") || dir.endsWith("/")){
 			dir = dir.substring(0, dir.length() -1);
@@ -285,9 +285,9 @@ public class AnalysisConfig extends BaseAnalysisEntity{
     		return;
     	}
     	
-    	dir = dir.replace("\\", "/").replace(DexterUtil.PATH_SEPARATOR, "/");
+    	dir = dir.replace("\\", "/").replace(DexterUtil.FILE_SEPARATOR, "/");
     	
-    	if(dir.endsWith("\\") || dir.endsWith("/") || dir.endsWith(DexterUtil.PATH_SEPARATOR)){
+    	if(dir.endsWith("\\") || dir.endsWith("/") || dir.endsWith(DexterUtil.FILE_SEPARATOR)){
     		dir = dir.substring(0, dir.length() -1);
 		}
     	
@@ -306,9 +306,9 @@ public class AnalysisConfig extends BaseAnalysisEntity{
     		return;
     	}
     	
-    	dir = dir.replace("\\", "/").replace(DexterUtil.PATH_SEPARATOR, "/");
+    	dir = dir.replace("\\", "/").replace(DexterUtil.FILE_SEPARATOR, "/");
     	
-    	if(dir.endsWith("\\") || dir.endsWith("/") || dir.endsWith(DexterUtil.PATH_SEPARATOR)){
+    	if(dir.endsWith("\\") || dir.endsWith("/") || dir.endsWith(DexterUtil.FILE_SEPARATOR)){
 			dir = dir.substring(0, dir.length() -1);
 		}
     	
@@ -328,9 +328,9 @@ public class AnalysisConfig extends BaseAnalysisEntity{
 	    	return;
 	    }
 	    
-	    dir = dir.replace("\\", "/").replace(DexterUtil.PATH_SEPARATOR, "/");
+	    dir = dir.replace("\\", "/").replace(DexterUtil.FILE_SEPARATOR, "/");
 	    
-    	if(dir.endsWith("\\") || dir.endsWith("/") || dir.endsWith(DexterUtil.PATH_SEPARATOR)){
+    	if(dir.endsWith("\\") || dir.endsWith("/") || dir.endsWith(DexterUtil.FILE_SEPARATOR)){
 			this.libDirList.add(dir.substring(0, dir.length() -1));
 		} else {
 			this.libDirList.add(dir);
@@ -350,7 +350,7 @@ public class AnalysisConfig extends BaseAnalysisEntity{
     		return;
     	}
     	
-    	file = file.replace("\\", "/").replace(DexterUtil.PATH_SEPARATOR, "/");
+    	file = file.replace("\\", "/").replace(DexterUtil.FILE_SEPARATOR, "/");
     	
     	libFileList.add(file);
     }
@@ -431,7 +431,7 @@ public class AnalysisConfig extends BaseAnalysisEntity{
     		return;
     	}
     	
-    	String filePath = projectBaseFileFullPath.replace("\\", "/").replace(DexterUtil.PATH_SEPARATOR, "/");
+    	String filePath = projectBaseFileFullPath.replace("\\", "/").replace(DexterUtil.FILE_SEPARATOR, "/");
     	
     	for(String srcDir : this.sourceBaseDirList) {
     		if(filePath.startsWith(srcDir)){

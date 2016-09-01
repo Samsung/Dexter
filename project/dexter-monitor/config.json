@@ -4,6 +4,7 @@
     "description":"This program will monitor and control servers",
     "serverStatusCheckInterval":5,
     "serverDetailedStatusCheckInterval":5,
+    "snapshotDayOfWeek":2,
     "email":{
         "type":"api",
         "apiUrl":"http://dexter_email:5003/api/v1/email",

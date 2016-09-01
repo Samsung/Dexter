@@ -33,59 +33,24 @@ var monitorApp = angular.module("dexterMonitorApp", ['ngRoute', 'ngAnimate', 'ng
 monitorApp.config(function($routeProvider){
     $routeProvider
         .when("/", {
-            controller: "CurrentCtrl",
-            templateUrl: "view/currentView.html",
-            controllerAs: "current"
+            controller: "OverviewCtrl",
+            templateUrl: "view/overviewView.html"
         })
-        .when("/change", {
-            controller: "ChangeCtrl",
-            templateUrl: "view/changeView.html",
-            controllerAs: "change"
+        .when("/current-project/", {
+            controller: "CurrentProjectCtrl",
+            templateUrl: "view/currentProjectCtrl.html"
         })
-        .when("/serverstatus/", {
-            controller: "ServerStatusCtrl",
-            templateUrl: "view/serverStatusView.html",
-            controllerAs: "main"
+        .when("/current-user/", {
+            controller: "CurrentUserCtrl",
+            templateUrl: "view/currentUserView.html"
         })
-        .when("/user/", {
-            controller: "UserCtrl",
-            templateUrl: "view/userView.html",
-            controllerAs: "user"
+        .when("/weekly-group/", {
+            controller: "WeeklyGroupCtrl",
+            templateUrl: "view/weeklyGroupView.html"
         })
-        .when("/user/project/", {
-            controller: "UserByProjectCtrl",
-            templateUrl: "view/userByProjectView.html",
-            controllerAs: "user"
-        })
-        .when("/user/group/", {
-            controller: "UserByGroupCtrl",
-            templateUrl: "view/userByGroupView.html",
-            controllerAs: "user"
-        })
-        .when("/user/lab/", {
-            controller: "",
-            templateUrl: "view/userByLabView.html",
-            controllerAs: ""
-        })
-        .when("/defect/", {
-            controller: "DefectCtrl",
-            templateUrl: "view/defectView.html",
-            controllerAs: "defect"
-        })
-        .when("/defect/project/", {
-            controller: "DefectByProjectCtrl",
-            templateUrl: "view/defectByProjectView.html",
-            controllerAs: "defect"
-        })
-        .when("/defect/group/", {
-            controller: "DefectByGroupCtrl",
-            templateUrl: "view/defectByGroupView.html",
-            controllerAs: "defect"
-        })
-        .when("/defect/lab/", {
-            controller: "",
-            templateUrl: "view/defectByLabView.html",
-            controllerAs: ""
+        .when("/weekly-project/", {
+            controller: "WeeklyProjectCtrl",
+            templateUrl: "view/weeklyProjectView.html"
         });
 
     $routeProvider.otherwise({"redirectTo": "/"});

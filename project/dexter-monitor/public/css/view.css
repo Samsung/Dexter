@@ -11,44 +11,59 @@ body {
   float: left;
   padding-top: 30px;
   padding-left: 200px;
+  padding-right: 50px;
+  width: 100%;
 }
 
-.grid-defect-all {
-  width: 1207px;
+.grid-weekly-project {
+  width: 100%;
+  height: 650px;
+  margin-bottom: 30px;
+}
+
+.grid-weekly-group {
+  width: 100%;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.grid-current-user {
+  width: 100%;
   height: 650px;
 }
 
-.grid-defect-group {
-  width: 1010px;
+.grid-current-project {
+  width: 100%;
   height: 650px;
 }
 
-.grid-defect-project {
-  width: 920px;
-  height: 650px;
+.grid-overview-summary {
+  width: 100%;
+  height: 62px;
 }
 
-.grid-user-project {
-  width: 920px;
-  height: 650px;
+.grid-overview-installation-status {
+  width: 100%;
+  height: 350px;
 }
 
-.grid-user-group {
-  width: 920px;
-  height: 650px;
-}
-
-.grid-user-all {
-  width: 1090px;
-  height: 650px;
-}
-
-.grid-user-id {
-  text-align: center;
+.grid-overview-defect-status {
+  width: 100%;
+  height: 350px;
 }
 
 .grid-align {
   text-align: center;
+}
+
+.server-status-active {
+  color: green;
+  font-weight: bold;
+}
+
+.server-status-inactive {
+  color: red;
+  font-weight: bold;
 }
 
 .year-change {
@@ -56,35 +71,10 @@ body {
   max-width: 80px;
 }
 
-.project-change {
-  min-width: 170px;
-  max-width: 170px;
-}
-
-.group-change {
-  min-width: 170px;
-  max-width: 170px;
-}
-
 td.inner {
   padding-right:10px;
 }
 
-/*
- * Placeholder dashboard ideas
- */
-
-.placeholders {
-  margin-bottom: 30px;
-  text-align: center;
-}
-.placeholders h4 {
-  margin-bottom: 0;
-}
-.placeholder {
+.chart-weekly-project {
   margin-bottom: 20px;
-}
-.placeholder img {
-  display: inline-block;
-  border-radius: 50%;
 }

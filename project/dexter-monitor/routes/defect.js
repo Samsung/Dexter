@@ -26,6 +26,12 @@
 "use strict";
 
 const mysql = require("mysql");
+const moment = require('moment');
+const Promise = require('bluebird');
+const rp = require('request-promise');
+const _ = require("lodash");
+const project = require('./project');
+const server = require('./server');
 const database = require("../util/database");
 const route = require('./route');
 const log = require('../util/logging');
@@ -33,30 +39,16 @@ const log = require('../util/logging');
 exports.getAll = function(req, res) {
     const sql =
         "SELECT year, week, groupName, projectName, language, allDefectCount,   "+
-        "       allNew, allFix, allExc, criNew, criFix, criExc,                 "+
-        "       majNew, majFix, majExc, minNew, minFix, minExc,                 "+
-        "       crcNew, crcFix, crcExc, etcNew, etcFix, etcExc                  "+
+        "       allNew, allFix, allDis, criNew, criFix, criDis,                 "+
+        "       majNew, majFix, majDis, minNew, minFix, minDis,                 "+
+        "       crcNew, crcFix, crcDis, etcNew, etcFix, etcDis                  "+
         "FROM WeeklyStatus                                                      "+
         "LEFT JOIN ProjectInfo                                                  "+
         "ON WeeklyStatus.pid = ProjectInfo.pid                                  "+
         "ORDER BY year DESC, week DESC,                                         "+
         "         groupName ASC, projectName ASC                                ";
 
-    return route.executeSqlAndSendResponseRows(sql, res);
-};
-
-exports.getByProject = function(req, res) {
-    const projectName = mysql.escape(req.params.projectName);
-    const sql =
-        "SELECT year, week, accountCount,                   "+
-        "       allDefectCount, allFix, allExc              "+
-        "FROM WeeklyStatus                                  "+
-        "LEFT JOIN ProjectInfo                              "+
-        "ON WeeklyStatus.pid = ProjectInfo.pid              "+
-        "WHERE ProjectInfo.projectName = " + projectName     +
-        "ORDER BY year DESC, week DESC                      ";
-
-    return route.executeSqlAndSendResponseRows(sql, res);
+    route.executeSqlAndSendResponseRows(sql, res);
 };
 
 exports.getByGroup = function(req, res) {
@@ -65,11 +57,11 @@ exports.getByGroup = function(req, res) {
 
     let sql =
         "SELECT year, week, groupName,                                  " +
-        "       SUM(accountCount) AS accountCount,                      " +
+        "       SUM(userCount) AS userCount,                            " +
         "       COUNT(projectName) AS projectCount,                     " +
         "       SUM(allDefectCount) AS allDefectCount,                  " +
         "       SUM(allFix) AS allFix,                                  " +
-        "       SUM(allExc) AS allExc                                   " +
+        "       SUM(allDis) AS allDis                                   " +
         "FROM WeeklyStatus                                              " +
         "LEFT JOIN ProjectInfo                                          " +
         "ON WeeklyStatus.pid = ProjectInfo.pid                          ";
@@ -82,21 +74,16 @@ exports.getByGroup = function(req, res) {
 
     sql += "GROUP BY groupName ORDER BY allDefectCount DESC, groupName ASC";
 
-    return route.executeSqlAndSendResponseRows(sql, res);
-};
-
-exports.getByLab = function(req, res) {
-    const year = mysql.escape(req.params.year);
-    const week = mysql.escape(req.params.week);
+    route.executeSqlAndSendResponseRows(sql, res);
 };
 
 exports.getMinYear = function(req, res) {
     const sql = "SELECT year FROM WeeklyStatus ORDER BY year ASC LIMIT 1";
-    return database.exec(sql)
-        .then(function(rows) {
+    database.exec(sql)
+        .then((rows) => {
             res.send({status:'ok', value: rows[0].year});
         })
-        .catch(function(err) {
+        .catch((err) => {
             log.error(err);
             res.send({status:"fail", errorMessage: err.message});
         });
@@ -104,11 +91,11 @@ exports.getMinYear = function(req, res) {
 
 exports.getMaxYear = function(req, res) {
     const sql = "SELECT year FROM WeeklyStatus ORDER BY year DESC LIMIT 1";
-    return database.exec(sql)
-        .then(function(rows) {
+    database.exec(sql)
+        .then((rows) => {
             res.send({status:'ok', value: rows[0].year});
         })
-        .catch(function(err) {
+        .catch((err) => {
             log.error(err);
             res.send({status:"fail", errorMessage: err.message});
         });
@@ -117,12 +104,98 @@ exports.getMaxYear = function(req, res) {
 exports.getMaxWeek = function(req, res) {
     const year = mysql.escape(req.params.year);
     const sql = "SELECT week FROM WeeklyStatus WHERE year = " + year + " ORDER BY week DESC LIMIT 1";
-    return database.exec(sql)
-        .then(function(rows) {
+    database.exec(sql)
+        .then((rows) => {
             res.send({status:'ok', value: rows[0].week});
         })
-        .catch(function(err) {
+        .catch((err) => {
             log.error(err);
             res.send({status:"fail", errorMessage: err.message});
         });
 };
+
+exports.getDefectCountByProjectName = function(req, res) {
+    const projectServer = _.find(server.getServerListInternal(), {'projectName': req.params.projectName});
+    const defectCountUrl = `http://${projectServer.hostIP}:${projectServer.portNumber}/api/v2/defect-count`;
+    rp(defectCountUrl)
+        .then((data) => {
+            const parsedData = JSON.parse('' + data);
+            res.send({status:'ok', values: parsedData.values});
+        })
+        .catch((err) => {
+            log.error(`Failed to get defect count for pid ${projectServer.pid} : ${err}`);
+            res.send({status:"fail", errorMessage: err.message});
+        });
+};
+
+exports.saveSnapshot = function() {
+    const activeServerList = _.filter(server.getServerListInternal(), {'active': true});
+
+    Promise.map(activeServerList, (server) => {
+        const defectCountUrl = `http://${server.hostIP}:${server.portNumber}/api/v2/detailed-defect-count`;
+        const userCountUrl = `http://${server.hostIP}:${server.portNumber}/api/v2/user-count`;
+        let promises = [];
+        let defectValues = {};
+        let userCount = 0;
+
+        promises.push(new Promise((resolve, reject) => {
+            rp(defectCountUrl)
+                .then((data) => {
+                    defectValues = JSON.parse('' + data).values;
+                    resolve();
+                })
+                .catch((err) => {
+                    log.error(`Failed to get detailed defect count for pid ${server.pid} : ${err}`);
+                    reject();
+                });
+        }));
+        promises.push(new Promise((resolve, reject) => {
+            rp(userCountUrl)
+                .then((data) => {
+                    userCount = JSON.parse('' + data).value;
+                    resolve();
+                })
+                .catch((err) => {
+                    log.error(`Failed to get user count for pid ${server.pid} : ${err}`);
+                    reject();
+                });
+        }));
+
+        Promise.all(promises)
+            .then(() => {
+                insertSnapshotToDatabase(server.pid, defectValues, userCount);
+            })
+            .catch((err) => {
+                log.error(err);
+            });
+    }).catch((err) => {
+        log.error(err);
+    });
+};
+
+function insertSnapshotToDatabase(pid, defectValues, userCount) {
+    const year = moment().get('year');
+    const weekOfYear = moment().isoWeek();
+    const dayOfWeek = moment().isoWeekday();
+    const sql =
+        `INSERT INTO WeeklyStatus(pid, year, week, day, userCount, allDefectCount,
+                                    allNew, allFix, allDis, criNew, criFix, criDis,
+                                    majNew, majFix, majDis, minNew, minFix, minDis,
+                                    crcNew, crcFix, crcDis, etcNew, etcFix, etcDis)
+                     VALUES (${pid}, ${year}, ${weekOfYear}, ${dayOfWeek}, ${userCount}, ${defectValues.allDefectCount},
+                            ${defectValues.allNew}, ${defectValues.allFix}, ${defectValues.allDis},
+                            ${defectValues.criNew}, ${defectValues.criFix}, ${defectValues.criDis},
+                            ${defectValues.majNew}, ${defectValues.majFix}, ${defectValues.majDis},
+                            ${defectValues.minNew}, ${defectValues.minFix}, ${defectValues.minDis},
+                            ${defectValues.crcNew}, ${defectValues.crcFix}, ${defectValues.crcDis},
+                            ${defectValues.etcNew}, ${defectValues.etcFix}, ${defectValues.etcDis})`;
+
+    database.exec(sql)
+        .then(() => {
+            log.info(`Inserted snapshot for pid ${pid} : # of invalidStatusCode: ${defectValues.invalidStatusCode}, # of invalidSeverityCode: ${defectValues.invalidSeverityCode}`);
+
+        })
+        .catch((err) => {
+            log.error(`Failed to insert snapshot for pid ${pid} : ${err}`);
+        });
+}

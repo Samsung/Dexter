@@ -66,7 +66,7 @@ import org.apache.log4j.Logger;
 
 public class DexterUtil {
     public final static String LINE_SEPARATOR = System.getProperty("line.separator");
-    public final static String PATH_SEPARATOR = getPathSeparator();
+    public final static String FILE_SEPARATOR = System.getProperty("file.separator");
     private final static Logger logger = Logger.getLogger(DexterUtil.class);
 
     public static enum OS {
@@ -198,6 +198,7 @@ public class DexterUtil {
         checkFileExistence(filePath, file);
 
         final StringBuilder contents = new StringBuilder(10000);
+
         try {
             for (String content : Files.readLines(file, Charsets.UTF_8)) {
                 contents.append(content).append(DexterUtil.LINE_SEPARATOR);
@@ -371,7 +372,7 @@ public class DexterUtil {
         while (entry != null) {
             String filePath = destDirectory + File.separator + entry.getName();
             filePath = filePath.replace("\\", "/");
-            filePath = filePath.replace(DexterUtil.PATH_SEPARATOR, "/");
+            filePath = filePath.replace(DexterUtil.FILE_SEPARATOR, "/");
 
             if (Strings.isNullOrEmpty(filePath)) {
                 continue;
@@ -414,6 +415,7 @@ public class DexterUtil {
      */
     private static void extractFile(final ZipInputStream zipIn, final String filePath) {
         BufferedOutputStream bos = null;
+
         try {
             bos = new BufferedOutputStream(new FileOutputStream(filePath));
             byte[] bytesIn = new byte[BUFFER_SIZE];
@@ -701,7 +703,7 @@ public class DexterUtil {
         if (Strings.isNullOrEmpty(path)) {
             return "";
         }
-        return path.replace("\\", "/").replace(DexterUtil.PATH_SEPARATOR, "/").replace("//", "/");
+        return path.replace("\\", "/").replace(DexterUtil.FILE_SEPARATOR, "/").replace("//", "/");
     }
 
     /**
