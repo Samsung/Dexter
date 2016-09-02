@@ -189,7 +189,7 @@ public class DexterConfigFile implements IDexterConfigFile {
         if (Strings.isNullOrEmpty(this.snapshotId)) {
             return System.currentTimeMillis();
         } else {
-            return Integer.parseInt(this.snapshotId);
+            return Long.parseLong(this.snapshotId);
         }
     }
 
@@ -406,14 +406,6 @@ public class DexterConfigFile implements IDexterConfigFile {
 
     @Override
     public void setFileNameList(List<String> fileNameList) {
-        for (int i = 0; i < fileNameList.size(); i++) {
-            final String fileName = fileNameList.get(0);
-
-            //            if (DexterConfig.getInstance().isAnalysisAllowedFile(fileName) == false) {
-            //                throw new DexterRuntimeException("not supported file : " + fileName);
-            //            }
-        }
-
         this.fileNameList = fileNameList;
     }
 
@@ -424,10 +416,7 @@ public class DexterConfigFile implements IDexterConfigFile {
 
     @Override
     public void setResultFileFullPath(String resultFileFullPath) {
-        if (Strings.isNullOrEmpty(resultFileFullPath))
-            throw new DexterRuntimeException("there is no result file path");
-
-        this.resultFileFullPath = resultFileFullPath;
+        this.resultFileFullPath = DexterUtil.getStringOrEmptyString(resultFileFullPath);
     }
 
     @Override

@@ -250,6 +250,11 @@ public class DexterAnalyzer implements IDexterHomeListener {
     }
 
     private void loadProjectAnalysisConfiguration() {
+        if (Strings.isNullOrEmpty(DexterConfig.getInstance().getDexterHome())) {
+            LOG.warn("ProjectAnalysisConfiguration will be read later, because dexter home is not set yet");
+            return;
+        }
+
         projectAnalysisConfigurationList = new ArrayList<ProjectAnalysisConfiguration>();
 
         final String cfgFilePath = DexterConfig.getInstance().getDexterHome() + CFG_PARM_JSON_FILE;

@@ -269,6 +269,11 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
      */
     @Override
     public void init(List<IDexterPlugin> pluginList) {
+        if (Strings.isNullOrEmpty(DexterConfig.getInstance().getDexterHome())) {
+            LOG.warn("dexter home is not set yet, so that static analysis plugins can be initialized later.");
+            return;
+        }
+
         IExtension[] extensions = Platform.getExtensionRegistry()
                 .getExtensionPoint(DexterExecutorActivator.PLUGIN_ID, "DexterPlugin").getExtensions();
 
@@ -289,6 +294,8 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 
         if (pluginList.size() == 0) {
             throw new DexterRuntimeException("There are no dexter plug-ins to add");
+        } else {
+            LOG.info("Dexter static analysis plug-ins are initialized.");
         }
     }
 
