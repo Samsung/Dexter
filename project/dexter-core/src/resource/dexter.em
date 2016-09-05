@@ -178,7 +178,10 @@ macro initDexter()
 
 	dexterPath = GetReg(g_dexterConfig.dexterInstallationPathRegKey);
 	if(dexterPath != nil && dexterPath != "dexterPath"){
-		RunCmdLine(dexterPath # "\\dexter.exe", dexterPath, 0);
+		g_dexterDaemon = GetReg("g_dexterDaemon");
+		if(g_dexterDaemon == nil || g_dexterDaemon == "g_dexterDaemon" || g_dexterDaemon == 0){
+			RunCmdLine(dexterPath # "\\dexter.exe", dexterPath, 0);
+		}
 	} else {
 		error("Dexter Initialized failed");
 		Msg("You have to run Dexter Daemon first. If you didn't install, please install it first.");
@@ -236,12 +239,6 @@ macro runDexter(sFile)
 	}
 	saveModifiedFunctionList();
 	createDexterConfFile();
-
-	/* don't use this until connecting cppcheck.dll
-	if(g_waitDexterResult == 1){
-		addDefectBookmarkSync();
-	}
-	*/
 }
 
 
