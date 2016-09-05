@@ -24,7 +24,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * -------------------------------------------------------------------------------------------------------------------
- * Version : 0.10.2
+ * Version : 0.10.4
  * -------------------------------------------------------------------------------------------------------------------
  * Add Key Assignments :
  *   - markDexterDefectToFalseAlarm() : to mark defect status as a false alarm  (async: 3~5 sec)
@@ -65,6 +65,7 @@ macro initDexterGlobalVariables()
 	g_dexterConfig.sourceDirRegKey = "sourceDirRegKey"
 	g_dexterConfig.headerDirRegKey = "headerDirRegKey"
 	g_dexterConfig.dexterHomeRegKey = "dexterHomeRegKey"
+	g_dexterConfig.dexterInstallationPathRegKey = "dexterInstallationPathRegKey"
 	g_dexterConfig.sourceEncodingRegKey = "sourceEncodingRegKey"
 
 	g_dexterRunning = GetReg("g_dexterRunning");
@@ -175,8 +176,11 @@ macro initDexter()
 
 	g_dexterConfig.sourceEncoding = GetReg(g_dexterConfig.sourceEncodingRegKey)
 
-	isInstalled = GetReg("g_dexterDaemon");
-	if(isInstalled == nil || isInstalled == "isInstalled" || isInstalled != 1){
+	dexterPath = GetReg(g_dexterConfig.dexterInstallationPathRegKey);
+	if(dexterPath != nil && dexterPath != "dexterPath"){
+		Msg(dexterPath # "\\dexter.exe");
+		RunCmdLine(dexterPath # "\\dexter.exe", dexterPath, 0);
+	} else {
 		error("Dexter Initialized failed");
 		Msg("You have to run Dexter Daemon first. If you didn't install, please install it first.");
 		stop;
@@ -885,21 +889,6 @@ macro getResultFilePathForCurrentFile()
 	
 	fileName = GetBufName(hFile);
 
-	/* for v1.12
-	eP = strlen(fileName);
-	if(fileName[1] == ":" && eP > 3){
-		bP = 3;
-		filePathFromPrj = strmid(fileName, bP, eP);	
-		return resultFolder # filePathFromPrj;
-	} else if(fileName[0] == "\\" && ep > 1) {
-		bP = 1;
-		filePathFromPrj = strmid(fileName, bP, eP);	
-		return resultFolder # filePathFromPrj;
-	} else {
-		return resultFolder # fileName;
-	}
-	*/
-
 	// for v1.11
 	eP = strlen(fileName);
 	if(hasPrefix(fileName, prjDir) == 0 && eP > 3){
@@ -914,8 +903,6 @@ macro getResultFilePathForCurrentFile()
 		bP = strlen(prjDir);
 		fLength = eP;
 		if(bP < 0 || eP < 0 || bP > fLength || eP > fLength){
-			//Msg("bp:" # bP # " ep:" # eP # " flenght:" # fLength);
-			//Msg("prjDir:" # prjDir # " fileName:" # fileName);
 			if(fileName[1] == ":"){
 				bP = 3;
 				filePathFromPrj = strmid(fileName, bP, eP);	

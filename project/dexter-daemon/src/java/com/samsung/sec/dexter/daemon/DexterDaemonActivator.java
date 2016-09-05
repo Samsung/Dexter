@@ -38,17 +38,22 @@ import com.samsung.sec.dexter.daemon.job.MonitorForPlatzKeywordFile;
 import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseLog;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
+import java.net.URISyntaxException;
 import java.net.UnknownHostException;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Version;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -167,9 +172,37 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
 
     private void initializeSourceInsightEnvironment() {
         if (DexterUtil.getOS() == DexterUtil.OS.WINDOWS) {
+            setDexterDaemonVerionInWindowsRegistry();
+            setDexterInstallationPathInWindowsRegistry();
             setDexterHomeInWindowsRegistry();
             setSourceInsightExeFilePath();
         }
+    }
+
+    private void setDexterDaemonVerionInWindowsRegistry() {
+        final String rootKey = "\"HKEY_CURRENT_USER\\Software\\Source Dynamics\\Source Insight\\3.0\"";
+        final String dexterDeamonVersionKey = "dexterDaemonVersionRegKey";
+
+        Bundle bundle = Platform.getBundle(PLUGIN_ID);
+        Version version = bundle.getVersion();
+
+        DexterUtil.setRegistry(rootKey, dexterDeamonVersionKey, version.toString(),
+                DexterUtil.REG_TYPE.REG_SZ);
+    }
+
+    private void setDexterInstallationPathInWindowsRegistry() {
+        final String rootKey = "\"HKEY_CURRENT_USER\\Software\\Source Dynamics\\Source Insight\\3.0\"";
+        final String dexterInstallationPathKey = "dexterInstallationPathRegKey";
+        File dexterInstallationPath;
+        try {
+            dexterInstallationPath = new File(Platform.getInstallLocation().getURL().toURI().getPath());
+        } catch (URISyntaxException e) {
+            throw new DexterRuntimeException("can not register Dexter Daemon Installation Path into windows registry",
+                    e);
+        }
+
+        DexterUtil.setRegistry(rootKey, dexterInstallationPathKey, dexterInstallationPath.getAbsolutePath(),
+                DexterUtil.REG_TYPE.REG_SZ);
     }
 
     private void setDexterHomeInWindowsRegistry() {
