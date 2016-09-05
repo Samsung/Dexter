@@ -39,14 +39,14 @@ public class EnabledChecker {
     }
 
     public boolean isSameChecker(final String toolName, final String language, String code) {
-        if (this.code.equals(code) == false)
+        if (this.code.equalsIgnoreCase(code.trim()) == false)
             return false;
 
-        if (Strings.isNullOrEmpty(this.toolName) == false && this.toolName.equals(toolName) == false) {
+        if (Strings.isNullOrEmpty(this.toolName) == false && this.toolName.equals(toolName.trim()) == false) {
             return false;
         }
 
-        if (Strings.isNullOrEmpty(language) == false && this.language.equals(language) == false) {
+        if (Strings.isNullOrEmpty(this.language) == false && this.language.equals(language.trim()) == false) {
             return false;
         }
 
