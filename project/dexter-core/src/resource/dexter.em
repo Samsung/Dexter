@@ -178,7 +178,6 @@ macro initDexter()
 
 	dexterPath = GetReg(g_dexterConfig.dexterInstallationPathRegKey);
 	if(dexterPath != nil && dexterPath != "dexterPath"){
-		Msg(dexterPath # "\\dexter.exe");
 		RunCmdLine(dexterPath # "\\dexter.exe", dexterPath, 0);
 	} else {
 		error("Dexter Initialized failed");
