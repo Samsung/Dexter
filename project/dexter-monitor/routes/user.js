@@ -45,7 +45,7 @@ exports.getAll = function(req, res) {
     Promise.map(activeServerList, (server) => {
         promises.push(new Promise((resolve) => {
             const userListUrl = `http://${server.hostIP}:${server.portNumber}/api/v2/user-list`;
-            rp(userListUrl)
+            rp({uri: userListUrl, timeout: 2000})
                 .then((data) => {
                     const rows = JSON.parse('' + data).rows;
                     if (rows) {
@@ -81,7 +81,7 @@ function processReturnedData(data) {
 }
 
 function loadUserInfo(userId, userInfoUrl, userInfoList) {
-    return rp(userInfoUrl + userId)
+    return rp({uri: userInfoUrl + userId, timeout: 2000})
         .then((data) => {
             data = processReturnedData(data);
             if (!data || !validateUserInfoJson(data, userId)) {
@@ -136,7 +136,7 @@ function validateUserInfoJson(data, userid) {
 exports.getUserCountByProjectName = function(req, res) {
     const projectServer = _.find(server.getServerListInternal(), {'projectName': req.params.projectName});
     const userCountUrl = `http://${projectServer.hostIP}:${projectServer.portNumber}/api/v2/user-count`;
-    rp(userCountUrl)
+    rp({uri: userCountUrl, timeout: 2000})
         .then((data) => {
             const parsedData = JSON.parse('' + data);
             res.send({status:'ok', value: parsedData.value});
@@ -167,7 +167,7 @@ function loadUserList() {
     Promise.map(activeServerList, (server) => {
         promises.push(new Promise((resolve) => {
             const userListUrl = `http://${server.hostIP}:${server.portNumber}/api/v2/user-list`;
-            rp(userListUrl)
+            rp({uri: userListUrl, timeout: 2000})
                 .then((data) => {
                     const rows = JSON.parse('' + data).rows;
                     if (rows) {
