@@ -197,7 +197,6 @@ public class DexterConfig {
     //private ScheduledExecutorService scheduler;
 
     private DexterConfig() {
-        createInitialFolderAndFiles();
         LOG.debug("DexterConfig");
     }
 
@@ -293,12 +292,16 @@ public class DexterConfig {
         }
     }
 
-    private void copyFile(final String source, final String target) {
-        File file = new File(target);
-        if (file.exists()) {
+    public void copyDexterMacroFileForSourceInsight(final String toPath) {
+        if (Strings.isNullOrEmpty(toPath)) {
+            LOG.error("can not copy dexter.em file into base project of Source Insight");
             return;
         }
 
+        copyFile("/dexter.em", toPath);
+    }
+
+    private void copyFile(final String source, final String target) {
         final InputStream is = getClass().getResourceAsStream(source);
         if (is == null) {
             LOG.error("can't create file : " + target);

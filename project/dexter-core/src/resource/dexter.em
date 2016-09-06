@@ -50,6 +50,7 @@ macro initDexterGlobalVariables()
 	global g_waitDexterResult;		// 1: wait(synchronously),  0: no wait(asynchronously)
 	global g_analysisWhenOpen;		// 1: analysis when open, 0: not analysis when open a file(default)
 	global g_functionList;
+	global g_dexterPath;			// dexter daemon installation path
 
 	g_dexterRunning = 1;
 	g_maxUpdateCount = 6;
@@ -176,11 +177,11 @@ macro initDexter()
 
 	g_dexterConfig.sourceEncoding = GetReg(g_dexterConfig.sourceEncodingRegKey)
 
-	dexterPath = GetReg(g_dexterConfig.dexterInstallationPathRegKey);
-	if(dexterPath != nil && dexterPath != "dexterPath"){
+	g_dexterPath = GetReg(g_dexterConfig.dexterInstallationPathRegKey);
+	if(g_dexterPath != nil && g_dexterPath != "g_dexterPath"){
 		g_dexterDaemon = GetReg("g_dexterDaemon");
 		if(g_dexterDaemon == nil || g_dexterDaemon == "g_dexterDaemon" || g_dexterDaemon == 0){
-			RunCmdLine(dexterPath # "\\dexter.exe", dexterPath, 0);
+			RunCmdLine(g_dexterPath # "\\dexter.exe", g_dexterPath, 0);
 		}
 	} else {
 		error("Dexter Initialized failed");
@@ -237,6 +238,12 @@ macro runDexter(sFile)
 		error("can't run dexter because dexter is not initialized : " # sFile);
 		stop;
 	}
+
+	g_dexterDaemon = GetReg("g_dexterDaemon");
+	if(g_dexterDaemon == nil || g_dexterDaemon == "g_dexterDaemon" || g_dexterDaemon == 0){
+		RunCmdLine(g_dexterPath # "\\dexter.exe", g_dexterPath, 0);
+	}
+		
 	saveModifiedFunctionList();
 	createDexterConfFile();
 }

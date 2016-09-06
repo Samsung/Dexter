@@ -84,7 +84,6 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
      * BundleContext )
      */
     public void start(BundleContext context) throws Exception {
-
         super.start(context);
         plugin = this;
         LOG.setPlugin(this);
@@ -93,6 +92,8 @@ public class DexterDaemonActivator extends AbstractUIPlugin implements IDexterHo
         initializeAfterSettingDexterHome();
         DexterConfig.getInstance().addDexterHomeListener(this);
         DexterUIActivator.getDefault().addLoginInfoListener(this);
+        DexterConfig.getInstance().copyDexterMacroFileForSourceInsight(System.getProperty("user.home")
+                + "\\My Documents\\Source Insight\\Projects\\Base\\dexter.em");
     }
 
     private void checkOS() {

@@ -32,7 +32,6 @@ import com.samsung.sec.dexter.core.analyzer.IAnalysisResultHandler;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.RunMode;
 import com.samsung.sec.dexter.core.config.DexterConfigFile;
-import com.samsung.sec.dexter.core.config.EmptyDexterConfigFile;
 import com.samsung.sec.dexter.core.config.IDexterConfigFile;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginInitializer;
@@ -63,15 +62,13 @@ public class Main {
 
         try {
             final IDexterCLIOption cliOption = new DexterCLIOption(args);
-            IDexterConfigFile configFile;
 
             switch (cliOption.getCommandMode()) {
                 case CREATE_ACCOUNT:
-                    configFile = new EmptyDexterConfigFile();
                     cliMain.createAccount(cliOption);
                     break;
                 case STATIC_ANALYSIS:
-                    configFile = cliMain.createDexterConfigFile(cliOption);
+                    IDexterConfigFile configFile = cliMain.createDexterConfigFile(cliOption);
                     cliOption.setDexterServerIP(configFile.getDexterServerIp());
                     cliOption.setDexterServerPort(configFile.getDexterServerPort());
                     final IDexterClient client = cliMain.createDexterClient(cliOption);
