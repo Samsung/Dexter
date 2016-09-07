@@ -277,16 +277,21 @@ public class DexterConfig {
             copyFile("/dexter.em", cfgSourceInsight + "/dexter.em");
 
             // copy bin/dexter.cfg & dexter.cfg.help
-            copyFile("/" + DEXTER_CFG_FILENAME, bin + "/" + DEXTER_CFG_FILENAME);
-            copyFile("/" + DEXTER_CFG_FILENAME + ".help", bin + "/" + DEXTER_CFG_FILENAME + ".help");
+            final String dexterCfgFile = bin + DexterUtil.FILE_SEPARATOR + DEXTER_CFG_FILENAME;
+            if (new File(dexterCfgFile).exists() == false) {
+                copyFile("/" + DEXTER_CFG_FILENAME, dexterCfgFile);
+                copyFile("/" + DEXTER_CFG_FILENAME + ".help", dexterCfgFile + ".help");
+            }
 
             // create /bin/dexter.bat & dexter.sh
             final File dexterBatFile = new File(bin + "/dexter.bat");
-            Files.write("java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar -u %1 -p %2"
-                    + DexterUtil.LINE_SEPARATOR, dexterBatFile, Charsets.UTF_8);
-            final File dexterShFile = new File(bin + "/dexter.sh");
-            Files.write("java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar -u $1 -p $2"
-                    + DexterUtil.LINE_SEPARATOR, dexterShFile, Charsets.UTF_8);
+            if (dexterBatFile.exists() == false) {
+                Files.write("java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar -u %1 -p %2"
+                        + DexterUtil.LINE_SEPARATOR, dexterBatFile, Charsets.UTF_8);
+                final File dexterShFile = new File(bin + "/dexter.sh");
+                Files.write("java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar -u $1 -p $2"
+                        + DexterUtil.LINE_SEPARATOR, dexterShFile, Charsets.UTF_8);
+            }
         } catch (IOException e) {
             LOG.error(e.getMessage(), e);
         }
