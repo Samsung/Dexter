@@ -122,6 +122,10 @@ public class DexterConfig {
     private boolean isStandalone = false;
     private int serverConnectionTimeOut = 15000; // ms
 
+    public static enum AnalysisType {
+        SAVE, FILE, FOLDER, PROJECT, SNAPSHOT, UNKNOWN
+    };
+
     /**
      * only for CLI version
      * true : -e option is used

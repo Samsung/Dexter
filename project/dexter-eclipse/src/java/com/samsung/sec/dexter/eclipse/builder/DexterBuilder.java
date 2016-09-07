@@ -25,6 +25,7 @@
  */
 package com.samsung.sec.dexter.eclipse.builder;
 
+import com.samsung.sec.dexter.core.config.DexterConfig.AnalysisType;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.eclipse.EclipseAnalysis;
 import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
@@ -83,7 +84,7 @@ public class DexterBuilder extends IncrementalProjectBuilder {
             return;
         }
         try {
-            EclipseAnalysis.analysis(resource);
+            EclipseAnalysis.analysis(resource, AnalysisType.SAVE);
         } catch (DexterRuntimeException e) {
             DexterUIActivator.LOG.error(e.getMessage(), e);
         }

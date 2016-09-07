@@ -32,6 +32,7 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisResultHandler;
 import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.config.DexterConfig.AnalysisType;
 import com.samsung.sec.dexter.core.config.EclipseDexterConfigFile;
 import com.samsung.sec.dexter.core.config.IDexterConfigFile;
 import com.samsung.sec.dexter.core.config.IDexterHomeListener;
@@ -157,6 +158,8 @@ public class MonitorForDexterConfigFile extends Job implements IDexterHomeListen
             }
 
         }
+
+        config.setAnalysisType(AnalysisType.SAVE);
 
         // XXX Performance is not good here
         // if (config.getHeaderBaseDirList().size()

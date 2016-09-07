@@ -153,6 +153,17 @@ public class ProjectOrFolderAnalyzer {
         config.createResultFileFullPath();
         config.generateModulePath();
 
+        final String type = projectCfg.getType();
+        if ("PROJECT".equals(type)) {
+            config.setAnalysisType(DexterConfig.AnalysisType.PROJECT);
+        } else if ("SNAPSHOT".equals(type)) {
+            config.setAnalysisType(DexterConfig.AnalysisType.SNAPSHOT);
+        } else if ("FOLDER".equals(type)) {
+            config.setAnalysisType(DexterConfig.AnalysisType.FOLDER);
+        } else {
+            config.setAnalysisType(DexterConfig.AnalysisType.UNKNOWN);
+        }
+
         final IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
         DexterAnalyzer.getInstance().runSync(config, DexterUIActivator.getDefault().getPluginManager(), client);
     }

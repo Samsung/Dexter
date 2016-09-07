@@ -6,11 +6,11 @@
  * modification, are permitted provided that the following conditions are met:
  * 
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  * 
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -22,8 +22,15 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.samsung.sec.dexter.eclipse.action;
+
+import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.config.DexterConfig.AnalysisType;
+import com.samsung.sec.dexter.core.exception.DexterException;
+import com.samsung.sec.dexter.eclipse.DexterEclipseActivator;
+import com.samsung.sec.dexter.eclipse.EclipseAnalysis;
+import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -45,111 +52,108 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
-import com.samsung.sec.dexter.core.exception.DexterException;
-import com.samsung.sec.dexter.eclipse.DexterEclipseActivator;
-import com.samsung.sec.dexter.eclipse.EclipseAnalysis;
-import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
-
 public class RunAnalysisActionDelegate implements IObjectActionDelegate {
-	ISelection selection;
-	//private IWorkbenchPart targetPart;
-	private List<IFile> targetFiles = new ArrayList<IFile>();
+    ISelection selection;
+    //private IWorkbenchPart targetPart;
+    private List<IFile> targetFiles = new ArrayList<IFile>();
+    private DexterConfig.AnalysisType analysisType = AnalysisType.FOLDER;
 
-	@Override
-	public void run(IAction action) {
-		if(selection instanceof StructuredSelection){
-			targetFiles = new ArrayList<IFile>();
-			
-			final StructuredSelection sel = (StructuredSelection) this.selection;
-			
-			@SuppressWarnings("unchecked")
+    @Override
+    public void run(IAction action) {
+        if (selection instanceof StructuredSelection) {
+            targetFiles = new ArrayList<IFile>();
+
+            final StructuredSelection sel = (StructuredSelection) this.selection;
+
+            @SuppressWarnings("unchecked")
             Iterator<Object> iter = sel.iterator();
-			while(iter.hasNext()){
-				final Object object = iter.next();
-				
-				if(object instanceof IResource){
-					final IResource resource = (IResource) object;
-					analysisResource(resource);
-				}
-			}
-			
-			
-			Job analysisJob = new Job("Static Analysis Job"){
-				@Override
-                protected IStatus run(IProgressMonitor monitor) {
-					monitor.beginTask("Static Analyzing...", targetFiles.size());
-					
-					for(int i=targetFiles.size(); i > 0; --i) {
-						final IFile targetFile = targetFiles.get(i-1);
-						monitor.subTask("analyzing : " + targetFile.getName());
-						
-						//Thread.sleep(50);
-						
-						Display.getDefault().syncExec(new Runnable() {
-							@Override
-							public void run() {
-								try {
-									EclipseAnalysis.analysis(targetFile, -1, -1);
-								} catch (DexterException e) {
-									DexterEclipseActivator.LOG.error(e.getMessage(), e);
-								}
-							}
-						});
-						
-						monitor.worked(1);
-					}
-					
-					monitor.done();
-					return Status.OK_STATUS;
+            while (iter.hasNext()) {
+                final Object object = iter.next();
+
+                if (object instanceof IResource) {
+                    final IResource resource = (IResource) object;
+                    analysisResource(resource);
                 }
-				
-			};
-			
-			analysisJob.setPriority(Job.DECORATE);
-			analysisJob.schedule();
-		}
-	}
-	
-	private void analysisResource(final IResource resource){
-		try {
-        	if(resource instanceof IFile){
-        		final IFile targetFile = (IFile) resource;
-        		
-        		if(EclipseUtil.isValidJavaResource(resource) || EclipseUtil.isValidCAndCppResource(resource)){
-					if (!targetFiles.contains(targetFile)) {
-						targetFiles.add(targetFile);
-					}
-				}
-        	} else if(resource instanceof IFolder){
-        		final IFolder folder = (IFolder) resource;
-        		if(folder.members() == null || folder.members().length == 0){
-    	        	return;
-    	        }
-        		for(final IResource child : folder.members()){
-        			analysisResource(child);
-        		}
-        	} else if(resource instanceof IProject){
-        		final IProject project = (IProject) resource;
-        		if(project.members() == null || project.members().length == 0){
-    	        	return;
-    	        }
-        		for(final IResource child : project.members()){
-        			analysisResource(child);
-        		}
-        	}
-        } catch (CoreException e) {
-	        DexterEclipseActivator.LOG.error(e.getMessage(), e);
+            }
+
+            Job analysisJob = new Job("Static Analysis Job") {
+                @Override
+                protected IStatus run(IProgressMonitor monitor) {
+                    monitor.beginTask("Static Analyzing...", targetFiles.size());
+
+                    for (int i = targetFiles.size(); i > 0; --i) {
+                        final IFile targetFile = targetFiles.get(i - 1);
+                        monitor.subTask("analyzing : " + targetFile.getName());
+
+                        //Thread.sleep(50);
+
+                        Display.getDefault().syncExec(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    EclipseAnalysis.analysis(targetFile, -1, -1, analysisType);
+                                } catch (DexterException e) {
+                                    DexterEclipseActivator.LOG.error(e.getMessage(), e);
+                                }
+                            }
+                        });
+
+                        monitor.worked(1);
+                    }
+
+                    monitor.done();
+                    return Status.OK_STATUS;
+                }
+
+            };
+
+            analysisJob.setPriority(Job.DECORATE);
+            analysisJob.schedule();
         }
-	}
+    }
 
-	@Override
-	public void selectionChanged(final IAction action, final ISelection selection) {
-		this.selection = selection;
-	}
+    private void analysisResource(final IResource resource) {
+        try {
+            if (resource instanceof IFile) {
+                final IFile targetFile = (IFile) resource;
 
-	@Override
-	public void setActivePart(final IAction action, final IWorkbenchPart targetPart) {
-		//this.targetPart = targetPart;
-	}
+                if (EclipseUtil.isValidJavaResource(resource) || EclipseUtil.isValidCAndCppResource(resource)) {
+                    if (!targetFiles.contains(targetFile)) {
+                        targetFiles.add(targetFile);
+                    }
+                }
+            } else if (resource instanceof IFolder) {
+                final IFolder folder = (IFolder) resource;
+                if (folder.members() == null || folder.members().length == 0) {
+                    return;
+                }
+                for (final IResource child : folder.members()) {
+                    analysisResource(child);
+                }
+            } else if (resource instanceof IProject) {
+                final IProject project = (IProject) resource;
+                if (project.members() == null || project.members().length == 0) {
+                    return;
+                }
+                for (final IResource child : project.members()) {
+                    analysisResource(child);
+                }
+
+                analysisType = AnalysisType.PROJECT;
+            }
+        } catch (CoreException e) {
+            DexterEclipseActivator.LOG.error(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void selectionChanged(final IAction action, final ISelection selection) {
+        this.selection = selection;
+    }
+
+    @Override
+    public void setActivePart(final IAction action, final IWorkbenchPart targetPart) {
+        //this.targetPart = targetPart;
+    }
 
 }
