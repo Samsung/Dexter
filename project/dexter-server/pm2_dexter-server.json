@@ -3,7 +3,7 @@
                 {
                         "name":"dexter-server",
                         "script":"server.js",
-                        "args":["-p=6010", "-database.host=10.89.33.162" , "-database.name=dexter_mj2", "-database.user=root" , "-database.password=dexter2014"],
+                        "args":["-p=6016", "-database.host=10.89.33.162" , "-database.name=dexter_yesho", "-database.user=root" , "-database.password=dexter2014"],
                         "instances":1,
                         "out_file":"log/pm2_debug.log",
                         "error_file":"log/pm2_error.log",

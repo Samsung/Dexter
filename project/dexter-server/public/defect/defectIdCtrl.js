@@ -903,7 +903,7 @@ defectApp.controller('DefectIdCtrl', function($scope, $http, $sce, $location, $a
     };
 */
 
-    let loadSnapshotSourceCode = function (selectedDefect, snapshotId) {
+    var loadSnapshotSourceCode = function (selectedDefect, snapshotId) {
         const getSnapshotSourceCodeUrl = '/api/v2/analysis/snapshot/sourcecode';
         $http.post(getSnapshotSourceCodeUrl , {
             params: {
