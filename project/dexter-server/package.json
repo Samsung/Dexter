@@ -1,18 +1,18 @@
 {
   "name": "dexter-server",
-  "version": "0.9.0",
+  "version": "0.10.3",
   "private": true,
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "q": "0.0.1",
     "express": "3.5.1",
     "json-bigint": "^0.1.4",
     "line-reader": "^0.2.4",
-    "lodash": "^3.8.0",
+    "lodash": "^3.10.1",
     "moment": "^2.5.1",
-    "mysql": "^2.5.4",
+    "mysql": "^2.11.1",
+    "q": "^1.4.1",
     "request": "^2.67.0",
     "underscore": "^1.8.3",
     "winston": "^0.8.3"
@@ -31,8 +31,11 @@
     "karma-firefox-launcher": "^0.1.7",
     "karma-jasmine": "^0.1.5",
     "karma-mocha": "^0.1.10",
+    "lodash": "^3.10.1",
     "mocha": "^2.1.0",
+    "mysql": "^2.11.1",
     "proxyquire": "^1.7.3",
+    "q": "^1.4.1",
     "request": "^2.67.0",
     "should": "^3.2.0",
     "sinon": "^1.14.1"

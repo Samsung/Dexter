@@ -34,7 +34,7 @@ import net.xeoh.plugins.base.annotations.PluginImplementation;
 @PluginImplementation
 public class DexterVdCppPlugin implements IDexterPlugin {
     public final static String PLUGIN_NAME = "dexter-vd-cpp";
-    private final static PluginVersion PLUGIN_VERSION = new PluginVersion("0.10.3");
+    private final static PluginVersion PLUGIN_VERSION = new PluginVersion("0.10.4");
     private static PluginDescription PLUGIN_DESCRIPTION;
 
     private final static Logger LOG = Logger.getLogger(DexterVdCppPlugin.class);

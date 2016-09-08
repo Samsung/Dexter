@@ -250,10 +250,10 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
         if (DexterConfig.getInstance().getRunMode() == DexterConfig.RunMode.CLI) {
             Gson gson = new Gson();
             String jsonBody = gson.toJson(body);
-            resultText = webResource.postWithBodyforCLI(getServiceUrl(DexterConfig.PUT_ANALYSIS_RESULT_V2),
+            resultText = webResource.postWithBodyforCLI(getServiceUrl(DexterConfig.PUT_ANALYSIS_RESULT_V3),
                     this.currentUserId, this.currentUserPwd, jsonBody);
         } else {
-            resultText = webResource.postWithBody(getServiceUrl(DexterConfig.PUT_ANALYSIS_RESULT_V2),
+            resultText = webResource.postWithBody(getServiceUrl(DexterConfig.PUT_ANALYSIS_RESULT_V3),
                     this.currentUserId, this.currentUserPwd, body);
         }
         checkResultOk(resultText);

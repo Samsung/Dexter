@@ -52,7 +52,7 @@ import net.xeoh.plugins.base.annotations.PluginImplementation;
 @PluginImplementation
 public class CppcheckDexterPlugin implements IDexterPlugin {
     public final static String PLUGIN_NAME = "cppcheck";
-    public final static PluginVersion PLUGIN_VERSION = new PluginVersion("0.10.2");
+    public final static PluginVersion PLUGIN_VERSION = new PluginVersion("0.10.4");
 
     private CppcheckWrapper cppcheck = new CppcheckWrapper();
     private final static Logger logger = Logger.getLogger(CppcheckWrapper.class);
@@ -71,11 +71,11 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
     public void init() {
         cppcheck.initCheckerConfig();
 
+        copyCppcheckRunModule();
+
         if (DexterUtil.getOS() == DexterUtil.OS.LINUX || DexterUtil.getOS() == DexterUtil.OS.MAC) {
             checkCppcheckPermission();
         }
-
-        copyCppcheckRunModule();
     }
 
     /*
@@ -137,12 +137,20 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
         String cppcheckPath = "";
 
         if (DexterUtil.getOS() == DexterUtil.OS.WINDOWS) {
-            //zipFilePath += "/temp/cppcheck-windows_" + CppcheckDexterPlugin.version.getVersion() + ".zip";
-            zipFilePath += "/temp/cppcheck-windows_0.10.2.zip";
+            //zipFilePath += "/temp/cppcheck-windows_0.10.2.zip";
+            zipFilePath += "/temp/cppcheck-windows_" + PLUGIN_VERSION + ".zip";
             cppcheckPath = "/cppcheck-windows.zip";
         } else { // LINUX or MAC
-            zipFilePath += "/temp/cppcheck-linux_0.10.2.zip";
-            cppcheckPath = "/cppcheck-linux.zip";
+        	if(DexterUtil.getBit() == DexterUtil.BIT._32){
+        		//zipFilePath += "/temp/cppcheck-linux_0.10.2.zip";
+        		zipFilePath += "/temp/cppcheck-linux_"+ PLUGIN_VERSION + "_32.zip";
+                cppcheckPath = "/cppcheck-linux-32.zip";	
+        	}else{
+        		//zipFilePath += "/temp/cppcheck-linux_0.10.2.zip";
+        		zipFilePath += "/temp/cppcheck-linux_"+ PLUGIN_VERSION + "_64.zip";
+                cppcheckPath = "/cppcheck-linux-64.zip";	
+        	}
+            
         }
 
         final File file = new File(zipFilePath);

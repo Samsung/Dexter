@@ -1,16 +1,8 @@
 dashboardApp.controller("DashboardCtrl", function($scope, $http, $log){
     "use strict";
 
-    $http.get('/api/v1/projectName', {
-    }).then(function (result) {
-        if( result && result.data){
-            var html = 'Dashboard : ' +result.data.result;
-            $scope.projectName = result.data.result;
-            $('#indexDashboardTitle').html(html);
-        }
-    }, function (results) {
-        $log.error(results);
-    });
+
+
 
     var _developerRowChart = dc.rowChart("#developer-div");
     var _moduleRowChart = dc.rowChart("#module-row-div");
@@ -90,6 +82,7 @@ dashboardApp.controller("DashboardCtrl", function($scope, $http, $log){
 
     function initialize(){
         var developerVsModule;
+        getProjectName();
         initFileListTable();
 
         d3.json("/api/v1/metrics-and-defect", handleMetricsAndDefect);
@@ -126,6 +119,20 @@ dashboardApp.controller("DashboardCtrl", function($scope, $http, $log){
 
             $(window).resize(drawCharts);
         }
+    }
+
+    function getProjectName(){
+        $http.get('/api/v1/projectName', {
+        }).then(function (result) {
+            console.log(result);
+            if( result && result.data){
+                var html = 'Dashboard : ' + result.data.projectName;
+                $scope.projectName = result.data.projectName;
+                $('#indexDashboardTitle').html(html);
+            }
+        }, function (results) {
+            $log.error(results);
+        });
     }
 
     function initFileListTable(){

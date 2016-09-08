@@ -49,7 +49,6 @@ macro initDexterGlobalVariables()
 	global g_showResultMsgDialog;	// 1: show,  0: hide
 	global g_waitDexterResult;		// 1: wait(synchronously),  0: no wait(asynchronously)
 	global g_analysisWhenOpen;		// 1: analysis when open, 0: not analysis when open a file(default)
-	global g_functionList;
 	global g_dexterPath;			// dexter daemon installation path
 
 	g_dexterRunning = 1;
@@ -61,7 +60,7 @@ macro initDexterGlobalVariables()
 	g_showResultMsgDialog = 0; 
 	g_waitDexterResult = 0;
 	g_analysisWhenOpen = 0;
-	g_functionList = "";
+	
 
 	g_dexterConfig.sourceDirRegKey = "sourceDirRegKey"
 	g_dexterConfig.headerDirRegKey = "headerDirRegKey"
@@ -243,8 +242,7 @@ macro runDexter(sFile)
 	if(g_dexterDaemon == nil || g_dexterDaemon == "g_dexterDaemon" || g_dexterDaemon == 0){
 		RunCmdLine(g_dexterPath # "\\dexter.exe", g_dexterPath, 0);
 	}
-		
-	saveModifiedFunctionList();
+	
 	createDexterConfFile();
 }
 
@@ -526,7 +524,7 @@ macro createDexterConfFile()
 	var confFile;
 	var requestTime;
 	var contents;
-	var functionList;
+
 	initDexterHome();
 	confFile = g_dexterConfig.dexterHome # "\\bin\\daemon\\dexter_daemon_cfg.json"
 	hConfbuf = OpenBuf(confFile);
@@ -560,97 +558,13 @@ macro createDexterConfFile()
 	}
 
 	contents = contents # "\t\"fileName\":[\"" # GetBufName(hFile) # "\"],";
-	contents = contents # "\t\"type\":\"FILE\",";
-	contents = contents # "\t\"functionList\":[" # g_functionList # "]";
+	contents = contents # "\t\"type\":\"FILE\"";
 	contents = contents # "}";
 
 	emptyFileContent(hConfbuf, 0);
 	AppendBufLine(hConfbuf, contents);
 	SaveBuf(hConfbuf);
 	CloseBuf(hConfbuf);
-}
-macro saveModifiedFunctionList(){
-	var firstRevisionLine;
-	var changeCount;
-	var functionName;
-	var curSymbol;
-	
-	hwnd = GetCurrentWnd();
-	hbuf = GetCurrentBuf();
-
-	currentLine  = 0;
-
-	changeCount = 0;
-	firstRevisionLine = 0;
-
-	g_functionList= "";
-	currentLn = GetWndSelLnFirst (hwnd);
-	currentIch =GetWndSelIchFirst(hwnd);
-	vert = GetWndVertScroll (hwnd);
-	wndsel = GetWndSel(hwnd);
-	//msg();
-	while(1){
-		Go_To_Next_Change;
-		if(changeCount == 0){
-			firstRevisionLine = GetBufLnCur(hbuf);
-		}else if( isNavigatedLine(hbuf,changeCount,firstRevisionLine) == true){
-			break;
-		}
-		changeCount = changeCount +1;
-
-		curSymbol = GetCurSymbol();
-		symbolLocation = GetSymbolLocation(curSymbol);
-		if( symbolLocation == "" ){
-			
-		}else if(symbolLocation.Type == "Function" || symbolLocation.Type == "Method"){
-			functionName = SymbolLeafName(symbolLocation);
-			
-			addFunctionNameIfNotExist(functionName);		
-		}
-	}
-	if(g_functionList !=""){
-	g_functionList = strtrunc(g_functionList,strlen(g_functionList)-1);	
-	}
-	SetBufIns(hbuf,currentLn,currentIch);	
-	ScrollWndToLine(hwnd,vert);
-	
-}
-macro isNavigatedLine(hbuf, count,firstRevisionLine){
-	
-	var currentLine;
-	currentLine = GetBufLnCur(hbuf);
-	if(count>=1 && currentLine == firstRevisionLine){
-		return true;
-	}
-	return false;
-
-}
-macro addFunctionNameIfNotExist(functionName){
-	var index;
-	var functionListLength;
-	var compareFunctionName;
-	var frontIndex;
-	var backIndex;
-	
-	index = 0;
-	frontIndex = 0;
-	backIndex = 0;
-	functionListLength = strlen(g_functionList);
-
-	while(index<functionListLength){
-		if(g_functionList[index] == ","){
-				backIndex = index;
-				compareFunctionName = strmid(g_functionList,frontIndex+1,backIndex-1);
-				if(compareFunctionName == functionName){
-				return;
-				}				
-			frontIndex = index +1;			
-		}
-		index = index +1;
-	}
-	
-	g_functionList = g_functionList # "\"" #  functionName # "\"" # ",";
-
 }
 
 macro createPlatzKeywordFile()

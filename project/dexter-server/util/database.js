@@ -277,7 +277,7 @@ exports.execTx = function (connection, sql, callback){
 };
 
 exports.toSqlValue = function(value){
-    if(value == undefined || value == null || value === 'null' || value === ''){
+    if(value == undefined || value =='undefined'|| value == null || value === 'null' || value === ''){
         return "null";
     } else {
         var str = "" + value;
@@ -286,7 +286,7 @@ exports.toSqlValue = function(value){
 };
 
 exports.compareEqual = function(value){
-    if(value == undefined || value == 'null' || value == ''){
+    if(value == undefined || value =='undefined' || value == 'null' || value == null || value == ''){
         return " is null ";
     } else {
         return " = '" + value + "'";

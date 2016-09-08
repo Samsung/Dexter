@@ -275,8 +275,8 @@ exports.addAccessLog = function(param) {
 
 exports.getCheckerConfigJsonFile = function(req, res){
     var pluginName = req.params.pluginName;
+    console.log(pluginName);
     var fileName = "../config/plugin/checker-config_"+ pluginName +".json";
-    console.log(fileName);
 
     try{
         var configJson = require(fileName);

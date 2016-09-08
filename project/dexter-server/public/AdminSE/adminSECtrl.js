@@ -49,6 +49,7 @@ adminSEApp.controller('adminSECtrl', function($scope, $http, $location ,$routePa
     $http.get(getModulePathListUrl, {
     }).then(function(result){
         if(isHttpResultOK(result)){
+            console.log(result.data.rows.length);
             $scope.modulePathList = [];
             angular.forEach(result.data.rows, function(index){
                 $scope.modulePathList.push(index.modulePath);
@@ -68,17 +69,18 @@ adminSEApp.controller('adminSECtrl', function($scope, $http, $location ,$routePa
         alert("Defect can not restore if defect is once deleted in modulePath that you selected.");
         var deleteModulePathListUrl = '/api/v2/module-path-list';
         $http.delete(deleteModulePathListUrl, {
-                params : {
-                    "modulePathList": $scope.selectedModulePathList.toString(),
-                    "modulePathListLength" : $scope.selectedModulePathList.length
-                }
+            params : {
+                "modulePathList": $scope.selectedModulePathList.toString(),
+                "modulePathListLength" : $scope.selectedModulePathList.length
             }
-        ).then(function(result){
-                if(isHttpResultOK(result)){
-                    location.reload(true);
-                }
-            })
-    }, function(results){
-        $log.error('Error code:' + results.status+';');
-    };
+        }).then(function(result){
+            if(isHttpResultOK(result)){
+                alert("Your selected module path data has been wiped.");
+                location.reload(true);
+            }
+        }, function(result){
+            alert("The Delete request failed, please contact to SE admin.");
+            $log.error('Error code:' + result.status+';');
+        });
+    }
 });
