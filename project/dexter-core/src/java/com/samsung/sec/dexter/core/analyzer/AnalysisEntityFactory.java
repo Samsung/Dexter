@@ -63,6 +63,7 @@ public class AnalysisEntityFactory implements IAnalysisEntityFactory {
         result.setResultFileFullPath(config.getResultFileFullPath());
         result.setCodeMetrics(config.getCodeMetrics());
         result.setFunctionMetrics(config.getFunctionMetrics());
+        result.setAnalysisType(config.getAnalysisType());
         // result.setResultHandler(config.getResultHandler());
 
         return result;

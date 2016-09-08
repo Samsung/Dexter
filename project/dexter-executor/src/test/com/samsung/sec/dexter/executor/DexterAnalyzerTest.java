@@ -32,6 +32,7 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisResultHandler;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
+import com.samsung.sec.dexter.core.config.DexterConfig.AnalysisType;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.exception.DexterException;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
@@ -111,6 +112,7 @@ public class DexterAnalyzerTest {
                 // 2. execution
                 Stopwatch s = Stopwatch.createStarted();
                 ac.setResultHandler(this);
+                ac.setAnalysisType(AnalysisType.PROJECT);
                 // AnalysisResultManager.getInstance().addListener("defect.example.ConstructorCallsOverridableMethod.java",
                 // this);
                 analyzer.runSync(ac, pluginManager, client);
@@ -181,6 +183,7 @@ public class DexterAnalyzerTest {
                 ac.addSourceBaseDirList("C:\\DEV\\workspace\\dexter\\DefectTest\\src");
                 ac.addLibDirList("C:\\DEV\\workspace\\dexter\\DefectTest\\lib");
                 ac.addLibFile("C:/DEV/workspace/dexter/DefectTest/lib/guava-16.0.1.jar");
+                ac.setAnalysisType(AnalysisType.PROJECT);
 
                 // 3. execution
                 Stopwatch s = Stopwatch.createStarted();

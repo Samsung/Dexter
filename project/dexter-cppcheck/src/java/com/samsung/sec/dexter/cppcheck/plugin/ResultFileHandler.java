@@ -36,7 +36,6 @@ import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.defect.PreOccurence;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
-import com.samsung.sec.dexter.core.plugin.PluginVersion;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.util.CppUtil;
 import com.samsung.sec.dexter.util.TranslationUnitFactory;
@@ -127,9 +126,8 @@ public class ResultFileHandler extends DefaultHandler {
                 logger.info(e.getMessage());
                 if (!(DexterConfig.getInstance().getRunMode().equals(DexterConfig.RunMode.CLI)
                         && DexterConfig.getInstance().isSpecifiedCheckerOptionEnabledByCli())) {
-                    Checker checker = new Checker(checkerCode, checkerCode,CppcheckDexterPlugin.PLUGIN_VERSION.toString() , true);
-                            //PluginVersion.fromImplementationVersion(CppcheckDexterPlugin.class).getVersion(), true);
-                    		
+                    Checker checker = new Checker(checkerCode, checkerCode,
+                            CppcheckDexterPlugin.PLUGIN_VERSION.getVersion(), true);
 
                     if ("true".equals(attributes.getValue("inconclusive"))) {
                         checker.setSeverityCode("ETC");

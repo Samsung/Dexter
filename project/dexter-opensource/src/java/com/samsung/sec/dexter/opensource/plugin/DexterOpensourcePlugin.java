@@ -140,6 +140,7 @@ public class DexterOpensourcePlugin implements IDexterPlugin {
                     defect.setCategoryName(checker.getCategoryName());
                     defect.setMessage(checker.getProperty("EnglishDescription"));
                     defect.setToolName(PLUGIN_NAME);
+                    defect.setAnalysisType(config.getAnalysisType().name());
 
                     Occurence occ = new Occurence();
                     occ.setStartLine(1);

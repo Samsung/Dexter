@@ -165,6 +165,26 @@ public class Main {
         baseAnalysisConfig.setSnapshotId(
                 configFile.getType() == IDexterConfigFile.Type.SNAPSHOT ? System.currentTimeMillis() : -1L);
 
+        final IDexterConfigFile.Type type = configFile.getType();
+
+        switch (type) {
+            case PROJECT:
+                baseAnalysisConfig.setAnalysisType(DexterConfig.AnalysisType.PROJECT);
+                break;
+            case SNAPSHOT:
+                baseAnalysisConfig.setAnalysisType(DexterConfig.AnalysisType.SNAPSHOT);
+                break;
+            case FOLDER:
+                baseAnalysisConfig.setAnalysisType(DexterConfig.AnalysisType.FOLDER);
+                break;
+            case FILE:
+                baseAnalysisConfig.setAnalysisType(DexterConfig.AnalysisType.SAVE);
+                break;
+            default:
+                baseAnalysisConfig.setAnalysisType(DexterConfig.AnalysisType.UNKNOWN);
+                break;
+        }
+
         return baseAnalysisConfig;
     }
 

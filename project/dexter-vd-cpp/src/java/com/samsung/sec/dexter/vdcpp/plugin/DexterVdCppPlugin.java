@@ -9,6 +9,7 @@ import com.samsung.sec.dexter.core.checker.Checker;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
+import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 import com.samsung.sec.dexter.core.plugin.PluginDescription;
@@ -145,6 +146,10 @@ public class DexterVdCppPlugin implements IDexterPlugin {
 
             final ICheckerLogic logic = getCheckerLogic(checker.getCode());
             logic.analyze(config, result, checker, unit);
+
+            for (Defect defect : result.getDefectList()) {
+                defect.setAnalysisType(config.getAnalysisType().name());
+            }
         }
 
         return result;
