@@ -883,25 +883,6 @@ defectApp.controller('DefectIdCtrl', function($scope, $http, $sce, $location, $a
         });
     };
 
-   /* var loadSnapshotSourceCode = function(selectedDefect, snapshotId){
-        $http.get("/api/v1/analysis/snapshot/source", {
-                params: {
-                    'modulePath': base64.encode($scope.selectedDefectModulePath),
-                    'fileName': selectedDefect.fileName,
-                    'snapshotId': snapshotId
-                }
-            }
-        ).then(function (results) {
-                if (results) {
-                    var defectSourceCodes = {};
-                    defectSourceCodes.source =results.data;
-                    defectSourceCodes.fileName = results.config.params.fileName;
-                    defectSourceCodes.modulePath = base64.decode(results.config.params.modulePath);
-                    displaySourceCode(defectSourceCodes);
-                }
-            });
-    };
-*/
 
     var loadSnapshotSourceCode = function (selectedDefect, snapshotId) {
         const getSnapshotSourceCodeUrl = '/api/v2/analysis/snapshot/sourcecode';

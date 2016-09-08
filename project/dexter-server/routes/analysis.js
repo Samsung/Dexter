@@ -1566,7 +1566,6 @@ function makeAnalysisLogV3(defectList, params){
                 break;
         }
     });
-
     addAnalysisLog(params.fileName, params.modulePath, params.userNo, criticalCount, majorCount, minorCount, crcCount, etcCount);
 }
 
@@ -1631,8 +1630,6 @@ exports.addV2 = function(req, res) {
 
 
 exports.addV3 = function(req, res) {
-    console.log("addV3!!!!!!!!!!!!!!!!!");
-
     if(req == undefined || req.body == undefined || req.body.result == undefined || req.currentUserId == undefined){
         res.send({status:"fail", errorMessage: "No Data or No currentUserId"});
         return;
@@ -1670,8 +1667,6 @@ exports.addV3 = function(req, res) {
     params.userNo = account.getUserNo(req.currentUserId);
 
 
-
-
     // log
     makeAnalysisLogV3(defectList, params);
 
@@ -1685,8 +1680,8 @@ exports.addV3 = function(req, res) {
 
     /*
      in AddV3 - checkAnalysisType [ "SAVE" , "FILE", "FOLDER", "PROJECT", "SNAPSHOT", "UNKNOWN"]
-     SAVE / FILE / UNKNOWN : update currentUserId,
-     FOLDER / PROJECT / SNAPSHOT : noUpdate, at the first time to analysis : 'admin : 1'
+     1. SAVE / FILE / UNKNOWN : update currentUserId,
+     2. FOLDER / PROJECT / SNAPSHOT : noUpdate, at the first time to analysis : 'admin : 1'
      */
 
     params.userNo = getUserNoFromAnalysisType(defectObject.defectCount, defectList, req.currentUserId);

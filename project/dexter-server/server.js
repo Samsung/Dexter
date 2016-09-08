@@ -438,9 +438,6 @@ function initRestAPI(){
     /** API VERSION 3 **/
     app.post('/api/v3/analysis/result', auth, analysis.addV3);
 
-
-
-
 }
 
 function startServer(){
@@ -469,7 +466,7 @@ function stopServer (req, res){
 
     dexterServer.close();
     process.exit(1);
-};
+}
 
 exports.forceStopServer = function(){
     dexterServer.close();
@@ -488,7 +485,7 @@ function deleteDexterDatabase (req, res){
     log.info('Dexter database will be removed by ' + userId);
     if(res != undefined) res.send("ok");
     database.deleteDexterDatabase();
-};
+}
 
 function checkServer (req, res){
     res.status(200);
@@ -496,7 +493,7 @@ function checkServer (req, res){
     //res.send({"isAlive":"ok"});
     //res.writeHead(200, { 'Content-Type': 'application/json' });
     //res.jsonp({"isAlive":"ok"});
-};
+}
 
 function checkServer2 (req, res){
     //res.writeHead(200, { 'Content-Type': 'application/json' });

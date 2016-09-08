@@ -1,6 +1,0 @@
-{
-  "directory": "public/js/",
-  "proxy":"http://168.219.61.252:8080",
-  "https-proxy":"http://168.219.61.252:8080",
-  "strict-ssl":true 
-}
