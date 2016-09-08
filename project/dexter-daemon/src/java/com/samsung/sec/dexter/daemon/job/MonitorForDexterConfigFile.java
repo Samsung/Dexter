@@ -175,7 +175,7 @@ public class MonitorForDexterConfigFile extends Job implements IDexterHomeListen
         config.setShouldSendSourceCode(true);
         final IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
         IDexterPluginManager pluginManager = DexterUIActivator.getDefault().getPluginManager();
-        DexterAnalyzer.getInstance().runAsync(config, pluginManager, client);
+        DexterAnalyzer.runAsync(config, pluginManager, client);
     }
 
     private void delayMonitor() {

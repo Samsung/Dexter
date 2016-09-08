@@ -80,6 +80,17 @@ public class ProjectOrFolderAnalyzer {
         config.setProjectFullPath(projectCfg.getProjectFullPath());
         config.setSnapshotId(-1);
 
+        final String type = projectCfg.getType();
+        if ("PROJECT".equals(type)) {
+            config.setAnalysisType(DexterConfig.AnalysisType.PROJECT);
+        } else if ("SNAPSHOT".equals(type)) {
+            config.setAnalysisType(DexterConfig.AnalysisType.SNAPSHOT);
+        } else if ("FOLDER".equals(type)) {
+            config.setAnalysisType(DexterConfig.AnalysisType.FOLDER);
+        } else {
+            config.setAnalysisType(DexterConfig.AnalysisType.UNKNOWN);
+        }
+
         addSourceBaseDirList(config);
         addHeaderBaseDirList(config);
 
@@ -153,19 +164,8 @@ public class ProjectOrFolderAnalyzer {
         config.createResultFileFullPath();
         config.generateModulePath();
 
-        final String type = projectCfg.getType();
-        if ("PROJECT".equals(type)) {
-            config.setAnalysisType(DexterConfig.AnalysisType.PROJECT);
-        } else if ("SNAPSHOT".equals(type)) {
-            config.setAnalysisType(DexterConfig.AnalysisType.SNAPSHOT);
-        } else if ("FOLDER".equals(type)) {
-            config.setAnalysisType(DexterConfig.AnalysisType.FOLDER);
-        } else {
-            config.setAnalysisType(DexterConfig.AnalysisType.UNKNOWN);
-        }
-
         final IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
-        DexterAnalyzer.getInstance().runSync(config, DexterUIActivator.getDefault().getPluginManager(), client);
+        DexterAnalyzer.runSync(config, DexterUIActivator.getDefault().getPluginManager(), client);
     }
 
     private void setShouldSendSourceCode(AnalysisConfig config) {

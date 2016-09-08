@@ -112,6 +112,7 @@ public class AnalysisConfig extends BaseAnalysisEntity {
         this.libFileList = Lists.newArrayList(other.getLibFileList());
 
         this.sourcecode = other.sourcecode;
+        setAnalysisType(other.getAnalysisType());
     }
 
     public void initAllListTypeFields() {

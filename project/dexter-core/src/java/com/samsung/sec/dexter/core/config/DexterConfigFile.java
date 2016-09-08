@@ -33,6 +33,7 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
+import com.samsung.sec.dexter.core.config.DexterConfig.AnalysisType;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 
@@ -138,6 +139,19 @@ public class DexterConfigFile implements IDexterConfigFile {
         analysisConfig.setResultFileFullPath(getResultFileFullPath());
         analysisConfig.setFunctionList(getFunctionList());
         analysisConfig.setNoDefectGroupAndSnapshotId();
+
+        final String type = getType().name();
+        if ("PROJECT".equals(type)) {
+            analysisConfig.setAnalysisType(DexterConfig.AnalysisType.PROJECT);
+        } else if ("SNAPSHOT".equals(type)) {
+            analysisConfig.setAnalysisType(DexterConfig.AnalysisType.SNAPSHOT);
+        } else if ("FOLDER".equals(type)) {
+            analysisConfig.setAnalysisType(DexterConfig.AnalysisType.FOLDER);
+        } else if ("FILE".equals(type)) {
+            analysisConfig.setAnalysisType(AnalysisType.FILE);
+        } else {
+            analysisConfig.setAnalysisType(DexterConfig.AnalysisType.UNKNOWN);
+        }
 
         return analysisConfig;
     }

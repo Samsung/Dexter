@@ -222,7 +222,7 @@ public class Main {
         for (final String fileFullPath : sourceFileFullPathList) {
             final AnalysisConfig analysisConfig = createAnalysisConfig(fileFullPath, cliAnalysisResultHandler,
                     baseAnalysisConfig);
-            DexterAnalyzer.getInstance().runSync(analysisConfig, pluginManager, client);
+            DexterAnalyzer.runSync(analysisConfig, pluginManager, client);
         }
 
         cliAnalysisResultHandler.handleEndOfResultFile();
@@ -239,7 +239,7 @@ public class Main {
         for (final String fileFullPath : sourceFileFullPathList) {
             final AnalysisConfig analysisConfig = createAnalysisConfig(fileFullPath, cliAnalysisResultHandler,
                     baseAnalysisConfig);
-            DexterAnalyzer.getInstance().runAsync(analysisConfig, pluginManager, client);
+            DexterAnalyzer.runAsync(analysisConfig, pluginManager, client);
         }
     }
 
