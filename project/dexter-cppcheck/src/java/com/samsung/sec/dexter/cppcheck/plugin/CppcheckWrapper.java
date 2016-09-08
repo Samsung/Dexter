@@ -92,7 +92,7 @@ public class CppcheckWrapper {
         final String sourceFileFullPath = this.config.getSourceFileFullPath();
 
         // 3. Create Command
-        final StringBuilder cmd = new StringBuilder(500);
+        final StringBuilder cmd = new StringBuilder(1024);
 
         setCppcheckCommand(cmd);
         if (DexterUtil.getOsBit() == DexterUtil.OS_BIT.WIN32 || DexterUtil.getOsBit() == DexterUtil.OS_BIT.WIN64) {

@@ -212,7 +212,7 @@ public class MonitorForDexterConfigFile extends Job implements IDexterHomeListen
                 try {
                     final List<Defect> allDefectList = DexterAnalyzer.getAllDefectList(resultList);
 
-                    final StringBuilder msg = new StringBuilder();
+                    final StringBuilder msg = new StringBuilder(allDefectList.size() * 1024);
                     for (final Defect defect : allDefectList) {
                         boolean isDefectDissmissed = AnalysisFilterHandler.getInstance().isDefectDismissed(defect);
                         if (isDefectDissmissed) {

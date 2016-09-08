@@ -6,11 +6,11 @@
  * modification, are permitted provided that the following conditions are met:
  * 
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  * 
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -24,6 +24,9 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 package com.samsung.sec.dexter.metrics.util;
+
+import com.google.common.io.Files;
+import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,392 +54,399 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCatchHandler;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTryBlockStatement;
 
-import com.google.common.io.Files;
-import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
-
 public class CdtUtilHelper {
-	static int count = 0;
-	static int sloc = 0;
-	static int methodCount = 0;
-	static int classCount = 0;
-	final static Map<String, Integer> mapSourceMatrices = new HashMap<String, Integer>();
-	final static Map<String, Integer> mapFunctionLocMetrices = new HashMap<String, Integer>();
-	public final static String LINE_SEPARATOR = System.getProperty("line.separator");
-	final private static Map<String, String> mapModuleName = new HashMap<String, String>();
-	static Logger logger = Logger.getLogger(CdtUtilHelper.class);
+    static int count = 0;
+    static int sloc = 0;
+    static int methodCount = 0;
+    static int classCount = 0;
+    final static Map<String, Integer> mapSourceMatrices = new HashMap<String, Integer>();
+    final static Map<String, Integer> mapFunctionLocMetrices = new HashMap<String, Integer>();
+    public final static String LINE_SEPARATOR = System.getProperty("line.separator");
+    final private static Map<String, String> mapModuleName = new HashMap<String, String>();
+    static Logger logger = Logger.getLogger(CdtUtilHelper.class);
 
-	static Map<String, String> getMapData() {
-		if (mapModuleName.isEmpty()) {
-			mapModuleName.put(ResultFileConstant.CLASS_NAME, "");
-			mapModuleName.put(ResultFileConstant.METHOD_NAME, "");
-		}
-		return mapModuleName;
-	}
+    static Map<String, String> getMapData() {
+        if (mapModuleName.isEmpty()) {
+            mapModuleName.put(ResultFileConstant.CLASS_NAME, "");
+            mapModuleName.put(ResultFileConstant.METHOD_NAME, "");
+        }
+        return mapModuleName;
+    }
 
-	private CdtUtilHelper() {
+    private CdtUtilHelper() {
 
-	}
+    }
 
-	public static String getContentsFromFile(final String filePath,
-			final Charset charset) {
-		if (filePath == null || filePath.equals("")) {
-			logger.error("Invalid Parameter : filePath is null or empty");
-			return "";
-		}
+    public static String getContentsFromFile(final String filePath,
+            final Charset charset) {
+        if (filePath == null || filePath.equals("")) {
+            logger.error("Invalid Parameter : filePath is null or empty");
+            return "";
+        }
 
-		final File file = new File(filePath);
+        final File file = new File(filePath);
 
-		if (file.exists() == false || file.isDirectory()) {
+        if (file.exists() == false || file.isDirectory()) {
 
-			return null;
-		}
+            return null;
+        }
 
-		final StringBuilder contents = new StringBuilder(10000);
-		try {
-			for (String content : Files.readLines(file, charset)) {
-				contents.append(content).append(LINE_SEPARATOR);
-			}
+        StringBuilder contents;
 
-			return contents.toString();
-		} catch (IOException e) {
-			logger.error(e.getMessage(), e);
-			return null;
-		}
-	}
+        if (file.length() < Integer.MAX_VALUE)
+            contents = new StringBuilder((int) file.length());
+        else
+            contents = new StringBuilder(Integer.MAX_VALUE);
 
-	/**
-	 * visitFunction(IASTDeclaration declaration , int lineNo, String
-	 * fileExtension) method is responsible for visit functional statement
-	 * 
-	 * @param [in] IASTDeclaration declaration , int lineNo, String
-	 *        fileExtension
-	 * @return [out] boolean
-	 * @warning [None]
-	 * @exception IO
-	 *                exception
-	 */
-	static boolean visitFunction(IASTDeclaration declaration, int lineNo,
-			String fileExtension) {
-		boolean visitStatus = false;
+        try {
+            for (String content : Files.readLines(file, charset)) {
+                contents.append(content).append(LINE_SEPARATOR);
+            }
 
-		if ((declaration instanceof IASTSimpleDeclaration)) {
-			final IASTSimpleDeclaration simple_declaration = (IASTSimpleDeclaration) declaration;
-			String className = "";
-			String MethodName = "";
+            return contents.toString();
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
+    }
 
-			final IASTDeclarator[] declaratorList = simple_declaration
-					.getDeclarators();
-			for (IASTDeclarator declarator : declaratorList) {
-				if (declarator instanceof IASTFunctionDeclarator) {
+    /**
+     * visitFunction(IASTDeclaration declaration , int lineNo, String
+     * fileExtension) method is responsible for visit functional statement
+     * 
+     * @param [in]
+     * IASTDeclaration declaration , int lineNo, String
+     * fileExtension
+     * @return [out] boolean
+     * @warning [None]
+     * @exception IO
+     * exception
+     */
+    static boolean visitFunction(IASTDeclaration declaration, int lineNo,
+            String fileExtension) {
+        boolean visitStatus = false;
 
-					if (simple_declaration.getDeclSpecifier().getStorageClass() == IASTDeclSpecifier.sc_typedef) {
-						return visitStatus;
-					}
+        if ((declaration instanceof IASTSimpleDeclaration)) {
+            final IASTSimpleDeclaration simple_declaration = (IASTSimpleDeclaration) declaration;
+            String className = "";
+            String MethodName = "";
 
-					if (simple_declaration.getFileLocation().getFileName()
-							.contains(".h")) {
-						if (fileExtension.equals(".cpp")
-								|| fileExtension.equals(".c")) {
-							return visitStatus;
-						}
-					}
+            final IASTDeclarator[] declaratorList = simple_declaration
+                    .getDeclarators();
+            for (IASTDeclarator declarator : declaratorList) {
+                if (declarator instanceof IASTFunctionDeclarator) {
 
-					final int FunctionStartingLineNumber = declarator
-							.getFileLocation().getStartingLineNumber();
-					final int FunctionEndLineNumber = declaration
-							.getFileLocation().getEndingLineNumber();
+                    if (simple_declaration.getDeclSpecifier().getStorageClass() == IASTDeclSpecifier.sc_typedef) {
+                        return visitStatus;
+                    }
 
-					if (FunctionStartingLineNumber > lineNo) {
-						visitStatus = true;
-						putDataInToMap(className, "");
-					}
-					IASTNode node1 = declarator.getParent().getParent();
+                    if (simple_declaration.getFileLocation().getFileName()
+                            .contains(".h")) {
+                        if (fileExtension.equals(".cpp")
+                                || fileExtension.equals(".c")) {
+                            return visitStatus;
+                        }
+                    }
 
-					if (node1 instanceof CPPASTCompositeTypeSpecifier) {
-						className = ((CPPASTCompositeTypeSpecifier) node1)
-								.getName().toString();
-					}
+                    final int FunctionStartingLineNumber = declarator
+                            .getFileLocation().getStartingLineNumber();
+                    final int FunctionEndLineNumber = declaration
+                            .getFileLocation().getEndingLineNumber();
 
-					MethodName = declarator.getName().toString();
+                    if (FunctionStartingLineNumber > lineNo) {
+                        visitStatus = true;
+                        putDataInToMap(className, "");
+                    }
+                    IASTNode node1 = declarator.getParent().getParent();
 
-					if (fileExtension.equals(".c")) {
-						className = "";
-					}
-					if (FunctionStartingLineNumber <= lineNo
-							&& lineNo <= FunctionEndLineNumber) {
-						visitStatus = true;
-						putDataInToMap(className, MethodName);
-					}
-				}
-			}
-		} else if (declaration instanceof IASTFunctionDefinition) {
-			final IASTFunctionDefinition Func_Definition = (IASTFunctionDefinition) declaration;
-			final IASTFunctionDeclarator Func_Declarator = Func_Definition
-					.getDeclarator();
+                    if (node1 instanceof CPPASTCompositeTypeSpecifier) {
+                        className = ((CPPASTCompositeTypeSpecifier) node1)
+                                .getName().toString();
+                    }
 
-			final int FunctionStartingLineNumber = declaration
-					.getFileLocation().getStartingLineNumber();
-			final int FunctionEndLineNumber = declaration.getFileLocation()
-					.getEndingLineNumber();
-			String className = "";
-			String MethodName = "";
+                    MethodName = declarator.getName().toString();
 
-			IASTNode node = Func_Definition.getParent();
+                    if (fileExtension.equals(".c")) {
+                        className = "";
+                    }
+                    if (FunctionStartingLineNumber <= lineNo
+                            && lineNo <= FunctionEndLineNumber) {
+                        visitStatus = true;
+                        putDataInToMap(className, MethodName);
+                    }
+                }
+            }
+        } else if (declaration instanceof IASTFunctionDefinition) {
+            final IASTFunctionDefinition Func_Definition = (IASTFunctionDefinition) declaration;
+            final IASTFunctionDeclarator Func_Declarator = Func_Definition
+                    .getDeclarator();
 
-			if (node instanceof CPPASTCompositeTypeSpecifier) {
-				className = ((CPPASTCompositeTypeSpecifier) node).getName()
-						.toString();
-			}
+            final int FunctionStartingLineNumber = declaration
+                    .getFileLocation().getStartingLineNumber();
+            final int FunctionEndLineNumber = declaration.getFileLocation()
+                    .getEndingLineNumber();
+            String className = "";
+            String MethodName = "";
 
-			if (Func_Definition.getDeclSpecifier().getStorageClass() == IASTDeclSpecifier.sc_typedef) {
-				return visitStatus;
-			}
+            IASTNode node = Func_Definition.getParent();
 
-			if (Func_Definition.getFileLocation().getFileName().contains(".h")) {
-				if (fileExtension.equals(".cpp") || fileExtension.equals(".c")) {
-					return visitStatus;
-				}
-			}
+            if (node instanceof CPPASTCompositeTypeSpecifier) {
+                className = ((CPPASTCompositeTypeSpecifier) node).getName()
+                        .toString();
+            }
 
-			MethodName = Func_Declarator.getName().toString();
+            if (Func_Definition.getDeclSpecifier().getStorageClass() == IASTDeclSpecifier.sc_typedef) {
+                return visitStatus;
+            }
 
-			if (FunctionStartingLineNumber > lineNo) {
-				visitStatus = true;
-				putDataInToMap(className, "");
-			}
+            if (Func_Definition.getFileLocation().getFileName().contains(".h")) {
+                if (fileExtension.equals(".cpp") || fileExtension.equals(".c")) {
+                    return visitStatus;
+                }
+            }
 
-			if (MethodName.contains("::")) {
-				int indexofColon = MethodName.indexOf("::");
-				className = MethodName.substring(0, indexofColon);
-				MethodName = MethodName.substring(indexofColon + 2);
-			}
+            MethodName = Func_Declarator.getName().toString();
 
-			if (FunctionStartingLineNumber <= lineNo
-					&& lineNo <= FunctionEndLineNumber) {
-				visitStatus = true;
-				putDataInToMap(className, MethodName);
+            if (FunctionStartingLineNumber > lineNo) {
+                visitStatus = true;
+                putDataInToMap(className, "");
+            }
 
-			}
+            if (MethodName.contains("::")) {
+                int indexofColon = MethodName.indexOf("::");
+                className = MethodName.substring(0, indexofColon);
+                MethodName = MethodName.substring(indexofColon + 2);
+            }
 
-		}
+            if (FunctionStartingLineNumber <= lineNo
+                    && lineNo <= FunctionEndLineNumber) {
+                visitStatus = true;
+                putDataInToMap(className, MethodName);
 
-		return visitStatus;
+            }
 
-	}
+        }
 
-	private static void putDataInToMap(String className, String MethodName) {
+        return visitStatus;
 
-		mapModuleName.clear();
-		mapModuleName.put(ResultFileConstant.CLASS_NAME, className);
-		mapModuleName.put(ResultFileConstant.METHOD_NAME, MethodName);
-	}
+    }
 
-	/**
-	 * visitSourceCodeforCalMethodAndClassCount(IASTDeclaration declaration )
-	 * method is responsible for visit functional statement
-	 * 
-	 * @param [in] IASTDeclaration declaration
-	 * @return [out] boolean
-	 * @warning [None]
-	 * @exception IO
-	 *                exception
-	 */
-	static boolean visitSourceCodeforCalMethodAndClassCount(
-			IASTDeclaration declaration) {
-		// String declarationString ="";
-		if ((declaration instanceof IASTSimpleDeclaration)) {
-			final IASTSimpleDeclaration simple_declaration = (IASTSimpleDeclaration) declaration;
-			IASTDeclSpecifier decSpecifier = simple_declaration
-					.getDeclSpecifier();
-			if ((decSpecifier instanceof CPPASTCompositeTypeSpecifier)) {
-				classCount++;
-				CPPASTCompositeTypeSpecifier cppComptypeSpecifier = ((CPPASTCompositeTypeSpecifier) decSpecifier);
-				IASTDeclaration[] astDeclarationList = cppComptypeSpecifier
-						.getMembers();
+    private static void putDataInToMap(String className, String MethodName) {
 
-				for (IASTDeclaration declaration1 : astDeclarationList) {
-					if (declaration1 instanceof IASTSimpleDeclaration) {
-						final IASTDeclarator[] declaratorList = ((IASTSimpleDeclaration) declaration1)
-								.getDeclarators();
-						for (IASTDeclarator declarator : declaratorList) {
-							if (declarator instanceof IASTFunctionDeclarator) {
-								methodCount++;
+        mapModuleName.clear();
+        mapModuleName.put(ResultFileConstant.CLASS_NAME, className);
+        mapModuleName.put(ResultFileConstant.METHOD_NAME, MethodName);
+    }
 
-							}
-						}
-					}
-				}
+    /**
+     * visitSourceCodeforCalMethodAndClassCount(IASTDeclaration declaration )
+     * method is responsible for visit functional statement
+     * 
+     * @param [in]
+     * IASTDeclaration declaration
+     * @return [out] boolean
+     * @warning [None]
+     * @exception IO
+     * exception
+     */
+    static boolean visitSourceCodeforCalMethodAndClassCount(
+            IASTDeclaration declaration) {
+        // String declarationString ="";
+        if ((declaration instanceof IASTSimpleDeclaration)) {
+            final IASTSimpleDeclaration simple_declaration = (IASTSimpleDeclaration) declaration;
+            IASTDeclSpecifier decSpecifier = simple_declaration
+                    .getDeclSpecifier();
+            if ((decSpecifier instanceof CPPASTCompositeTypeSpecifier)) {
+                classCount++;
+                CPPASTCompositeTypeSpecifier cppComptypeSpecifier = ((CPPASTCompositeTypeSpecifier) decSpecifier);
+                IASTDeclaration[] astDeclarationList = cppComptypeSpecifier
+                        .getMembers();
 
-			}
-		} else if ((declaration instanceof IASTFunctionDefinition)) {
-			methodCount++;
-		}
-		return false;
-	}
+                for (IASTDeclaration declaration1 : astDeclarationList) {
+                    if (declaration1 instanceof IASTSimpleDeclaration) {
+                        final IASTDeclarator[] declaratorList = ((IASTSimpleDeclaration) declaration1)
+                                .getDeclarators();
+                        for (IASTDeclarator declarator : declaratorList) {
+                            if (declarator instanceof IASTFunctionDeclarator) {
+                                methodCount++;
 
-	/**
-	 * visitSourceCodeforCalFileComplexity(IASTDeclaration declaration) method
-	 * is responsible for visit functional statement
-	 * 
-	 * @param [in] IASTDeclaration declaration
-	 * @return [out] boolean
-	 * @warning [None]
-	 * @exception IO
-	 *                exception
-	 */
-	static boolean visitSourceCodeforCalFileComplexity(
-			IASTDeclaration declaration) {
-		String MethodName = "";
-		count = 0;
-		if (declaration instanceof IASTFunctionDefinition) {
-			final IASTFunctionDefinition Func_Definition = (IASTFunctionDefinition) declaration;
-			final IASTFunctionDeclarator Func_Declarator = Func_Definition
-					.getDeclarator();
-			IASTStatement iastStatement = ((IASTFunctionDefinition) declaration)
-					.getBody();
-			MethodName = Func_Declarator.getName().toString();
-			visitCompoundStatement(iastStatement);
-			int complexity = count + 1;
-			mapSourceMatrices.put(MethodName, complexity);
+                            }
+                        }
+                    }
+                }
 
-		}
+            }
+        } else if ((declaration instanceof IASTFunctionDefinition)) {
+            methodCount++;
+        }
+        return false;
+    }
 
-		return false;
-	}
+    /**
+     * visitSourceCodeforCalFileComplexity(IASTDeclaration declaration) method
+     * is responsible for visit functional statement
+     * 
+     * @param [in]
+     * IASTDeclaration declaration
+     * @return [out] boolean
+     * @warning [None]
+     * @exception IO
+     * exception
+     */
+    static boolean visitSourceCodeforCalFileComplexity(
+            IASTDeclaration declaration) {
+        String MethodName = "";
+        count = 0;
+        if (declaration instanceof IASTFunctionDefinition) {
+            final IASTFunctionDefinition Func_Definition = (IASTFunctionDefinition) declaration;
+            final IASTFunctionDeclarator Func_Declarator = Func_Definition
+                    .getDeclarator();
+            IASTStatement iastStatement = ((IASTFunctionDefinition) declaration)
+                    .getBody();
+            MethodName = Func_Declarator.getName().toString();
+            visitCompoundStatement(iastStatement);
+            int complexity = count + 1;
+            mapSourceMatrices.put(MethodName, complexity);
 
-	/**
-	 * visitCompoundStatement(IASTStatement iastStatement) method is responsible
-	 * for visit functional statement
-	 * 
-	 * @param [in] IASTStatement iastStatement
-	 * @return [out] void
-	 * @warning [None]
-	 * @exception IO
-	 *                exception
-	 */
-	private static void visitCompoundStatement(IASTStatement iastStatement) {
-		if (iastStatement instanceof IASTCompoundStatement) {
-			IASTStatement[] arrayStatement = ((IASTCompoundStatement) iastStatement)
-					.getStatements();
-			for (IASTStatement statement : arrayStatement) {
+        }
 
-				if ((statement instanceof IASTIfStatement)
-						|| (statement instanceof IASTForStatement)
-						|| (statement instanceof IASTSwitchStatement)
-						|| (statement instanceof IASTWhileStatement)
-						|| (statement instanceof IASTCaseStatement)
-						|| (statement instanceof IASTDoStatement)
-						|| (statement instanceof IASTCompoundStatement)) {
+        return false;
+    }
 
-					count++;
-					if (statement instanceof IASTIfStatement) {
-						final IASTIfStatement if_statement = (IASTIfStatement) statement;
-						visitElseIfStatement(if_statement);
-					} else if (statement instanceof IASTForStatement) {
-						final IASTForStatement for_statement = (IASTForStatement) statement;
-						final IASTStatement for_body = for_statement.getBody();
-						if (for_body instanceof IASTCompoundStatement) {
-							visitCompoundStatement(for_body);
-						}
+    /**
+     * visitCompoundStatement(IASTStatement iastStatement) method is responsible
+     * for visit functional statement
+     * 
+     * @param [in]
+     * IASTStatement iastStatement
+     * @return [out] void
+     * @warning [None]
+     * @exception IO
+     * exception
+     */
+    private static void visitCompoundStatement(IASTStatement iastStatement) {
+        if (iastStatement instanceof IASTCompoundStatement) {
+            IASTStatement[] arrayStatement = ((IASTCompoundStatement) iastStatement)
+                    .getStatements();
+            for (IASTStatement statement : arrayStatement) {
 
-					} else if (statement instanceof IASTWhileStatement) {
-						final IASTWhileStatement while_statement = (IASTWhileStatement) statement;
-						final IASTStatement while_body = while_statement
-								.getBody();
-						if (while_body instanceof IASTCompoundStatement) {
-							visitCompoundStatement(while_body);
-						}
+                if ((statement instanceof IASTIfStatement)
+                        || (statement instanceof IASTForStatement)
+                        || (statement instanceof IASTSwitchStatement)
+                        || (statement instanceof IASTWhileStatement)
+                        || (statement instanceof IASTCaseStatement)
+                        || (statement instanceof IASTDoStatement)
+                        || (statement instanceof IASTCompoundStatement)) {
 
-					} else if (statement instanceof IASTDoStatement) {
-						final IASTDoStatement do_statement = (IASTDoStatement) statement;
-						final IASTStatement do_body = do_statement.getBody();
-						if (do_body instanceof IASTCompoundStatement) {
-							visitCompoundStatement(do_body);
-						}
-					} else if (statement instanceof IASTSwitchStatement) {
-						final IASTSwitchStatement switch_statement = (IASTSwitchStatement) statement;
+                    count++;
+                    if (statement instanceof IASTIfStatement) {
+                        final IASTIfStatement if_statement = (IASTIfStatement) statement;
+                        visitElseIfStatement(if_statement);
+                    } else if (statement instanceof IASTForStatement) {
+                        final IASTForStatement for_statement = (IASTForStatement) statement;
+                        final IASTStatement for_body = for_statement.getBody();
+                        if (for_body instanceof IASTCompoundStatement) {
+                            visitCompoundStatement(for_body);
+                        }
 
-						final IASTStatement switch_body = switch_statement
-								.getBody();
+                    } else if (statement instanceof IASTWhileStatement) {
+                        final IASTWhileStatement while_statement = (IASTWhileStatement) statement;
+                        final IASTStatement while_body = while_statement
+                                .getBody();
+                        if (while_body instanceof IASTCompoundStatement) {
+                            visitCompoundStatement(while_body);
+                        }
 
-						if ((switch_body instanceof IASTCompoundStatement)) {
-							visitCompoundStatement(switch_body);
-						}
-					}
+                    } else if (statement instanceof IASTDoStatement) {
+                        final IASTDoStatement do_statement = (IASTDoStatement) statement;
+                        final IASTStatement do_body = do_statement.getBody();
+                        if (do_body instanceof IASTCompoundStatement) {
+                            visitCompoundStatement(do_body);
+                        }
+                    } else if (statement instanceof IASTSwitchStatement) {
+                        final IASTSwitchStatement switch_statement = (IASTSwitchStatement) statement;
 
-				}
+                        final IASTStatement switch_body = switch_statement
+                                .getBody();
 
-			}
+                        if ((switch_body instanceof IASTCompoundStatement)) {
+                            visitCompoundStatement(switch_body);
+                        }
+                    }
 
-		} else if (iastStatement instanceof CPPASTTryBlockStatement) {
-			count++;
-			final CPPASTTryBlockStatement try_statement = (CPPASTTryBlockStatement) iastStatement;
-			IASTStatement astStatement = try_statement.getTryBody();
-			if (astStatement instanceof IASTCompoundStatement) {
-				visitCompoundStatement(astStatement);
-			}
+                }
 
-		} else if (iastStatement instanceof CPPASTCatchHandler) {
-			count++;
-			final CPPASTCatchHandler try_statement = (CPPASTCatchHandler) iastStatement;
-			IASTStatement astStatement = try_statement.getCatchBody();
-			if (astStatement instanceof IASTCompoundStatement) {
-				visitCompoundStatement(astStatement);
-			}
+            }
 
-		}
-	}
+        } else if (iastStatement instanceof CPPASTTryBlockStatement) {
+            count++;
+            final CPPASTTryBlockStatement try_statement = (CPPASTTryBlockStatement) iastStatement;
+            IASTStatement astStatement = try_statement.getTryBody();
+            if (astStatement instanceof IASTCompoundStatement) {
+                visitCompoundStatement(astStatement);
+            }
 
-	/**
-	 * @param if_statement
-	 */
-	private static void visitElseIfStatement(final IASTIfStatement if_statement) {
-		final IASTStatement else_clause = if_statement.getElseClause();
-		final IASTStatement than_clause = if_statement.getThenClause();
-		if (than_clause != null) {
-			// count++;
-			if (than_clause instanceof IASTCompoundStatement) {
+        } else if (iastStatement instanceof CPPASTCatchHandler) {
+            count++;
+            final CPPASTCatchHandler try_statement = (CPPASTCatchHandler) iastStatement;
+            IASTStatement astStatement = try_statement.getCatchBody();
+            if (astStatement instanceof IASTCompoundStatement) {
+                visitCompoundStatement(astStatement);
+            }
 
-				visitCompoundStatement(than_clause);
-			} else if (than_clause instanceof IASTIfStatement) {
-				count++;
-				visitElseIfStatement((IASTIfStatement) than_clause);
-			}
-		}
+        }
+    }
 
-		if (else_clause != null) {
-			// count++;
-			if (else_clause instanceof IASTCompoundStatement) {
+    /**
+     * @param if_statement
+     */
+    private static void visitElseIfStatement(final IASTIfStatement if_statement) {
+        final IASTStatement else_clause = if_statement.getElseClause();
+        final IASTStatement than_clause = if_statement.getThenClause();
+        if (than_clause != null) {
+            // count++;
+            if (than_clause instanceof IASTCompoundStatement) {
 
-				visitCompoundStatement(else_clause);
-			} else if (else_clause instanceof IASTIfStatement) {
-				count++;
-				visitElseIfStatement((IASTIfStatement) else_clause);
-			}
-		}
-	}
+                visitCompoundStatement(than_clause);
+            } else if (than_clause instanceof IASTIfStatement) {
+                count++;
+                visitElseIfStatement((IASTIfStatement) than_clause);
+            }
+        }
 
-	public static boolean visitSourceCodeforSloc(IASTDeclaration declaration, final String sourcePath) {
-		String MethodName = "";
-		int functionSloc = 0;
-		if (declaration instanceof IASTFunctionDefinition) {
-			final IASTFunctionDefinition Func_Definition = (IASTFunctionDefinition) declaration;
-			final IASTFunctionDeclarator Func_Declarator = Func_Definition.getDeclarator();
-			MethodName = Func_Declarator.getName().toString();
-			
-			IASTStatement iastStatement = ((IASTFunctionDefinition) declaration).getBody();
-			functionSloc = visitSloc(iastStatement, sourcePath);
-			
-			mapFunctionLocMetrices.put(MethodName, functionSloc);
-		}
-		return false;
-	}
-	
-	private static int visitSloc(IASTStatement iastStatement, final String sourcePath) {
-		final int startLineNumber = iastStatement.getFileLocation().getStartingLineNumber();
-		final int endLineNumber = iastStatement.getFileLocation().getEndingLineNumber();
-		
-		sloc = MetricUtil.getFunctionLOCArray(sourcePath,startLineNumber, endLineNumber );
-		return sloc;
-	}
+        if (else_clause != null) {
+            // count++;
+            if (else_clause instanceof IASTCompoundStatement) {
+
+                visitCompoundStatement(else_clause);
+            } else if (else_clause instanceof IASTIfStatement) {
+                count++;
+                visitElseIfStatement((IASTIfStatement) else_clause);
+            }
+        }
+    }
+
+    public static boolean visitSourceCodeforSloc(IASTDeclaration declaration, final String sourcePath) {
+        String MethodName = "";
+        int functionSloc = 0;
+        if (declaration instanceof IASTFunctionDefinition) {
+            final IASTFunctionDefinition Func_Definition = (IASTFunctionDefinition) declaration;
+            final IASTFunctionDeclarator Func_Declarator = Func_Definition.getDeclarator();
+            MethodName = Func_Declarator.getName().toString();
+
+            IASTStatement iastStatement = ((IASTFunctionDefinition) declaration).getBody();
+            functionSloc = visitSloc(iastStatement, sourcePath);
+
+            mapFunctionLocMetrices.put(MethodName, functionSloc);
+        }
+        return false;
+    }
+
+    private static int visitSloc(IASTStatement iastStatement, final String sourcePath) {
+        final int startLineNumber = iastStatement.getFileLocation().getStartingLineNumber();
+        final int endLineNumber = iastStatement.getFileLocation().getEndingLineNumber();
+
+        sloc = MetricUtil.getFunctionLOCArray(sourcePath, startLineNumber, endLineNumber);
+        return sloc;
+    }
 }

@@ -150,7 +150,12 @@ public class DexterAnalyzerThread extends Thread {
             }
 
             try {
-                final StringBuilder src = new StringBuilder((int) file.length());
+                StringBuilder src;
+                if (file.length() < Integer.MAX_VALUE)
+                    src = new StringBuilder((int) file.length());
+                else
+                    src = new StringBuilder(Integer.MAX_VALUE);
+
                 for (final String content : Files.readLines(file, DexterConfig.getInstance().getSourceEncoding())) {
                     src.append(content).append(DexterUtil.LINE_SEPARATOR);
                 }

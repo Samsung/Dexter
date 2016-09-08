@@ -26,7 +26,7 @@ public class CheckerDescriptionUtil {
     }
 
     private static String createUrlForDefect(final IDexterClient client, final Defect defect) {
-        StringBuilder url = new StringBuilder(100);
+        StringBuilder url = new StringBuilder(1024);
 
         url.append("http://").append(client.getServerHost()).append(":") //$NON-NLS-1$ //$NON-NLS-2$
                 .append(client.getServerPort()).append(DexterConfig.DEFECT_HELP_BASE).append("/") //$NON-NLS-1$
@@ -50,7 +50,7 @@ public class CheckerDescriptionUtil {
     }
 
     private static String createHtmlContentsForWebSites(final Defect defect) {
-        StringBuilder html = new StringBuilder(300);
+        StringBuilder html = new StringBuilder(1024);
 
         html.append("<html><body>");
         html.append("<h2> Please refer to following search sites:</h2>");

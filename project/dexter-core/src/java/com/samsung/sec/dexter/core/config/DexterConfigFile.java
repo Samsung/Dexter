@@ -83,7 +83,7 @@ public class DexterConfigFile implements IDexterConfigFile {
                     "There is no " + DexterConfig.DEXTER_CFG_FILENAME + " file : " + confFile.getName());
         }
 
-        final StringBuilder confJson = new StringBuilder(50);
+        final StringBuilder confJson = new StringBuilder(1024);
 
         try {
             for (String content : Files.readLines(confFile, Charsets.UTF_8)) {
