@@ -149,6 +149,6 @@ public class EclipseAnalysis {
     private static void execute(final AnalysisConfig config) {
         final IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
         final IDexterPluginManager pluginManager = DexterUIActivator.getDefault().getPluginManager();
-        DexterAnalyzer.runSync(config, pluginManager, client);
+        DexterAnalyzer.getInstance().runSync(config, pluginManager, client);
     }
 }

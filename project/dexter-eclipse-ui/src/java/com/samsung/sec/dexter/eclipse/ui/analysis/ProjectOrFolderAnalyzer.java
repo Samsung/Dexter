@@ -165,7 +165,7 @@ public class ProjectOrFolderAnalyzer {
         config.generateModulePath();
 
         final IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
-        DexterAnalyzer.runSync(config, DexterUIActivator.getDefault().getPluginManager(), client);
+        DexterAnalyzer.getInstance().runSync(config, DexterUIActivator.getDefault().getPluginManager(), client);
     }
 
     private void setShouldSendSourceCode(AnalysisConfig config) {

@@ -178,7 +178,7 @@ public class Main {
                 baseAnalysisConfig.setAnalysisType(DexterConfig.AnalysisType.FOLDER);
                 break;
             case FILE:
-                baseAnalysisConfig.setAnalysisType(DexterConfig.AnalysisType.SAVE);
+                baseAnalysisConfig.setAnalysisType(DexterConfig.AnalysisType.FILE);
                 break;
             default:
                 baseAnalysisConfig.setAnalysisType(DexterConfig.AnalysisType.UNKNOWN);
@@ -222,7 +222,7 @@ public class Main {
         for (final String fileFullPath : sourceFileFullPathList) {
             final AnalysisConfig analysisConfig = createAnalysisConfig(fileFullPath, cliAnalysisResultHandler,
                     baseAnalysisConfig);
-            DexterAnalyzer.runSync(analysisConfig, pluginManager, client);
+            DexterAnalyzer.getInstance().runSync(analysisConfig, pluginManager, client);
         }
 
         cliAnalysisResultHandler.handleEndOfResultFile();
@@ -239,7 +239,7 @@ public class Main {
         for (final String fileFullPath : sourceFileFullPathList) {
             final AnalysisConfig analysisConfig = createAnalysisConfig(fileFullPath, cliAnalysisResultHandler,
                     baseAnalysisConfig);
-            DexterAnalyzer.runAsync(analysisConfig, pluginManager, client);
+            DexterAnalyzer.getInstance().runAsync(analysisConfig, pluginManager, client);
         }
     }
 

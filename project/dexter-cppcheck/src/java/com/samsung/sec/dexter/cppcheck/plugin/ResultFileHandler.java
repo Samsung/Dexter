@@ -129,23 +129,22 @@ public class ResultFileHandler extends DefaultHandler {
 
             } catch (DexterRuntimeException e) {
                 logger.info(e.getMessage());
-                if (!(DexterConfig.getInstance().getRunMode().equals(DexterConfig.RunMode.CLI)
-                        && DexterConfig.getInstance().isSpecifiedCheckerOptionEnabledByCli())) {
-                    Checker checker = new Checker(checkerCode, checkerCode,
-                            CppcheckDexterPlugin.PLUGIN_VERSION.getVersion(), true);
 
-                    
-                    if ("true".equals(attributes.getValue("inconclusive"))) {
-                        checker.setSeverityCode("ETC");
-                        checker.setActive(false);
-                    } 
-                    
-                    currentOccurence.setSeverityCode("ETC");
-                    currentOccurence.setCategoryName("");
-                    setSeverityForNewChecker(attributes, checker);
-                    checkerConfig.addChecker(checker);
-
+                if (DexterConfig.getInstance().isSpecifiedCheckerOptionEnabledByCli()) {
+                    return;
                 }
+
+                Checker checker = new Checker(checkerCode, checkerCode,
+                        CppcheckDexterPlugin.PLUGIN_VERSION.getVersion(), true);
+
+                checker.setSeverityCode("ETC");
+                checker.setActive("true".equals(attributes.getValue("inconclusive")) == false);
+
+                currentOccurence.setSeverityCode("ETC");
+                currentOccurence.setCategoryName("");
+
+                checkerConfig.addChecker(checker);
+
                 logger.info("Found new checker(" + checkerCode + ") in " + config.getSourceFileFullPath());
             }
         } else if ("location".equals(qName)) {
@@ -181,28 +180,6 @@ public class ResultFileHandler extends DefaultHandler {
                 logger.warn(e);
             }
         }
-    }
-
-    private void setSeverityForNewChecker(final Attributes attributes, Checker checker) {
-        // do not use new checker before reviewing in SE
-        checker.setSeverityCode("ETC");
-        /*
-         * switch(attributes.getValue("severity")){
-         * case "error" :
-         * checker.setSeverityCode("CRI");
-         * break;
-         * case "warning" :
-         * checker.setSeverityCode("MAJ");
-         * break;
-         * case "style":
-         * case "performance":
-         * case "portability":
-         * checker.setSeverityCode("MIN");
-         * break;
-         * default :
-         * checker.setSeverityCode("ETC");
-         * }
-         */
     }
 
     /*
