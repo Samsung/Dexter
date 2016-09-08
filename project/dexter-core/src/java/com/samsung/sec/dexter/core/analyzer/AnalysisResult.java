@@ -77,6 +77,7 @@ public class AnalysisResult extends BaseAnalysisEntity {
 
         if (isNewDefect) {
             Defect defect = preOccr.toDefect();
+            defect.setAnalysisType(getAnalysisType().name());
             defect.addOccurence(preOccr.toOccurence());
             defectList.add(defect);
             returnDefect = defect;
