@@ -28,6 +28,7 @@ var JSONbig = require("json-bigint");
 var database = require("../util/database");
 var logging = require('../util/logging');
 var dexterUtil = require('../util/dexter-util');
+var _ = require('lodash');
 
 var account = require("../routes/account");
 var base64 = require("../routes/base64");
@@ -1427,18 +1428,18 @@ exports.getSnapshotSourceCodeV2 = function(req, res) {
         return;
     }
 
-    let fileName = req.body.params.fileName;
-    let modulePath = base64.decode(req.body.params.modulePath);
-    let snapshotId = req.body.params.snapshotId;
+    var  fileName = req.body.params.fileName;
+    var modulePath = base64.decode(req.body.params.modulePath);
+    var snapshotId = req.body.params.snapshotId;
 
-    let changeToBase64 = req.body.params.changeToBase64 || true;
+    var changeToBase64 = req.body.params.changeToBase64 || true;
 
     if(fileName == undefined || fileName == -1){
         res.send({status:"fail", errorMessage: "Invalid Data"});
         return;
     }
 
-    let sql = '';
+    var sql = '';
     if(snapshotId != "undefined"){
         sql = "SELECT sourceCode FROM SourceCodeMap "
             + " WHERE "
@@ -1514,7 +1515,7 @@ exports.checkSnapshotSourceCode = function(req, res) {
 };
 
 
-function makeAnalaysisLog(defectList, params){
+function makeAnalysisLog(defectList, params){
     var criticalCount = 0;
     var majorCount = 0;
     var minorCount = 0;
@@ -1532,11 +1533,41 @@ function makeAnalaysisLog(defectList, params){
         } else if(severityCode == "CRC"){
             crcCount ++;
         } else if(severityCode == "ETC"){
-            etcCount ++;
         }
     }
     addAnalysisLog(params.fileName, params.modulePath, params.userNo, criticalCount, majorCount, minorCount, crcCount, etcCount);
 
+}
+
+function makeAnalysisLogV3(defectList, params){
+    var criticalCount = 0;
+    var majorCount = 0;
+    var minorCount = 0;
+    var crcCount = 0;
+    var etcCount = 0;
+
+    _.forEach(defectList, function(defect){
+        var severityCode = defect.severityCode;
+        switch(severityCode) {
+            case "CRI" :
+                criticalCount++;
+                break;
+            case "MAJ":
+                majorCount ++;
+                break;
+            case "MIN":
+                minorCount ++;
+                break;
+            case "CRC":
+                crcCount ++;
+                break;
+            case "ETC":
+                etcCount ++;
+                break;
+        }
+    });
+
+    addAnalysisLog(params.fileName, params.modulePath, params.userNo, criticalCount, majorCount, minorCount, crcCount, etcCount);
 }
 
 
@@ -1578,7 +1609,7 @@ exports.addV2 = function(req, res) {
     params.userNo = account.getUserNo(req.currentUserId);
 
     // log
-    makeAnalaysisLog(defectList, params);
+    makeAnalysisLog(defectList, params);
 
     addCodeMetrics(params.fileName, params.modulePath, params.userNo, params.snapshotId, codeMetrics);
 
@@ -1598,6 +1629,89 @@ exports.addV2 = function(req, res) {
     }
 };
 
+
+exports.addV3 = function(req, res) {
+    console.log("addV3!!!!!!!!!!!!!!!!!");
+
+    if(req == undefined || req.body == undefined || req.body.result == undefined || req.currentUserId == undefined){
+        res.send({status:"fail", errorMessage: "No Data or No currentUserId"});
+        return;
+    }
+
+    if(account.getUserNo(req.currentUserId) === undefined){
+        res.send({status:"fail", errorMessage: "No UserNo"});
+        return ;
+    }
+
+    var defectJson = req.body.result;
+
+    // 1. verify result
+    var defectObject = JSONbig.parse(defectJson);
+
+    if(defectObject === undefined){
+        res.send({status:"fail", errorMessage: "Invalid Data"});
+        return ;
+    }
+    res.send({status:"ok", message: "Input Data was taken and being processed to insert/update/delete SA DB"});
+
+    var defectList = defectObject.defectList;
+
+    var codeMetrics = defectObject.codeMetrics;
+    var functionMetrics = defectObject.functionMetrics;
+
+    var params = {};
+
+    params.projectName = defectObject.projectName;
+    params.snapshotId = defectObject.snapshotId;
+    params.groupId = defectObject.groupId;
+    params.modulePath = defectObject.modulePath;
+
+    params.fileName = defectObject.fileName;
+    params.userNo = account.getUserNo(req.currentUserId);
+
+
+
+
+    // log
+    makeAnalysisLogV3(defectList, params);
+
+    addCodeMetrics(params.fileName, params.modulePath, params.userNo, params.snapshotId, codeMetrics);
+
+    for(var i=0;i<functionMetrics.length;i++){
+        addFunctionMetrics(params.fileName, params.modulePath, params.userNo, params.snapshotId, functionMetrics[i]);
+    }
+
+    addSnapshot(params.snapshotId, params.groupId, params.userNo);
+
+    /*
+     in AddV3 - checkAnalysisType [ "SAVE" , "FILE", "FOLDER", "PROJECT", "SNAPSHOT", "UNKNOWN"]
+     SAVE / FILE / UNKNOWN : update currentUserId,
+     FOLDER / PROJECT / SNAPSHOT : noUpdate, at the first time to analysis : 'admin : 1'
+     */
+
+    params.userNo = getUserNoFromAnalysisType(defectObject.defectCount, defectList, req.currentUserId);
+
+    if(defectObject.defectCount == 0){
+        newToFixDefectV2(defectList, params);
+    } else {
+        for(var j=0; j < defectList.length ; j++ ){
+            newOrUpdateDefectV2(defectList[j] , params.userNo, params.snapshotId, params.groupId);
+        }
+        newToFixDefectV2(defectList, params);
+    }
+};
+
+function getUserNoFromAnalysisType(defectCount, defectList, currentId){
+
+    if(defectCount == 0){
+        account.getUserNo(currentId);
+    }
+    var analysisType = defectList[0].analysisType;
+    if(analysisType == 'FOLDER' || analysisType == 'PROJECT' || analysisType == 'SNAPSHOT'){
+        return account.getUserNo('admin');
+    }
+    return account.getUserNo(currentId);
+}
 
 
 exports.add = function(req, res) {
@@ -1635,7 +1749,7 @@ exports.add = function(req, res) {
     params.userNo = account.getUserNo(req.currentUserId);
 
     // log
-    makeAnalaysisLog(defectList, params);
+    makeAnalysisLog(defectList, params);
 
     addCodeMetrics(params.fileName, params.modulePath, params.userNo, params.snapshotId, codeMetrics);
 
@@ -2903,7 +3017,7 @@ exports.getOccurencesByFileNameInSnapshotV2 = function(req, res){
     else{
         sql += "     modulePath = " + database.toSqlValue(modulePath);
     }
-    sql += "     and fileName = " + database.toSqlValue(fileName) + ") and snapshotId = "+ database.toSqlValue(snapshotId) + " group by did order by startLine" ;
+    sql += "     and fileName = " + database.toSqlValue(fileName) + ") and snapshotId = "+ database.toSqlValue(snapshotId) + " order by startLine" ;
 
     database.exec(sql, function (err, result) {
         if(err){

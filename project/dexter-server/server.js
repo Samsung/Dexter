@@ -433,6 +433,14 @@ function initRestAPI(){
     app.get('/api/v2/detailed-defect-count', monitor.getDetailedDefectCount);
     app.get('/api/v2/user-count', monitor.getUserCount);
     app.get('/api/v2/user-list', monitor.getUserList);
+
+
+    /** API VERSION 3 **/
+    app.post('/api/v3/analysis/result', auth, analysis.addV3);
+
+
+
+
 }
 
 function startServer(){

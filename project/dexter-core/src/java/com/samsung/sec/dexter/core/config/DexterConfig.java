@@ -69,6 +69,7 @@ public class DexterConfig {
     public static final String CHECK_SERVER_ADDRESS = "/api/v1/isServerAlive";
     public static final String PUT_ANALYSIS_RESULT = "/api/v1/analysis/result";
     public static final String PUT_ANALYSIS_RESULT_V2 = "/api/v2/analysis/result";
+    public static final String PUT_ANALYSIS_RESULT_V3 = "/api/v3/analysis/result";
     public static final String DISMISS_DEFECT = "/api/v1/defect/dismiss";
     public static final String FILTER_FALSE_ALARM = "/api/v1/filter/false-alarm";
     public static final String FILTER_FALSE_ALARM_LIST = "/api/v1/filter/false-alarm-list";

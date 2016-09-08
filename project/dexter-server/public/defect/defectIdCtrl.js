@@ -789,12 +789,13 @@ defectApp.controller('DefectIdCtrl', function($scope, $http, $sce, $location, $a
         if (selectedDefect.did == did) {
             $scope.selectedDefectModulePath = (selectedDefect.modulePath) || "undefined";
 
-            var snapshotId = 'undefined';
+            let snapshotId = '';
             if ($scope.isSnapshotView) {
                 snapshotId = $routeParams.snapshotId;
                 getSnapshotOccurenceInFile(selectedDefect, snapshotId);
             }
             else {
+                snapshotId = 'undefined';
                 getOccurenceInFile(selectedDefect);
 
             }
@@ -820,7 +821,7 @@ defectApp.controller('DefectIdCtrl', function($scope, $http, $sce, $location, $a
         })
     };
 
-    var getSnapshotOccurenceInFile = function(selectedDefect, snapshotId){
+    /*var getSnapshotOccurenceInFile = function(selectedDefect, snapshotId){
         $http.get("/api/v1/snapshot/occurenceInFile", {
             params: {
                 'modulePath': base64.encode($scope.selectedDefectModulePath),
@@ -831,7 +832,23 @@ defectApp.controller('DefectIdCtrl', function($scope, $http, $sce, $location, $a
             $scope.defectOccurrences[results.config.params.fileName] = (results.data) || 'undefined';
             setSelectedDidDetail($scope.defectOccurrences[results.config.params.fileName]);
         });
+    };*/
+    var getSnapshotOccurenceInFile = function (selectedDefect, snapshotId) {
+        const getSnapshotOccurenceInFileUrl = '/api/v2/snapshot/occurence-in-file';
+
+        $http.post( getSnapshotOccurenceInFileUrl , {
+            params: {
+                'modulePath': base64.encode($scope.selectedDefectModulePath),
+                'fileName': selectedDefect.fileName,
+                'snapshotId' : snapshotId
+            }
+        }).then(function (results) {
+            $scope.defectOccurrences = [];
+            $scope.defectOccurrences[results.config.data.params.fileName] = (results.data) || 'undefined';
+            setSelectedDidDetail($scope.defectOccurrences[results.config.data.params.fileName]);
+        });
     };
+
 
     var getOccurenceInFile = function(selectedDefect){
         $http.get("/api/v1/occurenceInFile", {

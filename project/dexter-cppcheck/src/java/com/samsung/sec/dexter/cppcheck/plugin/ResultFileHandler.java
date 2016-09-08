@@ -129,12 +129,15 @@ public class ResultFileHandler extends DefaultHandler {
                     Checker checker = new Checker(checkerCode, checkerCode,
                             CppcheckDexterPlugin.PLUGIN_VERSION.getVersion(), true);
 
+                    
                     if ("true".equals(attributes.getValue("inconclusive"))) {
                         checker.setSeverityCode("ETC");
                         checker.setActive(false);
-                    } else {
-                        setSeverityForNewChecker(attributes, checker);
-                    }
+                    } 
+                    
+                    currentOccurence.setSeverityCode("ETC");
+                    currentOccurence.setCategoryName("");
+                    setSeverityForNewChecker(attributes, checker);
                     checkerConfig.addChecker(checker);
 
                 }

@@ -399,7 +399,6 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
                         'fixCount': data.fixCount,
                         'excCount': data.excCount,
                         'children': []
-                        //'collapsed' : true
                     });
                 });
             }
