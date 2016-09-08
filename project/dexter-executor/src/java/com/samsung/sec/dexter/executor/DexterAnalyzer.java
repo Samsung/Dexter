@@ -71,13 +71,13 @@ public class DexterAnalyzer implements IDexterHomeListener {
         return SaExecutorHolder.INSTANCE;
     }
 
-    public void runSync(final AnalysisConfig config, final IDexterPluginManager pluginManager,
+    public synchronized static void runSync(final AnalysisConfig config, final IDexterPluginManager pluginManager,
             final IDexterClient client) {
         // sync일때에는 인스턴스 하나로 실행해도 될 듯
         new DexterAnalyzerThread(config, pluginManager, client).run();
     }
 
-    public void runAsync(final AnalysisConfig config, final IDexterPluginManager pluginManager,
+    public synchronized static void runAsync(final AnalysisConfig config, final IDexterPluginManager pluginManager,
             final IDexterClient client) {
         new DexterAnalyzerThread(config, pluginManager, client).start();
     }

@@ -66,8 +66,13 @@ public class ResultFileHandler extends DefaultHandler {
         this.result = result;
 
         sourcecode = config.getSourcecodeThatReadIfNotExist();
-        translationUnit = TranslationUnitFactory.getASTTranslationUnit(sourcecode, ParserLanguage.CPP,
-                config.getSourceFileFullPath());
+
+        try {
+            translationUnit = TranslationUnitFactory.getASTTranslationUnit(sourcecode, ParserLanguage.CPP,
+                    config.getSourceFileFullPath());
+        } catch (DexterRuntimeException e) {
+            logger.warn(e);
+        }
 
     }
 
@@ -159,14 +164,18 @@ public class ResultFileHandler extends DefaultHandler {
                 currentOccurence.setMessage(currentOccurence.getMessage() + " " + localName);
             }
 
-            Map<String, String> nameMap = CppUtil.extractModuleName(translationUnit, sourcecode,
-                    currentOccurence.getStartLine());
+            try {
+                Map<String, String> nameMap = CppUtil.extractModuleName(translationUnit, sourcecode,
+                        currentOccurence.getStartLine());
 
-            if (Strings.isNullOrEmpty(nameMap.get(ResultFileConstant.CLASS_NAME)) == false) {
-                currentOccurence.setClassName(nameMap.get(ResultFileConstant.CLASS_NAME));
-            }
-            if (Strings.isNullOrEmpty(nameMap.get(ResultFileConstant.METHOD_NAME)) == false) {
-                currentOccurence.setMethodName(nameMap.get(ResultFileConstant.METHOD_NAME));
+                if (Strings.isNullOrEmpty(nameMap.get(ResultFileConstant.CLASS_NAME)) == false) {
+                    currentOccurence.setClassName(nameMap.get(ResultFileConstant.CLASS_NAME));
+                }
+                if (Strings.isNullOrEmpty(nameMap.get(ResultFileConstant.METHOD_NAME)) == false) {
+                    currentOccurence.setMethodName(nameMap.get(ResultFileConstant.METHOD_NAME));
+                }
+            } catch (DexterRuntimeException e) {
+                logger.warn(e);
             }
         }
     }

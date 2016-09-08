@@ -221,7 +221,12 @@ public class DexterUtil {
         final File file = new File(filePath);
         checkFileExistence(filePath, file);
 
-        final StringBuilder contents = new StringBuilder(10000);
+        if (file.length() > DexterConfig.SOURCE_FILE_SIZE_LIMIT) {
+            logger.warn("Dexter can't analyze a big file : " + filePath + " (" + file.length() + " byte)");
+            return "";
+        }
+
+        final StringBuilder contents = new StringBuilder((int) file.length());
         try {
             for (String content : Files.readLines(file, charset)) {
                 contents.append(content).append(DexterUtil.LINE_SEPARATOR);

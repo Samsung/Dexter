@@ -25,6 +25,7 @@
  */
 package com.samsung.sec.dexter.util;
 
+import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 
 import java.util.HashMap;
@@ -54,6 +55,11 @@ import org.eclipse.cdt.internal.core.parser.scanner.CPreprocessor;
 public class TranslationUnitFactory {
     public static IASTTranslationUnit getASTTranslationUnit(final String code, final ParserLanguage lang,
             final String filePath) {
+        if (code.length() > DexterConfig.SOURCE_FILE_SIZE_LIMIT) {
+            throw new DexterRuntimeException("Dexter can not analyze over " + DexterConfig.SOURCE_FILE_SIZE_LIMIT
+                    + " byte of file:" + filePath + " (" + code.length() + " byte)");
+        }
+
         try {
             return getTranslationUnit(code, lang, filePath);
         } catch (Exception e) {

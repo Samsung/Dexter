@@ -58,7 +58,7 @@ macro initDexterGlobalVariables()
 	g_dexterInitialized = 0;
 	g_dexterPrefix = "[Dexter] ";
 	g_lastFinished = "";
-	g_showResultMsgDialog = 0;
+	g_showResultMsgDialog = 0; 
 	g_waitDexterResult = 0;
 	g_analysisWhenOpen = 0;
 	g_functionList = "";
@@ -85,7 +85,7 @@ macro initDexterGlobalVariables()
 	}
 
 	g_analysisWhenOpen = GetReg("g_analysisWhenOpen");
-	if(g_analysisWhenOpen == nil){
+	if(g_analysisWhenOpen == nil){  
 		g_analysisWhenOpen = 0;
 	}
 }

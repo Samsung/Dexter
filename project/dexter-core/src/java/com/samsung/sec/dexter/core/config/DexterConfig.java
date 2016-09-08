@@ -177,6 +177,7 @@ public class DexterConfig {
      * we cannot use 'cfg' extension because of NASCA
      */
     public static final String DEXTER_DAEMON_CFG_FILENAME = "dexter_daemon_cfg.json";
+    public static final int SOURCE_FILE_SIZE_LIMIT = 1024 * 2 * 1024;
 
     private boolean isReviewMode = false;
 
