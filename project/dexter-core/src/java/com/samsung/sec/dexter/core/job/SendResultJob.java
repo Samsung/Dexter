@@ -93,7 +93,12 @@ public class SendResultJob implements Runnable {
 
         try {
             final List<String> contents = Files.readLines(resultFile, Charsets.UTF_8);
-            final StringBuilder result = new StringBuilder(1024);
+            final StringBuilder result;
+            if (resultFile.length() <= Integer.MAX_VALUE)
+                result = new StringBuilder((int) resultFile.length());
+            else
+                result = new StringBuilder(Integer.MAX_VALUE);
+
             for (final String content : contents) {
                 result.append(content);
             }
@@ -151,7 +156,7 @@ public class SendResultJob implements Runnable {
 
         for (int i = 0; i < resultFiles.length; i++) {
             sendResult(resultFiles[i], client);
-            deleteResultFile(resultFiles[i]);
+            moveResultFileToOldFolder(resultFiles[i]);
         }
     }
 }

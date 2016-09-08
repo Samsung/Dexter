@@ -322,7 +322,13 @@ public class Defect extends BaseDefect {
     }
 
     public String getOccurenceLines(String separator) {
-        StringBuilder lines = new StringBuilder();
+        int size = this.occurences.size() * 500;
+        StringBuilder lines;
+
+        if (size < Integer.MAX_VALUE)
+            lines = new StringBuilder(this.occurences.size() * 500);
+        else
+            lines = new StringBuilder(Integer.MAX_VALUE);
 
         for (Occurence o : this.occurences) {
             lines.append(o.getStartLine()).append(separator);
@@ -332,7 +338,7 @@ public class Defect extends BaseDefect {
     }
 
     public String getShortDescription() {
-        StringBuilder msg = new StringBuilder();
+        StringBuilder msg = new StringBuilder(1024);
         msg.append(this.checkerCode)
                 .append(" / ").append(this.severityCode)
                 .append(" (count:").append(this.occurences.size()).append(", ")

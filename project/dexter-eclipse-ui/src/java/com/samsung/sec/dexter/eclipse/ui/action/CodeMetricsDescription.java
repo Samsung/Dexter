@@ -19,66 +19,66 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPart;
 
 public class CodeMetricsDescription implements IObjectActionDelegate {
-	private AnalysisLog analysisLog;
-	private String fileName;
-	private String modulePath;
+    private AnalysisLog analysisLog;
+    private String fileName;
+    private String modulePath;
 
-	private IWorkbenchPart part;
+    private IWorkbenchPart part;
 
-	public CodeMetricsDescription() {
+    public CodeMetricsDescription() {
 
-	}
+    }
 
-	@Override
-	public void run(IAction action) {
-		assert analysisLog != null;
+    @Override
+    public void run(IAction action) {
+        assert analysisLog != null;
 
-		try {
-			IViewPart codeMetricsPart = EclipseUtil.findView(CodeMetricsView.ID);
-			final CodeMetricsView codeMetricsView = (CodeMetricsView) codeMetricsPart;
-			final IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
+        try {
+            IViewPart codeMetricsPart = EclipseUtil.findView(CodeMetricsView.ID);
+            final CodeMetricsView codeMetricsView = (CodeMetricsView) codeMetricsPart;
+            final IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
 
-			StringBuilder makeCodeMetricsUrl = new StringBuilder();
-			makeCodeMetricsUrl.append("http://").append(client.getServerHost()).append(":") //$NON-NLS-1$ //$NON-NLS-2$
-					.append(client.getServerPort()).append(DexterConfig.CODE_METRICS_BASE)// $NON-NLS-1$
-					.append("?").append(DexterConfig.CODE_METRICS_FILE_NAME).append("=").append(fileName)//$NON-NLS-1$
-					.append("&").append(DexterConfig.CODE_METRICS_MODULE_PATH).append("=").append(modulePath);//$NON-NLS-1$
+            StringBuilder makeCodeMetricsUrl = new StringBuilder(1024);
+            makeCodeMetricsUrl.append("http://").append(client.getServerHost()).append(":") //$NON-NLS-1$ //$NON-NLS-2$
+                    .append(client.getServerPort()).append(DexterConfig.CODE_METRICS_BASE)// $NON-NLS-1$
+                    .append("?").append(DexterConfig.CODE_METRICS_FILE_NAME).append("=").append(fileName)//$NON-NLS-1$
+                    .append("&").append(DexterConfig.CODE_METRICS_MODULE_PATH).append("=").append(modulePath);//$NON-NLS-1$
 
-			codeMetricsView.setUrl(makeCodeMetricsUrl.toString());
+            codeMetricsView.setUrl(makeCodeMetricsUrl.toString());
 
-			EclipseUtil.showView(CodeMetricsView.ID);
+            EclipseUtil.showView(CodeMetricsView.ID);
 
-		} catch (DexterRuntimeException e) {
-			MessageDialog.openError(part.getSite().getShell(), "Code Metrics Description Error",
-					"Cannot open the Code Metrics Description View");
-		}
-	}
+        } catch (DexterRuntimeException e) {
+            MessageDialog.openError(part.getSite().getShell(), "Code Metrics Description Error",
+                    "Cannot open the Code Metrics Description View");
+        }
+    }
 
-	@Override
-	public void selectionChanged(IAction action, ISelection selection) {
-		if (!(selection instanceof IStructuredSelection)) {
-			analysisLog = null;
-			return;
-		}
+    @Override
+    public void selectionChanged(IAction action, ISelection selection) {
+        if (!(selection instanceof IStructuredSelection)) {
+            analysisLog = null;
+            return;
+        }
 
-		final IStructuredSelection sel = (IStructuredSelection) selection;
-		@SuppressWarnings("unchecked")
-		final Iterator<Object> iter = sel.iterator();
+        final IStructuredSelection sel = (IStructuredSelection) selection;
+        @SuppressWarnings("unchecked")
+        final Iterator<Object> iter = sel.iterator();
 
-		while (iter.hasNext()) {
-			final Object obj = iter.next();
+        while (iter.hasNext()) {
+            final Object obj = iter.next();
 
-			if (obj instanceof AnalysisLog) {
-				fileName = ((AnalysisLog) obj).getFileName();
-				modulePath = ((AnalysisLog) obj).getModulePath();
-			}
-		}
+            if (obj instanceof AnalysisLog) {
+                fileName = ((AnalysisLog) obj).getFileName();
+                modulePath = ((AnalysisLog) obj).getModulePath();
+            }
+        }
 
-	}
+    }
 
-	@Override
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		part = targetPart;
-	}
+    @Override
+    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+        part = targetPart;
+    }
 
 }

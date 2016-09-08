@@ -123,7 +123,7 @@ public class CLIPluginInitializer implements IDexterPluginInitializer {
             throw new DexterRuntimeException("There are no dexter plug-ins to add");
         }
 
-        StringBuilder err = new StringBuilder();
+        StringBuilder err = new StringBuilder(500);
 
         for (int i = 0; i < pluginHandlerList.size(); i++) {
             final IDexterPlugin plugin = pluginHandlerList.get(i);

@@ -188,7 +188,14 @@ public class ProjectOrFolderAnalyzer {
                 try {
                     List<Defect> allDefectList = DexterAnalyzer.getAllDefectList(resultList);
 
-                    final StringBuilder msg = new StringBuilder();
+                    int size = allDefectList.size() * 1024;
+
+                    StringBuilder msg;
+                    if (size <= Integer.MAX_VALUE)
+                        msg = new StringBuilder(size);
+                    else
+                        msg = new StringBuilder(Integer.MAX_VALUE);
+
                     addDefectInfo(allDefectList, msg);
 
                     final String sourceFileFullPath = DexterAnalyzer.getSourceFileFullPath(resultList);

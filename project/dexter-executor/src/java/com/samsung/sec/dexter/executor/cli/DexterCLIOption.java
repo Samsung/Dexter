@@ -277,7 +277,7 @@ public class DexterCLIOption implements IDexterCLIOption {
     }
 
     private void throwUserIdOrPasswordException(String invalidItem) {
-        StringBuilder errMsg = new StringBuilder();
+        StringBuilder errMsg = new StringBuilder(1024);
         errMsg.append("Your ").append(invalidItem).append(" is not valid").append(System.lineSeparator());
         errMsg.append("use -u and -p options:").append(System.lineSeparator());
         errMsg.append("eg) dexter id password").append(System.lineSeparator());

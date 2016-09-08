@@ -197,7 +197,11 @@ public class DexterUtil {
 
         checkFileExistence(filePath, file);
 
-        final StringBuilder contents = new StringBuilder(10000);
+        StringBuilder contents;
+        if (file.length() < Integer.MAX_VALUE)
+            contents = new StringBuilder((int) file.length());
+        else
+            contents = new StringBuilder(Integer.MAX_VALUE);
 
         try {
             for (String content : Files.readLines(file, Charsets.UTF_8)) {
@@ -227,6 +231,7 @@ public class DexterUtil {
         }
 
         final StringBuilder contents = new StringBuilder((int) file.length());
+
         try {
             for (String content : Files.readLines(file, charset)) {
                 contents.append(content).append(DexterUtil.LINE_SEPARATOR);
@@ -472,7 +477,7 @@ public class DexterUtil {
             return;
         }
 
-        final StringBuilder cmd = new StringBuilder();
+        final StringBuilder cmd = new StringBuilder(1024);
         cmd.append("REG ADD ").append(homeKey).append(" /f /v ").append(key).append(" /t ").append(type.toString())
                 .append(" /d ").append(value);
 
@@ -692,7 +697,7 @@ public class DexterUtil {
             return "";
         }
 
-        final StringBuilder dirStr = new StringBuilder();
+        final StringBuilder dirStr = new StringBuilder(1024);
         for (final String dir : items) {
             dirStr.append(dir).append(";");
         }
@@ -720,7 +725,7 @@ public class DexterUtil {
      * @param log
      */
     public static void dumpAllStackTraces(final Logger log) {
-        StringBuilder msg = new StringBuilder();
+        StringBuilder msg = new StringBuilder(1024);
 
         for (Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
             msg.append(entry.getKey().getName()).append(":").append(DexterUtil.LINE_SEPARATOR);
@@ -733,7 +738,7 @@ public class DexterUtil {
     }
 
     public static void dumpAllStackTracesForCurrentThread(final Logger log) {
-        StringBuilder msg = new StringBuilder();
+        StringBuilder msg = new StringBuilder(1024);
 
         msg.append(Thread.currentThread().getName()).append(":").append(DexterUtil.LINE_SEPARATOR);
         for (StackTraceElement element : Thread.currentThread().getStackTrace()) {
@@ -775,7 +780,7 @@ public class DexterUtil {
             throw new DexterRuntimeException("cannot make a path because of null parameter");
         }
 
-        StringBuilder path = new StringBuilder();
+        StringBuilder path = new StringBuilder(1024);
         for (int i = 0; i < names.length; i++) {
             if (Strings.isNullOrEmpty(names[i])) {
                 continue;
@@ -942,7 +947,7 @@ public class DexterUtil {
     public static String addPaths(String... paths) {
         assert paths != null;
 
-        StringBuilder pathStr = new StringBuilder();
+        StringBuilder pathStr = new StringBuilder(1024);
         for (int i = 0; i < paths.length; i++) {
             String path = paths[i];
 
@@ -1086,7 +1091,7 @@ public class DexterUtil {
             throw new DexterRuntimeException("cannot open the SourceInsight because line is -1");
         }
 
-        final StringBuilder cmd = new StringBuilder();
+        final StringBuilder cmd = new StringBuilder(1024);
         cmd.append("\"").append(sourceInsightExe).append("/Insight3.exe").append("\"").append(" -i ").append("+")
                 .append(line).append(" ").append(fileFullPath);
 

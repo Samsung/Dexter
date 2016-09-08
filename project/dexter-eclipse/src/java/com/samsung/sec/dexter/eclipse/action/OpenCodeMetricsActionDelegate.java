@@ -21,65 +21,64 @@ import org.eclipse.ui.IWorkbenchPart;
 
 public class OpenCodeMetricsActionDelegate implements IObjectActionDelegate {
 
-	ISelection selection;
+    ISelection selection;
 
-	@Override
-	public void run(IAction action) {
-		if (selection instanceof StructuredSelection) {
+    @Override
+    public void run(IAction action) {
+        if (selection instanceof StructuredSelection) {
 
-			final StructuredSelection sel = (StructuredSelection) this.selection;
+            final StructuredSelection sel = (StructuredSelection) this.selection;
 
-			@SuppressWarnings("unchecked")
-			Iterator<Object> iter = sel.iterator();
-			while (iter.hasNext()) {
-				final Object object = iter.next();
-				if (object instanceof IResource) {
-					final IResource resource = (IResource) object;
-					showCodeMetricsView(resource);
-				}
-			}
-		}
-	}
+            @SuppressWarnings("unchecked")
+            Iterator<Object> iter = sel.iterator();
+            while (iter.hasNext()) {
+                final Object object = iter.next();
+                if (object instanceof IResource) {
+                    final IResource resource = (IResource) object;
+                    showCodeMetricsView(resource);
+                }
+            }
+        }
+    }
 
-	private void showCodeMetricsView(final IResource resource) {
-		if (resource instanceof IFile) {
-			final IFile targetFile = (IFile) resource;
-			String modulePath = "";
-			if (EclipseUtil.isValidJavaResource(resource)) {
-				modulePath = DexterEclipseActivator.getJDTUtil().getModulePath(targetFile);
-			} else if (EclipseUtil.isValidCAndCppResource(resource)) {
-				modulePath = DexterEclipseActivator.getCDTUtil().getModulePath(targetFile);
-			}
+    private void showCodeMetricsView(final IResource resource) {
+        if (resource instanceof IFile) {
+            final IFile targetFile = (IFile) resource;
+            String modulePath = "";
+            if (EclipseUtil.isValidJavaResource(resource)) {
+                modulePath = DexterEclipseActivator.getJDTUtil().getModulePath(targetFile);
+            } else if (EclipseUtil.isValidCAndCppResource(resource)) {
+                modulePath = DexterEclipseActivator.getCDTUtil().getModulePath(targetFile);
+            }
 
-			StringBuilder createCodeMetricsUrl = new StringBuilder();
-			try {
-				IViewPart view = EclipseUtil.findView(CodeMetricsView.ID);
-				final CodeMetricsView codeMetricsView = (CodeMetricsView) view;
-				final IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
+            StringBuilder createCodeMetricsUrl = new StringBuilder(1024);
+            try {
+                IViewPart view = EclipseUtil.findView(CodeMetricsView.ID);
+                final CodeMetricsView codeMetricsView = (CodeMetricsView) view;
+                final IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
 
-				createCodeMetricsUrl.append("http://").append(client.getServerHost()).append(":") //$NON-NLS-1$ //$NON-NLS-2$
-						.append(client.getServerPort()).append(DexterConfig.CODE_METRICS_BASE)// $NON-NLS-1$
-						.append("?").append(DexterConfig.CODE_METRICS_FILE_NAME).append("=") //$NON-NLS-1$
-						.append(targetFile.getName()).append("&").append(DexterConfig.CODE_METRICS_MODULE_PATH) //$NON-NLS-1$
-						.append("=").append(modulePath);
+                createCodeMetricsUrl.append("http://").append(client.getServerHost()).append(":") //$NON-NLS-1$ //$NON-NLS-2$
+                        .append(client.getServerPort()).append(DexterConfig.CODE_METRICS_BASE)// $NON-NLS-1$
+                        .append("?").append(DexterConfig.CODE_METRICS_FILE_NAME).append("=") //$NON-NLS-1$
+                        .append(targetFile.getName()).append("&").append(DexterConfig.CODE_METRICS_MODULE_PATH) //$NON-NLS-1$
+                        .append("=").append(modulePath);
 
-				codeMetricsView.setUrl(createCodeMetricsUrl.toString());
-				EclipseUtil.showView(CodeMetricsView.ID);
-			} catch (DexterRuntimeException e) {
-				DexterEclipseActivator.LOG.error("Cannot open the Code Metrics Description View");
-				DexterEclipseActivator.LOG.error(e.getMessage(), e);
-			}
+                codeMetricsView.setUrl(createCodeMetricsUrl.toString());
+                EclipseUtil.showView(CodeMetricsView.ID);
+            } catch (DexterRuntimeException e) {
+                DexterEclipseActivator.LOG.error("Cannot open the Code Metrics Description View");
+                DexterEclipseActivator.LOG.error(e.getMessage(), e);
+            }
 
-		}
-	}
+        }
+    }
 
-	@Override
-	public void selectionChanged(IAction action, ISelection selection) {
-		this.selection = selection;
-	}
+    @Override
+    public void selectionChanged(IAction action, ISelection selection) {
+        this.selection = selection;
+    }
 
-	@Override
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-	}
+    @Override
+    public void setActivePart(IAction action, IWorkbenchPart targetPart) {}
 
 }

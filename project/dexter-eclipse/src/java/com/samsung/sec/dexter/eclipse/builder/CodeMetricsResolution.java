@@ -17,44 +17,44 @@ import org.eclipse.ui.PlatformUI;
 
 public class CodeMetricsResolution implements IMarkerResolution2 {
 
-	@Override
-	public String getLabel() {
-		return Messages.CodeMetricsResolution_SHOW_CODE_METRICS_DESC;
-	}
+    @Override
+    public String getLabel() {
+        return Messages.CodeMetricsResolution_SHOW_CODE_METRICS_DESC;
+    }
 
-	@Override
-	public void run(IMarker marker) {
-		try {
-			final IViewPart view = EclipseUtil.findView(CodeMetricsView.ID);
-			final CodeMetricsView codeMetricsView = (CodeMetricsView) view;
-			final StringBuilder url = new StringBuilder();
-			final IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
+    @Override
+    public void run(IMarker marker) {
+        try {
+            final IViewPart view = EclipseUtil.findView(CodeMetricsView.ID);
+            final CodeMetricsView codeMetricsView = (CodeMetricsView) view;
+            final StringBuilder url = new StringBuilder(1024);
+            final IDexterClient client = DexterUIActivator.getDefault().getDexterClient();
 
-			url.append("http://").append(client.getServerHost()).append(":") //$NON-NLS-1$ //$NON-NLS-2$
-					.append(client.getServerPort()).append(DexterConfig.CODE_METRICS_BASE);// $NON-NLS-1$
-			// .append("?").append(DexterConfig.CODE_METRICS_FILE_NAME).append("=").append(fileName)//$NON-NLS-1$
-			// .append("&").append(DexterConfig.CODE_METRICS_MODULE_PATH).append("=").append(modulePath);//$NON-NLS-1$
+            url.append("http://").append(client.getServerHost()).append(":") //$NON-NLS-1$ //$NON-NLS-2$
+                    .append(client.getServerPort()).append(DexterConfig.CODE_METRICS_BASE);// $NON-NLS-1$
+            // .append("?").append(DexterConfig.CODE_METRICS_FILE_NAME).append("=").append(fileName)//$NON-NLS-1$
+            // .append("&").append(DexterConfig.CODE_METRICS_MODULE_PATH).append("=").append(modulePath);//$NON-NLS-1$
 
-			codeMetricsView.setUrl(url.toString());
-			EclipseUtil.showView(CodeMetricsView.ID);
-		} catch (DexterRuntimeException e) {
-			DexterEclipseActivator.LOG.error(e.getMessage(), e);
-			MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-					Messages.CodeMetricsResolution_CODE_METRICS_ERROR,
-					Messages.CodeMetricsResolution_CODE_METRICS_ERROR_DESC);
-		}
+            codeMetricsView.setUrl(url.toString());
+            EclipseUtil.showView(CodeMetricsView.ID);
+        } catch (DexterRuntimeException e) {
+            DexterEclipseActivator.LOG.error(e.getMessage(), e);
+            MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                    Messages.CodeMetricsResolution_CODE_METRICS_ERROR,
+                    Messages.CodeMetricsResolution_CODE_METRICS_ERROR_DESC);
+        }
 
-	}
+    }
 
-	@Override
-	public String getDescription() {
-		return Messages.CodeMetricsResolution_CODE_METRICS_DESC;
+    @Override
+    public String getDescription() {
+        return Messages.CodeMetricsResolution_CODE_METRICS_DESC;
 
-	}
+    }
 
-	@Override
-	public Image getImage() {
-		return EclipseUtil.getImage(DexterEclipseActivator.PLUGIN_ID, "/icons/codeMetricsView7.gif"); //$NON-NLS-1$
-	}
+    @Override
+    public Image getImage() {
+        return EclipseUtil.getImage(DexterEclipseActivator.PLUGIN_ID, "/icons/codeMetricsView7.gif"); //$NON-NLS-1$
+    }
 
 }

@@ -86,7 +86,7 @@ public class AnalysisResultFileManager {
 
     private StringBuilder createJson(final AnalysisResult result) {
         final Gson gson = new Gson();
-        final StringBuilder contents = new StringBuilder(200);
+        final StringBuilder contents = new StringBuilder(1024);
 
         addGeneralContent(result, contents);
         addMetricsContent(result, gson, contents);

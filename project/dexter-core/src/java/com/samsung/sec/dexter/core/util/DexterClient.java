@@ -433,7 +433,7 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
             throw new DexterRuntimeException("Password length must be 4 to 20.");
         }
 
-        final StringBuilder url = new StringBuilder();
+        final StringBuilder url = new StringBuilder(1024);
         url.append(getServiceUrl(DexterConfig.ADD_ACCOUNT)).append("?userId=").append(id).append("&userId2=")
                 .append(pwd);
 
@@ -557,7 +557,7 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
     @Override
     public String getDexterPluginUpdateUrl() {
         try {
-            final StringBuilder url = new StringBuilder();
+            final StringBuilder url = new StringBuilder(1024);
             url.append(getServiceUrl(DexterConfig.GET_DEXTER_PLUGIN_UPDATE_URL)).append("/")
                     .append(DexterUtil.getBit());
 
