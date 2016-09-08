@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dexter-daemon
 Bundle-SymbolicName: dexter-daemon;singleton:=true
-Bundle-Version: 0.10.2
+Bundle-Version: 0.10.4
 Bundle-Activator: com.samsung.sec.dexter.daemon.DexterDaemonActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,

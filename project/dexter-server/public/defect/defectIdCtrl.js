@@ -638,7 +638,7 @@ defectApp.controller('DefectIdCtrl', function($scope, $http, $sce, $location, $a
             {field:'methodName', displayName:'Method/Function', resizable: true},
             {field:'language', displayName:'Language', cellClass:'textAlignCenter', width:85, resizable: true, cellclass:'textAlignCenter' },
             {field:'toolName',displayName:'Tool',visible:false, cellClass:'textAlignCenter', width:85, resizable: true, cellclass:'textAlignCenter' },
-            {field:'modifierId', displayName:'Author', resizable: true, visible:false,  cellClass:'textAlignCenter'},
+            {field:'modifierId', displayName:'Author', resizable: true,  cellClass:'textAlignCenter'},
             {field:'modifiedDateTime', displayName:'Date', resizable: true, cellClass:'textAlignCenter',
                 cellTemplate: '<div><div class="ngCellText">{{row.getProperty(col.field) | date:"yyyy-MM-dd HH:mm:ss"}}</div></div>' },
             {field:'message', displayName:"Description", visible:false, resizable: true}
@@ -866,7 +866,7 @@ defectApp.controller('DefectIdCtrl', function($scope, $http, $sce, $location, $a
         });
     };
 
-    var loadSnapshotSourceCode = function(selectedDefect, snapshotId){
+   /* var loadSnapshotSourceCode = function(selectedDefect, snapshotId){
         $http.get("/api/v1/analysis/snapshot/source", {
                 params: {
                     'modulePath': base64.encode($scope.selectedDefectModulePath),
@@ -884,6 +884,28 @@ defectApp.controller('DefectIdCtrl', function($scope, $http, $sce, $location, $a
                 }
             });
     };
+*/
+
+    let loadSnapshotSourceCode = function (selectedDefect, snapshotId) {
+        const getSnapshotSourceCodeUrl = '/api/v2/analysis/snapshot/sourcecode';
+        $http.post(getSnapshotSourceCodeUrl , {
+            params: {
+                'modulePath': base64.encode($scope.selectedDefectModulePath),
+                'fileName': selectedDefect.fileName,
+                'snapshotId': snapshotId
+            }
+        }).then(function(results){
+            if(isHttpResultOK(results)){
+                let defectSourceCodes = {};
+                defectSourceCodes.source = results.data;
+                defectSourceCodes.fileName = results.config.data.params.fileName;
+                defectSourceCodes.modulePath = base64.decode(results.config.data.params.modulePath);
+                displaySourceCode(defectSourceCodes);
+            }
+        });
+    };
+
+
 
     var setDefaultMsg = function(){
         var noCodeMsg = "There is no content for source codes. When you use snapshot or CLI, you can see the source codes.";

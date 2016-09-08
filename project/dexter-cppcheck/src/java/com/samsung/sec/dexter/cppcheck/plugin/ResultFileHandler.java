@@ -127,8 +127,9 @@ public class ResultFileHandler extends DefaultHandler {
                 logger.info(e.getMessage());
                 if (!(DexterConfig.getInstance().getRunMode().equals(DexterConfig.RunMode.CLI)
                         && DexterConfig.getInstance().isSpecifiedCheckerOptionEnabledByCli())) {
-                    Checker checker = new Checker(checkerCode, checkerCode,
-                            PluginVersion.fromImplementationVersion(CppcheckDexterPlugin.class).getVersion(), true);
+                    Checker checker = new Checker(checkerCode, checkerCode,CppcheckDexterPlugin.PLUGIN_VERSION.toString() , true);
+                            //PluginVersion.fromImplementationVersion(CppcheckDexterPlugin.class).getVersion(), true);
+                    		
 
                     if ("true".equals(attributes.getValue("inconclusive"))) {
                         checker.setSeverityCode("ETC");

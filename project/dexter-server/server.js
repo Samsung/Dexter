@@ -302,7 +302,7 @@ function initRestAPI(){
     /* Analysis Result */
     app.post('/api/v1/analysis/result', auth, analysis.add);
     app.post('/api/v1/analysis/snapshot/source', auth, analysis.addSnapshotSourceCode);
-    app.get('/api/v1/analysis/snapshot/source', auth, analysis.getSnapshotSourceCode);
+    app.get('/api/v1/analysis/snapshot/source', auth, analysis.getSnapshotSourceCode); // Deprecated
     app.get('/api/v1/analysis/snapshot/checkSourceCode', auth, analysis.checkSnapshotSourceCode);
 
     /* Defect Filter */
@@ -337,7 +337,7 @@ function initRestAPI(){
     /* SnapshotDefectMap / SnapshotSourcecodeMap*/
     app.get('/api/v1/snapshot/snapshotList', analysis.getAllSnapshot);
     app.get('/api/v1/snapshot/showSnapshotDefectPage',analysis.getDefectListInSnapshot);
-    app.get('/api/v1/snapshot/occurenceInFile', analysis.getOccurencesByFileNameInSnapshot);
+    app.get('/api/v1/snapshot/occurenceInFile', analysis.getOccurencesByFileNameInSnapshot); // Deprecated
 
     /* code metrics */
     app.get('/api/v1/metrics', analysis.getCodeMetrics);
@@ -390,7 +390,6 @@ function initRestAPI(){
     app.post('/api/v2/analysis/result', auth, analysis.addV2);
     app.get('/api/v2/defect', analysis.getDefectsByModuleAndFileV2);
     app.get('/api/v2/defect/:did', analysis.getDefectsByModuleAndFileForDid);
-    //app.get('/api/v2/snapshot/showSnapshotDefectPage',analysis.getDefectListInSnapshotV2);
 
     /* SnapshotDefectMap / SnapshotSourcecodeMap*/
     app.get('/api/v2/snapshot/snapshotList', analysis.getAllSnapshotV2);
@@ -412,6 +411,11 @@ function initRestAPI(){
     app.post('/api/v2/functionMetrics', functionMetrics.getFunctionMetrics);
 
     app.get('/api/2/codeMetrics/slocList', codeMetrics.getCodeMetricsForSloc);
+
+
+    /* Analysis Result */
+    app.post('/api/v2/analysis/snapshot/sourcecode', auth, analysis.getSnapshotSourceCodeV2);
+    app.post('/api/v2/snapshot/occurence-in-file', analysis.getOccurencesByFileNameInSnapshotV2);
 
     /* EXPORT SECURITY REPORT */
     app.get('/api/v2/security/snapshotAll', analysis.getSnapshotDefectForSecurity);

@@ -1420,6 +1420,58 @@ exports.getSnapshotSourceCode = function(req, res) {
     });
 };
 
+exports.getSnapshotSourceCodeV2 = function(req, res) {
+    if(req == undefined || req.body == undefined ||
+        req.body.params == undefined || req.body.params.fileName == undefined || req.body.params.snapshotId == undefined){
+        res.send({status:"fail", errorMessage: "No Data or No currentUserId"});
+        return;
+    }
+
+    let fileName = req.body.params.fileName;
+    let modulePath = base64.decode(req.body.params.modulePath);
+    let snapshotId = req.body.params.snapshotId;
+
+    let changeToBase64 = req.body.params.changeToBase64 || true;
+
+    if(fileName == undefined || fileName == -1){
+        res.send({status:"fail", errorMessage: "Invalid Data"});
+        return;
+    }
+
+    let sql = '';
+    if(snapshotId != "undefined"){
+        sql = "SELECT sourceCode FROM SourceCodeMap "
+            + " WHERE "
+            + " fileName = " + database.toSqlValue(fileName)
+            + " and modulePath " + database.compareEqual(modulePath)
+            + " and snapshotId" + database.compareEqual(snapshotId)
+            + " ORDER BY createdDateTime desc LIMIT 1";
+    }
+    else{
+        sql = "SELECT sourceCode FROM SourceCodeMap "
+            + " WHERE "
+            + " fileName = " + database.toSqlValue(fileName)
+            + " and modulePath " + database.compareEqual(modulePath)
+            + " ORDER BY createdDateTime desc LIMIT 1";
+    }
+
+    database.exec(sql, function (err, result) {
+        if (err) {
+            logging.error(err.message);
+            res.send({status: "fail", errorMessage: err.message});
+            return;
+        }
+
+        if (result && result[0]) {
+            if(changeToBase64){
+                res.send(new Buffer(result[0].sourceCode, 'base64').toString('utf8'));
+            } else {
+                res.send(result[0].sourceCode);
+            }
+        }
+    });
+};
+
 
 exports.checkSnapshotSourceCode = function(req, res) {
     if(req == undefined || req.query == undefined || req.query.fileName == undefined || req.currentUserId == undefined){
@@ -2804,7 +2856,6 @@ exports.getOccurencesByFileNameInSnapshot = function(req, res){
     }
     sql += "     and fileName = " + database.toSqlValue(fileName) + ") and snapshotId = "+ database.toSqlValue(snapshotId) + "group by did order by startLine" ;
 
-    console.log(sql);
     database.exec(sql, function (err, result) {
         if(err){
             res.send({result:'fail', errorMessage: err.message, errorCode: -1});
@@ -2813,7 +2864,55 @@ exports.getOccurencesByFileNameInSnapshot = function(req, res){
         }
 
         if(result){
-            //res.send(result);
+            res.send(result);
+            return;
+        }
+
+        res.send({result: 'fail', errorMessage: "unknown error"});
+    });
+};
+
+
+exports.getOccurencesByFileNameInSnapshotV2 = function(req, res){
+    if(req == undefined || req.body.params == undefined || req.body.params.fileName == undefined || req.body.params.snapshotId == undefined){
+        res.send({status:"fail", errorMessage: "Input(parameter) error"});
+        return;
+    }
+    var modulePath = '';
+    if (req.body.params.modulePath)
+        modulePath = base64.decode(req.body.params.modulePath);
+
+    var fileName = req.body.params.fileName;
+    var snapshotId = req.body.params.snapshotId;
+
+    var sql = "SELECT "
+        + " did, if(startLine = -1, 1, startLine) as startLine, endLine, if(charStart = -1,'N/A', charStart) as charStart, "
+        + " if(charEnd = -1,'N/A', charEnd) as charEnd, ifnull(variableName,'N/A') as variableName, ifnull(stringValue,'N/A') as stringValue,"
+        + " ifnull(fieldName,'N/A') as fieldName, message, createdDateTime, modifiedDateTime, creatorNo, ifnull(modifierNo,'N/A') as modifierNo, "
+        + "     (select userId from Account where userNo = creatorNo) as creatorId, "
+        + "     (select userId from Account where userNo = modifierNo) as modifierId, "
+        + "     (select checkerCode from Defect B where B.did = A.did) as checkerCode, "
+        + "     (select severityCode from Defect B where B.did = A.did) as severityCode "
+        + " FROM SnapshotOccurenceMap A"
+        + " WHERE did in(select did from Defect WHERE" ;
+
+    if(modulePath == "undefined"){
+        modulePath = "";
+        sql +=  "     modulePath is " + database.toSqlValue(modulePath);
+    }
+    else{
+        sql += "     modulePath = " + database.toSqlValue(modulePath);
+    }
+    sql += "     and fileName = " + database.toSqlValue(fileName) + ") and snapshotId = "+ database.toSqlValue(snapshotId) + " group by did order by startLine" ;
+
+    database.exec(sql, function (err, result) {
+        if(err){
+            res.send({result:'fail', errorMessage: err.message, errorCode: -1});
+            logging.error(err.message);
+            return;
+        }
+
+        if(result){
             res.send(result);
             return;
         }
