@@ -24,7 +24,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * -------------------------------------------------------------------------------------------------------------------
- * Version : 0.10.2
+ * Version : 0.10.4
  * -------------------------------------------------------------------------------------------------------------------
  * Add Key Assignments :
  *   - markDexterDefectToFalseAlarm() : to mark defect status as a false alarm  (async: 3~5 sec)
@@ -49,7 +49,7 @@ macro initDexterGlobalVariables()
 	global g_showResultMsgDialog;	// 1: show,  0: hide
 	global g_waitDexterResult;		// 1: wait(synchronously),  0: no wait(asynchronously)
 	global g_analysisWhenOpen;		// 1: analysis when open, 0: not analysis when open a file(default)
-	global g_functionList;
+	global g_dexterPath;			// dexter daemon installation path
 
 	g_dexterRunning = 1;
 	g_maxUpdateCount = 6;
@@ -57,14 +57,15 @@ macro initDexterGlobalVariables()
 	g_dexterInitialized = 0;
 	g_dexterPrefix = "[Dexter] ";
 	g_lastFinished = "";
-	g_showResultMsgDialog = 0;
+	g_showResultMsgDialog = 0; 
 	g_waitDexterResult = 0;
 	g_analysisWhenOpen = 0;
-	g_functionList = "";
+	
 
 	g_dexterConfig.sourceDirRegKey = "sourceDirRegKey"
 	g_dexterConfig.headerDirRegKey = "headerDirRegKey"
 	g_dexterConfig.dexterHomeRegKey = "dexterHomeRegKey"
+	g_dexterConfig.dexterInstallationPathRegKey = "dexterInstallationPathRegKey"
 	g_dexterConfig.sourceEncodingRegKey = "sourceEncodingRegKey"
 
 	g_dexterRunning = GetReg("g_dexterRunning");
@@ -83,7 +84,7 @@ macro initDexterGlobalVariables()
 	}
 
 	g_analysisWhenOpen = GetReg("g_analysisWhenOpen");
-	if(g_analysisWhenOpen == nil){
+	if(g_analysisWhenOpen == nil){  
 		g_analysisWhenOpen = 0;
 	}
 }
@@ -175,8 +176,13 @@ macro initDexter()
 
 	g_dexterConfig.sourceEncoding = GetReg(g_dexterConfig.sourceEncodingRegKey)
 
-	isInstalled = GetReg("g_dexterDaemon");
-	if(isInstalled == nil || isInstalled == "isInstalled" || isInstalled != 1){
+	g_dexterPath = GetReg(g_dexterConfig.dexterInstallationPathRegKey);
+	if(g_dexterPath != nil && g_dexterPath != "g_dexterPath"){
+		g_dexterDaemon = GetReg("g_dexterDaemon");
+		if(g_dexterDaemon == nil || g_dexterDaemon == "g_dexterDaemon" || g_dexterDaemon == 0){
+			RunCmdLine(g_dexterPath # "\\dexter.exe", g_dexterPath, 0);
+		}
+	} else {
 		error("Dexter Initialized failed");
 		Msg("You have to run Dexter Daemon first. If you didn't install, please install it first.");
 		stop;
@@ -231,14 +237,13 @@ macro runDexter(sFile)
 		error("can't run dexter because dexter is not initialized : " # sFile);
 		stop;
 	}
-	saveModifiedFunctionList();
-	createDexterConfFile();
 
-	/* don't use this until connecting cppcheck.dll
-	if(g_waitDexterResult == 1){
-		addDefectBookmarkSync();
+	g_dexterDaemon = GetReg("g_dexterDaemon");
+	if(g_dexterDaemon == nil || g_dexterDaemon == "g_dexterDaemon" || g_dexterDaemon == 0){
+		RunCmdLine(g_dexterPath # "\\dexter.exe", g_dexterPath, 0);
 	}
-	*/
+	
+	createDexterConfFile();
 }
 
 
@@ -519,7 +524,7 @@ macro createDexterConfFile()
 	var confFile;
 	var requestTime;
 	var contents;
-	var functionList;
+
 	initDexterHome();
 	confFile = g_dexterConfig.dexterHome # "\\bin\\daemon\\dexter_daemon_cfg.json"
 	hConfbuf = OpenBuf(confFile);
@@ -553,97 +558,13 @@ macro createDexterConfFile()
 	}
 
 	contents = contents # "\t\"fileName\":[\"" # GetBufName(hFile) # "\"],";
-	contents = contents # "\t\"type\":\"FILE\",";
-	contents = contents # "\t\"functionList\":[" # g_functionList # "]";
+	contents = contents # "\t\"type\":\"FILE\"";
 	contents = contents # "}";
 
 	emptyFileContent(hConfbuf, 0);
 	AppendBufLine(hConfbuf, contents);
 	SaveBuf(hConfbuf);
 	CloseBuf(hConfbuf);
-}
-macro saveModifiedFunctionList(){
-	var firstRevisionLine;
-	var changeCount;
-	var functionName;
-	var curSymbol;
-	
-	hwnd = GetCurrentWnd();
-	hbuf = GetCurrentBuf();
-
-	currentLine  = 0;
-
-	changeCount = 0;
-	firstRevisionLine = 0;
-
-	g_functionList= "";
-	currentLn = GetWndSelLnFirst (hwnd);
-	currentIch =GetWndSelIchFirst(hwnd);
-	vert = GetWndVertScroll (hwnd);
-	wndsel = GetWndSel(hwnd);
-	//msg();
-	while(1){
-		Go_To_Next_Change;
-		if(changeCount == 0){
-			firstRevisionLine = GetBufLnCur(hbuf);
-		}else if( isNavigatedLine(hbuf,changeCount,firstRevisionLine) == true){
-			break;
-		}
-		changeCount = changeCount +1;
-
-		curSymbol = GetCurSymbol();
-		symbolLocation = GetSymbolLocation(curSymbol);
-		if( symbolLocation == "" ){
-			
-		}else if(symbolLocation.Type == "Function" || symbolLocation.Type == "Method"){
-			functionName = SymbolLeafName(symbolLocation);
-			
-			addFunctionNameIfNotExist(functionName);		
-		}
-	}
-	if(g_functionList !=""){
-	g_functionList = strtrunc(g_functionList,strlen(g_functionList)-1);	
-	}
-	SetBufIns(hbuf,currentLn,currentIch);	
-	ScrollWndToLine(hwnd,vert);
-	
-}
-macro isNavigatedLine(hbuf, count,firstRevisionLine){
-	
-	var currentLine;
-	currentLine = GetBufLnCur(hbuf);
-	if(count>=1 && currentLine == firstRevisionLine){
-		return true;
-	}
-	return false;
-
-}
-macro addFunctionNameIfNotExist(functionName){
-	var index;
-	var functionListLength;
-	var compareFunctionName;
-	var frontIndex;
-	var backIndex;
-	
-	index = 0;
-	frontIndex = 0;
-	backIndex = 0;
-	functionListLength = strlen(g_functionList);
-
-	while(index<functionListLength){
-		if(g_functionList[index] == ","){
-				backIndex = index;
-				compareFunctionName = strmid(g_functionList,frontIndex+1,backIndex-1);
-				if(compareFunctionName == functionName){
-				return;
-				}				
-			frontIndex = index +1;			
-		}
-		index = index +1;
-	}
-	
-	g_functionList = g_functionList # "\"" #  functionName # "\"" # ",";
-
 }
 
 macro createPlatzKeywordFile()
@@ -885,21 +806,6 @@ macro getResultFilePathForCurrentFile()
 	
 	fileName = GetBufName(hFile);
 
-	/* for v1.12
-	eP = strlen(fileName);
-	if(fileName[1] == ":" && eP > 3){
-		bP = 3;
-		filePathFromPrj = strmid(fileName, bP, eP);	
-		return resultFolder # filePathFromPrj;
-	} else if(fileName[0] == "\\" && ep > 1) {
-		bP = 1;
-		filePathFromPrj = strmid(fileName, bP, eP);	
-		return resultFolder # filePathFromPrj;
-	} else {
-		return resultFolder # fileName;
-	}
-	*/
-
 	// for v1.11
 	eP = strlen(fileName);
 	if(hasPrefix(fileName, prjDir) == 0 && eP > 3){
@@ -914,8 +820,6 @@ macro getResultFilePathForCurrentFile()
 		bP = strlen(prjDir);
 		fLength = eP;
 		if(bP < 0 || eP < 0 || bP > fLength || eP > fLength){
-			//Msg("bp:" # bP # " ep:" # eP # " flenght:" # fLength);
-			//Msg("prjDir:" # prjDir # " fileName:" # fileName);
 			if(fileName[1] == ":"){
 				bP = 3;
 				filePathFromPrj = strmid(fileName, bP, eP);	

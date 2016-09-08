@@ -6,11 +6,11 @@
  * modification, are permitted provided that the following conditions are met:
  * 
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  * 
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -22,8 +22,11 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.samsung.sec.dexter.util;
+
+import com.google.common.base.Charsets;
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 
 import java.nio.charset.Charset;
 import java.util.Collection;
@@ -36,188 +39,183 @@ import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.parser.ParserLanguage;
 
-import com.google.common.base.Charsets;
-import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
-
 public class CppUtil {
 
-	static Charset sourceEncoding = Charsets.UTF_8;
-	static Logger logger = Logger.getLogger(CppUtil.class);
+    static Charset sourceEncoding = Charsets.UTF_8;
+    static Logger logger = Logger.getLogger(CppUtil.class);
 
-	private CppUtil() { 
-	}
+    private CppUtil() {}
 
-	/**
-	 * ExtractModuleName(String sourceFilePath, final int lineNumber) method is
-	 * responsible for getting ModuleInformation
-	 * 
-	 * @param [in]
-	 *            String sourceFilePath, final int lineNumber
-	 * @return [out] Map<String, String>
-	 * @warning [None]
-	 * @exception IO
-	 *                exception
-	 */
-	public static synchronized Map<String, String> extractModuleName(String sourceFilePath, final int lineNumber) {
-		Map<String, String> mapModuleName = null;
+    /**
+     * ExtractModuleName(String sourceFilePath, final int lineNumber) method is
+     * responsible for getting ModuleInformation
+     * 
+     * @param [in]
+     * String sourceFilePath, final int lineNumber
+     * @return [out] Map<String, String>
+     * @warning [None]
+     * @exception IO
+     * exception
+     */
+    public static synchronized Map<String, String> extractModuleName(String sourceFilePath, final int lineNumber) {
+        Map<String, String> mapModuleName = null;
 
-		String code = DexterUtilHelper.getContentsFromFile(sourceFilePath, sourceEncoding);
-		IASTTranslationUnit translationUnit = TranslationUnitFactory.getASTTranslationUnit(code, ParserLanguage.CPP,
-				sourceFilePath);
+        String code = DexterUtilHelper.getContentsFromFile(sourceFilePath, sourceEncoding);
+        IASTTranslationUnit translationUnit = TranslationUnitFactory.getASTTranslationUnit(code, ParserLanguage.CPP,
+                sourceFilePath);
 
-		final String fileExtension = sourceFilePath.substring(sourceFilePath.indexOf('.'));
+        final String fileExtension = sourceFilePath.substring(sourceFilePath.indexOf('.'));
 
-		ASTVisitor visitor = new ASTVisitor() {
-			public int visit(IASTDeclaration declaration) {
-				
-				boolean visitStatus = DexterUtilHelper.visitFunction(declaration, lineNumber, fileExtension);
+        ASTVisitor visitor = new ASTVisitor() {
+            public int visit(IASTDeclaration declaration) {
 
-				if (visitStatus) {
-					return ASTVisitor.PROCESS_ABORT;
-				}
+                boolean visitStatus = DexterUtilHelper.visitFunction(declaration, lineNumber, fileExtension);
 
-				return ASTVisitor.PROCESS_CONTINUE;
+                if (visitStatus) {
+                    return ASTVisitor.PROCESS_ABORT;
+                }
 
-			}
-		};
-		visitor.shouldVisitDeclarations = true;
-		translationUnit.accept(visitor);
-		mapModuleName = DexterUtilHelper.getMapData();
+                return ASTVisitor.PROCESS_CONTINUE;
 
-		return mapModuleName;
-	}
-	
-	public static synchronized Map<String, String> extractModuleName(final IASTTranslationUnit translationUnit, final String fileExtension, final int lineNumber) {
-		Map<String, String> mapModuleName = null;
+            }
+        };
+        visitor.shouldVisitDeclarations = true;
+        translationUnit.accept(visitor);
+        mapModuleName = DexterUtilHelper.getMapData();
 
-		ASTVisitor visitor = new ASTVisitor() {
-			public int visit(IASTDeclaration declaration) {
-				
-				boolean visitStatus = DexterUtilHelper.visitFunction(declaration, lineNumber, fileExtension);
+        return mapModuleName;
+    }
 
-				if (visitStatus) {
-					return ASTVisitor.PROCESS_ABORT;
-				}
+    public static synchronized Map<String, String> extractModuleName(final IASTTranslationUnit translationUnit,
+            final String fileExtension, final int lineNumber) {
+        Map<String, String> mapModuleName = null;
 
-				return ASTVisitor.PROCESS_CONTINUE;
+        ASTVisitor visitor = new ASTVisitor() {
+            public int visit(IASTDeclaration declaration) {
 
-			}
-		};
-		visitor.shouldVisitDeclarations = true;
-		translationUnit.accept(visitor);
-		mapModuleName = DexterUtilHelper.getMapData();
+                boolean visitStatus = DexterUtilHelper.visitFunction(declaration, lineNumber, fileExtension);
 
-		return mapModuleName;
-	}
+                if (visitStatus) {
+                    return ASTVisitor.PROCESS_ABORT;
+                }
 
-	/**
-	 * GeneratorCodeMetrics(String sourceFilePath) method is responsible for
-	 * generating code Metrices
-	 * 
-	 * @param [in]
-	 *            String sourceFilePath
-	 * @return [out] Map<String, String>
-	 * @warning [None]
-	 * @exception IO
-	 *                exception
-	 */
-	public static synchronized Map<String, Object> generatorCodeMetrics(String sourceFilePath) {
-		Map<String, Object> mapCodeMetrics = new HashMap<String, Object>();
-		DexterUtilHelper.mapSourceMatrices.clear();
-		DexterUtilHelper.count = 0;
-		DexterUtilHelper.methodCount = 0;
-		DexterUtilHelper.classCount = 0;
+                return ASTVisitor.PROCESS_CONTINUE;
 
-		String code = DexterUtilHelper.getContentsFromFile(sourceFilePath, sourceEncoding);
-		
-		IASTTranslationUnit translationUnit = null;
-		
-		try{
-			translationUnit = TranslationUnitFactory.getASTTranslationUnit(code, ParserLanguage.CPP,
-					sourceFilePath);
-		} catch (DexterRuntimeException e){
-			logger.error("can't make a code metrics : " + sourceFilePath, e);
-			return new HashMap<String, Object>(0);
-		}
-		
+            }
+        };
+        visitor.shouldVisitDeclarations = true;
+        translationUnit.accept(visitor);
+        mapModuleName = DexterUtilHelper.getMapData();
 
-		ASTVisitor visitor = new ASTVisitor() {
-			public int visit(IASTDeclaration declaration) {
-				boolean visitStatus = DexterUtilHelper.visitSourceCodeforCalMethodAndClassCount(declaration);
-				if (visitStatus) {
-					return ASTVisitor.PROCESS_ABORT;
-				}
-				return ASTVisitor.PROCESS_CONTINUE;
-			}
-		};
-		visitor.shouldVisitDeclarations = true;
-		translationUnit.accept(visitor);
+        return mapModuleName;
+    }
 
-		ASTVisitor visitor1 = new ASTVisitor() {
-			public int visit(IASTDeclaration declaration) {
+    /**
+     * GeneratorCodeMetrics(String sourceFilePath) method is responsible for
+     * generating code Metrices
+     * 
+     * @param [in]
+     * String sourceFilePath
+     * @return [out] Map<String, String>
+     * @warning [None]
+     * @exception IO
+     * exception
+     */
+    public static synchronized Map<String, Object> generatorCodeMetrics(String sourceFilePath) {
+        Map<String, Object> mapCodeMetrics = new HashMap<String, Object>();
+        DexterUtilHelper.mapSourceMatrices.clear();
+        DexterUtilHelper.count = 0;
+        DexterUtilHelper.methodCount = 0;
+        DexterUtilHelper.classCount = 0;
 
-				boolean visitStatus1 = DexterUtilHelper.visitSourceCodeforCalFileComplexity(declaration);
+        IASTTranslationUnit translationUnit = null;
 
-				if (visitStatus1) {
-					return ASTVisitor.PROCESS_ABORT;
-				}
+        try {
+            String code = DexterUtilHelper.getContentsFromFile(sourceFilePath, sourceEncoding);
+            translationUnit = TranslationUnitFactory.getASTTranslationUnit(code, ParserLanguage.CPP,
+                    sourceFilePath);
+        } catch (DexterRuntimeException e) {
+            logger.error("can't make a code metrics : " + sourceFilePath, e);
+            return new HashMap<String, Object>(0);
+        }
 
-				return ASTVisitor.PROCESS_CONTINUE;
+        ASTVisitor visitor = new ASTVisitor() {
+            public int visit(IASTDeclaration declaration) {
+                boolean visitStatus = DexterUtilHelper.visitSourceCodeforCalMethodAndClassCount(declaration);
+                if (visitStatus) {
+                    return ASTVisitor.PROCESS_ABORT;
+                }
+                return ASTVisitor.PROCESS_CONTINUE;
+            }
+        };
+        visitor.shouldVisitDeclarations = true;
+        translationUnit.accept(visitor);
 
-			}
-		};
-		visitor1.shouldVisitDeclarations = true;
-		translationUnit.accept(visitor1);
+        ASTVisitor visitor1 = new ASTVisitor() {
+            public int visit(IASTDeclaration declaration) {
 
-		Map<String, Integer> mapSourceMatrices = DexterUtilHelper.mapSourceMatrices;
-		Collection<Integer> values = mapSourceMatrices.values();
-		Object[] arrayValues = values.toArray();
-		int MaxComplexity = 0;
-		int MinComplexity = 0;
-		int SumOfComplexity = 0;
-		int AverageComplexity = 0;
-		if (arrayValues.length > 0) {
-			int ArrayFirstValue = (int) arrayValues[0];
-			MaxComplexity = ArrayFirstValue;
-			MinComplexity = ArrayFirstValue;
-			SumOfComplexity = 0;
+                boolean visitStatus1 = DexterUtilHelper.visitSourceCodeforCalFileComplexity(declaration);
 
-			for (Object object : arrayValues) {
-				int value = (int) object;
-				SumOfComplexity += value;
-				if (value > MaxComplexity) {
-					MaxComplexity = value;
-				}
-				if (value < MinComplexity) {
-					MinComplexity = value;
-				}
+                if (visitStatus1) {
+                    return ASTVisitor.PROCESS_ABORT;
+                }
 
-			}
-			AverageComplexity = (int) SumOfComplexity / arrayValues.length;
-		}
+                return ASTVisitor.PROCESS_CONTINUE;
 
-		int methodCount = DexterUtilHelper.methodCount;
-		int classCount = DexterUtilHelper.classCount;
-		int[] locArray = SourceCodeMatricsHelper.getSourceLOCArray(sourceFilePath);
-		int SLOC = locArray[0];
-		int FileLOC = locArray[1];
-		int CodeCommentLOC = locArray[3];
-		// int EmptyLineLOC =locArray[2];
-		float commentRatio = 0.0f;
-		int baseTotalLoc = CodeCommentLOC + SLOC;
-		if (baseTotalLoc != 0) {
-			commentRatio = CodeCommentLOC / (float) baseTotalLoc;
-		}
-		mapCodeMetrics.put("loc", FileLOC);
-		mapCodeMetrics.put("sloc", SLOC);
-		mapCodeMetrics.put("cloc", CodeCommentLOC);
-		mapCodeMetrics.put("commentRatio", commentRatio);
-		mapCodeMetrics.put("maxComplexity", MaxComplexity);
-		mapCodeMetrics.put("minComplexity", MinComplexity);
-		mapCodeMetrics.put("avgComplexity", AverageComplexity);
-		mapCodeMetrics.put("classCount", classCount);
-		mapCodeMetrics.put("methodCount", methodCount);
+            }
+        };
+        visitor1.shouldVisitDeclarations = true;
+        translationUnit.accept(visitor1);
 
-		return mapCodeMetrics;
-	}
+        Map<String, Integer> mapSourceMatrices = DexterUtilHelper.mapSourceMatrices;
+        Collection<Integer> values = mapSourceMatrices.values();
+        Object[] arrayValues = values.toArray();
+        int MaxComplexity = 0;
+        int MinComplexity = 0;
+        int SumOfComplexity = 0;
+        int AverageComplexity = 0;
+        if (arrayValues.length > 0) {
+            int ArrayFirstValue = (int) arrayValues[0];
+            MaxComplexity = ArrayFirstValue;
+            MinComplexity = ArrayFirstValue;
+            SumOfComplexity = 0;
+
+            for (Object object : arrayValues) {
+                int value = (int) object;
+                SumOfComplexity += value;
+                if (value > MaxComplexity) {
+                    MaxComplexity = value;
+                }
+                if (value < MinComplexity) {
+                    MinComplexity = value;
+                }
+
+            }
+            AverageComplexity = (int) SumOfComplexity / arrayValues.length;
+        }
+
+        int methodCount = DexterUtilHelper.methodCount;
+        int classCount = DexterUtilHelper.classCount;
+        int[] locArray = SourceCodeMatricsHelper.getSourceLOCArray(sourceFilePath);
+        int SLOC = locArray[0];
+        int FileLOC = locArray[1];
+        int CodeCommentLOC = locArray[3];
+        // int EmptyLineLOC =locArray[2];
+        float commentRatio = 0.0f;
+        int baseTotalLoc = CodeCommentLOC + SLOC;
+        if (baseTotalLoc != 0) {
+            commentRatio = CodeCommentLOC / (float) baseTotalLoc;
+        }
+        mapCodeMetrics.put("loc", FileLOC);
+        mapCodeMetrics.put("sloc", SLOC);
+        mapCodeMetrics.put("cloc", CodeCommentLOC);
+        mapCodeMetrics.put("commentRatio", commentRatio);
+        mapCodeMetrics.put("maxComplexity", MaxComplexity);
+        mapCodeMetrics.put("minComplexity", MinComplexity);
+        mapCodeMetrics.put("avgComplexity", AverageComplexity);
+        mapCodeMetrics.put("classCount", classCount);
+        mapCodeMetrics.put("methodCount", methodCount);
+
+        return mapCodeMetrics;
+    }
 }

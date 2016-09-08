@@ -28,6 +28,7 @@ var database = require("../util/database");
 var logging = require('../util/logging');
 var _ = require('lodash');
 var dutil = require('../util/dexter-util');
+const Q = require('q');
 
 exports.getModulePathList = function(req, res){
     var sql = "SELECT modulePath FROM Defect group by modulePath order by modulePath";
@@ -42,10 +43,12 @@ exports.getModulePathList = function(req, res){
         });
 };
 
-function deleteCodeMetricsFromDB(modulePathList, modulePathListLength, callback){
+function deleteCodeMetricsFromDB(modulePathList){
+    const deferred = Q.defer();
     var sql = "delete from CodeMetrics";
+
     _.forEach(modulePathList, function(modulePath, idx){
-        if(idx ==0){
+        if(idx == 0){
             sql += " Where modulePath = " +  database.toSqlValue(modulePath);
         }else {
             sql += " or modulePath = " + database.toSqlValue(modulePath);
@@ -54,17 +57,19 @@ function deleteCodeMetricsFromDB(modulePathList, modulePathListLength, callback)
 
     database.execV2(sql)
         .then(function() {
-            callback(modulePathList,modulePathListLength, deleteSourceCodeMapFromDB);
+            deferred.resolve(modulePathList);
         })
         .catch(function(err) {
-            logging.error(err);
+            deferred.reject(err);
         });
 
+    return deferred.promise;
 
 }
 
-function deleteFunctionMetricFromDB(modulePathList,modulePathListLength, callback){
-    var sql = "select * from FunctionMetrics";
+function deleteFunctionMetricFromDB(modulePathList){
+    const deferred = Q.defer();
+    var sql = "delete from FunctionMetrics";
     _.forEach(modulePathList, function(modulePath, idx){
         if(idx === 0){
             sql += " Where modulePath = " +  database.toSqlValue(modulePath);
@@ -75,15 +80,16 @@ function deleteFunctionMetricFromDB(modulePathList,modulePathListLength, callbac
 
     database.execV2(sql)
         .then(function() {
-            callback(modulePathList,modulePathListLength, deleteSnapshotDefectMapFromDB);
+            deferred.resolve(modulePathList);
         })
         .catch(function(err) {
-            logging.error(err);
+            deferred.reject(err);
         });
-
+    return deferred.promise;
 }
 
-function deleteSourceCodeMapFromDB(modulePathList, modulePathListLength, callback){
+function deleteSourceCodeMapFromDB(modulePathList){
+    const deferred = Q.defer();
     var sql = "delete from SourceCodeMap";
     _.forEach(modulePathList, function(modulePath, idx){
         if(idx === 0){
@@ -94,14 +100,17 @@ function deleteSourceCodeMapFromDB(modulePathList, modulePathListLength, callbac
     });
     database.execV2(sql)
         .then(function() {
-            callback(modulePathList,modulePathListLength, deleteDefectFromDB);
+            deferred.resolve(modulePathList);
         })
         .catch(function(err) {
-            logging.error(err);
+            deferred.reject(err);
         });
+
+    return deferred.promise;
 }
 
-function deleteSnapshotDefectMapFromDB(modulePathList,modulePathListLength, callback){
+function deleteSnapshotDefectMapFromDB(modulePathList){
+    const deferred = Q.defer();
     var sql = "delete from SnapshotDefectMap";
     _.forEach(modulePathList, function(modulePath, idx){
         if(idx ==0){
@@ -113,16 +122,17 @@ function deleteSnapshotDefectMapFromDB(modulePathList,modulePathListLength, call
 
     database.execV2(sql)
         .then(function() {
-            return ;
+            deferred.resolve(modulePathList);
         })
         .catch(function(err) {
-            logging.error(err);
+            deferred.reject(err);
         });
 
-    callback(modulePathList,modulePathListLength, deleteDefectFromDB);
+    return deferred.promise;
 }
 
 function deleteDefectFromDB(modulePathList){
+    const deferred = Q.defer();
     var sql = "delete from Defect";
     _.forEach(modulePathList, function(modulePath, idx){
         if(idx == 0){
@@ -133,15 +143,17 @@ function deleteDefectFromDB(modulePathList){
     });
     database.execV2(sql)
         .then(function() {
+            deferred.resolve(modulePathList);
         })
         .catch(function(err) {
-            logging.error(err);
-            res.send({status:"fail", errorMessage: err.message});
+            deferred.reject(err);
         });
+
+    return deferred.promise;
 }
 
 exports.deleteModulePathList = function(req, res){
-    var modulePathList =[];
+    let modulePathList =[];
     if(_.has(req,"query.modulePathList") && req.query.modulePathList) {
         if(req.query.modulePathListLength < 0 ){
             res.send({status:"fail", errorMessage: "Please selected module Path"});
@@ -153,8 +165,17 @@ exports.deleteModulePathList = function(req, res){
             res.send({status:"fail", errorMessage: "'modulePathList' must be String"});
         }
 
-        var modulePathListLength = req.query.modulePathListLength;
-        deleteCodeMetricsFromDB(modulePathList, modulePathListLength, deleteFunctionMetricFromDB);
-        res.send({status:'ok'});
+        deleteCodeMetricsFromDB(modulePathList)
+            .then(deleteFunctionMetricFromDB)
+            .then(deleteSourceCodeMapFromDB)
+            .then(deleteDefectFromDB)
+            .then(deleteSnapshotDefectMapFromDB)
+            .then(function(){
+                res.send({status:'ok'});
+            })
+            .catch(function(err) {
+                logging.info(`catch` + err.toString());
+            });
+
     }
 };

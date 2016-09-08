@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dexter Opensource
 Bundle-SymbolicName: dexter-opensource;singleton:=true
-Bundle-Version: 0.10.2
+Bundle-Version: 0.10.4
 Bundle-Activator: com.samsung.sec.dexter.opensource.DexterOpensourceActivator
 Require-Bundle: org.eclipse.core.runtime,
  dexter-core,

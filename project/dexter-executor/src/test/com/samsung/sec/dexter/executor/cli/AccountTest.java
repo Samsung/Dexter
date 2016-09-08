@@ -33,6 +33,10 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.samsung.sec.dexter.core.util.DexterUtil;
+import com.samsung.sec.dexter.core.util.EmptyDexterClient;
+import com.samsung.sec.dexter.core.util.IDexterClient;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -41,115 +45,110 @@ import java.io.PrintStream;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.samsung.sec.dexter.core.util.DexterUtil;
-import com.samsung.sec.dexter.core.util.IDexterClient;
-
 public class AccountTest {
-	private Account account = null;
-	
+	private IAccountHandler accountHandler = null;
+
 	@Before
-	public void createAccountObject(){
-		account = new Account();
+	public void createAccountObject() {
+		accountHandler = new AccountHandler(new EmptyDexterClient(), new CLILog(System.out));
 	}
-	
+
 	@Test
-	public void should_create_account_when_id_is_valid(){
-		final String[] testShortIds = {"abcd", "abcde", "1234", "12345678901234567890"};
-		
-		for(String id : testShortIds){
+	public void should_create_account_when_id_is_valid() {
+		final String[] testShortIds = { "abcd", "abcde", "1234", "12345678901234567890" };
+
+		for (String id : testShortIds) {
 			IDexterClient client = mock(IDexterClient.class);
-			
+
 			when(client.hasAccount(anyString())).thenReturn(false);
-			
-			account.setDexterClient(client);
-			account.createAccount(id, "user-password");
-			
+
+			accountHandler.setDexterClient(client);
+			accountHandler.createAccount(id, "user-password");
+
 			verify(client).login(anyString(), anyString());
 			verify(client).createAccount(anyString(), anyString(), anyBoolean());
 		}
 	}
-	
+
 	@Test
-	public void should_ask_account_input_when_id_is_too_short() throws IOException{
-		final String[] testShortIds = {"", "a", "b", "abc"};
-		
-		for(String id : testShortIds){
+	public void should_ask_account_input_when_id_is_too_short() throws IOException {
+		final String[] testShortIds = { "", "a", "b", "abc" };
+
+		for (String id : testShortIds) {
 			IDexterClient client = mock(IDexterClient.class);
-			
-			//when(client.hasAccount(anyString())).thenReturn(true);
+
+			// when(client.hasAccount(anyString())).thenReturn(true);
 			when(client.hasAccount("12345")).thenReturn(false);
-			
+
 			ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 			PrintStream out = new PrintStream(byteOut);
 			out.flush();
-			
+
 			String sampleInput = "12345" + DexterUtil.LINE_SEPARATOR + DexterUtil.LINE_SEPARATOR;
 			ByteArrayInputStream byteIn = new ByteArrayInputStream(sampleInput.getBytes());
-			
-			account.setDexterClient(client);
-			account.setInputStream(byteIn);
-			account.setPrintStream(out);
-		
-			account.createAccount(id, "user-password");
-			
+
+			accountHandler.setDexterClient(client);
+			accountHandler.setInputStream(byteIn);
+			accountHandler.setPrintStream(out);
+
+			accountHandler.createAccount(id, "user-password");
+
 			String testResult = "Enter your ID (4 - 20 length, 'CTRL + C' to exit):";
 			assertTrue(byteOut.toString().startsWith(testResult));
-			
-			
+
 			verify(client).login(anyString(), anyString());
 			verify(client).createAccount(anyString(), anyString(), anyBoolean());
-			
+
 			byteOut.close();
 			out.close();
 			byteIn.close();
 		}
 	}
-	
+
 	@Test
-	public void should_ask_account_input_when_id_is_too_long() throws IOException{
-		final String[] testShortIds = {"123456789012345678901", "123456789012345678902"};
-		
-		for(String id : testShortIds){
+	public void should_ask_account_input_when_id_is_too_long() throws IOException {
+		final String[] testShortIds = { "123456789012345678901", "123456789012345678902" };
+
+		for (String id : testShortIds) {
 			IDexterClient client = mock(IDexterClient.class);
-			
+
 			when(client.hasAccount("12345")).thenReturn(false);
-			
+
 			ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 			PrintStream out = new PrintStream(byteOut);
 			out.flush();
-			
+
 			String sampleInput = "12345" + DexterUtil.LINE_SEPARATOR;
 			ByteArrayInputStream byteIn = new ByteArrayInputStream(sampleInput.getBytes());
-			
-			account.setDexterClient(client);
-			account.setInputStream(byteIn);
-			account.setPrintStream(out);
-		
-			account.createAccount(id, "user-password");
-			
+
+			accountHandler.setDexterClient(client);
+			accountHandler.setInputStream(byteIn);
+			accountHandler.setPrintStream(out);
+
+			accountHandler.createAccount(id, "user-password");
+
 			String testResult = "Enter your ID (4 - 20 length, 'CTRL + C' to exit):";
 			assertTrue(byteOut.toString().startsWith(testResult));
-			
-			
+
 			verify(client).login(anyString(), anyString());
 			verify(client).createAccount(anyString(), anyString(), anyBoolean());
-			
+
 			byteOut.close();
 			out.close();
 			byteIn.close();
 		}
 	}
-	
+
 	@Test
-	public void should_ask_account_when_id_exists() throws IOException{
+	public void should_ask_account_when_id_exists() throws IOException {
 		IDexterClient client = mock(IDexterClient.class);
-		
+
 		when(client.hasAccount(anyString())).thenReturn(true);
 
 		try {
-			account.createAccount("1234", "user-password");
+			accountHandler.createAccount("1234", "user-password");
 			fail();
-		} catch(RuntimeException e){
+		} catch (RuntimeException e) {
 		}
 	}
 }

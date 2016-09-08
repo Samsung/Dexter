@@ -6,11 +6,11 @@
  * modification, are permitted provided that the following conditions are met:
  * 
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  * 
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -22,7 +22,7 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.samsung.sec.dexter.eclipse.ui.view;
 
 import org.eclipse.swt.SWT;
@@ -32,30 +32,32 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
 public class DefectHelpView extends ViewPart {
-	public final static String ID = "dexter-eclipse.defect-description";
-	private Browser browser = null;
-	
-	public DefectHelpView() {
-	}
+    public final static String ID = "dexter-eclipse.defect-description";
+    private Browser browser = null;
 
-	@Override
-	public void createPartControl(Composite parent) {
-		final Composite composite = new Composite(parent, SWT.NONE);
-		composite.setLayout(new FillLayout());
-		browser = new Browser(composite, SWT.NONE);
-	}
+    public DefectHelpView() {}
 
-	@Override
-	public void setFocus() {
-	}
-	
-	public void setUrl(String url){
-		browser.setUrl(url);
-	}
-	
-	public void setSeverDeadStatus(){
-		final StringBuilder html = new StringBuilder();
-		html.append("<b>Dexter Server</b> is not running.<br>Please, check Dexter server status");
-		browser.setText(html.toString());
-	}
+    @Override
+    public void createPartControl(final Composite parent) {
+        final Composite composite = new Composite(parent, SWT.NONE);
+        composite.setLayout(new FillLayout());
+        browser = new Browser(composite, SWT.NONE);
+    }
+
+    @Override
+    public void setFocus() {}
+
+    public void setUrl(final String url) {
+        browser.setUrl(url);
+    }
+
+    public void setHtmlContents(final String html) {
+        browser.setText(html);
+    }
+
+    public void setSeverDeadStatus() {
+        final StringBuilder html = new StringBuilder(200);
+        html.append("<b>Dexter Server</b> is not running.<br>Please, check Dexter server status");
+        browser.setText(html.toString());
+    }
 }

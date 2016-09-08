@@ -25,27 +25,12 @@
 */
 package com.samsung.sec.dexter.eclipse;
 
-import java.io.IOException;
-import java.net.InetAddress; 
-import java.net.UnknownHostException; 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.BundleContext;
-
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
-import com.samsung.sec.dexter.core.config.IDexterStandaloneListener;
-import com.samsung.sec.dexter.core.job.DexterJobFacade;
 import com.samsung.sec.dexter.eclipse.builder.DexterResourceChangeHandler;
-import com.samsung.sec.dexter.eclipse.ui.login.LoginDialog;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseLog;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 import com.samsung.sec.dexter.eclipse.util.EmptyCDTUtil;
@@ -53,48 +38,54 @@ import com.samsung.sec.dexter.eclipse.util.EmptyJDTUtil;
 import com.samsung.sec.dexter.eclipse.util.ICDTUtil;
 import com.samsung.sec.dexter.eclipse.util.IJDTUtil;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.concurrent.TimeUnit;
 
+import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class DexterEclipseActivator extends AbstractUIPlugin implements IDexterStandaloneListener {
+public class DexterEclipseActivator extends AbstractUIPlugin {
 	public static final String PLUGIN_ID = "dexter-eclipse";
 	private final LoadingCache<String, AnalysisConfig> configCache;
-	private ScheduledFuture<?> loginFuture = null;
 	private static DexterEclipseActivator plugin;
-	private static final int SERVER_TIMEOUT = 500; 
-	public final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(5);
+	private static final int SERVER_TIMEOUT = 500;
 	public static EclipseLog LOG;
 	private static IJDTUtil jdtUtil;
 	private static ICDTUtil cdtUtil;
-	
+
 	static {
-		if(DexterConfig.getInstance().getRunMode() != DexterConfig.RunMode.DAEMON)
+		if (DexterConfig.getInstance().getRunMode() != DexterConfig.RunMode.DAEMON)
 			DexterConfig.getInstance().setRunMode(DexterConfig.RunMode.ECLIPSE);
 	}
-	
+
 	/**
 	 * The constructor
 	 */
 	public DexterEclipseActivator() {
-		configCache = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.HOURS)
-				.maximumSize(5).build(new CacheLoader<String, AnalysisConfig>(){
+		configCache = CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.HOURS).maximumSize(5)
+				.build(new CacheLoader<String, AnalysisConfig>() {
 					@Override
-			        public AnalysisConfig load(String key) throws Exception {
-			            return null;
-			        }
-					
+					public AnalysisConfig load(String key) throws Exception {
+						return null;
+					}
+
 				});
 	}
-	
-	public LoadingCache<String, AnalysisConfig> getConfigCache(){
+
+	public LoadingCache<String, AnalysisConfig> getConfigCache() {
 		return this.configCache;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+	 * 
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.
+	 * BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
@@ -102,54 +93,26 @@ public class DexterEclipseActivator extends AbstractUIPlugin implements IDexterS
 
 		LOG = new EclipseLog(PLUGIN_ID);
 		LOG.setPlugin(this);
-		
-		CheckPlatzServer(); 
-		
-		DexterConfig.getInstance().addDexterStandaloneListener(this);
-		
-		if (!DexterConfig.getInstance().isStandalone())
-			startLoginScheduler();
-		
+
+		CheckPlatzServer();
+
 		DexterResourceChangeHandler.start();
-	}
-	
-	private void startLoginScheduler() {
-		if (loginFuture == null || loginFuture.isDone()) {
-			Runnable checkLoginJob = new Runnable() {
-				@Override
-				public void run() {
-					Display.getDefault().asyncExec(new Runnable() {
-						@Override
-						public void run() {
-							if(!DexterConfig.getInstance().getRunMode().equals(DexterConfig.RunMode.DAEMON))
-							LoginDialog.loginJob(null);
-						}
-					});
-				}
-			};
-			
-			loginFuture = getDefault().scheduler.scheduleAtFixedRate(checkLoginJob, 5, DexterJobFacade.SLEEP_FOR_LOGIN, TimeUnit.SECONDS);
-		}
-	}
-	
-	private void stopLoginScheduler() {
-		if (loginFuture != null)
-			loginFuture.cancel(false);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+	 * 
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.
+	 * BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
 		setPlugin(null);
 		super.stop(context);
 	}
-	
-	private static void setPlugin(DexterEclipseActivator p){
+
+	private static void setPlugin(DexterEclipseActivator p) {
 		plugin = p;
 	}
-	
 
 	/**
 	 * Returns the shared instance
@@ -160,41 +123,34 @@ public class DexterEclipseActivator extends AbstractUIPlugin implements IDexterS
 		return plugin;
 	}
 
-	@Override
-	public void handleDexterStandaloneChanged() {
-		if (DexterConfig.getInstance().isStandalone()) {
-			stopLoginScheduler();
-		} else {
-			startLoginScheduler();
+	public synchronized static IJDTUtil getJDTUtil() {
+		if (jdtUtil == null) {
+			jdtUtil = (IJDTUtil) EclipseUtil.loadSingleExtensionObject(DexterEclipseActivator.PLUGIN_ID, "JDTUtil",
+					EmptyJDTUtil.class);
 		}
-	}
-	
-	public synchronized static IJDTUtil getJDTUtil(){
-		if(jdtUtil == null){
-			jdtUtil = (IJDTUtil) EclipseUtil.loadSingleExtensionObject(DexterEclipseActivator.PLUGIN_ID, "JDTUtil", EmptyJDTUtil.class);
-		}
-		
+
 		return jdtUtil;
 	}
-	
-	public synchronized static ICDTUtil getCDTUtil(){
-		if(cdtUtil == null){
-			cdtUtil = (ICDTUtil) EclipseUtil.loadSingleExtensionObject(DexterEclipseActivator.PLUGIN_ID, "CDTUtil", EmptyCDTUtil.class);
+
+	public synchronized static ICDTUtil getCDTUtil() {
+		if (cdtUtil == null) {
+			cdtUtil = (ICDTUtil) EclipseUtil.loadSingleExtensionObject(DexterEclipseActivator.PLUGIN_ID, "CDTUtil",
+					EmptyCDTUtil.class);
 		}
-		
+
 		return cdtUtil;
 	}
-	
-	private void CheckPlatzServer(){  
-		try{  
-			if (!InetAddress.getByName(DexterConfig.PLATZ_DOMAIN).isReachable(SERVER_TIMEOUT)) {  
-				java.lang.System.setProperty("isPlatzAlive", "true");  
-		}  
-		} catch (UnknownHostException e) {  
-			java.lang.System.setProperty("isPlatzAlive", "False");  
-		} catch (IOException e) {  
-			java.lang.System.setProperty("isPlatzAlive", "False");  
-		}  
-	}  
+
+	private void CheckPlatzServer() {
+		try {
+			if (!InetAddress.getByName(DexterConfig.PLATZ_DOMAIN).isReachable(SERVER_TIMEOUT)) {
+				java.lang.System.setProperty("isPlatzAlive", "true");
+			}
+		} catch (UnknownHostException e) {
+			java.lang.System.setProperty("isPlatzAlive", "False");
+		} catch (IOException e) {
+			java.lang.System.setProperty("isPlatzAlive", "False");
+		}
+	}
 
 }

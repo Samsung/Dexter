@@ -64,11 +64,12 @@ exports.encode = function(str){
     "use strict";
     return base64.encode(str);
 };
+
 exports.decode = function(str){
     "use strict";
     return base64.decode(str);
 
-}
+};
 
 base64.encode = function (str) {
     this.char_set =
@@ -104,7 +105,7 @@ base64.encode = function (str) {
             output += this.settings.pad;
 
     return output;
-}
+};
 
 base64.decode = function (str) {
     this.char_set =
@@ -129,4 +130,4 @@ base64.decode = function (str) {
         }
     }
     return output;
-}
+};

@@ -2,7 +2,7 @@
 <feature
       id="dexter.daemon.feature.64"
       label="Dexter Deamon Feature"
-      version="0.10.2"
+      version="0.10.4"
       provider-name="Samsung Electronics VD SE">
 
    <description url="http://www.example.com/description">
@@ -216,13 +216,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.cdt.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="dexter-eclipse"
          download-size="0"
          install-size="0"
@@ -266,6 +259,13 @@
 
    <plugin
          id="org.eclipse.emf.common"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.cdt.core"
          download-size="0"
          install-size="0"
          version="0.0.0"

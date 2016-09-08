@@ -25,6 +25,12 @@
 */
 package com.samsung.sec.dexter.eclipse.ui.action;
 
+import com.samsung.sec.dexter.core.defect.Defect;
+import com.samsung.sec.dexter.core.filter.AnalysisFilterHandler;
+import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
+import com.samsung.sec.dexter.eclipse.ui.view.AnalysisLogTreeView;
+import com.samsung.sec.dexter.eclipse.ui.view.DefectLog;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -37,90 +43,95 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
-import com.samsung.sec.dexter.core.defect.Defect;
-import com.samsung.sec.dexter.core.filter.AnalysisFilterHandler;
-import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
-import com.samsung.sec.dexter.eclipse.ui.view.AnalysisLogTreeView;
-import com.samsung.sec.dexter.eclipse.ui.view.DefectLog;
-
-public class DismissDefect  implements IObjectActionDelegate {
+public class DismissDefect implements IObjectActionDelegate {
 	private Set<DefectLog> defectLogList = new HashSet<DefectLog>();
 	private IWorkbenchPart part;
-	
+
 	public DismissDefect() {
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
-    @Override
-    public void run(IAction action) {
-    	if(defectLogList.size() == 0){
+	@Override
+	public void run(IAction action) {
+		if (defectLogList.size() == 0) {
 			DexterUIActivator.LOG.error("the selection is not valid");
 			return;
 		}
-		
-    	if(part == null){
-    		DexterUIActivator.LOG.error("cannot make a defect as a dismiss");
-    		return;
-    	}
-    	
-		if(!(part.getSite().getPart() instanceof AnalysisLogTreeView)){
+
+		if (part == null) {
+			DexterUIActivator.LOG.error("cannot make a defect as a dismiss");
+			return;
+		}
+
+		if (!(part.getSite().getPart() instanceof AnalysisLogTreeView)) {
 			MessageDialog.openError(part.getSite().getShell(), "error", "invalid part");
 			return;
 		}
-		
+
 		final AnalysisLogTreeView view = (AnalysisLogTreeView) part.getSite().getPart();
 		final Tree tree = view.getLogTreeView().getTree();
-		
-		if(tree.getItems() == null && tree.getItems().length == 0){
+
+		if (tree.getItems() == null && tree.getItems().length == 0) {
 			return;
 		}
-		
-		for(final DefectLog log : defectLogList){
-			if(log.isDismissed()){
+
+		for (final DefectLog log : defectLogList) {
+			if (log.isDismissed()) {
 				continue;
 			}
-			
+
 			final Defect defect = log.getDefect();
-			AnalysisFilterHandler.getInstance().addDefectFilter(defect);
+			AnalysisFilterHandler.getInstance().addDefectFilter(defect,
+					DexterUIActivator.getDefault().getDexterClient());
 			log.setDismissed(true);
-			
+
 			// 트리 화면 바꾸기
 			view.getLogTreeView().refresh(log);
 		}
-    }
+	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.
+	 * IAction, org.eclipse.jface.viewers.ISelection)
 	 */
-    @Override
-    public void selectionChanged(IAction action, ISelection selection) {
-    	if(!(selection instanceof IStructuredSelection)){
+	@Override
+	public void selectionChanged(IAction action, ISelection selection) {
+		if (!(selection instanceof IStructuredSelection)) {
 			defectLogList = new HashSet<DefectLog>();
 			return;
 		}
-		
-    	final IStructuredSelection sel = (IStructuredSelection) selection;
+
+		final IStructuredSelection sel = (IStructuredSelection) selection;
 		@SuppressWarnings("rawtypes")
 		final Iterator iter = sel.iterator();
-		
+
 		defectLogList.clear();
-		while(iter.hasNext()){
+		while (iter.hasNext()) {
 			final Object obj = iter.next();
-			
-			if(obj instanceof DefectLog){
+
+			if (obj instanceof DefectLog) {
 				defectLogList.add((DefectLog) obj);
 			}
 		}
-    }
+	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.action.IAction, org.eclipse.ui.IWorkbenchPart)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ui.IObjectActionDelegate#setActivePart(org.eclipse.jface.
+	 * action.IAction, org.eclipse.ui.IWorkbenchPart)
 	 */
-    @Override
-    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-    	this.part = targetPart;
-    }
+	@Override
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		this.part = targetPart;
+	}
 
 }
