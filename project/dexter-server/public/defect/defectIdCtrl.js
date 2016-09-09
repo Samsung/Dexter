@@ -557,7 +557,7 @@ defectApp.controller('DefectIdCtrl', function($scope, $http, $sce, $location, $a
                 $scope.defectList = results.data.defectInSnapshot;
                 $scope.totalServerItems = results.data.length;
                 angular.element('#showLoading').hide();
-               // setCSVContent('snapshot');
+                // setCSVContent('snapshot');
                 //setSecurityCSVContent('snapshot', $scope.defectList);
             } else {
                 $log.debug(results);
@@ -575,7 +575,7 @@ defectApp.controller('DefectIdCtrl', function($scope, $http, $sce, $location, $a
                 $scope.totalServerItems = results.length;
                 $scope.defectList = results.data.defect;
                 angular.element('#showLoading').hide();
-               // setSecurityCSVContent('defect');
+                // setSecurityCSVContent('defect');
             }
         }, function (results) { // error
             $log.error(results.status);
@@ -632,10 +632,10 @@ defectApp.controller('DefectIdCtrl', function($scope, $http, $sce, $location, $a
             {field:'currentStatusCode', visible:false, displayName:'cur.Status', width:82, resizable: true, cellClass:'textAlignCenter', cellTemplate: '<div class="ngCellText">{{row.getProperty(col.field)}}</div>' },
             {field:'categoryName', displayName:'Category', width:80, resizable: true, cellClass:'textAlignCenter', cellTemplate: '<div ng-class="{yellowBlackBG: isSecurity(row.getProperty(col.field))}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>',
                 cellFilter:'nullDataFilter'},
-            {field:'modulePath', displayName:'Module',width:250, resizable: true, cellTemplate: '<div class="ngCellText">{{row.getProperty(col.field)}}</div>'},
+            {field:'modulePath', displayName:'Module',width:250, resizable: true, cellFilter:'nullModuleFilter', cellTemplate: '<div class="ngCellText">{{row.getProperty(col.field)}}</div>'},
             {field:'fileName', displayName:'File', resizable: true, cellTemplate: '<div class="ngCellText">{{row.getProperty(col.field)}}</div>'},
-            {field:'className', displayName:'Class', resizable: true, cellTemplate: '<div class="ngCellText">{{getOnlyClassName(row.getProperty(col.field))}}</div>'},
-            {field:'methodName', displayName:'Method/Function', resizable: true},
+            {field:'className', displayName:'Class', resizable: true, cellFilter:'nullClassFilter', cellTemplate: '<div class="ngCellText">{{getOnlyClassName(row.getProperty(col.field))}}</div>'},
+            {field:'methodName', displayName:'Method/Function', cellFilter:'nullMethodFilter', resizable: true},
             {field:'language', displayName:'Language', cellClass:'textAlignCenter', width:85, resizable: true, cellclass:'textAlignCenter' },
             {field:'toolName',displayName:'Tool',visible:false, cellClass:'textAlignCenter', width:85, resizable: true, cellclass:'textAlignCenter' },
             {field:'modifierId', displayName:'Author', resizable: true,  cellClass:'textAlignCenter'},
@@ -822,17 +822,17 @@ defectApp.controller('DefectIdCtrl', function($scope, $http, $sce, $location, $a
     };
 
     /*var getSnapshotOccurenceInFile = function(selectedDefect, snapshotId){
-        $http.get("/api/v1/snapshot/occurenceInFile", {
-            params: {
-                'modulePath': base64.encode($scope.selectedDefectModulePath),
-                'fileName': selectedDefect.fileName,
-                'snapshotId' : snapshotId
-            }
-        }).then(function (results) {
-            $scope.defectOccurrences[results.config.params.fileName] = (results.data) || 'undefined';
-            setSelectedDidDetail($scope.defectOccurrences[results.config.params.fileName]);
-        });
-    };*/
+     $http.get("/api/v1/snapshot/occurenceInFile", {
+     params: {
+     'modulePath': base64.encode($scope.selectedDefectModulePath),
+     'fileName': selectedDefect.fileName,
+     'snapshotId' : snapshotId
+     }
+     }).then(function (results) {
+     $scope.defectOccurrences[results.config.params.fileName] = (results.data) || 'undefined';
+     setSelectedDidDetail($scope.defectOccurrences[results.config.params.fileName]);
+     });
+     };*/
     var getSnapshotOccurenceInFile = function (selectedDefect, snapshotId) {
         const getSnapshotOccurenceInFileUrl = '/api/v2/snapshot/occurence-in-file';
 
@@ -1028,8 +1028,19 @@ defectApp.controller('DefectIdCtrl', function($scope, $http, $sce, $location, $a
     };
 });
 
-defectApp.filter('nullDataFilter', function($filter){
-    return function(input){
-        return input === null ? 'None' : input;
-    }
+defectApp.filter('nullMethodFilter', function() {
+    return function(input) {
+        return input == 'null' ? 'N/A' : input;
+    };
+});
+
+defectApp.filter('nullModuleFilter', function() {
+    return function(input) {
+        return input == 'null' ? 'N/A' : input;
+    };
+});
+defectApp.filter('nullClassFilter', function() {
+    return function(input) {
+        return input == 'null' ? 'N/A' : input;
+    };
 });
