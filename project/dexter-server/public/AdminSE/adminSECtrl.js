@@ -49,7 +49,6 @@ adminSEApp.controller('adminSECtrl', function($scope, $http, $location ,$routePa
     $http.get(getModulePathListUrl, {
     }).then(function(result){
         if(isHttpResultOK(result)){
-            console.log(result.data.rows.length);
             $scope.modulePathList = [];
             angular.forEach(result.data.rows, function(index){
                 $scope.modulePathList.push(index.modulePath);
