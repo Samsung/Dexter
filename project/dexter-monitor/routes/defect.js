@@ -117,7 +117,7 @@ exports.getMaxWeek = function(req, res) {
 exports.getDefectCountByProjectName = function(req, res) {
     const projectServer = _.find(server.getServerListInternal(), {'projectName': req.params.projectName});
     const defectCountUrl = `http://${projectServer.hostIP}:${projectServer.portNumber}/api/v2/defect-count`;
-    rp({uri: defectCountUrl, timeout: 2000})
+    rp(defectCountUrl)
         .then((data) => {
             const parsedData = JSON.parse('' + data);
             res.send({status:'ok', values: parsedData.values});
@@ -139,7 +139,7 @@ exports.saveSnapshot = function() {
         let userCount = 0;
 
         promises.push(new Promise((resolve, reject) => {
-            rp({uri: defectCountUrl, timeout: 2000})
+            rp(defectCountUrl)
                 .then((data) => {
                     defectValues = JSON.parse('' + data).values;
                     resolve();
@@ -150,7 +150,7 @@ exports.saveSnapshot = function() {
                 });
         }));
         promises.push(new Promise((resolve, reject) => {
-            rp({uri: userCountUrl, timeout: 2000})
+            rp(userCountUrl)
                 .then((data) => {
                     userCount = JSON.parse('' + data).value;
                     resolve();

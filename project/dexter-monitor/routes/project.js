@@ -120,7 +120,7 @@ function loadDefectStatusSummary(resolve, summary) {
 
     Promise.map(activeServerList, (server) => {
         const defectCountUrl = `http://${server.hostIP}:${server.portNumber}/api/v2/defect-count`;
-        return rp({uri: defectCountUrl, timeout: 2000})
+        return rp(defectCountUrl)
             .then((data) => {
                 server.defectValues = JSON.parse('' + data).values;
             })
