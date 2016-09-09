@@ -6,11 +6,11 @@
  * modification, are permitted provided that the following conditions are met:
  * 
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  * 
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -22,18 +22,8 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.samsung.sec.dexter.opensource.plugin;
-
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
-
-import net.xeoh.plugins.base.annotations.PluginImplementation;
-
-import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
@@ -51,115 +41,134 @@ import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 import com.samsung.sec.dexter.core.plugin.PluginDescription;
 import com.samsung.sec.dexter.core.plugin.PluginVersion;
 
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
+import org.apache.log4j.Logger;
+
+import net.xeoh.plugins.base.annotations.PluginImplementation;
+
 @PluginImplementation
 public class DexterOpensourcePlugin implements IDexterPlugin {
-	private CheckerConfig checkerConfig;
-	public final static String PLUGIN_NAME = "dexter-opensource";
-	
-	private final static Logger LOG = Logger.getLogger(DexterOpensourcePlugin.class);
+    private CheckerConfig checkerConfig;
+    public final static String PLUGIN_NAME = "dexter-opensource";
+    private final static PluginVersion PLUGIN_VERSION = new PluginVersion("0.10.4");
+    private final static PluginDescription PLUGIN_DESCRIPTION = new PluginDescription("Samsung Electroincs",
+            PLUGIN_NAME,
+            PLUGIN_VERSION,
+            DexterConfig.LANGUAGE.ALL,
+            "Dexter Open Source License Verify Plug-in");
 
-	public DexterOpensourcePlugin() {
-	}
+    private final static Logger LOG = Logger.getLogger(DexterOpensourcePlugin.class);
 
-	@Override
-	public void init()  {
-		initCheckerConfig();
-	}
-	
-	protected synchronized void initCheckerConfig() {
-		try{
-			Reader reader = new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream("checker-config.json"));
-			
-			Gson gson = new Gson();
-			this.checkerConfig = gson.fromJson(reader, CheckerConfig.class);
-		} catch (Exception e){
-			throw new DexterRuntimeException(e.getMessage(), e);
-		}
-	}
+    public DexterOpensourcePlugin() {}
 
-	@Override
-	public void destroy()  {
-	}
+    @Override
+    public void init() {
+        initCheckerConfig();
+    }
 
-	@Override
-	public void handleDexterHomeChanged(String oldPath, String newPath)  {
-	}
+    protected synchronized void initCheckerConfig() {
+        try {
+            Reader reader = new InputStreamReader(
+                    this.getClass().getClassLoader().getResourceAsStream("checker-config.json"));
 
-	@Override
-	public PluginDescription getDexterPluginDescription() {
-		return new PluginDescription("Samsung Electroincs", PLUGIN_NAME, 
-				PluginVersion.fromImplementationVersion(DexterOpensourcePlugin.class), 
-				DexterConfig.LANGUAGE.ALL, 
-				"");
-	}
+            Gson gson = new Gson();
+            this.checkerConfig = gson.fromJson(reader, CheckerConfig.class);
+        } catch (Exception e) {
+            throw new DexterRuntimeException(e.getMessage(), e);
+        }
+    }
 
-	@Override
-	public void setCheckerConfig(CheckerConfig cc) {
-		this.checkerConfig = cc;
-	}
+    @Override
+    public void destroy() {}
 
-	@Override
-	public CheckerConfig getCheckerConfig() {
-		return this.checkerConfig;
-	}
+    @Override
+    public void handleDexterHomeChanged(String oldPath, String newPath) {}
 
-	@Override
-	public AnalysisResult analyze(AnalysisConfig config)  {
-		final String sourcecode = config.getSourcecodeThatReadIfNotExist();
-		IAnalysisEntityFactory factory = new AnalysisEntityFactory();
-		AnalysisResult result = factory.createAnalysisResult(config);
-		
-		for(Checker checker : this.checkerConfig.getCheckerList()){
-			if (checker.isActive() == false) {
-				continue;
-			}
-			
-			final String regExp = checker.getProperty("RegExp");
-			
-			try {
-				Pattern pattern = Pattern.compile(regExp);
-				Matcher matcher = pattern.matcher(sourcecode);
-				
-				if(matcher.find()){
-					Defect defect = new Defect();
-					defect.setCheckerCode(checker.getCode());
-					defect.setFileName(config.getFileName());
-					defect.setModulePath(config.getModulePath());
-					defect.setClassName("");
-					defect.setMethodName("");
-					defect.setLanguage(config.getLanguageEnum().toString());
-					defect.setSeverityCode(checker.getSeverityCode());
-					defect.setCategoryName(checker.getCategoryName());
-					defect.setMessage(checker.getProperty("EnglishDescription"));
-					defect.setToolName(PLUGIN_NAME);
-					
-					Occurence occ = new Occurence();
-					occ.setStartLine(1);
-					occ.setEndLine(1);
-					occ.setStringValue(matcher.group());
-					occ.setMessage(checker.getProperty("ShortDescription"));
-					
-					defect.addOccurence(occ);
-					
-					result.addDefect(defect);
-				}
-			} catch (PatternSyntaxException e){
-				LOG.error("incorrect regexp: " + regExp);
-				LOG.error(e.getMessage(), e);
-			}
-		}
-		
-		return result;
-	}
+    @Override
+    public PluginDescription getDexterPluginDescription() {
+        /*
+         * return new PluginDescription("Samsung Electroincs", PLUGIN_NAME,
+         * PluginVersion.fromImplementationVersion(DexterOpensourcePlugin.class),
+         * DexterConfig.LANGUAGE.ALL,
+         * "");
+         */
 
-	@Override
-	public boolean supportLanguage(LANGUAGE language) {
-		// support all languages
-		return true;
-	}
+        return PLUGIN_DESCRIPTION;
+    }
 
-	@Override
+    @Override
+    public void setCheckerConfig(CheckerConfig cc) {
+        this.checkerConfig = cc;
+    }
+
+    @Override
+    public CheckerConfig getCheckerConfig() {
+        return this.checkerConfig;
+    }
+
+    @Override
+    public AnalysisResult analyze(AnalysisConfig config) {
+        final String sourcecode = config.getSourcecodeThatReadIfNotExist();
+        IAnalysisEntityFactory factory = new AnalysisEntityFactory();
+        AnalysisResult result = factory.createAnalysisResult(config);
+
+        for (Checker checker : this.checkerConfig.getCheckerList()) {
+            if (checker.isActive() == false) {
+                continue;
+            }
+
+            final String regExp = checker.getProperty("RegExp");
+
+            try {
+                Pattern pattern = Pattern.compile(regExp);
+                Matcher matcher = pattern.matcher(sourcecode);
+
+                if (matcher.find()) {
+                    Defect defect = new Defect();
+                    defect.setCheckerCode(checker.getCode());
+                    defect.setFileName(config.getFileName());
+                    defect.setModulePath(config.getModulePath());
+                    defect.setClassName("");
+                    defect.setMethodName("");
+                    defect.setLanguage(config.getLanguageEnum().toString());
+                    defect.setSeverityCode(checker.getSeverityCode());
+                    defect.setCategoryName(checker.getCategoryName());
+                    defect.setMessage(checker.getProperty("EnglishDescription"));
+                    defect.setToolName(PLUGIN_NAME);
+                    defect.setAnalysisType(config.getAnalysisType().name());
+
+                    Occurence occ = new Occurence();
+                    occ.setStartLine(1);
+                    occ.setEndLine(1);
+                    occ.setStringValue(matcher.group());
+                    occ.setMessage(checker.getProperty("ShortDescription"));
+
+                    defect.addOccurence(occ);
+
+                    result.addDefect(defect);
+                }
+            } catch (PatternSyntaxException e) {
+                LOG.error("incorrect regexp: " + regExp);
+                LOG.error(e.getMessage(), e);
+            }
+        }
+
+        return result;
+    }
+
+    @Override
+    public boolean supportLanguage(LANGUAGE language) {
+        // support all languages
+        return true;
+    }
+
+    @Override
     public String[] getSupportingFileExtensions() {
-		return new String[] {"java", "c", "cpp", "h", "hpp", "cs", "js", "css", "html"};
+        return new String[] { "java", "c", "cpp", "h", "hpp", "cs", "js", "css", "html" };
     }
 }

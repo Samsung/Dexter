@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Dexter Daemon" uid="dexter_daemon" id="dexter-daemon.product" application="dexter-daemon.application" version="0.10.2" useFeatures="true" includeLaunchers="true">
+<product name="Dexter Daemon" uid="dexter_daemon" id="dexter-daemon.product" application="dexter-daemon.application" version="0.10.4" useFeatures="true" includeLaunchers="true">
+
 
    <configIni use="default">
    </configIni>
@@ -33,9 +34,11 @@
       </win>
    </launcher>
 
+
    <vm>
       <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7</windows>
    </vm>
+
 
    <plugins>
       <plugin id="com.ibm.icu"/>
@@ -142,7 +145,7 @@
    </plugins>
 
    <features>
-      <feature id="dexter.daemon.feature.32" version="0.10.2"/>
+      <feature id="dexter.daemon.feature.64" version="0.10.4"/>
    </features>
 
    <configurations>
@@ -152,5 +155,12 @@
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
    </configurations>
+
+   <preferencesInfo>
+      <targetfile overwrite="false"/>
+   </preferencesInfo>
+
+   <cssInfo>
+   </cssInfo>
 
 </product>

@@ -557,7 +557,7 @@ defectApp.controller('DefectIdCtrl', function($scope, $http, $sce, $location, $a
                 $scope.defectList = results.data.defectInSnapshot;
                 $scope.totalServerItems = results.data.length;
                 angular.element('#showLoading').hide();
-               // setCSVContent('snapshot');
+                // setCSVContent('snapshot');
                 //setSecurityCSVContent('snapshot', $scope.defectList);
             } else {
                 $log.debug(results);
@@ -575,7 +575,7 @@ defectApp.controller('DefectIdCtrl', function($scope, $http, $sce, $location, $a
                 $scope.totalServerItems = results.length;
                 $scope.defectList = results.data.defect;
                 angular.element('#showLoading').hide();
-               // setSecurityCSVContent('defect');
+                // setSecurityCSVContent('defect');
             }
         }, function (results) { // error
             $log.error(results.status);
@@ -632,13 +632,13 @@ defectApp.controller('DefectIdCtrl', function($scope, $http, $sce, $location, $a
             {field:'currentStatusCode', visible:false, displayName:'cur.Status', width:82, resizable: true, cellClass:'textAlignCenter', cellTemplate: '<div class="ngCellText">{{row.getProperty(col.field)}}</div>' },
             {field:'categoryName', displayName:'Category', width:80, resizable: true, cellClass:'textAlignCenter', cellTemplate: '<div ng-class="{yellowBlackBG: isSecurity(row.getProperty(col.field))}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>',
                 cellFilter:'nullDataFilter'},
-            {field:'modulePath', displayName:'Module',width:250, resizable: true, cellTemplate: '<div class="ngCellText">{{row.getProperty(col.field)}}</div>'},
+            {field:'modulePath', displayName:'Module',width:250, resizable: true, cellFilter:'nullModuleFilter', cellTemplate: '<div class="ngCellText">{{row.getProperty(col.field)}}</div>'},
             {field:'fileName', displayName:'File', resizable: true, cellTemplate: '<div class="ngCellText">{{row.getProperty(col.field)}}</div>'},
-            {field:'className', displayName:'Class', resizable: true, cellTemplate: '<div class="ngCellText">{{getOnlyClassName(row.getProperty(col.field))}}</div>'},
-            {field:'methodName', displayName:'Method/Function', resizable: true},
+            {field:'className', displayName:'Class', resizable: true, cellFilter:'nullClassFilter', cellTemplate: '<div class="ngCellText">{{getOnlyClassName(row.getProperty(col.field))}}</div>'},
+            {field:'methodName', displayName:'Method/Function', cellFilter:'nullMethodFilter', resizable: true},
             {field:'language', displayName:'Language', cellClass:'textAlignCenter', width:85, resizable: true, cellclass:'textAlignCenter' },
             {field:'toolName',displayName:'Tool',visible:false, cellClass:'textAlignCenter', width:85, resizable: true, cellclass:'textAlignCenter' },
-            {field:'modifierId', displayName:'Author', resizable: true, visible:false,  cellClass:'textAlignCenter'},
+            {field:'modifierId', displayName:'Author', resizable: true,  cellClass:'textAlignCenter'},
             {field:'modifiedDateTime', displayName:'Date', resizable: true, cellClass:'textAlignCenter',
                 cellTemplate: '<div><div class="ngCellText">{{row.getProperty(col.field) | date:"yyyy-MM-dd HH:mm:ss"}}</div></div>' },
             {field:'message', displayName:"Description", visible:false, resizable: true}
@@ -789,12 +789,13 @@ defectApp.controller('DefectIdCtrl', function($scope, $http, $sce, $location, $a
         if (selectedDefect.did == did) {
             $scope.selectedDefectModulePath = (selectedDefect.modulePath) || "undefined";
 
-            var snapshotId = 'undefined';
+            let snapshotId = '';
             if ($scope.isSnapshotView) {
                 snapshotId = $routeParams.snapshotId;
                 getSnapshotOccurenceInFile(selectedDefect, snapshotId);
             }
             else {
+                snapshotId = 'undefined';
                 getOccurenceInFile(selectedDefect);
 
             }
@@ -820,18 +821,34 @@ defectApp.controller('DefectIdCtrl', function($scope, $http, $sce, $location, $a
         })
     };
 
-    var getSnapshotOccurenceInFile = function(selectedDefect, snapshotId){
-        $http.get("/api/v1/snapshot/occurenceInFile", {
+    /*var getSnapshotOccurenceInFile = function(selectedDefect, snapshotId){
+     $http.get("/api/v1/snapshot/occurenceInFile", {
+     params: {
+     'modulePath': base64.encode($scope.selectedDefectModulePath),
+     'fileName': selectedDefect.fileName,
+     'snapshotId' : snapshotId
+     }
+     }).then(function (results) {
+     $scope.defectOccurrences[results.config.params.fileName] = (results.data) || 'undefined';
+     setSelectedDidDetail($scope.defectOccurrences[results.config.params.fileName]);
+     });
+     };*/
+    var getSnapshotOccurenceInFile = function (selectedDefect, snapshotId) {
+        const getSnapshotOccurenceInFileUrl = '/api/v2/snapshot/occurence-in-file';
+
+        $http.post( getSnapshotOccurenceInFileUrl , {
             params: {
                 'modulePath': base64.encode($scope.selectedDefectModulePath),
                 'fileName': selectedDefect.fileName,
                 'snapshotId' : snapshotId
             }
         }).then(function (results) {
-            $scope.defectOccurrences[results.config.params.fileName] = (results.data) || 'undefined';
-            setSelectedDidDetail($scope.defectOccurrences[results.config.params.fileName]);
+            $scope.defectOccurrences = [];
+            $scope.defectOccurrences[results.config.data.params.fileName] = (results.data) || 'undefined';
+            setSelectedDidDetail($scope.defectOccurrences[results.config.data.params.fileName]);
         });
     };
+
 
     var getOccurenceInFile = function(selectedDefect){
         $http.get("/api/v1/occurenceInFile", {
@@ -866,24 +883,27 @@ defectApp.controller('DefectIdCtrl', function($scope, $http, $sce, $location, $a
         });
     };
 
-    var loadSnapshotSourceCode = function(selectedDefect, snapshotId){
-        $http.get("/api/v1/analysis/snapshot/source", {
-                params: {
-                    'modulePath': base64.encode($scope.selectedDefectModulePath),
-                    'fileName': selectedDefect.fileName,
-                    'snapshotId': snapshotId
-                }
+
+    var loadSnapshotSourceCode = function (selectedDefect, snapshotId) {
+        const getSnapshotSourceCodeUrl = '/api/v2/analysis/snapshot/sourcecode';
+        $http.post(getSnapshotSourceCodeUrl , {
+            params: {
+                'modulePath': base64.encode($scope.selectedDefectModulePath),
+                'fileName': selectedDefect.fileName,
+                'snapshotId': snapshotId
             }
-        ).then(function (results) {
-                if (results) {
-                    var defectSourceCodes = {};
-                    defectSourceCodes.source =results.data;
-                    defectSourceCodes.fileName = results.config.params.fileName;
-                    defectSourceCodes.modulePath = base64.decode(results.config.params.modulePath);
-                    displaySourceCode(defectSourceCodes);
-                }
-            });
+        }).then(function(results){
+            if(isHttpResultOK(results)){
+                let defectSourceCodes = {};
+                defectSourceCodes.source = results.data;
+                defectSourceCodes.fileName = results.config.data.params.fileName;
+                defectSourceCodes.modulePath = base64.decode(results.config.data.params.modulePath);
+                displaySourceCode(defectSourceCodes);
+            }
+        });
     };
+
+
 
     var setDefaultMsg = function(){
         var noCodeMsg = "There is no content for source codes. When you use snapshot or CLI, you can see the source codes.";
@@ -1008,8 +1028,19 @@ defectApp.controller('DefectIdCtrl', function($scope, $http, $sce, $location, $a
     };
 });
 
-defectApp.filter('nullDataFilter', function($filter){
-    return function(input){
-        return input === null ? 'None' : input;
-    }
+defectApp.filter('nullMethodFilter', function() {
+    return function(input) {
+        return input == 'null' ? 'N/A' : input;
+    };
+});
+
+defectApp.filter('nullModuleFilter', function() {
+    return function(input) {
+        return input == 'null' ? 'N/A' : input;
+    };
+});
+defectApp.filter('nullClassFilter', function() {
+    return function(input) {
+        return input == 'null' ? 'N/A' : input;
+    };
 });

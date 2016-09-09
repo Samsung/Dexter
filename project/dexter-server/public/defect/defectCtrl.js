@@ -399,7 +399,6 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
                         'fixCount': data.fixCount,
                         'excCount': data.excCount,
                         'children': []
-                        //'collapsed' : true
                     });
                 });
             }
@@ -966,14 +965,14 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
                 width: 80,
                 resizable: true,
                 cellClass: 'textAlignCenter',
-                cellTemplate: '<div ng-class="{yellowBlackBG: isSecurity(row.getProperty(col.field))}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>',
-                cellFilter: 'nullDataFilter'
+                cellTemplate: '<div ng-class="{yellowBlackBG: isSecurity(row.getProperty(col.field))}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>'
             },
             {
                 field: 'modulePath',
                 displayName: 'Module',
                 width: 250,
                 resizable: true,
+                cellFilter:'nullModuleFilter',
                 cellTemplate: '<div class="ngCellText">{{row.getProperty(col.field)}}</div>'
             },
             {
@@ -986,9 +985,10 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
                 field: 'className',
                 displayName: 'Class',
                 resizable: true,
+                cellFilter:'nullClassFilter',
                 cellTemplate: '<div class="ngCellText">{{getOnlyClassName(row.getProperty(col.field))}}</div>'
             },
-            {field: 'methodName', displayName: 'Method/Function', resizable: true},
+            {field: 'methodName', displayName: 'Method/Function', resizable: true, cellFilter:'nullMethodFilter'},
             {
                 field: 'language',
                 displayName: 'Language',
@@ -1006,7 +1006,7 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
                 resizable: true,
                 cellclass: 'textAlignCenter'
             },
-            {field: 'modifierId', displayName: 'Author', resizable: true, visible: false, cellClass: 'textAlignCenter'},
+            {field: 'modifierId', displayName: 'Author', resizable: true, cellClass: 'textAlignCenter'},
             {
                 field: 'modifiedDateTime', displayName: 'Date', resizable: true, cellClass: 'textAlignCenter',
                 cellTemplate: '<div><div class="ngCellText">{{row.getProperty(col.field) | date:"yyyy-MM-dd HH:mm:ss"}}</div></div>'
@@ -1106,10 +1106,10 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         $scope.currentDetailCheckerCode = currentDefect.checkerCode;
         $scope.currentDetailSeverityCode = currentDefect.severityCode;
         $scope.currentDetailCategoryName = currentDefect.categoryName;
-        $scope.currentDetailOccurenceCount = currentDefect.occurenceCount;
+        $scope.currentDetailOccurenceCount = currentDefect.occurenceCount || 'undefined';
         $scope.currentDetailStatus = currentDefect.statusCode;
-        $scope.currentDetailClassName = currentDefect.className;
-        $scope.currentDetailMethodName = currentDefect.methodName || 'N/A';
+        $scope.currentDetailClassName = currentDefect.className || 'undefined';
+        $scope.currentDetailMethodName = currentDefect.methodName || 'undefined';
         $scope.currentDetailModifierId = currentDefect.modifierId;
         $scope.currentDetailModifiedDateTime = currentDefect.modifiedDateTime;
         $scope.currentDetailmessage = currentDefect.message;
@@ -1158,12 +1158,13 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
     var getDefectOccurrenceInFile = function (selectedDefect) {
         $scope.selectedDefectModulePath = (selectedDefect.modulePath) || "undefined";
 
-        var snapshotId = 'undefined';
+        let snapshotId = '';
         if ($scope.isSnapshotView) {
             snapshotId = $scope.snapshotId;
-            getSnapshotOccurenceInFile(selectedDefect, snapshotId);
+            getSnapshotOccurenceInFile();
         }
         else {
+            snapshotId = 'undefined';
             getOccurenceInFile(selectedDefect);
 
         }
@@ -1188,17 +1189,19 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         });
     };
 
-    var getSnapshotOccurenceInFile = function (selectedDefect, snapshotId) {
-        $http.get("/api/v1/snapshot/occurenceInFile", {
+    var getSnapshotOccurenceInFile = function () {
+        const getSnapshotOccurenceInFileUrl = '/api/v2/snapshot/occurence-in-file';
+
+        $http.post( getSnapshotOccurenceInFileUrl , {
             params: {
-                'modulePath': base64.encode($scope.selectedDefectModulePath),
-                'fileName': selectedDefect.fileName,
-                'snapshotId': snapshotId
+                'modulePath': base64.encode($scope.currentDetailModulePath),
+                'fileName': $scope.currentDetailFileName,
+                'snapshotId': $scope.snapshotId
             }
         }).then(function (results) {
             $scope.defectOccurrences = [];
-            $scope.defectOccurrences[results.config.params.fileName] = (results.data) || 'undefined';
-            setSelectedDidDetail($scope.defectOccurrences[results.config.params.fileName]);
+            $scope.defectOccurrences[$scope.currentDetailFileName] = (results.data) || 'undefined';
+            setSelectedDidDetail($scope.defectOccurrences[$scope.currentDetailFileName]);
         });
     };
 
@@ -1237,22 +1240,22 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
     };
 
     var loadSnapshotSourceCode = function (selectedDefect, snapshotId) {
-        $http.get("/api/v1/analysis/snapshot/source", {
-                params: {
-                    'modulePath': base64.encode($scope.selectedDefectModulePath),
-                    'fileName': selectedDefect.fileName,
-                    'snapshotId': snapshotId
-                }
+        const getSnapshotSourceCodeUrl = '/api/v2/analysis/snapshot/sourcecode';
+        $http.post(getSnapshotSourceCodeUrl , {
+            params: {
+                'modulePath': base64.encode($scope.selectedDefectModulePath),
+                'fileName': selectedDefect.fileName,
+                'snapshotId': snapshotId
             }
-        ).then(function (results) {
-                if (results) {
-                    var defectSourceCodes = {};
-                    defectSourceCodes.source = results.data;
-                    defectSourceCodes.fileName = results.config.params.fileName;
-                    defectSourceCodes.modulePath = base64.decode(results.config.params.modulePath);
-                    displaySourceCode(defectSourceCodes);
-                }
-            });
+        }).then(function(results){
+           if(isHttpResultOK(results)){
+               let defectSourceCodes = {};
+               defectSourceCodes.source = results.data;
+               defectSourceCodes.fileName = results.config.data.params.fileName;
+               defectSourceCodes.modulePath = base64.decode(results.config.data.params.modulePath);
+               displaySourceCode(defectSourceCodes);
+           }
+        });
     };
 
     var setDefaultMsg = function () {
@@ -1379,8 +1382,19 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
     };
 });
 
-defectApp.filter('nullDataFilter', function ($filter) {
-    return function (input) {
-        return input === null ? 'None' : input;
-    }
+defectApp.filter('nullMethodFilter', function() {
+    return function(input) {
+        return input == 'null' ? 'N/A' : input;
+    };
+});
+
+defectApp.filter('nullModuleFilter', function() {
+    return function(input) {
+        return input == 'null' ? 'N/A' : input;
+    };
+});
+defectApp.filter('nullClassFilter', function() {
+    return function(input) {
+        return input == 'null' ? 'N/A' : input;
+    };
 });

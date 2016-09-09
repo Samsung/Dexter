@@ -302,7 +302,7 @@ function initRestAPI(){
     /* Analysis Result */
     app.post('/api/v1/analysis/result', auth, analysis.add);
     app.post('/api/v1/analysis/snapshot/source', auth, analysis.addSnapshotSourceCode);
-    app.get('/api/v1/analysis/snapshot/source', auth, analysis.getSnapshotSourceCode);
+    app.get('/api/v1/analysis/snapshot/source', auth, analysis.getSnapshotSourceCode); // Deprecated
     app.get('/api/v1/analysis/snapshot/checkSourceCode', auth, analysis.checkSnapshotSourceCode);
 
     /* Defect Filter */
@@ -337,7 +337,7 @@ function initRestAPI(){
     /* SnapshotDefectMap / SnapshotSourcecodeMap*/
     app.get('/api/v1/snapshot/snapshotList', analysis.getAllSnapshot);
     app.get('/api/v1/snapshot/showSnapshotDefectPage',analysis.getDefectListInSnapshot);
-    app.get('/api/v1/snapshot/occurenceInFile', analysis.getOccurencesByFileNameInSnapshot);
+    app.get('/api/v1/snapshot/occurenceInFile', analysis.getOccurencesByFileNameInSnapshot); // Deprecated
 
     /* code metrics */
     app.get('/api/v1/metrics', analysis.getCodeMetrics);
@@ -390,7 +390,6 @@ function initRestAPI(){
     app.post('/api/v2/analysis/result', auth, analysis.addV2);
     app.get('/api/v2/defect', analysis.getDefectsByModuleAndFileV2);
     app.get('/api/v2/defect/:did', analysis.getDefectsByModuleAndFileForDid);
-    //app.get('/api/v2/snapshot/showSnapshotDefectPage',analysis.getDefectListInSnapshotV2);
 
     /* SnapshotDefectMap / SnapshotSourcecodeMap*/
     app.get('/api/v2/snapshot/snapshotList', analysis.getAllSnapshotV2);
@@ -413,6 +412,11 @@ function initRestAPI(){
 
     app.get('/api/2/codeMetrics/slocList', codeMetrics.getCodeMetricsForSloc);
 
+
+    /* Analysis Result */
+    app.post('/api/v2/analysis/snapshot/sourcecode', auth, analysis.getSnapshotSourceCodeV2);
+    app.post('/api/v2/snapshot/occurence-in-file', analysis.getOccurencesByFileNameInSnapshotV2);
+
     /* EXPORT SECURITY REPORT */
     app.get('/api/v2/security/snapshotAll', analysis.getSnapshotDefectForSecurity);
     app.get('/api/v2/security/defectAll', analysis.getDefectForSecurity);
@@ -429,6 +433,11 @@ function initRestAPI(){
     app.get('/api/v2/detailed-defect-count', monitor.getDetailedDefectCount);
     app.get('/api/v2/user-count', monitor.getUserCount);
     app.get('/api/v2/user-list', monitor.getUserList);
+
+
+    /** API VERSION 3 **/
+    app.post('/api/v3/analysis/result', auth, analysis.addV3);
+
 }
 
 function startServer(){
@@ -457,7 +466,7 @@ function stopServer (req, res){
 
     dexterServer.close();
     process.exit(1);
-};
+}
 
 exports.forceStopServer = function(){
     dexterServer.close();
@@ -476,7 +485,7 @@ function deleteDexterDatabase (req, res){
     log.info('Dexter database will be removed by ' + userId);
     if(res != undefined) res.send("ok");
     database.deleteDexterDatabase();
-};
+}
 
 function checkServer (req, res){
     res.status(200);
@@ -484,7 +493,7 @@ function checkServer (req, res){
     //res.send({"isAlive":"ok"});
     //res.writeHead(200, { 'Content-Type': 'application/json' });
     //res.jsonp({"isAlive":"ok"});
-};
+}
 
 function checkServer2 (req, res){
     //res.writeHead(200, { 'Content-Type': 'application/json' });

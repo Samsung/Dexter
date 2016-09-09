@@ -29,5 +29,5 @@ public interface IDexterHomeListener {
 	/**
 	 *  occur whenever login
 	 */
-	public void handleDexterHomeChanged();
+	public void handleDexterHomeChanged(final String oldPath, final String newPath);
 }
