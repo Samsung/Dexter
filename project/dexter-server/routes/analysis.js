@@ -720,7 +720,7 @@ exports.changeDefectToNew = function (req, res){
 exports.changeDefectToFix = function (req, res){
     if(req == undefined || req.body == undefined || req.body.params == undefined ||
 	   req.body.params.didList == undefined || req.currentUserId == undefined){
-        res.send({status:"fail", errorMessage: "No DataList or No currentUserId"})
+        res.send({status:"fail", errorMessage: "No DataList or No currentUserId"});
 		return;
     }
 
