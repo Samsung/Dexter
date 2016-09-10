@@ -165,7 +165,7 @@ public class Main {
 
         if (configFile.getType() == IDexterConfigFile.Type.SNAPSHOT
                 && Strings.isNullOrEmpty(configFile.getSnapshotId())) {
-            baseAnalysisConfig.setSnapshotId(-1L);
+            baseAnalysisConfig.setSnapshotId(System.currentTimeMillis());
         }
 
         final IDexterConfigFile.Type type = configFile.getType();
