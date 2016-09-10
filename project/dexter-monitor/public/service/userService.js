@@ -49,7 +49,6 @@ monitorApp.service('UserService', function($http, $log, $q) {
     this.getUserList = function() {
         return $http.get('/api/v2/user')
             .then((res) => {
-                console.log(res);
                 if (!isHttpResultOK(res)) {
                     $log.error('Failed to get user list');
                     return [];
