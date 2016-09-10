@@ -26,6 +26,7 @@
 package com.samsung.sec.dexter.executor.cli;
 
 import com.google.common.base.Stopwatch;
+import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisResultHandler;
@@ -162,8 +163,10 @@ public class Main {
 
         final AnalysisConfig baseAnalysisConfig = configFile.toAnalysisConfig();
 
-        baseAnalysisConfig.setSnapshotId(
-                configFile.getType() == IDexterConfigFile.Type.SNAPSHOT ? System.currentTimeMillis() : -1L);
+        if (configFile.getType() == IDexterConfigFile.Type.SNAPSHOT
+                && Strings.isNullOrEmpty(configFile.getSnapshotId())) {
+            baseAnalysisConfig.setSnapshotId(System.currentTimeMillis());
+        }
 
         final IDexterConfigFile.Type type = configFile.getType();
 

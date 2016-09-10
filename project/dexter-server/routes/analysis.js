@@ -1699,7 +1699,7 @@ exports.addV3 = function(req, res) {
 function getUserNoFromAnalysisType(defectCount, defectList, currentId){
 
     if(defectCount == 0){
-        account.getUserNo(currentId);
+        return account.getUserNo(currentId);
     }
     var analysisType = defectList[0].analysisType;
     if(analysisType == 'FOLDER' || analysisType == 'PROJECT' || analysisType == 'SNAPSHOT'){
