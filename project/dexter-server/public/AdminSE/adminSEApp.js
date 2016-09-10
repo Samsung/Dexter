@@ -6,5 +6,4 @@ adminSEApp.config(function($routeProvider){
             controller: 'adminSECtrl',
             templateUrl: 'adminSEView.html'
         });
-    //$routeProvider.otherwise({"redirectTo":"/"})
 });

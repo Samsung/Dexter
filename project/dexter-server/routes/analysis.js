@@ -1364,7 +1364,7 @@ function addSourceCodeMap(res, snapshotId, fileName, modulePath, sourceCode, use
             });
         }
     });
-};
+}
 
 exports.getSnapshotSourceCode = function(req, res) {
     if(req == undefined || req.query == undefined || req.query.fileName == undefined || req.currentUserId == undefined){
