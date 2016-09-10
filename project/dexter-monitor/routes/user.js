@@ -36,18 +36,30 @@ const Promise = require('bluebird');
 const rp = require('request-promise');
 const mysql = require("mysql");
 const _ = require("lodash");
+const requestify = require('requestify');
+
+
+function getUserList(userListUrl){
+    return requestify.get(userListUrl)
+        .then(function(result){
+            const jsonObj = JSON.parse(result.body);
+            return jsonObj.rows;
+        }).catch( (err) => {
+            log.error(err);
+            return null;
+        });
+}
 
 exports.getAll = function(req, res) {
     const activeServerList = _.filter(server.getServerListInternal(), {'active': true});
     let allRows = [];
     let promises = [];
 
-    Promise.map(activeServerList, (server) => {
+    activeServerList.forEach( (server) =>
         promises.push(new Promise((resolve) => {
             const userListUrl = `http://${server.hostIP}:${server.portNumber}/api/v2/user-list`;
-            rp(userListUrl)
-                .then((data) => {
-                    const rows = JSON.parse('' + data).rows;
+            getUserList(userListUrl)
+                .then( (rows) =>{
                     if (rows) {
                         rows.forEach((row) => {
                             allRows.push({
@@ -62,10 +74,10 @@ exports.getAll = function(req, res) {
                     log.error(`Failed to get user list for pid ${server.pid} : ${err}`);
                     resolve();
                 });
-        }));
-    });
+        }))
+    );
 
-    Promise.all(promises)
+    return Promise.all(promises)
         .then(() => {
             allRows = _.sortBy(allRows, 'projectName');
             res.send({status:'ok', rows: allRows});
@@ -164,7 +176,7 @@ function loadUserList() {
     let allRows = [];
     let promises = [];
 
-    Promise.map(activeServerList, (server) => {
+    activeServerList.forEach( (server) =>
         promises.push(new Promise((resolve) => {
             const userListUrl = `http://${server.hostIP}:${server.portNumber}/api/v2/user-list`;
             rp(userListUrl)
@@ -179,8 +191,8 @@ function loadUserList() {
                     log.error(`Failed to get user list for pid ${server.pid} : ${err}`);
                     resolve();
                 });
-        }));
-    });
+        }))
+    );
 
     return Promise.all(promises)
         .then(() => {
@@ -211,6 +223,7 @@ function updateUserStatusList() {
                 reject();
             })
     }));
+
     promises.push(new Promise((resolve, reject) => {
         loadUserList()
             .then((rows) => {
