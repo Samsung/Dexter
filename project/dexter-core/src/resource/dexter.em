@@ -449,7 +449,7 @@ macro markDexterDefectToFalseAlarm()
 	var hCurFile;
 	hCurFile = GetCurrentBuf();
 	if(hCurFile == hNil){
-		Msg("there is no open/target file");
+		//Msg("there is no open/target file");
 		stop;
 	}
 
@@ -508,7 +508,7 @@ macro createDexterConfFile()
 	projDir = GetProjDir(hprj);
 	hFile = GetCurrentBuf();
 	if(hFile == hNil){
-		Msg("There is no open/target file to analyze");
+		//Msg("There is no open/target file to analyze");
 		stop;
 	}
 
@@ -516,7 +516,7 @@ macro createDexterConfFile()
 	resultFileFullPath = getResultFilePathForCurrentFile();
 
 	if(resultFileFullPath == nil || resultFileFullPath == ""){
-		Msg("can't make result file full path in createDexterConfFile()");
+		//Msg("can't make result file full path in createDexterConfFile()");
 		stop;
 	}
 
@@ -532,7 +532,7 @@ macro createDexterConfFile()
 	if(hConfbuf == hNil){	
 		hConfbuf = NewBuf(confFile);
 		if(hConfbuf == hNil){
-			Msg("Invalid Dexter configuration file(Open Error) : " # confFile);
+			//Msg("Invalid Dexter configuration file(Open Error) : " # confFile);
 			stop;
 		}
 	}
@@ -577,7 +577,7 @@ macro createPlatzKeywordFile()
 
 	hFile = GetCurrentBuf();
 	if(hFile == hNil){
-		Msg("There is no open/target File to search");
+		//Msg("There is no open/target File to search");
 		stop;
 	}
 	keyword = GetKeywordFromCurrentLine(hFile);
@@ -799,7 +799,6 @@ macro getResultFilePathForCurrentFile()
 	hFile = GetCurrentBuf();
 
 	if(hFile == hNil){
-		Msg("cann't open current file to created result file path");
 		return nil;
 		Stop;
 	}
@@ -870,7 +869,7 @@ macro addBookmarkToCurFile()
 		var hBuf;
 		hBuf = GetCurrentBuf();
 		if(hBuf != hNil && IsBufRW(hBuf) == False){ // read only file
-			Msg("[Dexter] Cannot add bookmark(s) of defects into the current file due to read-only state.");
+			//Msg("[Dexter] Cannot add bookmark(s) of defects into the current file due to read-only state.");
 			stop;
 		}
 
