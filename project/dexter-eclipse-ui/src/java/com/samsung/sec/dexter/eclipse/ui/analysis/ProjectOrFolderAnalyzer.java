@@ -130,6 +130,13 @@ public class ProjectOrFolderAnalyzer {
                 addTargetFile(sub);
             }
         } else if (DexterConfig.getInstance().isAnalysisAllowedFile(file.getName())) {
+            if (file.length() > DexterConfig.SOURCE_FILE_SIZE_LIMIT) {
+                DexterUIActivator.LOG.warn(
+                        "Dexter can't analyze a big file over " + DexterConfig.SOURCE_FILE_SIZE_LIMIT + " byte: "
+                                + file.getAbsolutePath() + "(" + file.length() + " byte)");
+                return;
+            }
+
             targetFileList.add(file);
         }
     }
@@ -181,29 +188,30 @@ public class ProjectOrFolderAnalyzer {
         }
     }
 
-    private void setResultHandler(AnalysisConfig config) {
+    private void setResultHandler(final AnalysisConfig config) {
         config.setResultHandler(new IAnalysisResultHandler() {
             @Override
             public void handleAnalysisResult(final List<AnalysisResult> resultList, final IDexterClient client) {
                 try {
+                    File resultFile = new File(config.getResultFileFullPath()); // DexterAnalyzer.getResultFile(resultList);
+                    Files.createParentDirs(resultFile);
+
                     List<Defect> allDefectList = DexterAnalyzer.getAllDefectList(resultList);
 
-                    int size = allDefectList.size() * 1024;
+                    long size = allDefectList.size() * 1024l;
 
                     StringBuilder msg;
-                    if (size <= Integer.MAX_VALUE)
-                        msg = new StringBuilder(size);
-                    else
+                    if (size > Integer.MAX_VALUE)
                         msg = new StringBuilder(Integer.MAX_VALUE);
+                    else
+                        msg = new StringBuilder((int) size);
 
                     addDefectInfo(allDefectList, msg);
 
-                    final String sourceFileFullPath = DexterAnalyzer.getSourceFileFullPath(resultList);
+                    //final String sourceFileFullPath = DexterAnalyzer.getSourceFileFullPath(resultList);
+                    final String sourceFileFullPath = config.getSourceFileFullPath();
                     msg.append("E|").append(sourceFileFullPath).append("|").append(System.currentTimeMillis());
 
-                    // TODO 일반적인 파일 쓰기 방법으로 변경 - read lock 처리 포함
-                    File resultFile = DexterAnalyzer.getResultFile(resultList);
-                    Files.createParentDirs(resultFile);
                     Files.write(msg.toString(), resultFile, Charsets.UTF_8);
                 } catch (IOException e) {
                     DexterUIActivator.LOG.error(e.getMessage(), e);

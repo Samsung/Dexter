@@ -26,6 +26,7 @@
 
 package com.samsung.sec.dexter.cppcheck.plugin;
 
+import com.google.common.base.Stopwatch;
 import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
@@ -39,6 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -85,6 +87,7 @@ public class CppcheckWrapper {
     public void analyze(final AnalysisResult result) {
         logger.debug(result.getFileName() + "is being analyzed");
 
+        Stopwatch sw = Stopwatch.createStarted();
         // 1. Read AnalysisConfig and initialize AnalysisResult
         initializeAnalysisResult(result);
 
@@ -101,19 +104,38 @@ public class CppcheckWrapper {
         cmd.append(" --inconclusive "); // for unreachableCode
         cmd.append(" --enable=all --xml --xml-version=2 --report-progress -v ");
         cmd.append(" --std=posix --std=c++03 "); // posix | c89 | c99 | c11 | c++03 | c++11 => VD - C++98
+        cmd.append("  --suppress=missingInclude ");
+        // cmd.append(" --template={file}:::{line}:::{severity}:::{id}:::{message} ");
 
         cmd.append(sourceFileFullPath);
         setPlatformOption(cmd);
         setLanguageOption(cmd);
         setHeaderFilesOption(cmd);
 
+        System.out.println(cmd);
+        System.out.println("created cmd : " + sw.elapsed(TimeUnit.MILLISECONDS));
+
         // 4. Run Command
         Process process = null;
         try {
+            sw = Stopwatch.createStarted();
             process = Runtime.getRuntime().exec(cmd.toString());
+            System.out.println("cmd exec : " + sw.elapsed(TimeUnit.MILLISECONDS));
+
+            sw = Stopwatch.createStarted();
             analysisResultFile(process.getErrorStream(), result);
+            System.out.println("result handle : " + sw.elapsed(TimeUnit.MILLISECONDS));
+
+            /* TODO : use template instead of xml parsing
+             --template='<text>'
+               Format the error messages. E.g.
+               '{file}:{line},{severity},{id},{message}' or
+               '{file}({line}):({severity}) {message}'. Pre-defined templates:
+               gcc, vs
+             */
 
             logger.debug(result.getFileName() + " is analyzed completely.");
+
         } catch (IOException e) {
             throw new DexterRuntimeException(e.getMessage() + " cmd: " + cmd.toString(), e);
         } catch (Exception e) {
@@ -219,6 +241,14 @@ public class CppcheckWrapper {
             throw new DexterRuntimeException("No Result. It can be caused by Cppcheck installation.");
         }
 
+        File file = new File(config.getSourceFileFullPath());
+        if (file.length() > DexterConfig.SOURCE_FILE_SIZE_LIMIT) {
+            logger.warn("Dexter can not analyze over " + DexterConfig.SOURCE_FILE_SIZE_LIMIT
+                    + " byte of file:" + config.getSourceFileFullPath() + " (" + file.length() + " byte)");
+
+            return;
+        }
+
         final SAXParserFactory spf = SAXParserFactory.newInstance();
         SAXParser parser = null;
         spf.setNamespaceAware(false);
@@ -227,7 +257,10 @@ public class CppcheckWrapper {
         try {
             parser = spf.newSAXParser();
             final ResultFileHandler handler = new ResultFileHandler(result, config, checkerConfig);
+
+            Stopwatch sw2 = Stopwatch.createStarted();
             parser.parse(input, handler);
+            System.out.println("parsing : " + sw2.elapsed(TimeUnit.MILLISECONDS));
         } catch (ParserConfigurationException e) {
             throw new DexterRuntimeException(e.getMessage(), e);
         } catch (SAXException e) {

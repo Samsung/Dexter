@@ -26,7 +26,6 @@
 package com.samsung.sec.dexter.executor;
 
 import com.google.common.base.Strings;
-import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
@@ -35,12 +34,10 @@ import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.RunMode;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
-import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.core.util.IDexterClient;
 import com.samsung.sec.dexter.metrics.CodeMetricsGenerator;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -142,33 +139,23 @@ public class DexterAnalyzerThread extends Thread {
             return;
         }
 
-        for (final String base : config.getSourceBaseDirList()) {
-            final File file = DexterUtil.getFileFullPath(base, config.getModulePath(), config.getFileName());
+        //        Stopwatch sw = Stopwatch.createStarted();
 
-            if (file.exists() == false || file.isFile() == false) {
-                continue;
-            }
-
-            try {
-                StringBuilder src;
-                if (file.length() < Integer.MAX_VALUE)
-                    src = new StringBuilder((int) file.length());
-                else
-                    src = new StringBuilder(Integer.MAX_VALUE);
-
-                for (final String content : Files.readLines(file, DexterConfig.getInstance().getSourceEncoding())) {
-                    src.append(content).append(DexterUtil.LINE_SEPARATOR);
-                }
-
-                client.insertSourceCode(config.getSnapshotId(), config.getDefectGroupId(), config.getModulePath(),
-                        config.getFileName(), src.toString());
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            } catch (DexterRuntimeException e) {
-                logger.error(e.getMessage(), e);
-            }
-
-            break;
+        final File file = new File(config.getSourceFileFullPath());
+        if (file.exists() == false || file.isFile() == false) {
+            logger.error(
+                    "cann't send a file to Dexter Server because it doesn't exist:" + config.getSourceFileFullPath());
+            return;
         }
+
+        try {
+            client.insertSourceCode(config.getSnapshotId(), config.getDefectGroupId(), config.getModulePath(),
+                    config.getFileName(), config.getSourcecodeThatReadIfNotExist());
+        } catch (DexterRuntimeException e) {
+            logger.error(e.getMessage(), e);
+        }
+
+        //        System.out.println("" + file.length() + " : " + sw.elapsed(TimeUnit.MILLISECONDS));
+
     }
 }

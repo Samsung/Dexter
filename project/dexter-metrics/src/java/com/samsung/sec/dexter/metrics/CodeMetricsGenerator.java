@@ -76,6 +76,12 @@ public class CodeMetricsGenerator {
             return;
         }
 
+        if (file.length() > DexterConfig.SOURCE_FILE_SIZE_LIMIT) {
+            logger.warn("Dexter can not analyze over " + DexterConfig.SOURCE_FILE_SIZE_LIMIT
+                    + " byte of file:" + filePath + " (" + file.length() + " byte)");
+            return;
+        }
+
         if (language == DexterConfig.LANGUAGE.JAVA) {
             useCheckStyle(filePath, new QualityAuditListener(codeMetrics));
             if (file.length() == 0) {

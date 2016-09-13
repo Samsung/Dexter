@@ -138,7 +138,6 @@ public class DexterConfigFile implements IDexterConfigFile {
         analysisConfig.setSnapshotId(generateSnapshotId());
         analysisConfig.setResultFileFullPath(getResultFileFullPath());
         analysisConfig.setFunctionList(getFunctionList());
-        analysisConfig.setNoDefectGroupAndSnapshotId();
 
         final String type = getType().name();
         if ("PROJECT".equals(type)) {

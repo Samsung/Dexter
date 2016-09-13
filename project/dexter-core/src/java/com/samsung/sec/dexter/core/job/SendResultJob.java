@@ -34,7 +34,6 @@ import com.samsung.sec.dexter.core.util.IDexterClient;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
@@ -92,20 +91,7 @@ public class SendResultJob implements Runnable {
         }
 
         try {
-            final List<String> contents = Files.readLines(resultFile, Charsets.UTF_8);
-            final StringBuilder result;
-            if (resultFile.length() <= Integer.MAX_VALUE)
-                result = new StringBuilder((int) resultFile.length());
-            else
-                result = new StringBuilder(Integer.MAX_VALUE);
-
-            for (final String content : contents) {
-                result.append(content);
-            }
-            contents.clear();
-
-            client.sendAnalsysisResult(result.toString());
-
+            client.sendAnalsysisResult(Files.asCharSource(resultFile, Charsets.UTF_8).read());
         } catch (IOException e) {
             throw new DexterRuntimeException(e.getMessage(), e);
         } catch (Exception e) {
