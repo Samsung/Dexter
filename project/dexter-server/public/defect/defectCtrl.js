@@ -1158,7 +1158,7 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
     var getDefectOccurrenceInFile = function (selectedDefect) {
         $scope.selectedDefectModulePath = (selectedDefect.modulePath) || "undefined";
 
-        let snapshotId = '';
+        var snapshotId = '';
         if ($scope.isSnapshotView) {
             snapshotId = $scope.snapshotId;
             getSnapshotOccurenceInFile();
@@ -1249,7 +1249,7 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
             }
         }).then(function(results){
            if(isHttpResultOK(results)){
-               let defectSourceCodes = {};
+               var defectSourceCodes = {};
                defectSourceCodes.source = results.data;
                defectSourceCodes.fileName = results.config.data.params.fileName;
                defectSourceCodes.modulePath = base64.decode(results.config.data.params.modulePath);

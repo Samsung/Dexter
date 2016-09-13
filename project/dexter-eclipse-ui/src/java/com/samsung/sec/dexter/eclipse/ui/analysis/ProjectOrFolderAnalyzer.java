@@ -183,7 +183,6 @@ public class ProjectOrFolderAnalyzer {
 
     private void setSnapshotIdAndGroupId(AnalysisConfig config) {
         if ("SNAPSHOT".equals(projectCfg.getType())) {
-            config.setNoDefectGroupAndSnapshotId();
             config.setSnapshotId(System.currentTimeMillis());
         }
     }

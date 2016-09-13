@@ -720,7 +720,7 @@ exports.changeDefectToNew = function (req, res){
 exports.changeDefectToFix = function (req, res){
     if(req == undefined || req.body == undefined || req.body.params == undefined ||
 	   req.body.params.didList == undefined || req.currentUserId == undefined){
-        res.send({status:"fail", errorMessage: "No DataList or No currentUserId"})
+        res.send({status:"fail", errorMessage: "No DataList or No currentUserId"});
 		return;
     }
 
@@ -1364,7 +1364,7 @@ function addSourceCodeMap(res, snapshotId, fileName, modulePath, sourceCode, use
             });
         }
     });
-};
+}
 
 exports.getSnapshotSourceCode = function(req, res) {
     if(req == undefined || req.query == undefined || req.query.fileName == undefined || req.currentUserId == undefined){
@@ -1699,7 +1699,7 @@ exports.addV3 = function(req, res) {
 function getUserNoFromAnalysisType(defectCount, defectList, currentId){
 
     if(defectCount == 0){
-        account.getUserNo(currentId);
+        return account.getUserNo(currentId);
     }
     var analysisType = defectList[0].analysisType;
     if(analysisType == 'FOLDER' || analysisType == 'PROJECT' || analysisType == 'SNAPSHOT'){
