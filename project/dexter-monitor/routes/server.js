@@ -65,6 +65,7 @@ function loadServerList() {
 function initServerStatusValues() {
     const date = new Date().getTime();
     serverList.forEach((server) => {
+        server.projectName = _.trim(server.projectName);
         const lastDigitOfHostIP = server.hostIP.split('.')[3];
         server.name = `${server.projectName}(${lastDigitOfHostIP}:${server.portNumber})`;
         server.rerunLastTryTime = date;
