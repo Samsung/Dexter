@@ -26,7 +26,6 @@
 package com.samsung.sec.dexter.eclipse;
 
 import com.google.common.base.Stopwatch;
-import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
@@ -41,7 +40,6 @@ import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 import com.samsung.sec.dexter.executor.DexterAnalyzer;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 import org.eclipse.core.resources.IFile;
@@ -118,20 +116,23 @@ public class EclipseAnalysis {
      * @throws DexterException
      */
     private static AnalysisConfig getAnalysisConfig(final IFile file) {
+        IAnalysisEntityFactory analysisFactory = new AnalysisEntityFactory();
+        return createAnalysisConfig(file, analysisFactory);
+        /* TODO : refresh sourcecode field but if sourcecode size is big, ???
         final String key = file.getLocation().toFile().getAbsolutePath();
         try {
             return DexterEclipseActivator.getDefault().getConfigCache().get(key);
         } catch (InvalidCacheLoadException e) {
             IAnalysisEntityFactory analysisFactory = new AnalysisEntityFactory();
-
+        
             final AnalysisConfig config = createAnalysisConfig(file, analysisFactory);
             DexterEclipseActivator.getDefault().getConfigCache().put(key, config);
             return config;
         } catch (ExecutionException e) {
             DexterEclipseActivator.LOG.error(e.getMessage(), e);
         }
-
-        return null;
+        
+        return null; */
     }
 
     private static AnalysisConfig createAnalysisConfig(final IFile file, final IAnalysisEntityFactory configFactory) {
