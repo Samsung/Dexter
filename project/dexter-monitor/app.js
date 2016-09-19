@@ -147,6 +147,7 @@ function setWebApis(){
     app.get('/api/v1/server', server.getServerList);
     app.get('/api/v1/server/last-modified-time', server.getServerListLastModifiedTime);
     app.get('/api/v1/server-detailed-status', getServerDetailedStatus);
+    app.post('/api/v2/server/list-update', server.updateServerList);
 
     app.get('/api/v2/user', user.getAll);
     app.get('/api/v2/user/extra-info/:userIdList', user.getMoreInfoByUserIdList);
