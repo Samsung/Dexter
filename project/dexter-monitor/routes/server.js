@@ -34,16 +34,38 @@ const _ = require('lodash');
 let serverList = [];
 let serverListLastModifiedTime = new Date();
 let checkingServerStatus;
+let doNotStartChecking;
 
-exports.init = function(doNotStartChecking){
+exports.init = function(_doNotStartChecking){
 
     mailing.init();
 
-    loadServerList()
+    doNotStartChecking = _doNotStartChecking;
+    updateServerListInternal();
+};
+
+function updateServerListInternal() {
+    if (checkingServerStatus) {
+        stopCheckingServerStatus();
+    }
+
+    return loadServerList()
         .then(initServerStatusValues)
         .then(() => {
             if (!doNotStartChecking)
                 startCheckingServerStatus();
+        });
+}
+
+exports.updateServerList = function(req, res) {
+    updateServerListInternal()
+        .then(() => {
+            log.info('ServerList updated');
+            res.send({status:'ok'});
+        })
+        .catch((err) => {
+            log.error(`Failed to update ServerList : ${err.message}`);
+            res.send({status:"fail", errorMessage: err.message});
         });
 };
 
@@ -65,6 +87,7 @@ function loadServerList() {
 function initServerStatusValues() {
     const date = new Date().getTime();
     serverList.forEach((server) => {
+        server.projectName = _.trim(server.projectName);
         const lastDigitOfHostIP = server.hostIP.split('.')[3];
         server.name = `${server.projectName}(${lastDigitOfHostIP}:${server.portNumber})`;
         server.rerunLastTryTime = date;
@@ -155,6 +178,7 @@ function createEmailContentsWhenServerDown(server){
 
 function stopCheckingServerStatus(){
     clearInterval(checkingServerStatus);
+    checkingServerStatus = null;
 }
 
 exports.getConfig = function(req, res) {
