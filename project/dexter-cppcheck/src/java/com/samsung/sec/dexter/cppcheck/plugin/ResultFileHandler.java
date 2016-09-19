@@ -42,7 +42,6 @@ import com.samsung.sec.dexter.util.CppUtil;
 import com.samsung.sec.dexter.util.TranslationUnitFactory;
 
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
@@ -66,8 +65,6 @@ public class ResultFileHandler extends DefaultHandler {
         this.result = result;
     }
 
-    Stopwatch sw;
-
     /*
      * (non-Javadoc)
      * 
@@ -76,7 +73,6 @@ public class ResultFileHandler extends DefaultHandler {
     @Override
     public void startDocument() throws SAXException {
         super.startDocument();
-        sw = Stopwatch.createStarted();
     }
 
     /*
@@ -87,10 +83,7 @@ public class ResultFileHandler extends DefaultHandler {
     @Override
     public void endDocument() throws SAXException {
         super.endDocument();
-        System.out.println("end doc : " + this.sw.elapsed(TimeUnit.MILLISECONDS));
     }
-
-    Stopwatch sw2;
 
     /*
      * (non-Javadoc)
@@ -101,8 +94,6 @@ public class ResultFileHandler extends DefaultHandler {
     @Override
     public void startElement(final String uri, final String localName, final String qName, final Attributes attributes)
             throws SAXException {
-        sw2 = Stopwatch.createStarted();
-
         super.startElement(uri, localName, qName, attributes);
 
         if ("error".equals(qName)) {
@@ -168,15 +159,11 @@ public class ResultFileHandler extends DefaultHandler {
             try {
                 Stopwatch sw = Stopwatch.createStarted();
                 final String sourcecode = config.getSourcecodeThatReadIfNotExist();
-                System.out.println("get source : " + sw.elapsed(TimeUnit.MILLISECONDS));
 
-                sw = Stopwatch.createStarted();
                 IASTTranslationUnit translationUnit = TranslationUnitFactory.getASTTranslationUnit(sourcecode,
                         ParserLanguage.CPP,
                         config.getSourceFileFullPath());
-                System.out.println("create TU : " + sw.elapsed(TimeUnit.MILLISECONDS));
 
-                sw = Stopwatch.createStarted();
                 Map<String, String> nameMap = CppUtil.extractModuleName(translationUnit, sourcecode,
                         currentOccurence.getStartLine());
 
@@ -186,7 +173,6 @@ public class ResultFileHandler extends DefaultHandler {
                 if (Strings.isNullOrEmpty(nameMap.get(ResultFileConstant.METHOD_NAME)) == false) {
                     currentOccurence.setMethodName(nameMap.get(ResultFileConstant.METHOD_NAME));
                 }
-                System.out.println("nameMap : " + sw.elapsed(TimeUnit.MILLISECONDS));
             } catch (DexterRuntimeException e) {
                 logger.warn(e);
             }
@@ -213,7 +199,5 @@ public class ResultFileHandler extends DefaultHandler {
                 logger.warn("Not added defect(start line is -1) : " + currentOccurence.toJson());
             }
         }
-
-        System.out.println("end ele : " + sw2.elapsed(TimeUnit.MILLISECONDS) + " " + qName);
     }
 }

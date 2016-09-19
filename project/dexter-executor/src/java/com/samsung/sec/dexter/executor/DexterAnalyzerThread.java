@@ -154,8 +154,5 @@ public class DexterAnalyzerThread extends Thread {
         } catch (DexterRuntimeException e) {
             logger.error(e.getMessage(), e);
         }
-
-        //        System.out.println("" + file.length() + " : " + sw.elapsed(TimeUnit.MILLISECONDS));
-
     }
 }

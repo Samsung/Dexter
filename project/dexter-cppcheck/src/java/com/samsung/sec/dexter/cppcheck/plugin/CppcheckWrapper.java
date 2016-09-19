@@ -40,7 +40,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.util.concurrent.TimeUnit;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
@@ -112,19 +111,12 @@ public class CppcheckWrapper {
         setLanguageOption(cmd);
         setHeaderFilesOption(cmd);
 
-        System.out.println(cmd);
-        System.out.println("created cmd : " + sw.elapsed(TimeUnit.MILLISECONDS));
-
         // 4. Run Command
         Process process = null;
         try {
-            sw = Stopwatch.createStarted();
             process = Runtime.getRuntime().exec(cmd.toString());
-            System.out.println("cmd exec : " + sw.elapsed(TimeUnit.MILLISECONDS));
 
-            sw = Stopwatch.createStarted();
             analysisResultFile(process.getErrorStream(), result);
-            System.out.println("result handle : " + sw.elapsed(TimeUnit.MILLISECONDS));
 
             /* TODO : use template instead of xml parsing
              --template='<text>'
@@ -258,9 +250,7 @@ public class CppcheckWrapper {
             parser = spf.newSAXParser();
             final ResultFileHandler handler = new ResultFileHandler(result, config, checkerConfig);
 
-            Stopwatch sw2 = Stopwatch.createStarted();
             parser.parse(input, handler);
-            System.out.println("parsing : " + sw2.elapsed(TimeUnit.MILLISECONDS));
         } catch (ParserConfigurationException e) {
             throw new DexterRuntimeException(e.getMessage(), e);
         } catch (SAXException e) {

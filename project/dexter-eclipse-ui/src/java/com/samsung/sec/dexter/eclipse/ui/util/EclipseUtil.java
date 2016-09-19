@@ -296,7 +296,7 @@ public class EclipseUtil {
                 DexterUIActivator.LOG.warn(errorMessage);
                 return EmptyReplaceClass.newInstance();
             } else if (configs.length == 0) {
-                System.out.println("configs.lengths == 0");
+                DexterUIActivator.LOG.error("There is no static analysis extensions. configs.lengths == 0");
             }
 
             return configs[0].createExecutableExtension("class");
