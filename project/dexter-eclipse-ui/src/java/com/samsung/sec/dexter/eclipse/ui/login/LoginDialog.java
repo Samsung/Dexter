@@ -260,7 +260,7 @@ public class LoginDialog extends TitleAreaDialog {
             @Override
             public void focusGained(FocusEvent arg0) {
                 idText.selectAll();
-                setMessage(Messages.LoginDialog_PASSWORD_DESC);
+                setMessage(Messages.LoginDialog_ID_DESC);
             }
         });
     }
