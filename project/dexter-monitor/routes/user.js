@@ -40,13 +40,14 @@ const requestify = require('requestify');
 
 
 function getUserList(userListUrl){
-    return requestify.get(userListUrl)
+    return requestify.get(userListUrl, {timeout: 2000})
         .then(function(result){
             const jsonObj = JSON.parse(result.body);
             return jsonObj.rows;
         }).catch( (err) => {
-            log.error(err);
-            return null;
+            const errorMessage = err.getBody();
+            log.error(`${errorMessage} - ${userListUrl}`);
+            throw errorMessage;
         });
 }
 
@@ -54,6 +55,7 @@ exports.getAll = function(req, res) {
     const activeServerList = _.filter(server.getServerListInternal(), {'active': true});
     let allRows = [];
     let promises = [];
+    const timedOutProjectNames = [];
 
     activeServerList.forEach( (server) =>
         promises.push(new Promise((resolve) => {
@@ -71,6 +73,9 @@ exports.getAll = function(req, res) {
                     resolve();
                 })
                 .catch((err) => {
+                    if (_.includes(err, 'timeout')) {
+                        timedOutProjectNames.push(server.projectName);
+                    }
                     log.error(`Failed to get user list for pid ${server.pid} : ${err}`);
                     resolve();
                 });
@@ -80,7 +85,7 @@ exports.getAll = function(req, res) {
     return Promise.all(promises)
         .then(() => {
             allRows = _.sortBy(allRows, 'projectName');
-            res.send({status:'ok', rows: allRows});
+            res.send({status:'ok', rows: allRows, timedOutProjectNames: _.uniq(timedOutProjectNames)});
         })
         .catch((err) => {
             log.error(err);
@@ -93,7 +98,7 @@ function processReturnedData(data) {
 }
 
 function loadUserInfo(userId, userInfoUrl, userInfoList) {
-    return rp(userInfoUrl + userId)
+    return rp({uri: userInfoUrl + userId, timeout: 2000})
         .then((data) => {
             data = processReturnedData(data);
             if (!data || !validateUserInfoJson(data, userId)) {
@@ -148,7 +153,7 @@ function validateUserInfoJson(data, userid) {
 exports.getUserCountByProjectName = function(req, res) {
     const projectServer = _.find(server.getServerListInternal(), {'projectName': req.params.projectName});
     const userCountUrl = `http://${projectServer.hostIP}:${projectServer.portNumber}/api/v2/user-count`;
-    rp(userCountUrl)
+    rp({uri: userCountUrl, timeout: 2000})
         .then((data) => {
             const parsedData = JSON.parse('' + data);
             res.send({status:'ok', value: parsedData.value});
@@ -171,7 +176,7 @@ function loadUserStatusList() {
         });
 }
 
-function loadUserList() {
+function loadUserList(timedOutProjectNames) {
     const activeServerList = _.filter(server.getServerListInternal(), {'active': true});
     let allRows = [];
     let promises = [];
@@ -179,7 +184,7 @@ function loadUserList() {
     activeServerList.forEach( (server) =>
         promises.push(new Promise((resolve) => {
             const userListUrl = `http://${server.hostIP}:${server.portNumber}/api/v2/user-list`;
-            rp(userListUrl)
+            rp({uri: userListUrl, timeout: 2000})
                 .then((data) => {
                     const rows = JSON.parse('' + data).rows;
                     if (rows) {
@@ -188,6 +193,9 @@ function loadUserList() {
                     resolve();
                 })
                 .catch((err) => {
+                    if (timedOutProjectNames) {
+                        timedOutProjectNames.push(server.projectName);
+                    }
                     log.error(`Failed to get user list for pid ${server.pid} : ${err}`);
                     resolve();
                 });
@@ -207,7 +215,7 @@ function loadUserList() {
         });
 }
 
-function updateUserStatusList() {
+function updateUserStatusList(timedOutProjectNames) {
     let promises = [];
     let userStatusList = [];
     let userList = [];
@@ -225,7 +233,7 @@ function updateUserStatusList() {
     }));
 
     promises.push(new Promise((resolve, reject) => {
-        loadUserList()
+        loadUserList(timedOutProjectNames)
             .then((rows) => {
                 userList = rows;
                 resolve();
@@ -295,10 +303,11 @@ function getInstallationRatio(row) {
 }
 
 exports.getUserStatus = function(req, res) {
-    updateUserStatusList()
+    const timedOutProjectNames = [];
+    updateUserStatusList(timedOutProjectNames)
         .then(loadAndCreateUserStatusTable)
         .then((userStatusTable) => {
-            res.send({status:'ok', rows: userStatusTable});
+            res.send({status:'ok', rows: userStatusTable, timedOutProjectNames: _.uniq(timedOutProjectNames)});
         })
         .catch((err) => {
             res.send({status:"fail", errorMessage: err.message});

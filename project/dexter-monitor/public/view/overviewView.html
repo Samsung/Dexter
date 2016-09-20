@@ -12,6 +12,7 @@
         <div>
             <span style="font-size:18pt">Current installation status</span>
             <span style="font-size:11pt"> ({{time}})</span>
+            <span style="float:right;font-size:10pt;"><b>{{serverStatusStringForInstallationStatusGrid}}</b></span>
         </div>
         <div class="grid-overview-installation-status" id='overviewInstallationStatusGrid' ui-grid="installationStatusGridOptions"
              ui-grid-resize-columns ui-grid-move-columns ui-grid-selection ui-grid-exporter ui-grid-auto-resize>
@@ -20,6 +21,7 @@
         <div>
             <span style="font-size:18pt">Current defect status</span>
             <span style="font-size:11pt"> ({{time}})</span>
+            <span style="float:right;font-size:10pt"><b>{{serverStatusStringForDefectStatusGrid}}</b></span>
         </div>
         <div class="grid-overview-defect-status" id='overviewDefectStatusGrid' ui-grid="defectStatusGridOptions"
              ui-grid-resize-columns ui-grid-move-columns ui-grid-selection ui-grid-exporter ui-grid-auto-resize>

@@ -43,13 +43,16 @@ monitorApp.service('ProjectService', function($http, $log, $q, ServerStatusServi
             });
     };
 
-    function setUserCount(row, projectName) {
+    function setUserCount(row, projectName, timedOutProjectNames) {
         let deferred = $q.defer();
 
         $http.get('/api/v2/user-count/' + projectName)
             .then((res) => {
                 if (!isHttpResultOK(res)) {
                     $log.error('Failed to get user count of ' + projectName);
+                    if (timedOutProjectNames && _.includes(res.data.errorMessage, 'ETIMEDOUT')) {
+                        timedOutProjectNames.push(projectName);
+                    }
                     deferred.resolve();
                     return;
                 }
@@ -64,13 +67,16 @@ monitorApp.service('ProjectService', function($http, $log, $q, ServerStatusServi
         return deferred.promise;
     }
 
-    function setDefectCount(row, projectName) {
+    function setDefectCount(row, projectName, timedOutProjectNames) {
         let deferred = $q.defer();
 
         $http.get('/api/v2/defect-status-count/' + projectName)
             .then((res) => {
                 if (!isHttpResultOK(res)) {
                     $log.error('Failed to get defect status count of ' + projectName);
+                    if (timedOutProjectNames && _.includes(res.data.errorMessage, 'ETIMEDOUT')) {
+                        timedOutProjectNames.push(projectName);
+                    }
                     deferred.resolve();
                     return;
                 }
@@ -89,14 +95,15 @@ monitorApp.service('ProjectService', function($http, $log, $q, ServerStatusServi
 
     this.getAllCurrentStatusList = function(activeServerList) {
         let promises = [];
+        let timedOutProjectNames = [];
 
         return this.getProjectList()
             .then((rows) => {
                 const activeProjectNames = _.map(activeServerList, 'projectName');
                 rows.forEach((row) => {
                     if (_.includes(activeProjectNames, row.projectName)) {
-                        promises.push(setUserCount(row, row.projectName));
-                        promises.push(setDefectCount(row, row.projectName));
+                        promises.push(setUserCount(row, row.projectName, timedOutProjectNames));
+                        promises.push(setDefectCount(row, row.projectName, timedOutProjectNames));
                         row.serverStatus = 'Active';
                     } else {
                         row.serverStatus = 'Inactive';
@@ -105,6 +112,12 @@ monitorApp.service('ProjectService', function($http, $log, $q, ServerStatusServi
 
                 return $q.all(promises)
                     .then(() => {
+                        timedOutProjectNames = _.uniq(timedOutProjectNames);
+                        rows.forEach((row) => {
+                            if(_.findIndex(timedOutProjectNames, (name) => name == row.projectName) >= 0) {
+                                row.serverStatus = 'Active (Timed out)';
+                            }
+                        });
                         rows = _.sortBy(rows, (row) => row.projectName.toLowerCase());
                         return rows;
                     })
@@ -118,13 +131,14 @@ monitorApp.service('ProjectService', function($http, $log, $q, ServerStatusServi
     this.getCurrentStatusByGroup = function() {
         let promises = [];
         let statusListByProject = [];
+        const timedOutProjectNames = [];
 
         return ServerStatusService.getActiveServerList()
             .then((activeServerList) => {
                 statusListByProject = activeServerList;
                 statusListByProject.forEach((row) => {
-                    promises.push(setUserCount(row, row.projectName));
-                    promises.push(setDefectCount(row, row.projectName));
+                    promises.push(setUserCount(row, row.projectName, timedOutProjectNames));
+                    promises.push(setDefectCount(row, row.projectName, timedOutProjectNames));
                 });
 
                 return $q.all(promises)
@@ -133,12 +147,12 @@ monitorApp.service('ProjectService', function($http, $log, $q, ServerStatusServi
                     })
                     .catch((err) => {
                         $log.error(err);
-                        return [];
+                        return {rows: [], timedOutProjectNames: []};
                     });
             })
             .catch((err) => {
                 $log.error(err);
-                return [];
+                return {rows: [], timedOutProjectNames: []};
             });
 
 
@@ -147,7 +161,10 @@ monitorApp.service('ProjectService', function($http, $log, $q, ServerStatusServi
             const groupNameList = _.uniq(_.map(statusListByProject, 'groupName'));
 
             groupNameList.forEach((groupName) => {
-                const groupNameFilteredStatusList = _.filter(statusListByProject, (o) => o.groupName == groupName);
+                let groupNameFilteredStatusList = _.filter(statusListByProject, (o) => o.groupName == groupName);
+                groupNameFilteredStatusList = _.filter(groupNameFilteredStatusList, (o) => {
+                    return _.findIndex(timedOutProjectNames, (name) => name == o.projectName) < 0;
+                });
                 let userCount = 0;
                 let defectCountTotal = 0;
                 let defectCountFixed = 0;
@@ -170,7 +187,7 @@ monitorApp.service('ProjectService', function($http, $log, $q, ServerStatusServi
                 });
             });
 
-            return _.sortBy(statusListByGroup, 'groupName');
+            return {rows: _.sortBy(statusListByGroup, 'groupName'), timedOutProjectNames: _.uniq(timedOutProjectNames)};
         }
     };
 

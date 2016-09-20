@@ -49,7 +49,8 @@ monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, $inter
             aggregationType: () => `Active: ${$scope.activeServerCount} / Inactive: ${$scope.allServerCount-$scope.activeServerCount}`,
             cellTemplate:'<div class="ui-grid-cell-contents"' +
                         ' ng-class="{\'server-status-active\':COL_FIELD == \'Active\',' +
-                        '            \'server-status-inactive\':COL_FIELD == \'Inactive\'}">{{COL_FIELD}}</div>'}
+                        '            \'server-status-inactive\':COL_FIELD == \'Inactive\',' +
+                        '            \'server-status-active-timeout\':COL_FIELD == \'Active (Timed out)\'}">{{COL_FIELD}}</div>'}
     ];
 
     initialize();
