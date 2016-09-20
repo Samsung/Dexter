@@ -1,4 +1,4 @@
-defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $anchorScroll, $routeParams, $log) {
+defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $anchorScroll, $routeParams, $log, $filter) {
     "use strict";
 
     var isSnapshotView = function () {
@@ -142,7 +142,7 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
             'Language': defect.language,
             'Tool': defect.toolName,
             'Author': defect.creatorId,
-            'Date': defect.modifiedDateTime
+            'Date': $filter('date')(defect.modifiedDateTime,'yyyy-MM-dd HH:mm:ss')
         });
     }
 
@@ -163,7 +163,7 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
             'Language': snapshotDefect.language,
             'Tool': snapshotDefect.toolName,
             'Author': snapshotDefect.creatorId,
-            'Date': snapshotDefect.modifiedDateTime
+            'Date': $filter('date')(snapshotDefect.modifiedDateTime,'yyyy-MM-dd HH:mm:ss')
         });
     }
 
