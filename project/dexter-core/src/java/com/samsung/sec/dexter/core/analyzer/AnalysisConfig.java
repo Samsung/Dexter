@@ -29,6 +29,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.samsung.sec.dexter.core.BaseAnalysisEntity;
 import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.config.ProjectAnalysisConfiguration;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 
@@ -594,5 +595,21 @@ public class AnalysisConfig extends BaseAnalysisEntity {
 
     public IAnalysisResultHandler getResultHandler() {
         return this.resultHandler;
+    }
+
+    public void addHeaderAndSourceConfiguration(
+            final List<ProjectAnalysisConfiguration> projectAnalysisConfigurationList) {
+        for (final ProjectAnalysisConfiguration param : projectAnalysisConfigurationList) {
+            if (param.getProjectName().equals(getProjectName())
+                    && DexterUtil.refinePath(param.getProjectFullPath()).equals(getProjectFullPath())) {
+                for (final String dir : param.getSourceDirs()) {
+                    addSourceBaseDirList(dir);
+                }
+
+                for (final String dir : param.getHeaderDirs()) {
+                    addHeaderBaseDirList(dir);
+                }
+            }
+        }
     }
 }

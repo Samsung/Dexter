@@ -26,10 +26,10 @@
 package com.samsung.sec.dexter.eclipse.ui.analysis;
 
 import com.google.common.base.Strings;
+import com.samsung.sec.dexter.core.config.ProjectAnalysisConfiguration;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
 import com.samsung.sec.dexter.executor.DexterAnalyzer;
-import com.samsung.sec.dexter.executor.ProjectAnalysisConfiguration;
 
 import java.io.File;
 

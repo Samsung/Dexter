@@ -33,6 +33,7 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.IDexterHomeListener;
+import com.samsung.sec.dexter.core.config.ProjectAnalysisConfiguration;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.exception.DexterException;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
@@ -50,6 +51,7 @@ import org.apache.log4j.Logger;
 public class DexterAnalyzer implements IDexterHomeListener {
     private static final String CFG_PARM_JSON_FILE = "/cfg/dexter-config-parameter.json";
     private final static Logger LOG = Logger.getLogger(DexterAnalyzer.class);
+    private final DexterAnalyzerThread dexterAnalyzerSync = new DexterAnalyzerThread();
 
     private List<IDexterAnalyzerListener> listenerList = new ArrayList<IDexterAnalyzerListener>(1);
     private List<ProjectAnalysisConfiguration> projectAnalysisConfigurationList = new ArrayList<ProjectAnalysisConfiguration>(
@@ -73,28 +75,14 @@ public class DexterAnalyzer implements IDexterHomeListener {
 
     public void runSync(final AnalysisConfig config, final IDexterPluginManager pluginManager,
             final IDexterClient client) {
-        // sync일때에는 인스턴스 하나로 실행해도 될 듯
-        new DexterAnalyzerThread(config, pluginManager, client).run();
+        dexterAnalyzerSync.analyze(config, pluginManager, client);
     }
 
     public void runAsync(final AnalysisConfig config, final IDexterPluginManager pluginManager,
             final IDexterClient client) {
-        new DexterAnalyzerThread(config, pluginManager, client).start();
-    }
-
-    public void addHeaderAndSourceConfiguration(final AnalysisConfig config) {
-        for (final ProjectAnalysisConfiguration param : projectAnalysisConfigurationList) {
-            if (param.getProjectName().equals(config.getProjectName())
-                    && DexterUtil.refinePath(param.getProjectFullPath()).equals(config.getProjectFullPath())) {
-                for (final String dir : param.getSourceDirs()) {
-                    config.addSourceBaseDirList(dir);
-                }
-
-                for (final String dir : param.getHeaderDirs()) {
-                    config.addHeaderBaseDirList(dir);
-                }
-            }
-        }
+        DexterAnalyzerThread thread = new DexterAnalyzerThread();
+        thread.setFields(config, pluginManager, client);
+        thread.start();
     }
 
     protected void preSendSourceCode(final AnalysisConfig config) {
