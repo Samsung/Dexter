@@ -42,6 +42,7 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -225,19 +226,14 @@ public class DexterUtil {
         final File file = new File(filePath);
         checkFileExistence(filePath, file);
 
-        if (file.length() > DexterConfig.SOURCE_FILE_SIZE_LIMIT) {
-            logger.warn("Dexter can't analyze a big file : " + filePath + " (" + file.length() + " byte)");
+        long fileSize = file.length();
+        if (fileSize > DexterConfig.SOURCE_FILE_SIZE_LIMIT) {
+            logger.warn("Dexter can't analyze a big file : " + filePath + " (" + fileSize + " byte)");
             return "";
         }
 
-        final StringBuilder contents = new StringBuilder((int) file.length());
-
         try {
-            for (String content : Files.readLines(file, charset)) {
-                contents.append(content).append(DexterUtil.LINE_SEPARATOR);
-            }
-
-            return contents.toString();
+            return Files.asCharSource(file, charset).read();
         } catch (IOException e) {
             throw new DexterRuntimeException(e.getMessage(), e);
         }
@@ -253,12 +249,26 @@ public class DexterUtil {
             return 0;
         }
 
+        BufferedReader reader = null;
+        int lines = 0;
         try {
-            return Files.readLines(file, DexterConfig.getInstance().getSourceEncoding()).size();
+            reader = new BufferedReader(new FileReader(file));
+            while (reader.readLine() != null)
+                lines++;
+            return lines;
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
             return 0;
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    // do nothing
+                }
+            }
         }
+
     }
 
     public static boolean copyFileInClassPath(final ClassLoader classLoader, String sourceFilePath,

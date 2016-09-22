@@ -93,14 +93,8 @@ class DexterUtilHelper {
             return "";
         }
 
-        final StringBuilder contents = new StringBuilder((int) file.length());
-
         try {
-            for (String content : Files.readLines(file, charset)) {
-                contents.append(content).append(LINE_SEPARATOR);
-            }
-
-            return contents.toString();
+            return Files.asCharSource(file, charset).read();
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
             return "";

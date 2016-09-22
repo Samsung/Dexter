@@ -26,8 +26,10 @@
 package com.samsung.sec.dexter.util;
 
 import com.google.common.base.Charsets;
+import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 
+import java.io.File;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.HashMap;
@@ -58,7 +60,15 @@ public class CppUtil {
      * exception
      */
     public static synchronized Map<String, String> extractModuleName(String sourceFilePath, final int lineNumber) {
-        Map<String, String> mapModuleName = null;
+        Map<String, String> mapModuleName = new HashMap<String, String>();
+
+        File file = new File(sourceFilePath);
+        if (file.length() > DexterConfig.SOURCE_FILE_SIZE_LIMIT) {
+            logger.warn("Dexter can not analyze over " + DexterConfig.SOURCE_FILE_SIZE_LIMIT
+                    + " byte of file:" + sourceFilePath + " (" + file.length() + " byte)");
+
+            return mapModuleName;
+        }
 
         String code = DexterUtilHelper.getContentsFromFile(sourceFilePath, sourceEncoding);
         IASTTranslationUnit translationUnit = TranslationUnitFactory.getASTTranslationUnit(code, ParserLanguage.CPP,
@@ -131,8 +141,8 @@ public class CppUtil {
         IASTTranslationUnit translationUnit = null;
 
         try {
-            String code = DexterUtilHelper.getContentsFromFile(sourceFilePath, sourceEncoding);
-            translationUnit = TranslationUnitFactory.getASTTranslationUnit(code, ParserLanguage.CPP,
+            translationUnit = TranslationUnitFactory.getASTTranslationUnit(
+                    DexterUtilHelper.getContentsFromFile(sourceFilePath, sourceEncoding), ParserLanguage.CPP,
                     sourceFilePath);
         } catch (DexterRuntimeException e) {
             logger.error("can't make a code metrics : " + sourceFilePath, e);

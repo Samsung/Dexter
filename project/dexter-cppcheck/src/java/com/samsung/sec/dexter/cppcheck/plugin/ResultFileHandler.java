@@ -26,6 +26,7 @@
 
 package com.samsung.sec.dexter.cppcheck.plugin;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
@@ -54,8 +55,6 @@ public class ResultFileHandler extends DefaultHandler {
     private AnalysisResult result;
     private AnalysisConfig config;
     private CheckerConfig checkerConfig;
-    private String sourcecode;
-    private IASTTranslationUnit translationUnit;
 
     private final static Logger logger = Logger.getLogger(ResultFileHandler.class);
 
@@ -64,16 +63,6 @@ public class ResultFileHandler extends DefaultHandler {
         this.config = config;
         this.checkerConfig = checkerConfig;
         this.result = result;
-
-        sourcecode = config.getSourcecodeThatReadIfNotExist();
-
-        try {
-            translationUnit = TranslationUnitFactory.getASTTranslationUnit(sourcecode, ParserLanguage.CPP,
-                    config.getSourceFileFullPath());
-        } catch (DexterRuntimeException e) {
-            logger.warn(e);
-        }
-
     }
 
     /*
@@ -106,6 +95,7 @@ public class ResultFileHandler extends DefaultHandler {
     public void startElement(final String uri, final String localName, final String qName, final Attributes attributes)
             throws SAXException {
         super.startElement(uri, localName, qName, attributes);
+
         if ("error".equals(qName)) {
             final String checkerCode = attributes.getValue("id").toLowerCase();
 
@@ -167,6 +157,13 @@ public class ResultFileHandler extends DefaultHandler {
             }
 
             try {
+                Stopwatch sw = Stopwatch.createStarted();
+                final String sourcecode = config.getSourcecodeThatReadIfNotExist();
+
+                IASTTranslationUnit translationUnit = TranslationUnitFactory.getASTTranslationUnit(sourcecode,
+                        ParserLanguage.CPP,
+                        config.getSourceFileFullPath());
+
                 Map<String, String> nameMap = CppUtil.extractModuleName(translationUnit, sourcecode,
                         currentOccurence.getStartLine());
 

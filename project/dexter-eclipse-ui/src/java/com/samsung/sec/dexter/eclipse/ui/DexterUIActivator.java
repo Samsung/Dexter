@@ -213,13 +213,16 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
                 }
             }
 
+            if (LoginDialog.isOpened())
+                return;
+
             Shell shell = Display.getDefault().getActiveShell();
             if (shell == null) {
                 return;
             }
 
             final LoginDialog dialog = new LoginDialog(shell);
-
+            dialog.setBlockOnOpen(true);
             final int ret = dialog.open();
 
             if (ret == InputDialog.CANCEL) {

@@ -12,6 +12,7 @@ import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseUtil;
 
 import java.io.File;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,12 +51,14 @@ public class LoginDialog extends TitleAreaDialog {
     private Text serverText;
     private Text dexterHomeText;
     private Button standaloneModeButton;
+    private static AtomicBoolean isOpened = new AtomicBoolean(false);
 
     /**
      * @param parentShell
      */
     public LoginDialog(Shell parentShell) {
         super(parentShell);
+        isOpened.set(true);
     }
 
     /*
@@ -344,6 +347,7 @@ public class LoginDialog extends TitleAreaDialog {
         runStandaloneListeners(isStandaloneModeChanged, isStandalone);
 
         super.okPressed();
+        isOpened.set(false);
     }
 
     private boolean validate() {
@@ -494,5 +498,10 @@ public class LoginDialog extends TitleAreaDialog {
     @Override
     protected void cancelPressed() {
         super.cancelPressed();
+        isOpened.set(false);
+    }
+
+    public synchronized static boolean isOpened() {
+        return isOpened.get();
     }
 }

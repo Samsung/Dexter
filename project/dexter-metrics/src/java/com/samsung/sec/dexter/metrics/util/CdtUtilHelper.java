@@ -25,12 +25,8 @@
  */
 package com.samsung.sec.dexter.metrics.util;
 
-import com.google.common.io.Files;
 import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -75,39 +71,6 @@ public class CdtUtilHelper {
 
     private CdtUtilHelper() {
 
-    }
-
-    public static String getContentsFromFile(final String filePath,
-            final Charset charset) {
-        if (filePath == null || filePath.equals("")) {
-            logger.error("Invalid Parameter : filePath is null or empty");
-            return "";
-        }
-
-        final File file = new File(filePath);
-
-        if (file.exists() == false || file.isDirectory()) {
-
-            return null;
-        }
-
-        StringBuilder contents;
-
-        if (file.length() < Integer.MAX_VALUE)
-            contents = new StringBuilder((int) file.length());
-        else
-            contents = new StringBuilder(Integer.MAX_VALUE);
-
-        try {
-            for (String content : Files.readLines(file, charset)) {
-                contents.append(content).append(LINE_SEPARATOR);
-            }
-
-            return contents.toString();
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-            return null;
-        }
     }
 
     /**
