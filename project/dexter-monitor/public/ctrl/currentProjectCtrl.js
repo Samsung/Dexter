@@ -25,7 +25,7 @@
  */
 "use strict";
 
-monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, $interval, ProjectService, ServerStatusService, uiGridConstants) {
+monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, $interval, $window, ProjectService, ServerStatusService, uiGridConstants) {
 
     const columnDefs = [
         {field:'projectName',           displayName:'Project',          width: '19%',
@@ -61,13 +61,36 @@ monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, $inter
         $scope.activeServerCount = 0;
         $scope.gridOptions = createGrid(columnDefs);
         $scope.gridOptions.showColumnFooter = true;
-        refreshData();
-        $scope.refreshDataTimer = $interval(refreshData, 10000);
+        getStatusRefreshInterval()
+            .then(refreshData)
+            .then(setRefreshDataTimer);
+    }
+
+    let refreshInterval = 60;
+
+    function getStatusRefreshInterval() {
+        return $http.get('/api/v1/server/config')
+            .then((res) => {
+                if (!res.data || !res.data.projectStatusRefreshInterval) {
+                    $log.error('Failed to load refresh time value');
+                    return;
+                }
+                refreshInterval = res.data.projectStatusRefreshInterval;
+                $log.info(`Set refresh interval to ${refreshInterval} secs`);
+            })
+            .catch((err) => {
+                $log.error(err);
+            });
+    }
+
+    function setRefreshDataTimer() {
+        $scope.refreshDataTimer = $interval(refreshData, refreshInterval * 1000);
     }
 
     function refreshData() {
-        if ($scope.dotAdder) {
-            $interval.cancel($scope.dotAdder);
+        $scope.remainingTimeToRefresh = refreshInterval;
+        if ($scope.timeDecreaser) {
+            $interval.cancel($scope.timeDecreaser);
         }
         ServerStatusService.getActiveServerList()
             .then(loadData)
@@ -75,8 +98,7 @@ monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, $inter
                 $log.error(err);
             });
         $scope.time = new Date().toLocaleString();
-        $scope.dots = '.';
-        $scope.dotAdder = $interval(() => {$scope.dots += '.';}, 1000);
+        $scope.timeDecreaser = $interval(() => {$scope.remainingTimeToRefresh -= 1;}, 1000);
         setGridExportingFileNames($scope.gridOptions, CURRENT_STATUS_FILENAME_PREFIX + '-' + $scope.time);
     }
 
@@ -116,8 +138,12 @@ monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, $inter
         if ($scope.refreshDataTimer) {
             $interval.cancel($scope.refreshDataTimer);
         }
-        if ($scope.dotAdder) {
-            $interval.cancel($scope.dotAdder);
+        if ($scope.timeDecreaser) {
+            $interval.cancel($scope.timeDecreaser);
         }
     });
+
+    $scope.reloadPage = function() {
+        $window.location.reload();
+    }
 });

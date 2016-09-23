@@ -182,7 +182,7 @@ function stopCheckingServerStatus(){
 }
 
 exports.getConfig = function(req, res) {
-    res.send(config);
+    res.send(global.config);
 };
 
 exports.getServerListLastModifiedTime = function(req, res) {

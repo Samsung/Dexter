@@ -50,7 +50,7 @@ monitorApp.service('ProjectService', function($http, $log, $q, ServerStatusServi
             .then((res) => {
                 if (!isHttpResultOK(res)) {
                     $log.error('Failed to get user count of ' + projectName);
-                    if (timedOutProjectNames && _.includes(res.data.errorMessage, 'ETIMEDOUT')) {
+                    if (timedOutProjectNames && _.includes(res.data.errorMessage, 'TIMEDOUT')) {
                         timedOutProjectNames.push(projectName);
                     }
                     deferred.resolve();
@@ -74,7 +74,7 @@ monitorApp.service('ProjectService', function($http, $log, $q, ServerStatusServi
             .then((res) => {
                 if (!isHttpResultOK(res)) {
                     $log.error('Failed to get defect status count of ' + projectName);
-                    if (timedOutProjectNames && _.includes(res.data.errorMessage, 'ETIMEDOUT')) {
+                    if (timedOutProjectNames && _.includes(res.data.errorMessage, 'TIMEDOUT')) {
                         timedOutProjectNames.push(projectName);
                     }
                     deferred.resolve();
