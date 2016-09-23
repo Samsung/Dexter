@@ -2,7 +2,7 @@
 <feature
       id="dexter.eclipse.cpp.feature.32"
       label="Dexter Eclipse CPP Feature 32bit"
-      version="0.10.2">
+      version="0.10.5">
 
    <description url="http://www.example.com/description">
       Dexter Eclipse(Coding-time Static Analysis)
