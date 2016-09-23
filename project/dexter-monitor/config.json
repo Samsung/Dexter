@@ -4,6 +4,8 @@
     "description":"This program will monitor and control servers",
     "serverStatusCheckInterval":5,
     "serverDetailedStatusCheckInterval":5,
+    "serverRequestTimeout":5,
+    "projectStatusRefreshInterval":60,
     "snapshotDayOfWeek":2,
     "email":{
         "type":"api",

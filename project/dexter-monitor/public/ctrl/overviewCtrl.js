@@ -25,7 +25,7 @@
  */
 "use strict";
 
-monitorApp.controller("OverviewCtrl", function($scope, $http, $log, UserService, ProjectService, uiGridConstants) {
+monitorApp.controller("OverviewCtrl", function($scope, $http, $log, UserService, ProjectService, ServerStatusService, uiGridConstants) {
 
     const summaryColumnDefs = [
         {field:'installationRatio',         width: '25%',       cellClass: 'grid-align',
@@ -105,6 +105,7 @@ monitorApp.controller("OverviewCtrl", function($scope, $http, $log, UserService,
 
         $scope.time = new Date().toLocaleString();
         $scope.summaryGridOptions.data.push({});
+        loadServerStatus();
         loadDataForInstallationStatusGrid();
         loadDataForDefectStatusGrid();
         setGridExportingFileNames($scope.installationStatusGridOptions, INSTALLATION_STATUS_FILENAME_PREFIX + '-' + $scope.time);
@@ -125,9 +126,24 @@ monitorApp.controller("OverviewCtrl", function($scope, $http, $log, UserService,
         gridOptions.enableGridMenu = false;
     }
 
+    let activeServerCount = 0;
+    let inactiveServerCount = 0;
+
+    function loadServerStatus() {
+        ServerStatusService.getAllServerStatus()
+            .then((allServerStatus) => {
+                activeServerCount = allServerStatus.activeCount;
+                inactiveServerCount = allServerStatus.inactiveCount;
+            });
+    }
+
     function loadDataForInstallationStatusGrid() {
         UserService.getUserStatus()
-            .then((rows) => {
+            .then((data) => {
+                const rows = data.rows;
+                const timedOutProjectNames = data.timedOutProjectNames;
+                $scope.serverStatusStringForInstallationStatusGrid
+                    = `[Server Status] Active: ${activeServerCount} (Timed out: ${timedOutProjectNames.length}) / Inactive: ${inactiveServerCount}`;
                 $scope.installationStatusGridOptions.data = rows;
                 resizeHeightOfGrid('overviewInstallationStatusGrid', rows.length);
                 const targetDeveloperCountTotal = _.sum(_.map($scope.installationStatusGridOptions.data, 'targetDeveloperCount'));
@@ -148,7 +164,11 @@ monitorApp.controller("OverviewCtrl", function($scope, $http, $log, UserService,
 
     function loadDataForDefectStatusGrid() {
         ProjectService.getCurrentStatusByGroup()
-            .then((rows) => {
+            .then((data) => {
+                const rows = data.rows;
+                const timedOutProjectNames = data.timedOutProjectNames;
+                $scope.serverStatusStringForDefectStatusGrid
+                    = `[Server Status] Active: ${activeServerCount} (Timed out: ${timedOutProjectNames.length}) / Inactive: ${inactiveServerCount}`;
                 $scope.defectStatusGridOptions.data = rows;
                 resizeHeightOfGrid('overviewDefectStatusGrid', rows.length);
                 const defectCountTotal = _.sum(_.pull(_.map(rows, 'defectCountTotal'), ""));
