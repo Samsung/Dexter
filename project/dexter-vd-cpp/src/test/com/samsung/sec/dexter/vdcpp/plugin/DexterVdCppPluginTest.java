@@ -46,7 +46,7 @@ public class DexterVdCppPluginTest {
 		//assertTrue(firstChecker.isActive());
 		assertEquals("CRC", firstChecker.getSeverityCode());
 		assertEquals("BOTH", firstChecker.getType());
-		assertEquals("0.10.0", firstChecker.getVersion().toString());
+		assertEquals("0.10.5", firstChecker.getVersion().toString());
 		assertEquals("The name of a const variable should be consist of Upper alphabet, underline, or number.", 
 				firstChecker.getDescription());
 		assertEquals("[A-Z][0-9_A-Z]+", firstChecker.getProperty("RegExp"));
@@ -62,7 +62,7 @@ public class DexterVdCppPluginTest {
 		assertEquals("Samsung Electroincs", desc.get3rdPartyName());
 		assertEquals(DexterConfig.LANGUAGE.CPP, desc.getLanguage());
 		assertEquals("dexter-vd-cpp", desc.getPluginName());
-		assertEquals("0.10.0", desc.getVersion().toString());
+		assertEquals("0.10.5", desc.getVersion().toString());
 	}
 	
 	@Test

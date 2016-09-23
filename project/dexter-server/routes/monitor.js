@@ -83,7 +83,7 @@ exports.getUserCount = function(req, res) {
     var sql =
         "SELECT COUNT(userId) AS userCount          " +
         "FROM Account                               " +
-        "WHERE userId!='admin' AND userId!='user'   ";
+        "WHERE userNo!='1' and userNo!='2'          " ;
 
     database.execute(sql)
         .then(function(rows) {
@@ -99,8 +99,7 @@ exports.getUserList = function(req, res) {
     var sql =
         "SELECT userId                              " +
         "FROM Account                               " +
-        "WHERE userId!='admin' and userId!='user'   " +
-        "ORDER BY userId ASC                        ";
+        "WHERE userNo!='1' and userNo!='2'          " ;
 
     database.execute(sql)
         .then(function(rows) {
