@@ -144,6 +144,6 @@ monitorApp.controller("CurrentProjectCtrl", function($scope, $http, $log, $inter
     });
 
     $scope.reloadPage = function() {
-        $window.location.reload();
+        $window.location.reload(true);
     }
 });
