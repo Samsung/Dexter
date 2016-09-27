@@ -27,7 +27,7 @@ package com.samsung.sec.dexter.executor.cli;
 
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
-import com.samsung.sec.dexter.core.checker.Checker;
+import com.samsung.sec.dexter.core.checker.IChecker;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterUtil;
@@ -381,7 +381,7 @@ public class DexterCLIOption implements IDexterCLIOption {
     }
 
     @Override
-    public boolean checkCheckerEnablenessByCliOption(String toolName, String language, Checker checker) {
+    public boolean checkCheckerEnablenessByCliOption(String toolName, String language, IChecker checker) {
         for (EnabledChecker enabledChecker : enabledCheckerList) {
             if (enabledChecker.isSameChecker(toolName, language, checker.getCode()))
                 return true;

@@ -26,6 +26,7 @@
 package com.samsung.sec.dexter.executor.cli;
 
 import com.samsung.sec.dexter.core.checker.Checker;
+import com.samsung.sec.dexter.core.checker.IChecker;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.plugin.BaseDexterPluginManager;
 import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
@@ -81,7 +82,7 @@ public class CLIDexterPluginManager extends BaseDexterPluginManager {
         if (cliOption.isSpecifiedCheckerEnabledMode() == false)
             return;
 
-        for (Checker checker : checkers) {
+        for (IChecker checker : checkers) {
             boolean isEnable = cliOption.checkCheckerEnablenessByCliOption(toolName, language, checker);
             checker.setActive(isEnable);
         }

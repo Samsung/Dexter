@@ -25,6 +25,7 @@
  */
 package com.samsung.sec.dexter.executor;
 
+import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
@@ -39,6 +40,7 @@ import com.samsung.sec.dexter.metrics.CodeMetricsGenerator;
 
 import java.io.File;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
@@ -78,11 +80,15 @@ public class DexterAnalyzerThread extends Thread {
             analysisConfig.addHeaderAndSourceConfiguration(analyzer.getProjectAnalysisConfigurationList());
 
             analyzer.preSendSourceCode(analysisConfig);
+            Stopwatch sw = Stopwatch.createStarted();
             sendSourceCode(analysisConfig, dexterClient);
+            System.out.println("send source : " + sw.elapsed(TimeUnit.MILLISECONDS));
             analyzer.postSendSourceCode(analysisConfig);
 
             analyzer.preRunCodeMetrics(analysisConfig);
+            sw = Stopwatch.createStarted();
             generateCodeMetrics(analysisConfig);
+            System.out.println("code metrics : " + sw.elapsed(TimeUnit.MILLISECONDS));
             analyzer.postRunCodeMetrics(analysisConfig);
 
             analyzer.preRunStaticAnalysis(analysisConfig);

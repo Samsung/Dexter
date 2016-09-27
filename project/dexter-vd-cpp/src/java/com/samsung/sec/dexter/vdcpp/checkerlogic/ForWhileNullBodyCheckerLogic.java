@@ -32,7 +32,7 @@ import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.dom.ast.IASTWhileStatement;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
-import com.samsung.sec.dexter.core.checker.Checker;
+import com.samsung.sec.dexter.core.checker.IChecker;
 import com.samsung.sec.dexter.core.defect.PreOccurence;
 import com.samsung.sec.dexter.vdcpp.plugin.DexterVdCppPlugin;
 import com.samsung.sec.dexter.vdcpp.util.CppUtil;
@@ -44,7 +44,7 @@ public class ForWhileNullBodyCheckerLogic implements ICheckerLogic
 	private transient IASTComment[] commentList;
 	@Override
 	public void analyze(final AnalysisConfig config, final AnalysisResult result, 
-			final Checker checker, IASTTranslationUnit unit) {
+			final IChecker checker, IASTTranslationUnit unit) {
 		translationUnit =unit;		
 		ASTVisitor visitor = createVisitor(config, result, checker);
 		visitor.shouldVisitDeclarations = true;
@@ -52,7 +52,7 @@ public class ForWhileNullBodyCheckerLogic implements ICheckerLogic
 	}
 
 	private ASTVisitor createVisitor(final AnalysisConfig config,
-			final AnalysisResult result, final Checker checker) {
+			final AnalysisResult result, final IChecker checker) {
 		ASTVisitor visitor = new ASTVisitor() {
 			
 
@@ -72,7 +72,7 @@ public class ForWhileNullBodyCheckerLogic implements ICheckerLogic
 
 			private void visitOtherCompoundDeclaration(
 					final AnalysisConfig config, final AnalysisResult result,
-					final Checker checker, final IASTDeclaration ast) {
+					final IChecker checker, final IASTDeclaration ast) {
 				ASTVisitor visitor = new ASTVisitor() {
 					public int visit(IASTStatement statement ) {						
 						return ASTVisitor.PROCESS_CONTINUE;					
@@ -84,7 +84,7 @@ public class ForWhileNullBodyCheckerLogic implements ICheckerLogic
 			}
 
 			private void visitFunction(final AnalysisConfig config,
-					final AnalysisResult result, final Checker checker,
+					final AnalysisResult result, final IChecker checker,
 					final IASTDeclaration ast) {
 				ASTVisitor visitor = new ASTVisitor() {
 					public int visit(IASTStatement statement ) {
@@ -104,7 +104,7 @@ public class ForWhileNullBodyCheckerLogic implements ICheckerLogic
 
 					private void visitForStatements(
 							final AnalysisConfig config,
-							final AnalysisResult result, final Checker checker,
+							final AnalysisResult result, final IChecker checker,
 							IASTStatement statement) {
 						final IASTForStatement For_Statement = (IASTForStatement)statement;
 						final IASTStatement statementBody = For_Statement.getBody();
@@ -130,7 +130,7 @@ public class ForWhileNullBodyCheckerLogic implements ICheckerLogic
 
 					private void visitWhileStatements(
 							final AnalysisConfig config,
-							final AnalysisResult result, final Checker checker,
+							final AnalysisResult result, final IChecker checker,
 							IASTStatement statement) {
 						final IASTWhileStatement While_Statement = (IASTWhileStatement)statement;
 						final IASTStatement statementBody = While_Statement.getBody();
@@ -158,7 +158,7 @@ public class ForWhileNullBodyCheckerLogic implements ICheckerLogic
 
 					private void visitCompoundStatementInWhileControlBlock(
 							final AnalysisConfig config,
-							final AnalysisResult result, final Checker checker,
+							final AnalysisResult result, final IChecker checker,
 							final IASTWhileStatement While_Statement,
 							final IASTStatement statementBody) {
 						final IASTCompoundStatement compound_stmt = (IASTCompoundStatement) statementBody;
@@ -183,7 +183,7 @@ public class ForWhileNullBodyCheckerLogic implements ICheckerLogic
 
 					private void visitCompoundStatementInForControlBlock(
 							final AnalysisConfig config,
-							final AnalysisResult result, final Checker checker,
+							final AnalysisResult result, final IChecker checker,
 							final IASTForStatement For_Statement,
 							final IASTStatement statementBody) {
 						final IASTCompoundStatement compound_stmt = (IASTCompoundStatement) statementBody;
@@ -236,7 +236,7 @@ public class ForWhileNullBodyCheckerLogic implements ICheckerLogic
 		
 			
 			private void fillDefectData(AnalysisConfig config,
-					AnalysisResult result, Checker checker,
+					AnalysisResult result, IChecker checker,
 					IASTFileLocation fileLocation, String message, String declaratorName) {
 
 				PreOccurence preOcc = createPreOccurence(config, checker, fileLocation, message,declaratorName);
@@ -244,7 +244,7 @@ public class ForWhileNullBodyCheckerLogic implements ICheckerLogic
 			}
 
 			private PreOccurence createPreOccurence(AnalysisConfig config,
-					Checker checker, IASTFileLocation fileLocation, String msg,String decName) {
+					IChecker checker, IASTFileLocation fileLocation, String msg,String decName) {
 				final int startLine = fileLocation.getStartingLineNumber();
 				final int endLine = fileLocation.getEndingLineNumber();
 				final int startOffset = fileLocation.getNodeOffset();

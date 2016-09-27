@@ -25,7 +25,7 @@
  */
 package com.samsung.sec.dexter.executor.cli;
 
-import com.samsung.sec.dexter.core.checker.Checker;
+import com.samsung.sec.dexter.core.checker.IChecker;
 
 import java.io.File;
 import java.util.List;
@@ -61,7 +61,7 @@ public interface IDexterCLIOption {
 
     String getUserPassword();
 
-    boolean checkCheckerEnablenessByCliOption(final String toolName, final String language, Checker checker);
+    boolean checkCheckerEnablenessByCliOption(final String toolName, final String language, IChecker checker);
 
     boolean isXml2File();
 

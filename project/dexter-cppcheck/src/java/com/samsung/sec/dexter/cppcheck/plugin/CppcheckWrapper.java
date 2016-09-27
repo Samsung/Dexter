@@ -26,7 +26,6 @@
 
 package com.samsung.sec.dexter.cppcheck.plugin;
 
-import com.google.common.base.Stopwatch;
 import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
@@ -49,12 +48,74 @@ import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
 public class CppcheckWrapper {
-    private CheckerConfig checkerConfig = new CheckerConfig(CppcheckDexterPlugin.PLUGIN_NAME,
+    protected CheckerConfig checkerConfig = new CheckerConfig(CppcheckDexterPlugin.PLUGIN_NAME,
             DexterConfig.LANGUAGE.CPP);
-    private AnalysisConfig config;
-    public final static String CPPCHECK_HOME_DIR = "/bin/cppcheck";
+    protected AnalysisConfig config;
+    protected String baseCommandString = "";
 
     private final static Logger logger = Logger.getLogger(CppcheckWrapper.class);
+
+    public void initBaseCommand() {
+        final StringBuilder cmd = new StringBuilder(1024);
+
+        setCppcheckCommand(cmd);
+        setCustomRuleOption(cmd);
+        setBasicOption(cmd);
+        setCppcheckCheckersOption(cmd);
+        setPlatformOption(cmd);
+
+        baseCommandString = cmd.toString();
+    }
+
+    protected void setCppcheckCommand(final StringBuilder cmd) {
+        switch (DexterUtil.getOsBit()) {
+            case WIN32:
+            case WIN64:
+                cmd.append("cmd /C ").append(CppcheckDexterPlugin.getCppcheckHomePath())
+                        .append(DexterUtil.FILE_SEPARATOR)
+                        .append("cppcheck");
+                break;
+            case LINUX32:
+            case LINUX64:
+                cmd.append(CppcheckDexterPlugin.getCppcheckHomePath()).append(DexterUtil.FILE_SEPARATOR)
+                        .append("cppcheck");
+                break;
+            default:
+                throw new DexterRuntimeException("This command supports only Windows and Linux('bin/bash')");
+        }
+    }
+
+    // TODO: why does it need for only windows
+    protected void setCustomRuleOption(final StringBuilder cmd) {
+        if (DexterUtil.getOsBit() != DexterUtil.OS_BIT.WIN32 && DexterUtil.getOsBit() != DexterUtil.OS_BIT.WIN64)
+            return;
+
+        cmd.append(" --rule-file=").append(DexterConfig.getInstance().getDexterHome())
+                .append(DexterUtil.FILE_SEPARATOR).append("bin").append(DexterUtil.FILE_SEPARATOR).append("cppcheck")
+                .append(DexterUtil.FILE_SEPARATOR).append("custom_rule.xml");
+    }
+
+    protected void setBasicOption(final StringBuilder cmd) {
+        cmd.append(" --inconclusive ") // for unreachableCode
+                .append(" --std=posix --std=c++03 ") // posix | c89 | c99 | c11 | c++03 | c++11 => VD - C++98
+                .append(" --suppress=missingInclude ");
+    }
+
+    protected void setCppcheckCheckersOption(final StringBuilder cmd) {
+        cmd.append(" --enable=all ");
+    }
+
+    protected void setPlatformOption(final StringBuilder cmd) {
+        if (DexterUtil.getOsBit() == DexterUtil.OS_BIT.WIN32) {
+            cmd.append(" --platform=win32W "); // unix32 | unix64 | win32A | win32W | win64
+        } else if (DexterUtil.getOsBit() == DexterUtil.OS_BIT.WIN64) {
+            cmd.append(" --platform=win64 ");
+        } else if (DexterUtil.getOsBit() == DexterUtil.OS_BIT.LINUX32) {
+            cmd.append(" --platform=unix32 ");
+        } else if (DexterUtil.getOsBit() == DexterUtil.OS_BIT.LINUX64) {
+            cmd.append(" --platform=unix64 ");
+        }
+    }
 
     /**
      * @return CheckerConfig
@@ -70,64 +131,40 @@ public class CppcheckWrapper {
     /**
      * run static analysis
      * 
-     * ## Other Options that we did not use ##
-     * cmd.append(" -j 4 ");
-     * cmd.append(" -f ");
-     * String cfgFile = dexterHome + CPPCHECK_HOME_DIR + "/cfg/" + CPPCHECK_CFG_FILE;
-     * cmd.append(" --library=").append(cfgFile).append(" ");
-     * cmd.append(" 2> ").append(resultFile);
-     * 
-     * -rp=<path> --rule=<rule>, --rule-file=<file>, --template, -D占쎈��놅옙占�-U占쎈챶逾믭옙��뵥
-     * 
      * @param result
-     * void
      * @throws Exception
      */
     public void analyze(final AnalysisResult result) {
-        logger.debug(result.getFileName() + "is being analyzed");
+        runCommand(result, makeCommandString());
+    }
 
-        Stopwatch sw = Stopwatch.createStarted();
-        // 1. Read AnalysisConfig and initialize AnalysisResult
-        initializeAnalysisResult(result);
-
-        // 2. Execute at CMD
-        final String sourceFileFullPath = this.config.getSourceFileFullPath();
-
-        // 3. Create Command
+    /*
+    * ## Other Options that we did not use ##
+    * cmd.append(" -j 4 ");
+    * cmd.append(" -f ");
+    * String cfgFile = dexterHome + CPPCHECK_HOME_DIR + "/cfg/" + CPPCHECK_CFG_FILE;
+    * cmd.append(" --library=").append(cfgFile).append(" ");
+    * cmd.append(" 2> ").append(resultFile);
+    * 
+    * -rp=<path> --rule=<rule>, --rule-file=<file>, --template,
+    */
+    protected StringBuilder makeCommandString() {
         final StringBuilder cmd = new StringBuilder(1024);
 
-        setCppcheckCommand(cmd);
-        if (DexterUtil.getOsBit() == DexterUtil.OS_BIT.WIN32 || DexterUtil.getOsBit() == DexterUtil.OS_BIT.WIN64) {
-            setCustomRuleOption(cmd);
-        }
-        cmd.append(" --inconclusive "); // for unreachableCode
-        cmd.append(" --enable=all --xml --xml-version=2 --report-progress -v ");
-        cmd.append(" --std=posix --std=c++03 "); // posix | c89 | c99 | c11 | c++03 | c++11 => VD - C++98
-        cmd.append("  --suppress=missingInclude ");
-        // cmd.append(" --template={file}:::{line}:::{severity}:::{id}:::{message} ");
-
-        cmd.append(sourceFileFullPath);
-        setPlatformOption(cmd);
+        cmd.append(this.baseCommandString);
         setLanguageOption(cmd);
         setHeaderFilesOption(cmd);
+        setReportTypeOption(cmd);
+        setSourcecodeFullPath(cmd);
 
-        // 4. Run Command
+        return cmd;
+    }
+
+    protected void runCommand(final AnalysisResult result, final StringBuilder cmd) {
         Process process = null;
         try {
             process = Runtime.getRuntime().exec(cmd.toString());
-
             analysisResultFile(process.getErrorStream(), result);
-
-            /* TODO : use template instead of xml parsing
-             --template='<text>'
-               Format the error messages. E.g.
-               '{file}:{line},{severity},{id},{message}' or
-               '{file}({line}):({severity}) {message}'. Pre-defined templates:
-               gcc, vs
-             */
-
-            logger.debug(result.getFileName() + " is analyzed completely.");
-
         } catch (IOException e) {
             throw new DexterRuntimeException(e.getMessage() + " cmd: " + cmd.toString(), e);
         } catch (Exception e) {
@@ -146,45 +183,16 @@ public class CppcheckWrapper {
         }
     }
 
-    private void setCppcheckCommand(final StringBuilder cmd) {
-        final String dexterHome = DexterConfig.getInstance().getDexterHome();
-        final String tempFolder = dexterHome + DexterUtil.FILE_SEPARATOR + "temp";
-
-        if ((new File(tempFolder)).exists() == false) {
-            if (new File(tempFolder).mkdir() == false) {
-                throw new DexterRuntimeException("Can't create temp folder to save cppcheck result: " + tempFolder);
-            }
-        }
-
-        final String cppcheckHome = dexterHome + DexterUtil.FILE_SEPARATOR + "bin" + DexterUtil.FILE_SEPARATOR
-                + "cppcheck";
-        if (new File(cppcheckHome).exists() == false) {
-            throw new DexterRuntimeException("There is no cppcheck home folder : " + cppcheckHome);
-        }
-
-        if (DexterUtil.getOsBit() == DexterUtil.OS_BIT.WIN32 || DexterUtil.getOsBit() == DexterUtil.OS_BIT.WIN64) {
-            cmd.append("cmd /C ").append(cppcheckHome).append(DexterUtil.FILE_SEPARATOR).append("cppcheck");
-        } else if (DexterUtil.getOsBit() == DexterUtil.OS_BIT.LINUX32
-                || DexterUtil.getOsBit() == DexterUtil.OS_BIT.LINUX64) {
-            cmd.append(cppcheckHome).append(DexterUtil.FILE_SEPARATOR).append("cppcheck");
-        } else {
-            throw new DexterRuntimeException("This command supports only Windows and Linux('bin/bash')");
-        }
-
+    protected void setSourcecodeFullPath(final StringBuilder cmd) {
+        cmd.append(this.config.getSourceFileFullPath());
     }
 
-    private void setCustomRuleOption(final StringBuilder cmd) {
-        final String dexterHome = DexterConfig.getInstance().getDexterHome();
-        final String cppcheckHome = dexterHome + DexterUtil.FILE_SEPARATOR + "bin" + DexterUtil.FILE_SEPARATOR
-                + "cppcheck";
-
-        final String customRuleFileName = "custom_rule.xml";
-        cmd.append(" --rule-file=");
-        cmd.append(cppcheckHome).append(DexterUtil.FILE_SEPARATOR).append(customRuleFileName);
-
+    protected void setReportTypeOption(final StringBuilder cmd) {
+        cmd.append(" --xml --xml-version=2 --report-progress -v ");
+        // cmd.append(" --template={file}:::{line}:::{severity}:::{id}:::{message}:::{verbose} ");
     }
 
-    private void setHeaderFilesOption(final StringBuilder cmd) {
+    protected void setHeaderFilesOption(final StringBuilder cmd) {
         for (final String inc : config.getHeaderBaseDirList()) {
             if (inc.length() > 0) {
                 cmd.append(" -I ").append(inc).append(" ");
@@ -192,7 +200,7 @@ public class CppcheckWrapper {
         }
     }
 
-    private void setLanguageOption(final StringBuilder cmd) {
+    protected void setLanguageOption(final StringBuilder cmd) {
         if (config.getLanguageEnum() == DexterConfig.LANGUAGE.C) {
             cmd.append(" --language=c "); // c | c++
         } else {
@@ -200,34 +208,6 @@ public class CppcheckWrapper {
         }
     }
 
-    private void setPlatformOption(final StringBuilder cmd) {
-        if (DexterUtil.getOsBit() == DexterUtil.OS_BIT.WIN32) {
-            cmd.append(" --platform=win32W "); // unix32 | unix64 | win32A | win32W | win64
-        } else if (DexterUtil.getOsBit() == DexterUtil.OS_BIT.WIN64) {
-            cmd.append(" --platform=win64 ");
-        } else if (DexterUtil.getOsBit() == DexterUtil.OS_BIT.LINUX32) {
-            cmd.append(" --platform=unix32 ");
-        } else if (DexterUtil.getOsBit() == DexterUtil.OS_BIT.LINUX64) {
-            cmd.append(" --platform=unix64 ");
-        }
-    }
-
-    private void initializeAnalysisResult(final AnalysisResult result) {
-        if (this.config == null) {
-            throw new DexterRuntimeException("there is no target to analysis");
-        }
-
-        result.setSnapshotId(config.getSnapshotId());
-        result.setProjectName(config.getProjectName());
-        result.setAnalysisType(config.getAnalysisType());
-    }
-
-    /**
-     * @param resultFilePath
-     * @param result
-     * void
-     * @throws Exception
-     */
     private void analysisResultFile(final InputStream input, final AnalysisResult result) {
         if (input == null) {
             throw new DexterRuntimeException("No Result. It can be caused by Cppcheck installation.");
@@ -266,18 +246,10 @@ public class CppcheckWrapper {
         }
     }
 
-    /**
-     * @param config
-     * void
-     */
     public void setAnalysisConfig(final AnalysisConfig config) {
         this.config = config;
     }
 
-    /**
-     * @param checkerConfig
-     * void
-     */
     public void setCheckerConfig(final CheckerConfig checkerConfig) {
         this.checkerConfig = checkerConfig;
     }

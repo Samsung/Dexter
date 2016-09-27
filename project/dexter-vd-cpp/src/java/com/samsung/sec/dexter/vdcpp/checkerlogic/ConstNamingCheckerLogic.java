@@ -10,7 +10,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclaration;
 
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
-import com.samsung.sec.dexter.core.checker.Checker;
+import com.samsung.sec.dexter.core.checker.IChecker;
 import com.samsung.sec.dexter.core.defect.PreOccurence;
 import com.samsung.sec.dexter.vdcpp.plugin.DexterVdCppPlugin;
 import com.samsung.sec.dexter.vdcpp.util.CppUtil;
@@ -18,7 +18,7 @@ import com.samsung.sec.dexter.vdcpp.util.CppUtil;
 public class ConstNamingCheckerLogic implements ICheckerLogic {
 	private IASTTranslationUnit unit;
 	@Override
-	public void analyze(final AnalysisConfig config, final AnalysisResult result, final Checker checker,
+	public void analyze(final AnalysisConfig config, final AnalysisResult result, final IChecker checker,
 	        final IASTTranslationUnit unit) {
 		this.unit = unit;
 		
@@ -27,7 +27,7 @@ public class ConstNamingCheckerLogic implements ICheckerLogic {
 		unit.accept(visitor);
 	}
 
-	private ASTVisitor createVisitor(final AnalysisConfig config, final AnalysisResult result, final Checker checker) {
+	private ASTVisitor createVisitor(final AnalysisConfig config, final AnalysisResult result, final IChecker checker) {
 		ASTVisitor visitor = new ASTVisitor() {
 			@Override
 			public int visit(IASTDeclarator declarator) {
@@ -44,7 +44,7 @@ public class ConstNamingCheckerLogic implements ICheckerLogic {
 				return super.visit(declarator);
 			}
 
-			private void addDefect(final AnalysisConfig config, final AnalysisResult result, final Checker checker,
+			private void addDefect(final AnalysisConfig config, final AnalysisResult result, final IChecker checker,
 			        IASTDeclarator declarator) {
 				String declaratorName = declarator.getName().toString();
 				String regExp = checker.getProperty("RegExp");
@@ -56,7 +56,7 @@ public class ConstNamingCheckerLogic implements ICheckerLogic {
 				result.addDefectWithPreOccurence(preOcc);
 			}
 
-			private PreOccurence createPreOccurence(final AnalysisConfig config, final Checker checker,
+			private PreOccurence createPreOccurence(final AnalysisConfig config, final IChecker checker,
 			        IASTDeclarator declarator, String declaratorName) {
 				IASTFileLocation fileLocation = declarator.getFileLocation();
 				final int startLine = fileLocation.getStartingLineNumber();

@@ -33,7 +33,7 @@ public class CheckerTest {
 
 	@Test
 	public void description_field_should_replace_keys_with_properties_type1() {
-		Checker checker = new Checker("test-code", "test-name", "1.1.1", true);
+		IChecker checker = new Checker("test-code", "test-name", "1.1.1", true);
 		
 		// property first
 		checker.addProperty("key1", "key1-value");
@@ -46,7 +46,7 @@ public class CheckerTest {
 	
 	@Test
 	public void description_field_should_replace_keys_with_properties_type2() {
-		Checker checker = new Checker("test-code", "test-name", "1.1.1", true);
+		IChecker checker = new Checker("test-code", "test-name", "1.1.1", true);
 		
 		// description first
 		checker.setDescription("test-description: aa ${key1} bb ${key2} cc ${key2} dd $key1 ee $key2");

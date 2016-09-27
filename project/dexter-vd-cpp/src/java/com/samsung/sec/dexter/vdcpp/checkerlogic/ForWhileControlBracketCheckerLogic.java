@@ -33,7 +33,7 @@ import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.dom.ast.IASTWhileStatement;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
-import com.samsung.sec.dexter.core.checker.Checker;
+import com.samsung.sec.dexter.core.checker.IChecker;
 import com.samsung.sec.dexter.core.defect.PreOccurence;
 import com.samsung.sec.dexter.vdcpp.plugin.DexterVdCppPlugin;
 import com.samsung.sec.dexter.vdcpp.util.CppUtil;
@@ -45,7 +45,7 @@ public class ForWhileControlBracketCheckerLogic implements ICheckerLogic
 
 	@Override
 	public void analyze(final AnalysisConfig config, final AnalysisResult result, 
-			final Checker checker, IASTTranslationUnit unit) {
+			final IChecker checker, IASTTranslationUnit unit) {
 		translationUnit =unit;		
 		ASTVisitor visitor = createVisitor(config, result, checker);
 		visitor.shouldVisitDeclarations = true;
@@ -53,7 +53,7 @@ public class ForWhileControlBracketCheckerLogic implements ICheckerLogic
 	}
 
 	private ASTVisitor createVisitor(final AnalysisConfig config,
-			final AnalysisResult result, final Checker checker) {
+			final AnalysisResult result, final IChecker checker) {
 		ASTVisitor visitor = new ASTVisitor() {
 			@Override
 			public int visit(IASTDeclaration ast ) {
@@ -70,7 +70,7 @@ public class ForWhileControlBracketCheckerLogic implements ICheckerLogic
 
 			private void visitOtherCompoundDeclaration(
 					final AnalysisConfig config, final AnalysisResult result,
-					final Checker checker, final IASTDeclaration ast) {
+					final IChecker checker, final IASTDeclaration ast) {
 				ASTVisitor visitor = new ASTVisitor() {
 					public int visit(IASTStatement statement ) {						
 						return ASTVisitor.PROCESS_CONTINUE;					
@@ -82,7 +82,7 @@ public class ForWhileControlBracketCheckerLogic implements ICheckerLogic
 			}
 
 			private void visitFunction(final AnalysisConfig config,
-					final AnalysisResult result, final Checker checker,
+					final AnalysisResult result, final IChecker checker,
 					final IASTDeclaration ast) {
 				ASTVisitor visitor = new ASTVisitor() {
 					public int visit(IASTStatement statement ) {						
@@ -124,7 +124,7 @@ public class ForWhileControlBracketCheckerLogic implements ICheckerLogic
 
 					private void visitSwitchStatements(
 							final AnalysisConfig config,
-							final AnalysisResult result, final Checker checker,
+							final AnalysisResult result, final IChecker checker,
 							IASTStatement statement) {
 						final IASTSwitchStatement switch_statement = (IASTSwitchStatement) statement;
 						final IASTStatement switch_body = switch_statement.getBody();
@@ -138,7 +138,7 @@ public class ForWhileControlBracketCheckerLogic implements ICheckerLogic
 					}
 
 					private void visitDoStatements(final AnalysisConfig config,
-							final AnalysisResult result, final Checker checker,
+							final AnalysisResult result, final IChecker checker,
 							IASTStatement statement) {
 						final IASTDoStatement do_statement = (IASTDoStatement) statement;
 						final IASTStatement do_body = do_statement.getBody();
@@ -153,7 +153,7 @@ public class ForWhileControlBracketCheckerLogic implements ICheckerLogic
 
 					private void visitWhileStatements(
 							final AnalysisConfig config,
-							final AnalysisResult result, final Checker checker,
+							final AnalysisResult result, final IChecker checker,
 							IASTStatement statement) {
 						final IASTWhileStatement while_statement = (IASTWhileStatement) statement;
 						final IASTStatement while_body = while_statement.getBody();
@@ -168,7 +168,7 @@ public class ForWhileControlBracketCheckerLogic implements ICheckerLogic
 
 					private void visitForStatements(
 							final AnalysisConfig config,
-							final AnalysisResult result, final Checker checker,
+							final AnalysisResult result, final IChecker checker,
 							IASTStatement statement) {
 						final IASTForStatement for_statement = (IASTForStatement) statement;
 						final IASTStatement for_body = for_statement.getBody();
@@ -183,7 +183,7 @@ public class ForWhileControlBracketCheckerLogic implements ICheckerLogic
 					}
 
 					private void visitIfStatements(final AnalysisConfig config,
-							final AnalysisResult result, final Checker checker,
+							final AnalysisResult result, final IChecker checker,
 							IASTStatement statement) {
 						final IASTIfStatement if_statement = (IASTIfStatement) statement;							
 						final IASTStatement then_clause = if_statement.getThenClause();								
@@ -229,7 +229,7 @@ public class ForWhileControlBracketCheckerLogic implements ICheckerLogic
 		
 			
 			private void fillDefectData(AnalysisConfig config,
-					AnalysisResult result, Checker checker,
+					AnalysisResult result, IChecker checker,
 					IASTFileLocation fileLocation, String message, String declaratorName) {
 
 				PreOccurence preOcc = createPreOccurence(config, checker, fileLocation, message,declaratorName);
@@ -237,7 +237,7 @@ public class ForWhileControlBracketCheckerLogic implements ICheckerLogic
 			}
 
 			private PreOccurence createPreOccurence(AnalysisConfig config,
-					Checker checker, IASTFileLocation fileLocation, String msg,String decName) {
+					IChecker checker, IASTFileLocation fileLocation, String msg,String decName) {
 				final int startLine = fileLocation.getStartingLineNumber();
 				final int endLine = fileLocation.getEndingLineNumber();
 				final int startOffset = fileLocation.getNodeOffset();

@@ -142,7 +142,7 @@ public class CheckerConfigExcelHandler {
 		return checker;
     }
 	
-	private void addCheckerProperty(Checker checker, XSSFRow row) {
+	private void addCheckerProperty(IChecker checker, XSSFRow row) {
 		if(this.propertyRowIndex == -1){
 			return;
 		}

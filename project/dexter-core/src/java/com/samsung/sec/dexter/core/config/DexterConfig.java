@@ -551,4 +551,8 @@ public class DexterConfig {
         return getDexterHome() + "/" + PLUGIN_FOLDER_NAME;
     }
 
+    public static boolean isFileSizeTooBigToAnalyze(final String filePath) {
+        return new File(filePath).length() >= DexterConfig.SOURCE_FILE_SIZE_LIMIT;
+    }
+
 }

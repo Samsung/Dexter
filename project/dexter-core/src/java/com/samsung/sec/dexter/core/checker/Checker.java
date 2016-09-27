@@ -35,7 +35,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-public class Checker {
+public class Checker implements IChecker {
     private String code;
     private String name;
     private String type; //{BOTH | DEV | REVIEW | NONE}
@@ -115,6 +115,7 @@ public class Checker {
         return msg.toString();
     }
 
+    @Override
     public String getProperty(final String key) {
         if (Strings.isNullOrEmpty(key)) {
             logger.error("Invalide Paramether: key");
@@ -127,6 +128,7 @@ public class Checker {
     /**
      * @return the name
      */
+    @Override
     public String getName() {
         return name;
     }
@@ -134,6 +136,7 @@ public class Checker {
     /**
      * @return the version
      */
+    @Override
     public PluginVersion getVersion() {
         return new PluginVersion(version);
     }
@@ -141,6 +144,7 @@ public class Checker {
     /**
      * @return the description
      */
+    @Override
     public String getDescription() {
         return description.toString();
     }
@@ -149,6 +153,7 @@ public class Checker {
      * @param name
      * the name to set
      */
+    @Override
     public void setName(final String name) {
         this.name = name;
     }
@@ -157,6 +162,7 @@ public class Checker {
      * @param version
      * the version to set
      */
+    @Override
     public void setVersion(final PluginVersion version) {
         this.version = version.getVersion();
     }
@@ -165,6 +171,7 @@ public class Checker {
      * @param description
      * the description to set
      */
+    @Override
     public void setDescription(final String description) {
         this.description = new StringBuilder(description);
 
@@ -191,6 +198,7 @@ public class Checker {
         }
     }
 
+    @Override
     public void addProperty(String key, String value) {
         this.properties.put(key, value);
 
@@ -200,6 +208,7 @@ public class Checker {
     /**
      * @return the isActive
      */
+    @Override
     public boolean isActive() {
         return isActive;
     }
@@ -208,6 +217,7 @@ public class Checker {
      * @param isActive
      * the isActive to set
      */
+    @Override
     public void setActive(final boolean isActive) {
         this.isActive = isActive;
     }
@@ -215,6 +225,7 @@ public class Checker {
     /**
      * @return the code
      */
+    @Override
     public String getCode() {
         return code;
     }
@@ -222,6 +233,7 @@ public class Checker {
     /**
      * @return the severity
      */
+    @Override
     public String getSeverityCode() {
         return severityCode;
     }
@@ -229,6 +241,7 @@ public class Checker {
     /**
      * @return the properties
      */
+    @Override
     public Map<String, String> getProperties() {
         return properties;
     }
@@ -237,6 +250,7 @@ public class Checker {
      * @param code
      * the code to set
      */
+    @Override
     public void setCode(final String code) {
         this.code = code;
     }
@@ -245,6 +259,7 @@ public class Checker {
      * @param severity
      * the severity to set
      */
+    @Override
     public void setSeverityCode(final String severityCode) {
         this.severityCode = severityCode;
     }
@@ -262,6 +277,7 @@ public class Checker {
      * @param string
      * void
      */
+    @Override
     public void addDescriptionWithNewLine(final String string) {
         description.append(string).append(DexterUtil.LINE_SEPARATOR);
     }
@@ -270,6 +286,7 @@ public class Checker {
      * @param cwEid
      * void
      */
+    @Override
     public void setCWE(final int cwe) {
         this.cwe = cwe;
     }
@@ -277,6 +294,7 @@ public class Checker {
     /**
      * @return the cwe
      */
+    @Override
     public int getCwe() {
         return cwe;
     }
@@ -285,6 +303,7 @@ public class Checker {
      * @param description
      * the description to set
      */
+    @Override
     public void setDescription(final StringBuilder description) {
         this.description = description;
     }
@@ -293,22 +312,27 @@ public class Checker {
      * @param cwe
      * the cwe to set
      */
+    @Override
     public void setCwe(final int cwe) {
         this.cwe = cwe;
     }
 
+    @Override
     public String getCategoryName() {
         return this.categoryName;
     }
 
+    @Override
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
     }
 
+    @Override
     public void setType(String type) {
         this.type = type;
     }
 
+    @Override
     public String getType() {
         return this.type;
     }

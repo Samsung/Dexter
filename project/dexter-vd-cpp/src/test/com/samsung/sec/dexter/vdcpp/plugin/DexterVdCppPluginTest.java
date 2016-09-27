@@ -10,8 +10,8 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResultChangeHandlerForUT;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory ;
 import com.samsung.sec.dexter.core.analyzer.ITestHandlerAtTheEndOfHandleAnalysisResult;
-import com.samsung.sec.dexter.core.checker.Checker;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
+import com.samsung.sec.dexter.core.checker.IChecker;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.defect.Occurence;
@@ -39,7 +39,7 @@ public class DexterVdCppPluginTest {
 		//assertEquals(5, config.getCheckerList().size());
 		assertEquals("dexter-vd-cpp", config.getToolName());
 		
-		Checker firstChecker = config.getCheckerList().get(0);
+		IChecker firstChecker = config.getCheckerList().get(0);
 		assertEquals("CRC", firstChecker.getCategoryName());
 		assertEquals("CONST_NAMING", firstChecker.getCode());
 		assertEquals(0, firstChecker.getCwe());

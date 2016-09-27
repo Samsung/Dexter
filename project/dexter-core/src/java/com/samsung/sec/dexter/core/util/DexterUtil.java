@@ -979,7 +979,9 @@ public class DexterUtil {
     public static void createDirectoryIfNotExist(String directoryString) {
         final File directory = new File(directoryString);
         if (directory.exists() == false) {
-            directory.mkdirs();
+            if (directory.mkdirs() == false) {
+                throw new DexterRuntimeException("Can't create the folder : " + directoryString);
+            }
         }
     }
 

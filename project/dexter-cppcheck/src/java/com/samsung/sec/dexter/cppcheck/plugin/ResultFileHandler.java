@@ -26,13 +26,13 @@
 
 package com.samsung.sec.dexter.cppcheck.plugin;
 
-import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 import com.samsung.sec.dexter.core.checker.Checker;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
+import com.samsung.sec.dexter.core.checker.IChecker;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.defect.PreOccurence;
@@ -112,30 +112,12 @@ public class ResultFileHandler extends DefaultHandler {
 
             currentOccurence.setCheckerCode(checkerCode);
 
-            try {
-                Checker checker = checkerConfig.getChecker(checkerCode);
+            IChecker checker = checkerConfig.getChecker(checkerCode);
+            if (Strings.isNullOrEmpty(checker.getCode())) {
+                createNewChecker(attributes, checkerCode);
+            } else {
                 currentOccurence.setSeverityCode(checker.getSeverityCode());
                 currentOccurence.setCategoryName(checker.getCategoryName());
-
-            } catch (DexterRuntimeException e) {
-                logger.info(e.getMessage());
-
-                if (DexterConfig.getInstance().isSpecifiedCheckerOptionEnabledByCli()) {
-                    return;
-                }
-
-                Checker checker = new Checker(checkerCode, checkerCode,
-                        CppcheckDexterPlugin.PLUGIN_VERSION.getVersion(), true);
-
-                checker.setSeverityCode("ETC");
-                checker.setActive("true".equals(attributes.getValue("inconclusive")) == false);
-
-                currentOccurence.setSeverityCode("ETC");
-                currentOccurence.setCategoryName("");
-
-                checkerConfig.addChecker(checker);
-
-                logger.info("Found new checker(" + checkerCode + ") in " + config.getSourceFileFullPath());
             }
         } else if ("location".equals(qName)) {
             final String fileName = attributes.getValue("file");
@@ -157,7 +139,6 @@ public class ResultFileHandler extends DefaultHandler {
             }
 
             try {
-                Stopwatch sw = Stopwatch.createStarted();
                 final String sourcecode = config.getSourcecodeThatReadIfNotExist();
 
                 IASTTranslationUnit translationUnit = TranslationUnitFactory.getASTTranslationUnit(sourcecode,
@@ -177,6 +158,24 @@ public class ResultFileHandler extends DefaultHandler {
                 logger.warn(e);
             }
         }
+    }
+
+    private void createNewChecker(final Attributes attributes, final String checkerCode) {
+        if (DexterConfig.getInstance().isSpecifiedCheckerOptionEnabledByCli()) {
+            return;
+        }
+
+        Checker checker = new Checker(checkerCode, checkerCode,
+                CppcheckDexterPlugin.PLUGIN_VERSION.getVersion(), true);
+
+        checker.setSeverityCode("ETC");
+        checker.setActive("true".equals(attributes.getValue("inconclusive")) == false);
+
+        currentOccurence.setSeverityCode("ETC");
+        currentOccurence.setCategoryName("");
+
+        checkerConfig.addChecker(checker);
+        logger.info("Found new checker(" + checkerCode + ") in " + config.getSourceFileFullPath());
     }
 
     /*

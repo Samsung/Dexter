@@ -30,8 +30,8 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
-import com.samsung.sec.dexter.core.checker.Checker;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
+import com.samsung.sec.dexter.core.checker.IChecker;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.defect.Defect;
@@ -117,7 +117,7 @@ public class DexterOpensourcePlugin implements IDexterPlugin {
         IAnalysisEntityFactory factory = new AnalysisEntityFactory();
         AnalysisResult result = factory.createAnalysisResult(config);
 
-        for (Checker checker : this.checkerConfig.getCheckerList()) {
+        for (IChecker checker : this.checkerConfig.getCheckerList()) {
             if (checker.isActive() == false) {
                 continue;
             }

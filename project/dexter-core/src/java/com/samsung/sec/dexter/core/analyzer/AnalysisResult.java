@@ -62,6 +62,7 @@ public class AnalysisResult extends BaseAnalysisEntity {
                 for (Occurence occr : defect.getOccurences()) {
                     if (occr.equalsWithPreOccurence(preOccr)) {
                         isDifferentOccr = false;
+                        break;
                     }
                 }
 
