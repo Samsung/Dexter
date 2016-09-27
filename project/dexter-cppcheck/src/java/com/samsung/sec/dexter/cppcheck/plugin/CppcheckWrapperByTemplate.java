@@ -97,48 +97,61 @@ public class CppcheckWrapperByTemplate extends CppcheckWrapper {
             while ((line = br.readLine()) != null) {
                 addDefect(result, line);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (DexterRuntimeException | IOException e) {
+            logger.error(e);
         }
     }
 
     private void addDefect(final AnalysisResult result, final String defectLine) {
         final String[] defectLines = defectLine.split(":::");
         if (defectLines.length != 5) {
-            logger.error("cppcheck defect string is invalid : " + defectLine);
+            if (logger.isDebugEnabled())
+                logger.debug("cppcheck defect string is invalid : " + defectLine);
             return;
         }
 
-        final String filePath = defectLines[0];
-        final String line = defectLines[1];
+        final String filePath = defectLines[0].intern();
+        final String line = defectLines[1].intern();
         //final String cppcheckSeverity = defectLines[2];
-        final String checkerCode = defectLines[3];
-        final String message = defectLines[4];
+        final String checkerCode = defectLines[3].toLowerCase();
+        final String message = defectLines[4].intern();
 
-        if (checkerConfig.isActiveChecker(checkerCode) == false) {
+        IChecker checker = checkerConfig.getChecker(checkerCode);
+        if (checker instanceof EmptyChecker) {
+            createNewChecker(checkerCode);
+        }
+
+        if (checker.isActive() == false) {
             return;
         }
 
+        PreOccurence preOcc = createPreOccurence(result, filePath.intern(), line.intern(), checkerCode.intern(),
+                message.intern(), checker);
+
+        result.addDefectWithPreOccurence(preOcc);
+    }
+
+    private PreOccurence createPreOccurence(final AnalysisResult result, final String filePath, final String line,
+            final String checkerCode, final String message, IChecker checker) {
         PreOccurence preOcc = new PreOccurence();
         preOcc.setLanguage(LANGUAGE.CPP.toString());
         preOcc.setToolName(CppcheckDexterPlugin.PLUGIN_NAME);
         preOcc.setFileName(config.getFileName());
         preOcc.setModulePath(config.getModulePath());
         preOcc.setCheckerCode(checkerCode);
-
-        IChecker checker = checkerConfig.getChecker(checkerCode);
-        if (checker instanceof EmptyChecker) {
-            createNewChecker(checkerCode, preOcc);
-        }
-
         preOcc.setSeverityCode(checker.getSeverityCode());
         preOcc.setCategoryName(checker.getCategoryName());
 
         if (!result.getSourceFileFullPath().equals(DexterUtil.refinePath(filePath))) {
-            logger.warn("target file and detected file are not same");
-            logger.warn("target file: " + result.getSourceFileFullPath());
-            logger.warn("detected file: " + filePath);
-            return;
+            if (logger.isDebugEnabled()) {
+                logger.debug("target file and detected file are not same");
+                logger.debug("target file: " + result.getSourceFileFullPath());
+                logger.debug("detected file: " + DexterUtil.refinePath(filePath));
+                logger.debug(preOcc.toString());
+            }
+
+            preOcc.setStartLine(-1);
+            return preOcc;
         }
 
         preOcc.setMessage(message);
@@ -147,34 +160,26 @@ public class CppcheckWrapperByTemplate extends CppcheckWrapper {
         preOcc.setCharStart(-1);
         preOcc.setCharEnd(-1);
 
-        try {
-            final String sourcecode = config.getSourcecodeThatReadIfNotExist();
+        final String sourcecode = config.getSourcecodeThatReadIfNotExist();
 
-            IASTTranslationUnit translationUnit = TranslationUnitFactory.getASTTranslationUnit(sourcecode,
-                    ParserLanguage.CPP,
-                    config.getSourceFileFullPath());
+        IASTTranslationUnit translationUnit = TranslationUnitFactory.getASTTranslationUnit(sourcecode,
+                ParserLanguage.CPP,
+                config.getSourceFileFullPath());
 
-            Map<String, String> nameMap = CppUtil.extractModuleName(translationUnit, sourcecode,
-                    preOcc.getStartLine());
+        Map<String, String> nameMap = CppUtil.extractModuleName(translationUnit, sourcecode,
+                preOcc.getStartLine());
 
-            if (Strings.isNullOrEmpty(nameMap.get(ResultFileConstant.CLASS_NAME)) == false) {
-                preOcc.setClassName(nameMap.get(ResultFileConstant.CLASS_NAME));
-            }
-            if (Strings.isNullOrEmpty(nameMap.get(ResultFileConstant.METHOD_NAME)) == false) {
-                preOcc.setMethodName(nameMap.get(ResultFileConstant.METHOD_NAME));
-            }
-        } catch (DexterRuntimeException e) {
-            logger.warn(e);
+        if (Strings.isNullOrEmpty(nameMap.get(ResultFileConstant.CLASS_NAME)) == false) {
+            preOcc.setClassName(nameMap.get(ResultFileConstant.CLASS_NAME));
         }
 
-        if (preOcc.getStartLine() == -1) {
-            logger.warn("Not added defect(start line is -1) : " + preOcc.toJson());
-        } else {
-            result.addDefectWithPreOccurence(preOcc);
+        if (Strings.isNullOrEmpty(nameMap.get(ResultFileConstant.METHOD_NAME)) == false) {
+            preOcc.setMethodName(nameMap.get(ResultFileConstant.METHOD_NAME));
         }
+        return preOcc;
     }
 
-    private void createNewChecker(final String checkerCode, final PreOccurence preOcc) {
+    private void createNewChecker(final String checkerCode) {
         if (DexterConfig.getInstance().isSpecifiedCheckerOptionEnabledByCli()) {
             return;
         }
@@ -183,9 +188,6 @@ public class CppcheckWrapperByTemplate extends CppcheckWrapper {
                 CppcheckDexterPlugin.PLUGIN_VERSION.getVersion(), true);
         checker.setSeverityCode("ETC");
         checker.setActive(true);
-
-        preOcc.setSeverityCode("ETC");
-        preOcc.setCategoryName("");
 
         checkerConfig.addChecker(checker);
     }

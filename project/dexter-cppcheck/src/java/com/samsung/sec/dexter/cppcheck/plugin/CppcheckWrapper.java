@@ -102,6 +102,7 @@ public class CppcheckWrapper {
                 .append(" --suppress=missingInclude ");
     }
 
+    // all, warning, style, performance, portability, information, unusedFunction, missingInclude
     protected void setCppcheckCheckersOption(final StringBuilder cmd) {
         cmd.append(" --enable=all ");
     }

@@ -50,9 +50,13 @@ public class AnalysisResult extends BaseAnalysisEntity {
      * @param preOccr
      * void
      */
-    public Defect addDefectWithPreOccurence(final PreOccurence preOccr) {
+    public void addDefectWithPreOccurence(final PreOccurence preOccr) {
         boolean isNewDefect = true;
-        Defect returnDefect = null;
+
+        if (preOccr.getStartLine() == -1) {
+            logger.warn("Not added defect(start line is -1) : " + preOccr.toJson());
+            return;
+        }
 
         for (Defect defect : defectList) {
             defect.setAnalysisType(getAnalysisType().name());
@@ -71,7 +75,6 @@ public class AnalysisResult extends BaseAnalysisEntity {
                 }
 
                 isNewDefect = false;
-                returnDefect = defect;
                 break;
             }
         }
@@ -81,10 +84,7 @@ public class AnalysisResult extends BaseAnalysisEntity {
             defect.setAnalysisType(getAnalysisType().name());
             defect.addOccurence(preOccr.toOccurence());
             defectList.add(defect);
-            returnDefect = defect;
         }
-
-        return returnDefect;
     }
 
     public void addDefect(Defect defect) {
@@ -116,9 +116,9 @@ public class AnalysisResult extends BaseAnalysisEntity {
      */
     public String getKey() {
         if (Strings.isNullOrEmpty(getModulePath())) {
-            return getFileName();
+            return getFileName().intern();
         } else {
-            return getModulePath() + "/" + getFileName();
+            return (getModulePath() + "/" + getFileName()).intern();
         }
     }
 }

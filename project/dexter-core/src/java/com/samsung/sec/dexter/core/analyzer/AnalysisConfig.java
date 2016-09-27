@@ -46,7 +46,7 @@ public class AnalysisConfig extends BaseAnalysisEntity {
      * not mandatory
      * only for snapshot and CLI
      */
-    transient private String sourcecode = "";
+    transient private String sourcecode = "".intern();
 
     /**
      * eg) absolute full base directory path for source code files
@@ -77,7 +77,7 @@ public class AnalysisConfig extends BaseAnalysisEntity {
      * /home/dev/project-a/build/classes
      * /home/dev/project-a/build
      */
-    private String outputDir = "";
+    private String outputDir = "".intern();
 
     /**
      * for full base directory path for lib files such as *.lib, *.jar
@@ -214,7 +214,7 @@ public class AnalysisConfig extends BaseAnalysisEntity {
      * /home/dev/project-a/build
      */
     public String getOutputDir() {
-        return outputDir;
+        return outputDir.intern();
     }
 
     /**
@@ -375,7 +375,7 @@ public class AnalysisConfig extends BaseAnalysisEntity {
                     DexterConfig.getInstance().getSourceEncoding());
         }
 
-        return sourcecode;
+        return sourcecode.intern();
     }
 
     /**
@@ -421,14 +421,14 @@ public class AnalysisConfig extends BaseAnalysisEntity {
             }
         }
 
-        return binPath;
+        return binPath.intern();
     }
 
     /**
      * @Precondition : outputDir and modulePath should be set
      */
     public String getOutputDirWithModulePath() {
-        return this.outputDir + (Strings.isNullOrEmpty(getModulePath()) ? "/" : "/" + getModulePath() + "/");
+        return (this.outputDir + (Strings.isNullOrEmpty(getModulePath()) ? "/" : "/" + getModulePath() + "/")).intern();
     }
 
     /**
@@ -493,7 +493,7 @@ public class AnalysisConfig extends BaseAnalysisEntity {
             key = getModulePath() + "/" + getFileName();
         }
 
-        return key;
+        return key.intern();
     }
 
     /**
