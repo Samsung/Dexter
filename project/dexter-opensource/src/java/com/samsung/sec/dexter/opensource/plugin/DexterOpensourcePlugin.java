@@ -78,6 +78,7 @@ public class DexterOpensourcePlugin implements IDexterPlugin {
 
             Gson gson = new Gson();
             this.checkerConfig = gson.fromJson(reader, CheckerConfig.class);
+            this.checkerConfig.checkerListToMap();
         } catch (Exception e) {
             throw new DexterRuntimeException(e.getMessage(), e);
         }

@@ -52,7 +52,7 @@ public class EmptyChecker implements IChecker {
 
     @Override
     public String getSeverityCode() {
-        return "";
+        return "UNKNOWN";
     }
 
     @Override

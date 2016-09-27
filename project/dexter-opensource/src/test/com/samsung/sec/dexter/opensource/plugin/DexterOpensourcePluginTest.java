@@ -64,7 +64,7 @@ public class DexterOpensourcePluginTest {
         assertEquals(13, config.getCheckerList().size());
         assertEquals("dexter-opensource", config.getToolName());
 
-        IChecker firstChecker = config.getCheckerList().get(0);
+        IChecker firstChecker = config.getCheckerList().iterator().next();
         assertEquals("GPL", firstChecker.getCategoryName());
         assertEquals("GPL_2_0", firstChecker.getCode());
         assertEquals(0, firstChecker.getCwe());

@@ -262,6 +262,7 @@ public class CppcheckWrapper {
                     this.getClass().getClassLoader().getResourceAsStream("checker-config.json"));
             Gson gson = new Gson();
             this.checkerConfig = gson.fromJson(reader, CheckerConfig.class);
+            this.checkerConfig.checkerListToMap();
         } catch (Exception e) {
             throw new DexterRuntimeException(e.getMessage(), e);
         }

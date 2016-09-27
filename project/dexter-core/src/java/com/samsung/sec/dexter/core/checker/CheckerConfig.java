@@ -26,18 +26,19 @@
 package com.samsung.sec.dexter.core.checker;
 
 import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
-import com.samsung.sec.dexter.core.exception.DexterException;
-import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 public class CheckerConfig {
-    private List<Checker> checkerList = new ArrayList<Checker>(100);
+    private transient Map<String, Checker> checkerMap = new HashMap<>();
     private String toolName;
     private LANGUAGE language;
+    private List<Checker> checkerList;
 
     final static Logger logger = Logger.getLogger(CheckerConfig.class);
 
@@ -46,78 +47,29 @@ public class CheckerConfig {
         this.language = language;
     }
 
-    /**
-     * @return the checkerSetList
-     */
-
-    /**
-     * @return the checkerPropertyTypeList
-     */
-
-    /**
-     * @param checkerSetList
-     * the checkerSetList to set
-     */
-
-    /**
-     * @param string
-     * @param string2
-     * void
-     */
-
-    /**
-     * @param string
-     * @param string2
-     * void
-     */
-
-    /**
-     * @return the toolName
-     */
     public String getToolName() {
         return toolName;
     }
 
-    /**
-     * @return the language
-     */
     public LANGUAGE getLanguage() {
         return language;
     }
 
-    /**
-     * @param toolName
-     * the toolName to set
-     */
     public void setToolName(final String toolName) {
         this.toolName = toolName;
     }
 
-    /**
-     * @param language
-     * the language to set
-     */
     public void setLanguage(final LANGUAGE language) {
         this.language = language;
     }
 
-    /**
-     * @param value
-     * @return boolean
-     */
     public boolean hasChecker(final String checkerCode) {
-        for (IChecker checker : checkerList) {
-            if (checker.getCode().equals(checkerCode)) {
-                return true;
-            }
-        }
-
-        return false;
+        return checkerMap.containsKey(checkerCode);
     }
 
     public void addChecker(Checker checker) {
-        if (!checkerList.contains(checker)) {
-            checkerList.add(checker);
+        if (!checkerMap.containsKey(checker.getCode()) == false) {
+            checkerMap.put(checker.getCode(), checker);
         }
     }
 
@@ -127,34 +79,15 @@ public class CheckerConfig {
      * @return return false, if checker in inactive or not exist
      */
     public boolean isActiveChecker(final String checkerCode) {
-        IChecker checker = null;
-        try {
-            checker = getChecker(checkerCode);
-            return checker.isActive();
-        } catch (DexterRuntimeException e) {
-            logger.error(e.getMessage(), e);
-            return false;
-        }
+        IChecker checker = getChecker(checkerCode);
+
+        return checker.isActive();
     }
 
-    /**
-     * @param checkerCode
-     * @return
-     * @throws DexterException
-     * if there is no Checker Object
-     */
     public IChecker getChecker(String checkerCode) {
-        for (IChecker checker : checkerList) {
-            if (checker.getCode().equals(checkerCode)) {
-                return checker;
-            }
-        }
+        IChecker checker = checkerMap.get(checkerCode);
 
-        return new EmptyChecker();
-    }
-
-    public List<Checker> getCheckerList() {
-        return this.checkerList;
+        return checker == null ? new EmptyChecker() : checker;
     }
 
     /**
@@ -162,13 +95,34 @@ public class CheckerConfig {
      * @return if checker does not exist, return "UNKNOWN"
      */
     public String getCheckerSeverity(String checkerCode) {
-        IChecker checker = null;
-        try {
-            checker = getChecker(checkerCode);
-            return checker.getSeverityCode();
-        } catch (DexterRuntimeException e) {
-            logger.error(e.getMessage(), e);
-            return "UNKNOWN";
+        IChecker checker = getChecker(checkerCode);
+
+        return checker.getSeverityCode().intern();
+    }
+
+    public void disableAllCheckers() {
+        for (String key : checkerMap.keySet()) {
+            getChecker(key).setActive(false);
         }
+    }
+
+    public void setCheckerActive(String checkerCode, boolean active) {
+        checkerMap.get(checkerCode).setActive(active);
+    }
+
+    public Collection<Checker> getCheckerList() {
+        return checkerMap.values();
+    }
+
+    public void checkerListToMap() {
+        if (checkerList == null)
+            return;
+
+        checkerMap = new HashMap<>(checkerList.size());
+        for (Checker checker : checkerList) {
+            checkerMap.put(checker.getCode(), checker);
+        }
+
+        checkerList = null;
     }
 }

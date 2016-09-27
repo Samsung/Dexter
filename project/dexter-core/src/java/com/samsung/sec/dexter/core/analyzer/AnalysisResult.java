@@ -54,7 +54,8 @@ public class AnalysisResult extends BaseAnalysisEntity {
         boolean isNewDefect = true;
 
         if (preOccr.getStartLine() == -1) {
-            logger.warn("Not added defect(start line is -1) : " + preOccr.toJson());
+            if (logger.isDebugEnabled())
+                logger.debug("Not added defect(start line is -1) : " + preOccr.toJson());
             return;
         }
 

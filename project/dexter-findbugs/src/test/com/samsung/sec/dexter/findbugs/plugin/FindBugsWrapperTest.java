@@ -50,7 +50,7 @@ public class FindBugsWrapperTest {
         findbugs.initCheckerConfig();
         CheckerConfig checkerConfig = findbugs.getCheckerConfig();
         assertEquals(FindbugsDexterPlugin.PLUGIN_NAME, checkerConfig.getToolName());
-        IChecker firstChecker = checkerConfig.getCheckerList().get(0);
+        IChecker firstChecker = checkerConfig.getCheckerList().iterator().next();
         assertEquals("AppendingToAnObjectOutputStream", firstChecker.getCategoryName());
         assertEquals("IO_APPENDING_TO_OBJECT_OUTPUT_STREAM", firstChecker.getCode());
         assertEquals(0, firstChecker.getCwe());
