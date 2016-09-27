@@ -64,6 +64,7 @@ public class FindBugsUtil {
                     }
                 }
 
+                sb.trimToSize();
                 Files.write(sb.toString(), htmlFile, Charsets.UTF_8);
             } catch (IOException e) {
                 LOG.error(e.getMessage(), e);
@@ -95,6 +96,7 @@ public class FindBugsUtil {
                     sb.append("Short Desc: ").append(b.getShortDescription()).append("<br/>\n");
                     sb.append("<br/><br/>\n");
 
+                    sb.trimToSize();
                     if (htmlFile.exists()) {
                         Files.append(sb.toString(), htmlFile, Charsets.UTF_8);
                     } else {
@@ -133,6 +135,7 @@ public class FindBugsUtil {
                     sb.append("Short Desc: ").append(b.getShortDescription()).append("<br/>\n");
                     sb.append("<br/><br/>\n");
 
+                    sb.trimToSize();
                     if (htmlFile.exists()) {
                         Files.append(sb.toString(), htmlFile, Charsets.UTF_8);
                     } else {

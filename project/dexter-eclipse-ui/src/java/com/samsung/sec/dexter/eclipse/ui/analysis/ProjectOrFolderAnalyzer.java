@@ -211,6 +211,7 @@ public class ProjectOrFolderAnalyzer {
                     final String sourceFileFullPath = config.getSourceFileFullPath();
                     msg.append("E|").append(sourceFileFullPath).append("|").append(System.currentTimeMillis());
 
+                    msg.trimToSize();
                     Files.write(msg.toString(), resultFile, Charsets.UTF_8);
                 } catch (IOException e) {
                     DexterUIActivator.LOG.error(e.getMessage(), e);

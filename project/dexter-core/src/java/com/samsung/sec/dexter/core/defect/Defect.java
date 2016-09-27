@@ -334,6 +334,8 @@ public class Defect extends BaseDefect {
             lines.append(o.getStartLine()).append(separator);
         }
 
+        lines.trimToSize();
+
         return lines.toString();
     }
 
@@ -343,6 +345,8 @@ public class Defect extends BaseDefect {
                 .append(" / ").append(this.severityCode)
                 .append(" (count:").append(this.occurences.size()).append(", ")
                 .append(" lines: ").append(getOccurenceLines(" ")).append(")").append(this.message);
+
+        msg.trimToSize();
         return msg.toString();
     }
 

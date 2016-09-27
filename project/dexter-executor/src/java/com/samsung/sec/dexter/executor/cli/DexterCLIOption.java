@@ -285,6 +285,7 @@ public class DexterCLIOption implements IDexterCLIOption {
         errMsg.append("If you want create an account. use -c -u your_id -p your_password")
                 .append(System.lineSeparator());
         errMsg.append("If you want reset your password. use -r -u your_id").append(System.lineSeparator());
+        errMsg.trimToSize();
 
         throw new DexterRuntimeException(errMsg.toString());
     }

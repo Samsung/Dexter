@@ -92,8 +92,9 @@ public class AnalysisResultFileManager {
         addMetricsContent(result, gson, contents);
         addFunctionMetricsContent(result, gson, contents);
         addDefectContent(result, gson, contents);
+        contents.append(DexterUtil.LINE_SEPARATOR).trimToSize();
 
-        return contents.append(DexterUtil.LINE_SEPARATOR);
+        return contents;
     }
 
     private void addMetricsContent(final AnalysisResult result, final Gson gson, final StringBuilder contents) {

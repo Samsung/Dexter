@@ -22,6 +22,7 @@ public class OpenPlatzViewHandler extends AbstractHandler implements IHandler {
             final PlatzView platzview = (PlatzView) platzPart;
             StringBuilder url = new StringBuilder(1024);
             url.append(DexterConfig.PLATZ_API_URL);
+            url.trimToSize();
             platzview.setUrl(url.toString());
             EclipseUtil.showView(PlatzView.ID);
         } catch (DexterRuntimeException e) {

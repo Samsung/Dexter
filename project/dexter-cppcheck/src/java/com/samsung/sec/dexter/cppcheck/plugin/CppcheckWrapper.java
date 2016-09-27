@@ -63,6 +63,7 @@ public class CppcheckWrapper {
         setBasicOption(cmd);
         setCppcheckCheckersOption(cmd);
         setPlatformOption(cmd);
+        cmd.trimToSize();
 
         baseCommandString = cmd.toString();
     }

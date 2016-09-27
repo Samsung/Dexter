@@ -108,9 +108,9 @@ public class Checker implements IChecker {
      */
     @Override
     public String toString() {
-        StringBuilder msg = new StringBuilder();
+        StringBuilder msg = new StringBuilder(1024);
         msg.append(name).append(" ").append(this.version).append(" ").append(isActive)
-                .append(" ").append(description);
+                .append(" ").append(description).trimToSize();
 
         return msg.toString();
     }

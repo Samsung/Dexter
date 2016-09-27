@@ -443,6 +443,7 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
             url.append("&isAdmin=N");
         }
 
+        url.trimToSize();
         final String text = webResource.postText(url.toString(), this.currentUserId, this.currentUserPwd);
 
         checkResultOk(text);
@@ -561,6 +562,7 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
             url.append(getServiceUrl(DexterConfig.GET_DEXTER_PLUGIN_UPDATE_URL)).append("/")
                     .append(DexterUtil.getBit());
 
+            url.trimToSize();
             final String text = webResource.getText(url.toString(), "", "");
 
             final Map<String, String> result = getResultMap(text);

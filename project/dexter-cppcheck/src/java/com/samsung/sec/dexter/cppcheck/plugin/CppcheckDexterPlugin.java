@@ -134,6 +134,8 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
         changePermissionCmd.append(baseCommand).append(cppcheckHome).append(DexterUtil.FILE_SEPARATOR)
                 .append("cppcheck");
 
+        changePermissionCmd.trimToSize();
+
         try {
             changePermissionProcess = Runtime.getRuntime().exec(changePermissionCmd.toString());
         } catch (IOException e) {

@@ -209,6 +209,7 @@ public class DexterUtil {
                 contents.append(content).append(DexterUtil.LINE_SEPARATOR);
             }
 
+            contents.trimToSize();
             return contents;
         } catch (IOException e) {
             throw new DexterRuntimeException(e.getMessage(), e);
@@ -490,6 +491,7 @@ public class DexterUtil {
         final StringBuilder cmd = new StringBuilder(1024);
         cmd.append("REG ADD ").append(homeKey).append(" /f /v ").append(key).append(" /t ").append(type.toString())
                 .append(" /d ").append(value);
+        cmd.trimToSize();
 
         try {
             Runtime.getRuntime().exec(cmd.toString());
@@ -712,6 +714,7 @@ public class DexterUtil {
             dirStr.append(dir).append(";");
         }
 
+        dirStr.trimToSize();
         return dirStr.toString();
     }
 
@@ -744,6 +747,7 @@ public class DexterUtil {
             }
         }
 
+        msg.trimToSize();
         log.error(msg.toString());
     }
 
@@ -755,6 +759,7 @@ public class DexterUtil {
             msg.append("\t").append(element).append(DexterUtil.LINE_SEPARATOR);
         }
 
+        msg.trimToSize();
         log.error(msg.toString());
     }
 
@@ -803,6 +808,7 @@ public class DexterUtil {
             }
         }
 
+        path.trimToSize();
         return path.toString();
     }
 
@@ -968,6 +974,7 @@ public class DexterUtil {
             }
         }
 
+        pathStr.trimToSize();
         return DexterUtil.refinePath(pathStr.toString());
     }
 
@@ -1106,6 +1113,7 @@ public class DexterUtil {
         final StringBuilder cmd = new StringBuilder(1024);
         cmd.append("\"").append(sourceInsightExe).append("/Insight3.exe").append("\"").append(" -i ").append("+")
                 .append(line).append(" ").append(fileFullPath);
+        cmd.trimToSize();
 
         try {
             Runtime.getRuntime().exec(cmd.toString());
