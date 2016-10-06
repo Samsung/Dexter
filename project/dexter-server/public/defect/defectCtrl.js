@@ -895,7 +895,6 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
     function getDefaultGroups(){
         if(window.localStorage['defectDefaultGroups'] === undefined
             || window.localStorage['defectDefaultGroups'].length == 0){
-            console.log("getDefaultGroups");
             return ;
         }
         $scope.defaultGroups =[];
@@ -1079,7 +1078,6 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
     }
 
     $scope.selectedDidListInGrid = [];
-    // 항상 제일 마지막꺼만 저장해두고 그거 보여줄까
     $scope.$watch('defectSelections.length', function (newVal, oldVal) {
         if ($scope.defectSelections.length === 0 ){
             window.localStorage['defectSelections'] = '';
