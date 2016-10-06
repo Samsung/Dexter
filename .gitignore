@@ -35,6 +35,7 @@ project/dexter-server/**/*.log
 project/dexter-server/**/workspace.xml
 project/dexter-server/.idea/workspace.xml
 project/dexter-server/log/
+project/dexter-server/config/plugin/*.json
 project/.gradle
 project/.gradle/
 project/.gradle/2.6/
