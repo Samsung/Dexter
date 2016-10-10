@@ -26,10 +26,8 @@
 package com.samsung.sec.dexter.util;
 
 import com.google.common.base.Charsets;
-import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 
-import java.io.File;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.HashMap;
@@ -47,54 +45,6 @@ public class CppUtil {
     static Logger logger = Logger.getLogger(CppUtil.class);
 
     private CppUtil() {}
-
-    /**
-     * ExtractModuleName(String sourceFilePath, final int lineNumber) method is
-     * responsible for getting ModuleInformation
-     * 
-     * @param [in]
-     * String sourceFilePath, final int lineNumber
-     * @return [out] Map<String, String>
-     * @warning [None]
-     * @exception IO
-     * exception
-     */
-    public static synchronized Map<String, String> extractModuleName(String sourceFilePath, final int lineNumber) {
-        Map<String, String> mapModuleName = new HashMap<String, String>();
-
-        File file = new File(sourceFilePath);
-        if (file.length() > DexterConfig.SOURCE_FILE_SIZE_LIMIT) {
-            logger.warn("Dexter can not analyze over " + DexterConfig.SOURCE_FILE_SIZE_LIMIT
-                    + " byte of file:" + sourceFilePath + " (" + file.length() + " byte)");
-
-            return mapModuleName;
-        }
-
-        String code = DexterUtilHelper.getContentsFromFile(sourceFilePath, sourceEncoding);
-        IASTTranslationUnit translationUnit = TranslationUnitFactory.getASTTranslationUnit(code, ParserLanguage.CPP,
-                sourceFilePath);
-
-        final String fileExtension = sourceFilePath.substring(sourceFilePath.indexOf('.'));
-
-        ASTVisitor visitor = new ASTVisitor() {
-            public int visit(IASTDeclaration declaration) {
-
-                boolean visitStatus = DexterUtilHelper.visitFunction(declaration, lineNumber, fileExtension);
-
-                if (visitStatus) {
-                    return ASTVisitor.PROCESS_ABORT;
-                }
-
-                return ASTVisitor.PROCESS_CONTINUE;
-
-            }
-        };
-        visitor.shouldVisitDeclarations = true;
-        translationUnit.accept(visitor);
-        mapModuleName = DexterUtilHelper.getMapData();
-
-        return mapModuleName;
-    }
 
     public static synchronized Map<String, String> extractModuleName(final IASTTranslationUnit translationUnit,
             final String fileExtension, final int lineNumber) {

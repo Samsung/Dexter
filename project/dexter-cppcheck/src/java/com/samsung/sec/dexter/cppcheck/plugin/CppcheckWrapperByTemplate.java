@@ -92,17 +92,24 @@ public class CppcheckWrapperByTemplate extends CppcheckWrapper {
             return;
         }
 
+        final CharSequence sourcecode = config.getSourcecodeThatReadIfNotExist();
+
+        IASTTranslationUnit translationUnit = TranslationUnitFactory.getASTTranslationUnit(sourcecode.toString(),
+                ParserLanguage.CPP,
+                config.getSourceFileFullPath());
+
         try (BufferedReader br = new BufferedReader(new InputStreamReader(errorStream))) {
             String line = "";
             while ((line = br.readLine()) != null) {
-                addDefect(result, line);
+                addDefect(result, line, translationUnit);
             }
         } catch (DexterRuntimeException | IOException e) {
             logger.error(e);
         }
     }
 
-    private void addDefect(final AnalysisResult result, final String defectLine) {
+    private void addDefect(final AnalysisResult result, final String defectLine,
+            final IASTTranslationUnit translationUnit) {
         final String[] defectLines = defectLine.split(":::");
         if (defectLines.length != 5) {
             if (logger.isDebugEnabled())
@@ -126,13 +133,14 @@ public class CppcheckWrapperByTemplate extends CppcheckWrapper {
         }
 
         PreOccurence preOcc = createPreOccurence(result, filePath.intern(), line.intern(), checkerCode.intern(),
-                message.intern(), checker);
+                message.intern(), checker, translationUnit);
 
         result.addDefectWithPreOccurence(preOcc);
     }
 
     private PreOccurence createPreOccurence(final AnalysisResult result, final String filePath, final String line,
-            final String checkerCode, final String message, IChecker checker) {
+            final String checkerCode, final String message, IChecker checker,
+            final IASTTranslationUnit translationUnit) {
         PreOccurence preOcc = new PreOccurence();
         preOcc.setLanguage(LANGUAGE.CPP.toString());
         preOcc.setToolName(CppcheckDexterPlugin.PLUGIN_NAME);
@@ -160,13 +168,9 @@ public class CppcheckWrapperByTemplate extends CppcheckWrapper {
         preOcc.setCharStart(-1);
         preOcc.setCharEnd(-1);
 
-        final String sourcecode = config.getSourcecodeThatReadIfNotExist();
+        final CharSequence sourcecode = config.getSourcecodeThatReadIfNotExist();
 
-        IASTTranslationUnit translationUnit = TranslationUnitFactory.getASTTranslationUnit(sourcecode,
-                ParserLanguage.CPP,
-                config.getSourceFileFullPath());
-
-        Map<String, String> nameMap = CppUtil.extractModuleName(translationUnit, sourcecode,
+        Map<String, String> nameMap = CppUtil.extractModuleName(translationUnit, sourcecode.toString(),
                 preOcc.getStartLine());
 
         if (Strings.isNullOrEmpty(nameMap.get(ResultFileConstant.CLASS_NAME)) == false) {

@@ -114,7 +114,7 @@ public class DexterOpensourcePlugin implements IDexterPlugin {
 
     @Override
     public AnalysisResult analyze(AnalysisConfig config) {
-        final String sourcecode = config.getSourcecodeThatReadIfNotExist();
+        final CharSequence sourcecode = config.getSourcecodeThatReadIfNotExist();
         IAnalysisEntityFactory factory = new AnalysisEntityFactory();
         AnalysisResult result = factory.createAnalysisResult(config);
 

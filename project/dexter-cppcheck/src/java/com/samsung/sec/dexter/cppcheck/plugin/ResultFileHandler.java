@@ -139,13 +139,14 @@ public class ResultFileHandler extends DefaultHandler {
             }
 
             try {
-                final String sourcecode = config.getSourcecodeThatReadIfNotExist();
+                final CharSequence sourcecode = config.getSourcecodeThatReadIfNotExist();
 
-                IASTTranslationUnit translationUnit = TranslationUnitFactory.getASTTranslationUnit(sourcecode,
+                IASTTranslationUnit translationUnit = TranslationUnitFactory.getASTTranslationUnit(
+                        sourcecode.toString(),
                         ParserLanguage.CPP,
                         config.getSourceFileFullPath());
 
-                Map<String, String> nameMap = CppUtil.extractModuleName(translationUnit, sourcecode,
+                Map<String, String> nameMap = CppUtil.extractModuleName(translationUnit, sourcecode.toString(),
                         currentOccurence.getStartLine());
 
                 if (Strings.isNullOrEmpty(nameMap.get(ResultFileConstant.CLASS_NAME)) == false) {

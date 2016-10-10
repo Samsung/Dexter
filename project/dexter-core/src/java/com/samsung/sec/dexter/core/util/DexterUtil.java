@@ -191,6 +191,15 @@ public class DexterUtil {
         }
     }
 
+    public static CharSequence getBase64CharSequence(final CharSequence string) {
+        try {
+            return Base64.encodeToString(string.toString().getBytes("utf8"), false);
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e);
+            return "";
+        }
+    }
+
     public static StringBuilder readFile(final String filePath) {
         assert Strings.isNullOrEmpty(filePath) == false;
 
@@ -222,6 +231,25 @@ public class DexterUtil {
     }
 
     public static String getContentsFromFile(final String filePath, final Charset charset) {
+        assert Strings.isNullOrEmpty(filePath) == false;
+
+        final File file = new File(filePath);
+        checkFileExistence(filePath, file);
+
+        long fileSize = file.length();
+        if (fileSize > DexterConfig.SOURCE_FILE_SIZE_LIMIT) {
+            logger.warn("Dexter can't analyze a big file : " + filePath + " (" + fileSize + " byte)");
+            return "";
+        }
+
+        try {
+            return Files.asCharSource(file, charset).read();
+        } catch (IOException e) {
+            throw new DexterRuntimeException(e.getMessage(), e);
+        }
+    }
+
+    public static CharSequence getSourceCodeFromFile(final String filePath, final Charset charset) {
         assert Strings.isNullOrEmpty(filePath) == false;
 
         final File file = new File(filePath);

@@ -46,7 +46,7 @@ public class AnalysisConfig extends BaseAnalysisEntity {
      * not mandatory
      * only for snapshot and CLI
      */
-    transient private String sourcecode = "".intern();
+    transient private CharSequence sourcecode = null;
 
     /**
      * eg) absolute full base directory path for source code files
@@ -369,13 +369,13 @@ public class AnalysisConfig extends BaseAnalysisEntity {
      * 
      * @return the sourcecode
      */
-    public synchronized String getSourcecodeThatReadIfNotExist() {
-        if (Strings.isNullOrEmpty(sourcecode)) {
-            this.sourcecode = DexterUtil.getContentsFromFile(getSourceFileFullPath(),
+    public synchronized CharSequence getSourcecodeThatReadIfNotExist() {
+        if (sourcecode == null) {
+            this.sourcecode = DexterUtil.getSourceCodeFromFile(getSourceFileFullPath(),
                     DexterConfig.getInstance().getSourceEncoding());
         }
 
-        return sourcecode.intern();
+        return sourcecode;
     }
 
     /**

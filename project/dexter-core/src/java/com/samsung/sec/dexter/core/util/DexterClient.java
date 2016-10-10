@@ -278,7 +278,36 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
         body.put(ResultFileConstant.GROUP_ID, defectGroupId);
         body.put(ResultFileConstant.MODULE_PATH, modulePath);
         body.put(ResultFileConstant.FILE_NAME, fileName);
-        body.put(ResultFileConstant.SOURCE_CODE, DexterUtil.getBase64String(sourceCode));
+
+        body.put(ResultFileConstant.SOURCE_CODE, DexterUtil.getBase64CharSequence(sourceCode));
+
+        String resultText = "";
+
+        if (DexterConfig.getInstance().getRunMode().equals(DexterConfig.RunMode.CLI)) {
+            Gson gson = new Gson();
+            String jsonBody = gson.toJson(body);
+            resultText = webResource.postWithBodyforCLI(getServiceUrl(DexterConfig.POST_SNAPSHOT_SOURCECODE),
+                    this.currentUserId, this.currentUserPwd, jsonBody);
+        } else {
+            resultText = webResource.postWithBody(getServiceUrl(DexterConfig.POST_SNAPSHOT_SOURCECODE),
+                    this.currentUserId, this.currentUserPwd, body);
+        }
+
+        checkResultOk(resultText);
+    }
+
+    @Override
+    public void insertSourceCodeCharSequence(final long snapshotId, final long defectGroupId, final String modulePath,
+            final String fileName, final CharSequence sourceCode) {
+        assert Strings.isNullOrEmpty(fileName) == false;
+
+        final Map<String, Object> body = new HashMap<String, Object>();
+        body.put(ResultFileConstant.SNAPSHOT_ID, snapshotId);
+        body.put(ResultFileConstant.GROUP_ID, defectGroupId);
+        body.put(ResultFileConstant.MODULE_PATH, modulePath);
+        body.put(ResultFileConstant.FILE_NAME, fileName);
+
+        body.put(ResultFileConstant.SOURCE_CODE, DexterUtil.getBase64CharSequence(sourceCode));
 
         String resultText = "";
 

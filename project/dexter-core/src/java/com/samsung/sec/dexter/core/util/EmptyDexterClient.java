@@ -235,4 +235,11 @@ public class EmptyDexterClient implements IDexterClient {
             return false;
         }
     }
+
+    @Override
+    public void insertSourceCodeCharSequence(long snapshotId, long defectGroupId, String modulePath, String fileName,
+            CharSequence sourceCode) {
+        // TODO Auto-generated method stub
+
+    }
 }

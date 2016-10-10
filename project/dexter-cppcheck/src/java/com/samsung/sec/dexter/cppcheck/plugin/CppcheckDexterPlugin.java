@@ -26,7 +26,6 @@
 
 package com.samsung.sec.dexter.cppcheck.plugin;
 
-import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
@@ -44,7 +43,6 @@ import com.samsung.sec.dexter.core.util.DexterUtil;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -240,9 +238,7 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
         IAnalysisEntityFactory factory = new AnalysisEntityFactory();
         AnalysisResult result = factory.createAnalysisResult(config);
 
-        Stopwatch sw = Stopwatch.createStarted();
         cppcheck.analyze(result);
-        System.out.println(sw.elapsed(TimeUnit.MILLISECONDS));
 
         return result;
     }
