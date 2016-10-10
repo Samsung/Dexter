@@ -51,14 +51,14 @@ monitorApp.service('UserService', function($http, $log, $q) {
             .then((res) => {
                 if (!isHttpResultOK(res)) {
                     $log.error('Failed to get user list');
-                    return [];
+                    return {rows: [], timedOutProjectNames: []};
                 }
 
-                return res.data.rows;
+                return res.data;
             })
             .catch((err) => {
                 $log.error(err);
-                return [];
+                return {rows: [], timedOutProjectNames: []};
             });
     };
 
@@ -67,14 +67,14 @@ monitorApp.service('UserService', function($http, $log, $q) {
             .then((res) => {
                 if (!isHttpResultOK(res)) {
                     $log.error('Failed to get user status list');
-                    return [];
+                    return {rows: [], timedOutProjectNames: []};
                 }
 
-                return res.data.rows;
+                return res.data;
             })
             .catch((err) => {
                 $log.error(err);
-                return [];
+                return {rows: [], timedOutProjectNames: []};
             });
     };
 });

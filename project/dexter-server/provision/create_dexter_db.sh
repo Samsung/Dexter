@@ -2,7 +2,7 @@
 
 echo -e "\n-- create Dexter DB --\n"
 
-#wget -O dexter-db.sql https://dexter.atlassian.net/wiki/download/attachments/524291/dexter-db.sql?version=1
+#wget -O dexter-db.sql https://dexter.atlassian.net/wiki/download/attachments/6258746/dexter-db.sql?api=v2
 
 mysql -u root -p1234 -e "create database if not exists my_dexter_db DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_general_ci; GRANT ALL PRIVILEGES ON my_dexter_db.* TO 'dexter-user'@'localhost' IDENTIFIED BY 'mypassword'"
 

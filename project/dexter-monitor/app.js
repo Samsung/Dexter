@@ -148,6 +148,7 @@ function setWebApis(){
     app.get('/api/v1/server/last-modified-time', server.getServerListLastModifiedTime);
     app.get('/api/v1/server-detailed-status', getServerDetailedStatus);
     app.post('/api/v2/server/list-update', server.updateServerList);
+    app.get('/api/v1/server/config', server.getConfig);
 
     app.get('/api/v2/user', user.getAll);
     app.get('/api/v2/user/extra-info/:userIdList', user.getMoreInfoByUserIdList);
@@ -172,8 +173,16 @@ function initModules(){
 
 function startServer(){
     if(!global.config.port || global.config.port < 1024 || global.config.port >= 65535){
-        console.log("you should set the port for monitor server")
+        log.error("you should set the port for monitor server")
         process.exit(-2);
+    }
+    if(!global.config.serverRequestTimeout || global.config.serverRequestTimeout < 1) {
+        log.error("serverRequestTimeout value should be greater than or equal to 1 (5 is set instead)");
+        global.config.serverRequestTimeout = 5;
+    }
+    if(!global.config.projectStatusRefreshInterval || global.config.projectStatusRefreshInterval < 5) {
+        log.error("projectStatusRefreshInterval value should be greater than or equal to 5 (60 is set instead)");
+        global.config.projectStatusRefreshInterval = 60;
     }
 
     http.createServer(app).listen(global.config.port, function(){

@@ -52,7 +52,7 @@ import net.xeoh.plugins.base.annotations.PluginImplementation;
 @PluginImplementation
 public class CppcheckDexterPlugin implements IDexterPlugin {
     public final static String PLUGIN_NAME = "cppcheck";
-    public final static PluginVersion PLUGIN_VERSION = new PluginVersion("0.10.4");
+    public final static PluginVersion PLUGIN_VERSION = new PluginVersion("0.10.5");
 
     private CppcheckWrapperByTemplate cppcheck = new CppcheckWrapperByTemplate();
     //private CppcheckWrapper cppcheck = new CppcheckWrapper();
@@ -160,20 +160,16 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
         String cppcheckPath = "";
 
         if (DexterUtil.getOS() == DexterUtil.OS.WINDOWS) {
-            //zipFilePath += "/temp/cppcheck-windows_0.10.2.zip";
             zipFilePath += "/temp/cppcheck-windows_" + PLUGIN_VERSION + ".zip";
             cppcheckPath = "/cppcheck-windows.zip";
         } else { // LINUX or MAC
             if (DexterUtil.getBit() == DexterUtil.BIT._32) {
-                //zipFilePath += "/temp/cppcheck-linux_0.10.2.zip";
                 zipFilePath += "/temp/cppcheck-linux_" + PLUGIN_VERSION + "_32.zip";
                 cppcheckPath = "/cppcheck-linux-32.zip";
             } else {
-                //zipFilePath += "/temp/cppcheck-linux_0.10.2.zip";
                 zipFilePath += "/temp/cppcheck-linux_" + PLUGIN_VERSION + "_64.zip";
                 cppcheckPath = "/cppcheck-linux-64.zip";
             }
-
         }
 
         final File file = new File(zipFilePath);

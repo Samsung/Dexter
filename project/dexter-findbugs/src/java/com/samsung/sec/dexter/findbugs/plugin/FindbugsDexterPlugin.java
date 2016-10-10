@@ -40,7 +40,7 @@ import net.xeoh.plugins.base.annotations.PluginImplementation;
 public class FindbugsDexterPlugin implements IDexterPlugin {
     private FindBugsWrapper findbug = new FindBugsWrapper();
     public final static String PLUGIN_NAME = "findbugs";
-    private final static PluginVersion PLUGIN_VERSION = new PluginVersion("0.10.4");
+    private final static PluginVersion PLUGIN_VERSION = new PluginVersion("0.10.5");
 
     private static PluginDescription PLUGIN_DESCRIPTION = new PluginDescription(PLUGIN_NAME, PLUGIN_NAME,
             PLUGIN_VERSION,

@@ -2,7 +2,7 @@
 <feature
       id="dexter.tizen.sdk.feature.64"
       label="Dexter Tizen SDK Feature 64 bit"
-      version="0.10.2"
+      version="0.10.5"
       provider-name="Samsung Electronics VD SE">
 
    <description url="http://www.example.com/description">

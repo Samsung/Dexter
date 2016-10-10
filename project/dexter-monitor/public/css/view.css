@@ -61,6 +61,11 @@ body {
   font-weight: bold;
 }
 
+.server-status-active-timeout {
+  color: blue;
+  font-weight: bold;
+}
+
 .server-status-inactive {
   color: red;
   font-weight: bold;

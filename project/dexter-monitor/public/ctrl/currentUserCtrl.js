@@ -25,7 +25,7 @@
  */
 "use strict";
 
-monitorApp.controller("CurrentUserCtrl", function($scope, $http, $log, UserService) {
+monitorApp.controller("CurrentUserCtrl", function($scope, $http, $log, UserService, ServerStatusService) {
 
     const columnDefs = [
         {field:'projectName',       displayName:'Project',  width: '20%',   cellClass: 'grid-align',    headerTooltip: 'Project name'},
@@ -42,14 +42,30 @@ monitorApp.controller("CurrentUserCtrl", function($scope, $http, $log, UserServi
 
     function initialize() {
         $scope.gridOptions = createGrid(columnDefs);
+        loadServerStatus();
         loadUserList();
         $scope.time = new Date().toLocaleString();
         setGridExportingFileNames($scope.gridOptions, USER_FILENAME_PREFIX + '-' + $scope.time);
     }
 
+    let activeServerCount = 0;
+    let inactiveServerCount = 0;
+
+    function loadServerStatus() {
+        ServerStatusService.getAllServerStatus()
+            .then((allServerStatus) => {
+                activeServerCount = allServerStatus.activeCount;
+                inactiveServerCount = allServerStatus.inactiveCount;
+            });
+    }
+
     function loadUserList() {
         UserService.getUserList()
-            .then((rows) => {
+            .then((data) => {
+                const rows = data.rows;
+                const timedOutProjectNames = data.timedOutProjectNames;
+                $scope.serverStatusString
+                    = `[Server Status] Active: ${activeServerCount} (Timed out: ${timedOutProjectNames.length}) / Inactive: ${inactiveServerCount}`;
                 $scope.gridOptions.data = rows;
             })
             .catch((err) => {

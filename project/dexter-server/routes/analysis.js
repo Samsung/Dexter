@@ -1201,11 +1201,8 @@ function removeOccurence(req, res){
         if (err) {
             logging.error(err.message);
         }
-        if (result) {
-            removeSnapshotOccurencemap(req, res);
-        }
     })
-};
+}
 
 function removeSnapshotDefectMap(req, res){
     "use strict";

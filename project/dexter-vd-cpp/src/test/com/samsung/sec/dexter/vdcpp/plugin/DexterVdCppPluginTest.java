@@ -338,7 +338,6 @@ public class DexterVdCppPluginTest {
                 break;
             }
         }
-
     }
 
     @Test

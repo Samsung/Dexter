@@ -76,6 +76,20 @@ monitorApp.service('ServerStatusService', function($http, $log) {
             });
     };
 
+    service.getAllServerStatus = function() {
+        return $http.get("/api/v1/server")
+            .then((results) => {
+                const activeCount = _.filter(results.data, {'active': true}).length;
+                const inactiveCount = _.filter(results.data, {'active': false}).length;
+                return {'activeCount': activeCount, 'inactiveCount': inactiveCount};
+            })
+            .catch((err) => {
+                $log.error(err);
+                alert(`Failed to load server status.\nPlease contact the system administrator.\n${err}`);
+                return {};
+            });
+    };
+
     var localLastModifiedTimeOfServers = new Date();
     var currentLoadingCount = 0;
     var MAX_LOADING_COUNT = 10;
