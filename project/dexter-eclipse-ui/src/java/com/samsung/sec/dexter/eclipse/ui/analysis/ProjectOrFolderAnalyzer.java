@@ -33,6 +33,7 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisResultHandler;
 import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.config.ProjectAnalysisConfiguration;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.defect.Occurence;
 import com.samsung.sec.dexter.core.filter.AnalysisFilterHandler;
@@ -40,7 +41,6 @@ import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.core.util.IDexterClient;
 import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
 import com.samsung.sec.dexter.executor.DexterAnalyzer;
-import com.samsung.sec.dexter.executor.ProjectAnalysisConfiguration;
 
 import java.io.File;
 import java.io.IOException;
@@ -211,6 +211,7 @@ public class ProjectOrFolderAnalyzer {
                     final String sourceFileFullPath = config.getSourceFileFullPath();
                     msg.append("E|").append(sourceFileFullPath).append("|").append(System.currentTimeMillis());
 
+                    msg.trimToSize();
                     Files.write(msg.toString(), resultFile, Charsets.UTF_8);
                 } catch (IOException e) {
                     DexterUIActivator.LOG.error(e.getMessage(), e);

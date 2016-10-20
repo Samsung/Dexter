@@ -58,6 +58,8 @@ public class FunctionMetricsDescription implements IObjectActionDelegate {
                     makeFunctionMetricsUrl.append(",").append(functionList.get(i));
                 }
             }
+
+            makeFunctionMetricsUrl.trimToSize();
             functionMetricsView.setUrl(makeFunctionMetricsUrl.toString());
             EclipseUtil.showView(FunctionMetricsView.ID);
 

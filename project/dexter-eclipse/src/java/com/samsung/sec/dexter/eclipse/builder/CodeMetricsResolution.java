@@ -34,6 +34,7 @@ public class CodeMetricsResolution implements IMarkerResolution2 {
                     .append(client.getServerPort()).append(DexterConfig.CODE_METRICS_BASE);// $NON-NLS-1$
             // .append("?").append(DexterConfig.CODE_METRICS_FILE_NAME).append("=").append(fileName)//$NON-NLS-1$
             // .append("&").append(DexterConfig.CODE_METRICS_MODULE_PATH).append("=").append(modulePath);//$NON-NLS-1$
+            url.trimToSize();
 
             codeMetricsView.setUrl(url.toString());
             EclipseUtil.showView(CodeMetricsView.ID);

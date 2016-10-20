@@ -2,7 +2,7 @@ package com.samsung.sec.dexter.vdcpp.util;
 
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
-import com.samsung.sec.dexter.core.checker.Checker;
+import com.samsung.sec.dexter.core.checker.IChecker;
 import com.samsung.sec.dexter.core.defect.PreOccurence;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.vdcpp.plugin.DexterVdCppPlugin;
@@ -41,7 +41,7 @@ public class CDTASTUtil {
     private final static Logger LOG = Logger.getLogger(DexterVdCppPlugin.class);
 
     public static void fillDefectData(final AnalysisConfig config,
-            final AnalysisResult result, final Checker checker, final IASTTranslationUnit translationUnit,
+            final AnalysisResult result, final IChecker checker, final IASTTranslationUnit translationUnit,
             final IASTFileLocation fileLocation, final String message, final String declaratorName) {
 
         PreOccurence preOcc = createPreOccurence(config, checker, translationUnit, fileLocation, message,
@@ -357,7 +357,7 @@ public class CDTASTUtil {
     }
 
     private static PreOccurence createPreOccurence(final AnalysisConfig config,
-            final Checker checker, final IASTTranslationUnit translationUnit,
+            final IChecker checker, final IASTTranslationUnit translationUnit,
             final IASTFileLocation fileLocation, final String message, final String declarationName) {
         final int startLine = fileLocation.getStartingLineNumber();
         final int endLine = fileLocation.getEndingLineNumber();

@@ -29,6 +29,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.samsung.sec.dexter.core.BaseAnalysisEntity;
 import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.config.ProjectAnalysisConfiguration;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 
@@ -45,7 +46,7 @@ public class AnalysisConfig extends BaseAnalysisEntity {
      * not mandatory
      * only for snapshot and CLI
      */
-    transient private String sourcecode = "";
+    transient private CharSequence sourcecode = null;
 
     /**
      * eg) absolute full base directory path for source code files
@@ -76,7 +77,7 @@ public class AnalysisConfig extends BaseAnalysisEntity {
      * /home/dev/project-a/build/classes
      * /home/dev/project-a/build
      */
-    private String outputDir = "";
+    private String outputDir = "".intern();
 
     /**
      * for full base directory path for lib files such as *.lib, *.jar
@@ -213,7 +214,7 @@ public class AnalysisConfig extends BaseAnalysisEntity {
      * /home/dev/project-a/build
      */
     public String getOutputDir() {
-        return outputDir;
+        return outputDir.intern();
     }
 
     /**
@@ -368,9 +369,9 @@ public class AnalysisConfig extends BaseAnalysisEntity {
      * 
      * @return the sourcecode
      */
-    public synchronized String getSourcecodeThatReadIfNotExist() {
-        if (Strings.isNullOrEmpty(sourcecode)) {
-            this.sourcecode = DexterUtil.getContentsFromFile(getSourceFileFullPath(),
+    public synchronized CharSequence getSourcecodeThatReadIfNotExist() {
+        if (sourcecode == null) {
+            this.sourcecode = DexterUtil.getSourceCodeFromFile(getSourceFileFullPath(),
                     DexterConfig.getInstance().getSourceEncoding());
         }
 
@@ -420,14 +421,14 @@ public class AnalysisConfig extends BaseAnalysisEntity {
             }
         }
 
-        return binPath;
+        return binPath.intern();
     }
 
     /**
      * @Precondition : outputDir and modulePath should be set
      */
     public String getOutputDirWithModulePath() {
-        return this.outputDir + (Strings.isNullOrEmpty(getModulePath()) ? "/" : "/" + getModulePath() + "/");
+        return (this.outputDir + (Strings.isNullOrEmpty(getModulePath()) ? "/" : "/" + getModulePath() + "/")).intern();
     }
 
     /**
@@ -492,7 +493,7 @@ public class AnalysisConfig extends BaseAnalysisEntity {
             key = getModulePath() + "/" + getFileName();
         }
 
-        return key;
+        return key.intern();
     }
 
     /**
@@ -594,5 +595,21 @@ public class AnalysisConfig extends BaseAnalysisEntity {
 
     public IAnalysisResultHandler getResultHandler() {
         return this.resultHandler;
+    }
+
+    public void addHeaderAndSourceConfiguration(
+            final List<ProjectAnalysisConfiguration> projectAnalysisConfigurationList) {
+        for (final ProjectAnalysisConfiguration param : projectAnalysisConfigurationList) {
+            if (param.getProjectName().equals(getProjectName())
+                    && DexterUtil.refinePath(param.getProjectFullPath()).equals(getProjectFullPath())) {
+                for (final String dir : param.getSourceDirs()) {
+                    addSourceBaseDirList(dir);
+                }
+
+                for (final String dir : param.getHeaderDirs()) {
+                    addHeaderBaseDirList(dir);
+                }
+            }
+        }
     }
 }

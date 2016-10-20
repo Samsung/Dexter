@@ -136,6 +136,7 @@ public class CodeMetricsGenerator {
                 .append("		<module name=\"com.samsung.sec.dexter.metrics.ClassAndMethodCountCheck\"/>")
                 .append("	</module>")
                 .append("</module>");
+        configString.trimToSize();
 
         final InputStream stream = new ByteArrayInputStream(configString.toString().getBytes(Charsets.UTF_8));
         Configuration configForDefect;

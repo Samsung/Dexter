@@ -240,4 +240,11 @@ public class DexterClientMock implements IDexterClient {
     public boolean isServerAlive(String serverAddress) {
         return false;
     }
+
+    @Override
+    public void insertSourceCodeCharSequence(long snapshotId, long defectGroupId, String modulePath, String fileName,
+            CharSequence sourceCode) {
+        // TODO Auto-generated method stub
+
+    }
 }

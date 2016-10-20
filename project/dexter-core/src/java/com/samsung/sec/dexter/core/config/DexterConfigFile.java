@@ -93,6 +93,8 @@ public class DexterConfigFile implements IDexterConfigFile {
                 }
             }
 
+            confJson.trimToSize();
+
             final Gson gson = new Gson();
             @SuppressWarnings("unchecked")
             Map<String, Object> configMap = gson.fromJson(confJson.toString(), Map.class);

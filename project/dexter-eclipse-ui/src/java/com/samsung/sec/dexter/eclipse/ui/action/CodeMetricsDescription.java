@@ -44,6 +44,7 @@ public class CodeMetricsDescription implements IObjectActionDelegate {
                     .append("?").append(DexterConfig.CODE_METRICS_FILE_NAME).append("=").append(fileName)//$NON-NLS-1$
                     .append("&").append(DexterConfig.CODE_METRICS_MODULE_PATH).append("=").append(modulePath);//$NON-NLS-1$
 
+            makeCodeMetricsUrl.trimToSize();
             codeMetricsView.setUrl(makeCodeMetricsUrl.toString());
 
             EclipseUtil.showView(CodeMetricsView.ID);

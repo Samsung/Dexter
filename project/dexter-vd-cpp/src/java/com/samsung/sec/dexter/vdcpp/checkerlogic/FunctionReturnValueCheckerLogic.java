@@ -32,7 +32,7 @@ import org.eclipse.cdt.core.dom.ast.IType;
 import org.eclipse.cdt.internal.core.dom.parser.c.CFunction;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
-import com.samsung.sec.dexter.core.checker.Checker;
+import com.samsung.sec.dexter.core.checker.IChecker;
 import com.samsung.sec.dexter.core.defect.PreOccurence;
 import com.samsung.sec.dexter.vdcpp.plugin.DexterVdCppPlugin;
 import com.samsung.sec.dexter.vdcpp.util.CppUtil;
@@ -46,7 +46,7 @@ public class FunctionReturnValueCheckerLogic implements ICheckerLogic{
 
 	@Override
 	public void analyze(final AnalysisConfig config, final AnalysisResult result, 
-			final Checker checker, IASTTranslationUnit unit) {
+			final IChecker checker, IASTTranslationUnit unit) {
 		translationUnit =unit;	
 		ASTVisitor visitor = createVisitor(config, result, checker);
 		visitor.shouldVisitDeclarators = true;		
@@ -54,7 +54,7 @@ public class FunctionReturnValueCheckerLogic implements ICheckerLogic{
 	}
 
 	private ASTVisitor createVisitor(final AnalysisConfig config,
-			final AnalysisResult result, final Checker checker) {
+			final AnalysisResult result, final IChecker checker) {
 		ASTVisitor visitor = new ASTVisitor() {
 			@Override
 			public int visit(IASTDeclarator ast ) {
@@ -80,12 +80,12 @@ public class FunctionReturnValueCheckerLogic implements ICheckerLogic{
 
 
 	private void visitFunctionDefinition(AnalysisConfig config,
-			AnalysisResult result, Checker checker, IASTDeclarator ast) {
+			AnalysisResult result, IChecker checker, IASTDeclarator ast) {
 		// TODO Auto-generated method stub
 	}
 
 	private void visitFunctionDeclarator(final AnalysisConfig config,
-			final AnalysisResult result, final Checker checker,
+			final AnalysisResult result, final IChecker checker,
 			IASTDeclarator ast) {
 		final IASTDeclarator CFuncDecl = (IASTDeclarator) ast;
 		final String CFPStringRaw = CFuncDecl.getParent().getRawSignature();
@@ -137,14 +137,14 @@ public class FunctionReturnValueCheckerLogic implements ICheckerLogic{
 
 
 	private void fillDefectData(AnalysisConfig config,
-			AnalysisResult result, Checker checker,
+			AnalysisResult result, IChecker checker,
 			IASTFileLocation fileLocation, String message, String declaratorName) {
 		PreOccurence preOcc = createPreOccurence(config, checker, fileLocation, message,declaratorName);
 		result.addDefectWithPreOccurence(preOcc);
 
 	}
 	private PreOccurence createPreOccurence(AnalysisConfig config,
-			Checker checker, IASTFileLocation fileLocation, String msg,String declaratorName) {
+			IChecker checker, IASTFileLocation fileLocation, String msg,String declaratorName) {
 		final int startLine = fileLocation.getStartingLineNumber();
 		final int endLine = fileLocation.getEndingLineNumber();
 		final int startOffset = fileLocation.getNodeOffset();

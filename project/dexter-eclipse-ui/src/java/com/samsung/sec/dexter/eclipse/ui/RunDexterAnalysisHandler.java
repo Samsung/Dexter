@@ -39,9 +39,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+import com.samsung.sec.dexter.core.config.ProjectAnalysisConfiguration;
 import com.samsung.sec.dexter.eclipse.ui.analysis.ProjectOrFolderAnalyzer;
 import com.samsung.sec.dexter.eclipse.ui.analysis.RunDexterAnalysisDialog;
-import com.samsung.sec.dexter.executor.ProjectAnalysisConfiguration;
 
 public class RunDexterAnalysisHandler extends AbstractHandler implements IHandler {
 	private IWorkbenchWindow window;

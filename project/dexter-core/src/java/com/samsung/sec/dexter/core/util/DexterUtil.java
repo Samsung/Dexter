@@ -191,6 +191,15 @@ public class DexterUtil {
         }
     }
 
+    public static CharSequence getBase64CharSequence(final CharSequence string) {
+        try {
+            return Base64.encodeToString(string.toString().getBytes("utf8"), false);
+        } catch (UnsupportedEncodingException e) {
+            logger.error(e);
+            return "";
+        }
+    }
+
     public static StringBuilder readFile(final String filePath) {
         assert Strings.isNullOrEmpty(filePath) == false;
 
@@ -209,6 +218,7 @@ public class DexterUtil {
                 contents.append(content).append(DexterUtil.LINE_SEPARATOR);
             }
 
+            contents.trimToSize();
             return contents;
         } catch (IOException e) {
             throw new DexterRuntimeException(e.getMessage(), e);
@@ -221,6 +231,25 @@ public class DexterUtil {
     }
 
     public static String getContentsFromFile(final String filePath, final Charset charset) {
+        assert Strings.isNullOrEmpty(filePath) == false;
+
+        final File file = new File(filePath);
+        checkFileExistence(filePath, file);
+
+        long fileSize = file.length();
+        if (fileSize > DexterConfig.SOURCE_FILE_SIZE_LIMIT) {
+            logger.warn("Dexter can't analyze a big file : " + filePath + " (" + fileSize + " byte)");
+            return "";
+        }
+
+        try {
+            return Files.asCharSource(file, charset).read();
+        } catch (IOException e) {
+            throw new DexterRuntimeException(e.getMessage(), e);
+        }
+    }
+
+    public static CharSequence getSourceCodeFromFile(final String filePath, final Charset charset) {
         assert Strings.isNullOrEmpty(filePath) == false;
 
         final File file = new File(filePath);
@@ -490,6 +519,7 @@ public class DexterUtil {
         final StringBuilder cmd = new StringBuilder(1024);
         cmd.append("REG ADD ").append(homeKey).append(" /f /v ").append(key).append(" /t ").append(type.toString())
                 .append(" /d ").append(value);
+        cmd.trimToSize();
 
         try {
             Runtime.getRuntime().exec(cmd.toString());
@@ -712,6 +742,7 @@ public class DexterUtil {
             dirStr.append(dir).append(";");
         }
 
+        dirStr.trimToSize();
         return dirStr.toString();
     }
 
@@ -744,6 +775,7 @@ public class DexterUtil {
             }
         }
 
+        msg.trimToSize();
         log.error(msg.toString());
     }
 
@@ -755,6 +787,7 @@ public class DexterUtil {
             msg.append("\t").append(element).append(DexterUtil.LINE_SEPARATOR);
         }
 
+        msg.trimToSize();
         log.error(msg.toString());
     }
 
@@ -803,6 +836,7 @@ public class DexterUtil {
             }
         }
 
+        path.trimToSize();
         return path.toString();
     }
 
@@ -968,6 +1002,7 @@ public class DexterUtil {
             }
         }
 
+        pathStr.trimToSize();
         return DexterUtil.refinePath(pathStr.toString());
     }
 
@@ -979,7 +1014,9 @@ public class DexterUtil {
     public static void createDirectoryIfNotExist(String directoryString) {
         final File directory = new File(directoryString);
         if (directory.exists() == false) {
-            directory.mkdirs();
+            if (directory.mkdirs() == false) {
+                throw new DexterRuntimeException("Can't create the folder : " + directoryString);
+            }
         }
     }
 
@@ -1104,6 +1141,7 @@ public class DexterUtil {
         final StringBuilder cmd = new StringBuilder(1024);
         cmd.append("\"").append(sourceInsightExe).append("/Insight3.exe").append("\"").append(" -i ").append("+")
                 .append(line).append(" ").append(fileFullPath);
+        cmd.trimToSize();
 
         try {
             Runtime.getRuntime().exec(cmd.toString());

@@ -84,6 +84,7 @@ public class DexterMarker {
             }
 
             msg.append("Checker: ").append(defect.getCheckerCode()).append(" ").append(DexterUtil.LINE_SEPARATOR);
+            msg.trimToSize();
 
             marker.setAttribute(IMarker.MESSAGE, msg.toString());
             marker.setAttribute(IMarker.TRANSIENT, false); // persistence

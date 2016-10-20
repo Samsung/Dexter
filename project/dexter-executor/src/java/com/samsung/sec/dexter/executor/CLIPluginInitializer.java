@@ -141,6 +141,7 @@ public class CLIPluginInitializer implements IDexterPluginInitializer {
             }
         }
 
+        err.trimToSize();
         if (!Strings.isNullOrEmpty(err.toString())) {
             throw new DexterRuntimeException(err.toString());
         }

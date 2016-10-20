@@ -39,7 +39,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTEqualsInitializer;
 
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
-import com.samsung.sec.dexter.core.checker.Checker;
+import com.samsung.sec.dexter.core.checker.IChecker;
 import com.samsung.sec.dexter.core.defect.PreOccurence;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.vdcpp.plugin.DexterVdCppPlugin;
@@ -52,7 +52,7 @@ public class UsageAtoiAsArrayIndexCheckerLogic implements ICheckerLogic{
 
 	@Override
 	public void analyze(final AnalysisConfig config, final AnalysisResult result, 
-			final Checker checker, IASTTranslationUnit unit) {
+			final IChecker checker, IASTTranslationUnit unit) {
 		translationUnit =unit;		
 		ASTVisitor visitor = createVisitor(config, result, checker);
 		visitor.shouldVisitDeclarations = true;
@@ -60,7 +60,7 @@ public class UsageAtoiAsArrayIndexCheckerLogic implements ICheckerLogic{
 	}
 
 	private ASTVisitor createVisitor(final AnalysisConfig config,
-			final AnalysisResult result, final Checker checker) {
+			final AnalysisResult result, final IChecker checker) {
 		ASTVisitor visitor = new ASTVisitor() {
 			@Override
 			public int visit(IASTDeclaration ast ) {
@@ -74,7 +74,7 @@ public class UsageAtoiAsArrayIndexCheckerLogic implements ICheckerLogic{
 			}
 
 			private void visitFunction(final AnalysisConfig config,
-					final AnalysisResult result, final Checker checker,
+					final AnalysisResult result, final IChecker checker,
 					IASTDeclaration ast) {
 				ASTVisitor visitor = new ASTVisitor() {
 					public int visit(IASTExpression astExpression ) {							
@@ -122,7 +122,7 @@ public class UsageAtoiAsArrayIndexCheckerLogic implements ICheckerLogic{
 
 					private void visitEqualsInitializerStatements(
 							final AnalysisConfig config,
-							final AnalysisResult result, final Checker checker,
+							final AnalysisResult result, final IChecker checker,
 							IASTExpression astExpression, IASTNode parentnode) {
 						IASTNode parent =parentnode.getParent();
 						while(!(parent instanceof IASTDeclarator ))
@@ -155,7 +155,7 @@ public class UsageAtoiAsArrayIndexCheckerLogic implements ICheckerLogic{
 					}
 
 					private void visitAtoiFunction(final AnalysisConfig config,
-							final AnalysisResult result, final Checker checker,
+							final AnalysisResult result, final IChecker checker,
 							IASTExpression astExpression, int functionLineNO, IASTNode parentnode) {
 						IASTInitializerClause[] expParameters =((IASTFunctionCallExpression) astExpression).getArguments();
 						for (IASTInitializerClause expParameter : expParameters)
@@ -181,7 +181,7 @@ public class UsageAtoiAsArrayIndexCheckerLogic implements ICheckerLogic{
 
 					private void visitIdExpressions(
 							final AnalysisConfig config,
-							final AnalysisResult result, final Checker checker,
+							final AnalysisResult result, final IChecker checker,
 							int functionLineNO, IASTNode parentnode,
 							IASTInitializerClause expParameter) {
 						final IBinding binding = ((IASTIdExpression) expParameter).getName().resolveBinding();
@@ -236,14 +236,14 @@ public class UsageAtoiAsArrayIndexCheckerLogic implements ICheckerLogic{
 			}
 
 			private void fillDefectData(AnalysisConfig config,
-					AnalysisResult result, Checker checker,
+					AnalysisResult result, IChecker checker,
 					IASTFileLocation fileLocation, String message, String declaratorName) {
 				PreOccurence preOcc = createPreOccurence(config, checker, fileLocation, message,declaratorName);
 				result.addDefectWithPreOccurence(preOcc);
 
 			}
 			private PreOccurence createPreOccurence(AnalysisConfig config,
-					Checker checker, IASTFileLocation fileLocation, String msg,String declaratorName) {
+					IChecker checker, IASTFileLocation fileLocation, String msg,String declaratorName) {
 				final int startLine = fileLocation.getStartingLineNumber();
 				final int endLine = fileLocation.getEndingLineNumber();
 				final int startOffset = fileLocation.getNodeOffset();

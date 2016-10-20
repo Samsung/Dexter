@@ -46,6 +46,7 @@ public class CheckerDescriptionUtil {
                     .append(DexterConfig.EMPTY_HTML_FILE_NAME).append(".html"); //$NON-NLS-1$
         }
 
+        url.trimToSize();
         return url.toString();
     }
 
@@ -62,6 +63,7 @@ public class CheckerDescriptionUtil {
         html.append(defect.getLanguage()).append("'>find in google</a><br/>");
         html.append("</body></html>");
 
+        html.trimToSize();
         return html.toString();
     }
 }

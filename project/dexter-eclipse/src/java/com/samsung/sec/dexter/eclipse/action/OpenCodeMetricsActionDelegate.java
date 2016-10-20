@@ -63,6 +63,7 @@ public class OpenCodeMetricsActionDelegate implements IObjectActionDelegate {
                         .append(targetFile.getName()).append("&").append(DexterConfig.CODE_METRICS_MODULE_PATH) //$NON-NLS-1$
                         .append("=").append(modulePath);
 
+                createCodeMetricsUrl.trimToSize();
                 codeMetricsView.setUrl(createCodeMetricsUrl.toString());
                 EclipseUtil.showView(CodeMetricsView.ID);
             } catch (DexterRuntimeException e) {

@@ -25,16 +25,13 @@
  */
 package com.samsung.sec.dexter.executor.cli;
 
-import com.samsung.sec.dexter.core.checker.Checker;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.plugin.BaseDexterPluginManager;
 import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginInitializer;
-import com.samsung.sec.dexter.core.plugin.PluginDescription;
 import com.samsung.sec.dexter.core.util.IDexterClient;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CLIDexterPluginManager extends BaseDexterPluginManager {
     private ICLILog cliLog;
@@ -70,20 +67,14 @@ public class CLIDexterPluginManager extends BaseDexterPluginManager {
         }
 
         for (IDexterPlugin plugin : getPluginList()) {
-            PluginDescription desc = plugin.getDexterPluginDescription();
-
-            resetCheckerEnable(desc.getPluginName(), desc.getLanguage().toString(),
-                    plugin.getCheckerConfig().getCheckerList());
+            resetCheckerEnable(plugin);
         }
     }
 
-    private void resetCheckerEnable(final String toolName, final String language, final List<Checker> checkers) {
+    private void resetCheckerEnable(final IDexterPlugin plugin) {
         if (cliOption.isSpecifiedCheckerEnabledMode() == false)
             return;
 
-        for (Checker checker : checkers) {
-            boolean isEnable = cliOption.checkCheckerEnablenessByCliOption(toolName, language, checker);
-            checker.setActive(isEnable);
-        }
+        cliOption.checkCheckerEnablenessByCliOption(plugin);
     }
 }

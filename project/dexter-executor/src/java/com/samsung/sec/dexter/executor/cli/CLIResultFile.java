@@ -86,6 +86,7 @@ public class CLIResultFile implements ICLIResultFile {
 
         m.append("\t</error>\n");
 
+        m.trimToSize();
         Files.append(m.toString(), file, Charsets.UTF_8);
     }
 
@@ -113,6 +114,7 @@ public class CLIResultFile implements ICLIResultFile {
 
         m.append("\t</error>\n");
 
+        m.trimToSize();
         Files.append(m.toString(), file, Charsets.UTF_8);
     }
 
