@@ -27,9 +27,11 @@ package com.samsung.sec.dexter.executor.cli;
 
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
-import com.samsung.sec.dexter.core.checker.Checker;
+import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
+import com.samsung.sec.dexter.core.plugin.PluginDescription;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 
 import java.io.File;
@@ -285,6 +287,7 @@ public class DexterCLIOption implements IDexterCLIOption {
         errMsg.append("If you want create an account. use -c -u your_id -p your_password")
                 .append(System.lineSeparator());
         errMsg.append("If you want reset your password. use -r -u your_id").append(System.lineSeparator());
+        errMsg.trimToSize();
 
         throw new DexterRuntimeException(errMsg.toString());
     }
@@ -381,13 +384,24 @@ public class DexterCLIOption implements IDexterCLIOption {
     }
 
     @Override
-    public boolean checkCheckerEnablenessByCliOption(String toolName, String language, Checker checker) {
-        for (EnabledChecker enabledChecker : enabledCheckerList) {
-            if (enabledChecker.isSameChecker(toolName, language, checker.getCode()))
-                return true;
-        }
+    public void checkCheckerEnablenessByCliOption(final IDexterPlugin plugin) {
+        CheckerConfig checkerConfig = plugin.getCheckerConfig();
+        checkerConfig.disableAllCheckers();
+        PluginDescription description = plugin.getDexterPluginDescription();
 
-        return false;
+        for (EnabledChecker enabledChecker : enabledCheckerList) {
+            if (Strings.isNullOrEmpty(enabledChecker.getToolName()) == false &&
+                    enabledChecker.getToolName().equals(description.getPluginName()) == false)
+                continue;
+
+            if (Strings.isNullOrEmpty(enabledChecker.getLanguage()) == false &&
+                    enabledChecker.getLanguage().equals(description.getLanguage()) == false)
+                continue;
+
+            final String checkerCode = enabledChecker.getCode().intern();
+            if (checkerConfig.hasChecker(checkerCode))
+                checkerConfig.setCheckerActive(checkerCode, true);
+        }
     }
 
     @Override

@@ -19,7 +19,7 @@ public class EnabledChecker {
     }
 
     public void setCode(String enabledCheckerCode) {
-        this.code = enabledCheckerCode;
+        this.code = enabledCheckerCode.trim();
     }
 
     public String getLanguage() {
@@ -27,7 +27,7 @@ public class EnabledChecker {
     }
 
     public void setLanguage(String enabledCheckerLanguage) {
-        this.language = enabledCheckerLanguage;
+        this.language = enabledCheckerLanguage.trim();
     }
 
     public String getToolName() {
@@ -35,7 +35,7 @@ public class EnabledChecker {
     }
 
     public void setToolName(String enabledCheckerToolName) {
-        this.toolName = enabledCheckerToolName;
+        this.toolName = enabledCheckerToolName.trim();
     }
 
     public boolean isSameChecker(final String toolName, final String language, String code) {

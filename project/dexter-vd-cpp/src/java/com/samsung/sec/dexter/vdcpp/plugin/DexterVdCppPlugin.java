@@ -5,8 +5,8 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
-import com.samsung.sec.dexter.core.checker.Checker;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
+import com.samsung.sec.dexter.core.checker.IChecker;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.defect.Defect;
@@ -61,6 +61,7 @@ public class DexterVdCppPlugin implements IDexterPlugin {
 
             Gson gson = new Gson();
             this.checkerConfig = gson.fromJson(reader, CheckerConfig.class);
+            this.checkerConfig.checkerListToMap();
         } catch (Exception e) {
             throw new DexterRuntimeException(e.getMessage(), e);
         }
@@ -83,7 +84,7 @@ public class DexterVdCppPlugin implements IDexterPlugin {
         assert this.checkerConfig != null;
         checkerLogicMap = new HashMap<String, ICheckerLogic>();
 
-        for (Checker checker : this.checkerConfig.getCheckerList()) {
+        for (IChecker checker : this.checkerConfig.getCheckerList()) {
             putCheckerLogic(checker.getCode(), checkerLogicProperties);
         }
     }
@@ -140,7 +141,7 @@ public class DexterVdCppPlugin implements IDexterPlugin {
         AnalysisResult result = analysisEntityFactory.createAnalysisResult(config);
         IASTTranslationUnit unit = unitFactory.getASTTranslationUnit(config);
 
-        for (Checker checker : this.checkerConfig.getCheckerList()) {
+        for (IChecker checker : this.checkerConfig.getCheckerList()) {
             if (checker.isActive() == false)
                 continue;
 

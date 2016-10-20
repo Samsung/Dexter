@@ -81,6 +81,8 @@ public class MonitorForPlatzKeywordFile extends Job implements IDexterHomeListen
                     StringBuilder url = new StringBuilder(1024);
                     url.append(DexterConfig.PLATZ_SEARCH_API_URL).append(keyword).append("?dexterId=")
                             .append(DexterUIActivator.getDefault().getDexterClient().getCurrentUserId());
+                    url.trimToSize();
+
                     platzView.setUrl(url.toString());
                     return Status.OK_STATUS;
                 } catch (DexterRuntimeException e) {

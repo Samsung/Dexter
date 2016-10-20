@@ -34,8 +34,8 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResultChangeHandlerForUT;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
-import com.samsung.sec.dexter.core.checker.Checker;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
+import com.samsung.sec.dexter.core.checker.IChecker;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 
 import java.io.File;
@@ -50,7 +50,7 @@ public class FindBugsWrapperTest {
         findbugs.initCheckerConfig();
         CheckerConfig checkerConfig = findbugs.getCheckerConfig();
         assertEquals(FindbugsDexterPlugin.PLUGIN_NAME, checkerConfig.getToolName());
-        Checker firstChecker = checkerConfig.getCheckerList().get(0);
+        IChecker firstChecker = checkerConfig.getCheckerList().iterator().next();
         assertEquals("AppendingToAnObjectOutputStream", firstChecker.getCategoryName());
         assertEquals("IO_APPENDING_TO_OBJECT_OUTPUT_STREAM", firstChecker.getCode());
         assertEquals(0, firstChecker.getCwe());

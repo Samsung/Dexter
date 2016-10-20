@@ -68,6 +68,7 @@ public class AccountHandler implements IAccountHandler {
                         .append("If you used 'localhost', please use real IP address.")
                         .append(DexterUtil.LINE_SEPARATOR)
                         .append("Or check if Dexter Server is running.");
+                msg.trimToSize();
                 cliLog.errorln(msg.toString());
             } else {
                 msg.append("Invalid userId ID(").append(client.getCurrentUserId()).append(") or password(")
@@ -83,6 +84,7 @@ public class AccountHandler implements IAccountHandler {
                         .append("If you want reset your password:").append(DexterUtil.LINE_SEPARATOR)
                         .append("$ java -jar dexter-executor.jar -r -u your_id -h dexter_server_ip -o dexter_server_port");
 
+                msg.trimToSize();
                 cliLog.errorln(msg.toString());
             }
 

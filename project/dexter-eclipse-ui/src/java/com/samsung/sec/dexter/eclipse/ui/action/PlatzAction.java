@@ -28,6 +28,7 @@ public class PlatzAction implements IObjectActionDelegate {
             final PlatzView platzView = (PlatzView) platzPart;
             StringBuilder url = new StringBuilder(1024);
             url.append(DexterConfig.PLATZ_API_URL);
+            url.trimToSize();
             platzView.setUrl(url.toString());
             EclipseUtil.showView(PlatzView.ID);
         } catch (DexterRuntimeException e) {

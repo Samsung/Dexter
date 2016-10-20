@@ -202,4 +202,7 @@ public interface IDexterClient extends IDexterStandaloneListener {
 
     void setWebResource(IDexterWebResource webResource);
 
+    void insertSourceCodeCharSequence(long snapshotId, long defectGroupId, String modulePath, String fileName,
+            CharSequence sourceCode);
+
 }

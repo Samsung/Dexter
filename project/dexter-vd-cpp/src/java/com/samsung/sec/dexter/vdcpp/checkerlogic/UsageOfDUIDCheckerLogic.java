@@ -37,7 +37,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTEqualsInitializer;
 
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
-import com.samsung.sec.dexter.core.checker.Checker;
+import com.samsung.sec.dexter.core.checker.IChecker;
 import com.samsung.sec.dexter.core.defect.PreOccurence;
 import com.samsung.sec.dexter.vdcpp.plugin.DexterVdCppPlugin;
 import com.samsung.sec.dexter.vdcpp.util.CppUtil;
@@ -50,7 +50,7 @@ public class UsageOfDUIDCheckerLogic implements ICheckerLogic
 	private String matchFunction ="vconf_get_str";
 	@Override
 	public void analyze(final AnalysisConfig config, final AnalysisResult result, 
-			final Checker checker, IASTTranslationUnit unit) {
+			final IChecker checker, IASTTranslationUnit unit) {
 		translationUnit =unit;
 		matchString= checker.getProperty("id-list").split(",");
 		ASTVisitor visitor = createVisitor(config, result, checker);
@@ -59,7 +59,7 @@ public class UsageOfDUIDCheckerLogic implements ICheckerLogic
 	}
 
 	private ASTVisitor createVisitor(final AnalysisConfig config,
-			final AnalysisResult result, final Checker checker) {
+			final AnalysisResult result, final IChecker checker) {
 		ASTVisitor visitor = new ASTVisitor() {
 			@Override
 			public int visit(IASTDeclaration ast ) {
@@ -73,7 +73,7 @@ public class UsageOfDUIDCheckerLogic implements ICheckerLogic
 			}
 			
 			private void visitFunction(final AnalysisConfig config,
-					final AnalysisResult result, final Checker checker,
+					final AnalysisResult result, final IChecker checker,
 					IASTDeclaration ast) {
 				ASTVisitor visitor = new ASTVisitor() {
 					public int visit(IASTExpression astExpression ) {							
@@ -92,7 +92,7 @@ public class UsageOfDUIDCheckerLogic implements ICheckerLogic
 
 					private void visitFunctionCallExpression(
 							final AnalysisConfig config,
-							final AnalysisResult result, final Checker checker,
+							final AnalysisResult result, final IChecker checker,
 							IASTExpression astExpression) {
 						IASTExpression functionCallExpression =   ((IASTFunctionCallExpression) astExpression).getFunctionNameExpression();	
 						String functionName =functionCallExpression.getRawSignature();
@@ -127,7 +127,7 @@ public class UsageOfDUIDCheckerLogic implements ICheckerLogic
 
 					private void visitLiteralExpressions(
 							final AnalysisConfig config,
-							final AnalysisResult result, final Checker checker,
+							final AnalysisResult result, final IChecker checker,
 							IASTExpression functionCallExpression,
 							IASTInitializerClause expParameter) {
 						String expArgument =((IASTLiteralExpression) expParameter).toString();										
@@ -144,7 +144,7 @@ public class UsageOfDUIDCheckerLogic implements ICheckerLogic
 
 					private void visitIdExpressions(
 							final AnalysisConfig config,
-							final AnalysisResult result, final Checker checker,
+							final AnalysisResult result, final IChecker checker,
 							IASTExpression exp,
 							IASTInitializerClause expParameter) {
 						final IBinding binding = ((IASTIdExpression) expParameter).getName().resolveBinding();
@@ -176,7 +176,7 @@ public class UsageOfDUIDCheckerLogic implements ICheckerLogic
 
 					private void visitEqualInitializerExpression(
 							final AnalysisConfig config,
-							final AnalysisResult result, final Checker checker,
+							final AnalysisResult result, final IChecker checker,
 							IASTExpression exp, IASTInitializer inst) {
 						IASTInitializerClause expParameter;
 						expParameter = ((CPPASTEqualsInitializer)inst).getInitializerClause();														
@@ -203,7 +203,7 @@ public class UsageOfDUIDCheckerLogic implements ICheckerLogic
 			}
 
 			private void fillDefectData(AnalysisConfig config,
-					AnalysisResult result, Checker checker,
+					AnalysisResult result, IChecker checker,
 					IASTFileLocation fileLocation, String message, String declaratorName) {
 				
 				PreOccurence preOcc = createPreOccurence(config, checker, fileLocation, message,declaratorName);
@@ -212,7 +212,7 @@ public class UsageOfDUIDCheckerLogic implements ICheckerLogic
 			}
 
 			private PreOccurence createPreOccurence(AnalysisConfig config,
-					Checker checker, IASTFileLocation fileLocation, String msg,String declaratorName) {
+					IChecker checker, IASTFileLocation fileLocation, String msg,String declaratorName) {
 				final int startLine = fileLocation.getStartingLineNumber();
 				final int endLine = fileLocation.getEndingLineNumber();
 				final int startOffset = fileLocation.getNodeOffset();

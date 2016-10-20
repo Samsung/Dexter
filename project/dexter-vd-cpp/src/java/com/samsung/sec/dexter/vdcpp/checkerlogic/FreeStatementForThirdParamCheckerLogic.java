@@ -38,7 +38,7 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
-import com.samsung.sec.dexter.core.checker.Checker;
+import com.samsung.sec.dexter.core.checker.IChecker;
 import com.samsung.sec.dexter.core.defect.PreOccurence;
 import com.samsung.sec.dexter.vdcpp.plugin.DexterVdCppPlugin;
 import com.samsung.sec.dexter.vdcpp.util.CppUtil;
@@ -50,7 +50,7 @@ public class FreeStatementForThirdParamCheckerLogic implements ICheckerLogic
 	private String[] lstMethods=null;
 	@Override
 	public void analyze(final AnalysisConfig config, final AnalysisResult result, 
-			final Checker checker, IASTTranslationUnit unit) {
+			final IChecker checker, IASTTranslationUnit unit) {
 		translationUnit =unit;
 		lstMethods= checker.getProperty("method-list").split(",");
 		ASTVisitor visitor = createVisitor(config, result, checker);
@@ -59,7 +59,7 @@ public class FreeStatementForThirdParamCheckerLogic implements ICheckerLogic
 	}
 
 	private ASTVisitor createVisitor(final AnalysisConfig config,
-			final AnalysisResult result, final Checker checker) {
+			final AnalysisResult result, final IChecker checker) {
 		ASTVisitor visitor = new ASTVisitor() {
 			@Override
 			public int visit(IASTDeclaration ast ) {
@@ -76,7 +76,7 @@ public class FreeStatementForThirdParamCheckerLogic implements ICheckerLogic
 
 			private void visitOtherCompoundDeclaration(
 					final AnalysisConfig config, final AnalysisResult result,
-					final Checker checker, final IASTDeclaration ast) {
+					final IChecker checker, final IASTDeclaration ast) {
 				ASTVisitor visitor = new ASTVisitor() {
 					public int visit(IASTExpression astExpression ) {							
 
@@ -90,7 +90,7 @@ public class FreeStatementForThirdParamCheckerLogic implements ICheckerLogic
 
 					private void visitFunctionCallExpressionForCompoundBlock(
 							final AnalysisConfig config,
-							final AnalysisResult result, final Checker checker,
+							final AnalysisResult result, final IChecker checker,
 							final IASTDeclaration ast,
 							IASTExpression astExpression) {
 						IASTExpression functExpression =   ((IASTFunctionCallExpression) astExpression).getFunctionNameExpression();	
@@ -127,7 +127,7 @@ public class FreeStatementForThirdParamCheckerLogic implements ICheckerLogic
 
 					private void visitUnaryExpressionForCompoundBlock(
 							final AnalysisConfig config,
-							final AnalysisResult result, final Checker checker,
+							final AnalysisResult result, final IChecker checker,
 							final IASTDeclaration ast,
 							IASTExpression astExpression, String functionName,
 							String methodName, IASTExpression unaryExpression) {
@@ -166,7 +166,7 @@ public class FreeStatementForThirdParamCheckerLogic implements ICheckerLogic
 			}
 
 			private void visitFunction(final AnalysisConfig config,
-					final AnalysisResult result, final Checker checker,
+					final AnalysisResult result, final IChecker checker,
 					final IASTDeclaration ast) {
 				ASTVisitor visitor = new ASTVisitor() {
 					public int visit(IASTExpression astExpression ) {							
@@ -182,7 +182,7 @@ public class FreeStatementForThirdParamCheckerLogic implements ICheckerLogic
 
 					private void visitFunctionCallExpression(
 							final AnalysisConfig config,
-							final AnalysisResult result, final Checker checker,
+							final AnalysisResult result, final IChecker checker,
 							final IASTDeclaration ast,
 							IASTExpression astExpression) {
 						IASTExpression functCallExpression =   ((IASTFunctionCallExpression) astExpression).getFunctionNameExpression();	
@@ -213,7 +213,7 @@ public class FreeStatementForThirdParamCheckerLogic implements ICheckerLogic
 
 					private void visitUnaryExpression(
 							final AnalysisConfig config,
-							final AnalysisResult result, final Checker checker,
+							final AnalysisResult result, final IChecker checker,
 							final IASTDeclaration ast,
 							IASTExpression astExpression, String functionName,
 							String methodName, IASTInitializerClause[] params) {
@@ -350,7 +350,7 @@ public class FreeStatementForThirdParamCheckerLogic implements ICheckerLogic
 				return status;
 			}		
 			private void fillDefectData(AnalysisConfig config,
-					AnalysisResult result, Checker checker,
+					AnalysisResult result, IChecker checker,
 					IASTFileLocation fileLocation, String message, String declaratorName) {
 
 				PreOccurence preOcc = createPreOccurence(config, checker, fileLocation, message,declaratorName);
@@ -358,7 +358,7 @@ public class FreeStatementForThirdParamCheckerLogic implements ICheckerLogic
 			}
 
 			private PreOccurence createPreOccurence(AnalysisConfig config,
-					Checker checker, IASTFileLocation fileLocation, String msg,String decName) {
+					IChecker checker, IASTFileLocation fileLocation, String msg,String decName) {
 				final int startLine = fileLocation.getStartingLineNumber();
 				final int endLine = fileLocation.getEndingLineNumber();
 				final int startOffset = fileLocation.getNodeOffset();

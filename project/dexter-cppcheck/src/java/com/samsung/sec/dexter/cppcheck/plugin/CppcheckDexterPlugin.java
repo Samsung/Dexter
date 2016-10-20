@@ -54,8 +54,10 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
     public final static String PLUGIN_NAME = "cppcheck";
     public final static PluginVersion PLUGIN_VERSION = new PluginVersion("0.10.5");
 
-    private CppcheckWrapper cppcheck = new CppcheckWrapper();
+    private CppcheckWrapperByTemplate cppcheck = new CppcheckWrapperByTemplate();
+    //private CppcheckWrapper cppcheck = new CppcheckWrapper();
     private final static Logger logger = Logger.getLogger(CppcheckWrapper.class);
+    private static String CPPCHECK_HOME_DIR = "";
 
     private static PluginDescription PLUGIN_DESCRIPTION = new PluginDescription(CppcheckDexterPlugin.PLUGIN_NAME,
             PLUGIN_NAME,
@@ -69,13 +71,32 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
      */
     @Override
     public void init() {
-        cppcheck.initCheckerConfig();
-
+        initFolders();
         copyCppcheckRunModule();
+        cppcheck.initCheckerConfig();
+        cppcheck.initBaseCommand();
 
         if (DexterUtil.getOS() == DexterUtil.OS.LINUX || DexterUtil.getOS() == DexterUtil.OS.MAC) {
             checkCppcheckPermission();
         }
+    }
+
+    private void initFolders() {
+        final String dexterHome = DexterConfig.getInstance().getDexterHome();
+        final String tempFolder = dexterHome + DexterUtil.FILE_SEPARATOR + "temp";
+
+        DexterUtil.createDirectoryIfNotExist(tempFolder);
+
+        CPPCHECK_HOME_DIR = dexterHome + DexterUtil.FILE_SEPARATOR + "bin" + DexterUtil.FILE_SEPARATOR
+                + "cppcheck";
+
+        if (new File(CPPCHECK_HOME_DIR).exists() == false) {
+            throw new DexterRuntimeException("There is no cppcheck home folder : " + CPPCHECK_HOME_DIR);
+        }
+    }
+
+    public static String getCppcheckHomePath() {
+        return CPPCHECK_HOME_DIR;
     }
 
     /*
@@ -111,6 +132,8 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
         changePermissionCmd.append(baseCommand).append(cppcheckHome).append(DexterUtil.FILE_SEPARATOR)
                 .append("cppcheck");
 
+        changePermissionCmd.trimToSize();
+
         try {
             changePermissionProcess = Runtime.getRuntime().exec(changePermissionCmd.toString());
         } catch (IOException e) {
@@ -140,14 +163,13 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
             zipFilePath += "/temp/cppcheck-windows_" + PLUGIN_VERSION + ".zip";
             cppcheckPath = "/cppcheck-windows.zip";
         } else { // LINUX or MAC
-        	if(DexterUtil.getBit() == DexterUtil.BIT._32){
-        		zipFilePath += "/temp/cppcheck-linux_"+ PLUGIN_VERSION + "_32.zip";
-                cppcheckPath = "/cppcheck-linux-32.zip";	
-        	}else{
-        		zipFilePath += "/temp/cppcheck-linux_"+ PLUGIN_VERSION + "_64.zip";
-                cppcheckPath = "/cppcheck-linux-64.zip";	
-        	}
-            
+            if (DexterUtil.getBit() == DexterUtil.BIT._32) {
+                zipFilePath += "/temp/cppcheck-linux_" + PLUGIN_VERSION + "_32.zip";
+                cppcheckPath = "/cppcheck-linux-32.zip";
+            } else {
+                zipFilePath += "/temp/cppcheck-linux_" + PLUGIN_VERSION + "_64.zip";
+                cppcheckPath = "/cppcheck-linux-64.zip";
+            }
         }
 
         final File file = new File(zipFilePath);
@@ -159,7 +181,7 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
 
             try {
                 FileUtils.copyInputStreamToFile(is, file);
-                DexterUtil.unzip(zipFilePath, dexterHome + CppcheckWrapper.CPPCHECK_HOME_DIR);
+                DexterUtil.unzip(zipFilePath, CPPCHECK_HOME_DIR);
             } catch (Exception e) {
                 throw new DexterRuntimeException(e.getMessage(), e);
             } finally {
@@ -209,23 +231,9 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
             throw new DexterRuntimeException("analysis config is null");
         }
 
-        /*
-         * File bin = new File(DexterConfig.getInstance().getDexterHome() + "/bin");
-         * if (bin.exists() == false) {
-         * copyCppcheckRunModule();
-         * if (DexterUtil.getOS() == DexterUtil.OS.LINUX || DexterUtil.getOS() == DexterUtil.OS.MAC) {
-         * checkCppcheckPermission();
-         * }
-         * }
-         * 
-         * File cppcheckFolder = new File(DexterConfig.getInstance().getDexterHome() +
-         * CppcheckWrapper.CPPCHECK_HOME_DIR);
-         * if (cppcheckFolder.exists() == false)
-         * DexterConfig.getInstance().createInitialFolderAndFiles();
-         */
-
         IAnalysisEntityFactory factory = new AnalysisEntityFactory();
         AnalysisResult result = factory.createAnalysisResult(config);
+
         cppcheck.analyze(result);
 
         return result;
@@ -271,10 +279,7 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
 
     @Override
     public void handleDexterHomeChanged(String oldPath, String newPath) {
-        copyCppcheckRunModule();
-        if (DexterUtil.getOS() == DexterUtil.OS.LINUX || DexterUtil.getOS() == DexterUtil.OS.MAC) {
-            checkCppcheckPermission();
-        }
+        init();
     }
 
     @Override

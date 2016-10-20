@@ -1,6 +1,6 @@
 package com.samsung.sec.dexter.executor.cli;
 
-import com.samsung.sec.dexter.core.checker.Checker;
+import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -97,14 +97,12 @@ public class EmptyDexterCLIOption implements IDexterCLIOption {
     }
 
     @Override
-    public boolean checkCheckerEnablenessByCliOption(String toolName, String language, Checker checker) {
-        return false;
-    }
-
-    @Override
     public void setDexterServerIP(String dexterServerIp) {}
 
     @Override
     public void setDexterServerPort(int dexterServerPort) {}
+
+    @Override
+    public void checkCheckerEnablenessByCliOption(IDexterPlugin plguin) {}
 
 }

@@ -234,6 +234,7 @@ public class MonitorForDexterConfigFile extends Job implements IDexterHomeListen
                     final File resultFile = DexterAnalyzer.getResultFile(resultList);
                     msg.append("E|").append(sourceFileFullPath).append("|").append(System.currentTimeMillis());
                     Files.createParentDirs(resultFile);
+                    msg.trimToSize();
                     Files.write(msg.toString(), resultFile, Charsets.UTF_8);
 
                 } catch (IOException e) {

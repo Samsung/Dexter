@@ -40,7 +40,6 @@ import com.samsung.sec.dexter.core.util.EmptyDexterClient;
 import com.samsung.sec.dexter.core.util.IDexterClient;
 import com.samsung.sec.dexter.core.util.IDexterLoginInfoListener;
 import com.samsung.sec.dexter.eclipse.ui.login.LoginDialog;
-import com.samsung.sec.dexter.eclipse.ui.login.Messages;
 import com.samsung.sec.dexter.eclipse.ui.util.EclipseLog;
 import com.samsung.sec.dexter.executor.DexterExecutorActivator;
 
@@ -54,8 +53,6 @@ import java.util.concurrent.TimeUnit;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -223,12 +220,14 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
 
             final LoginDialog dialog = new LoginDialog(shell);
             dialog.setBlockOnOpen(true);
-            final int ret = dialog.open();
+            dialog.open();
 
+            /*
+            final int ret = dialog.open();
             if (ret == InputDialog.CANCEL) {
                 MessageDialog.openError(shell, "Dexter Login Error", //$NON-NLS-1$
                         Messages.LoginDialog_LOGIN_GUIDE_MSG);
-            }
+            }*/
         }
     }
 

@@ -86,7 +86,7 @@ public class BaseAnalysisEntity extends TargetFile {
      * @return the projectName Logical Project Name (like PLM)
      */
     public String getProjectName() {
-        return projectName;
+        return projectName.intern();
     }
 
     /**
@@ -103,7 +103,7 @@ public class BaseAnalysisEntity extends TargetFile {
      * eg) C:/dev/workspace/project-a
      */
     public String getProjectFullPath() {
-        return projectFullPath;
+        return projectFullPath.intern();
     }
 
     /**
@@ -112,11 +112,6 @@ public class BaseAnalysisEntity extends TargetFile {
      * eg) C:/dev/workspace/project-a
      */
     public void setProjectFullPath(String projectFullPath) {
-        //		if(Strings.isNullOrEmpty(projectFullPath)){
-        //			logger.error("Invalid projectFullPath parameter : null or empty");
-        //			return;
-        //		}
-
         projectFullPath = projectFullPath.replace("\\", "/").replace(DexterUtil.FILE_SEPARATOR, "/");
 
         if (projectFullPath.endsWith("\\") || projectFullPath.endsWith("/")) {

@@ -46,7 +46,7 @@ import org.eclipse.cdt.core.dom.ast.IASTEqualsInitializer;
 
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
-import com.samsung.sec.dexter.core.checker.Checker;
+import com.samsung.sec.dexter.core.checker.IChecker;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.vdcpp.plugin.DexterVdCppPlugin;
 import com.samsung.sec.dexter.vdcpp.util.CDTASTUtil;
@@ -59,7 +59,7 @@ public class SignExtension2CheckerLogic implements ICheckerLogic{
 
 	@Override
 	public void analyze(final AnalysisConfig config, final AnalysisResult result, 
-			final Checker checker, final IASTTranslationUnit unit) {
+			final IChecker checker, final IASTTranslationUnit unit) {
 		translationUnit =unit;
 		
 		ASTVisitor visitor = createVisitor(config, result, checker);
@@ -69,7 +69,7 @@ public class SignExtension2CheckerLogic implements ICheckerLogic{
 	}
 
 	private ASTVisitor createVisitor(final AnalysisConfig config,
-			final AnalysisResult result, final Checker checker) {
+			final AnalysisResult result, final IChecker checker) {
 		ASTVisitor visitor = new ASTVisitor() {
 			@Override
 			public int visit(IASTDeclaration ast ) {					
@@ -80,7 +80,7 @@ public class SignExtension2CheckerLogic implements ICheckerLogic{
 			}
 
 			private void visitFunction(final AnalysisConfig config,
-					final AnalysisResult result, final Checker checker,
+					final AnalysisResult result, final IChecker checker,
 					final IASTDeclaration ast) {				
 				if(!CDTASTUtil.isFunctionDefinition(ast))	return;
 				
@@ -94,7 +94,7 @@ public class SignExtension2CheckerLogic implements ICheckerLogic{
 
 					private void visitBinaryExpression(
 							final AnalysisConfig config,
-							final AnalysisResult result, final Checker checker,
+							final AnalysisResult result, final IChecker checker,
 							IASTExpression expression) {	
 						
 						if(!CDTASTUtil.isLeftBitShiftBinaryExpression(expression))
