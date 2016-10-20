@@ -53,5 +53,6 @@ monitorApp.config(function($routeProvider){
             templateUrl: "view/weeklyProjectView.html"
         });
 
+
     $routeProvider.otherwise({"redirectTo": "/"});
 });

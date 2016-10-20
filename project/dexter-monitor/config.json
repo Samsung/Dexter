@@ -4,21 +4,18 @@
     "description":"This program will monitor and control servers",
     "serverStatusCheckInterval":5,
     "serverDetailedStatusCheckInterval":5,
-    "serverRequestTimeout":5,
-    "projectStatusRefreshInterval":60,
-    "snapshotDayOfWeek":2,
     "email":{
         "type":"api",
-        "apiUrl":"http://dexter_email:5003/api/v1/email",
-        "defaultSenderEmail":"min.ho.kim@samsung.com",
-        "defaultSenderName":"MinHo Kim"
+        "apiUrl":"http://168.219.243.52:5003/api/v1/email",
+        "defaultSenderEmail":"minjung.baek@samsung.com",
+        "defaultSenderName":"Minjung Baek"
     },
     "database":{
-        "host":"Database URL",
-        "port":Database Port Number,
-        "user":"Database User ID",
-        "password":"Database User Password",
-        "name":"Database Name"
+        "host":"168.219.244.106",
+        "port":3306,
+        "user":"dexter",
+        "password":"dexter2014",
+        "name":"Dexter_Weekly_Report"
     },
-    "userInfoUrl":"User info URL"
+    "userInfoUrl":"http://168.219.241.223/javanode/searchldap.jsp?single="
 }

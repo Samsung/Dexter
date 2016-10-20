@@ -173,7 +173,7 @@ function initModules(){
 
 function startServer(){
     if(!global.config.port || global.config.port < 1024 || global.config.port >= 65535){
-        log.error("you should set the port for monitor server")
+        log.error("you should set the port for monitor server");
         process.exit(-2);
     }
     if(!global.config.serverRequestTimeout || global.config.serverRequestTimeout < 1) {

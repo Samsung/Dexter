@@ -131,8 +131,66 @@ function deleteSnapshotDefectMapFromDB(modulePathList){
     return deferred.promise;
 }
 
+function deleteSnapshotOccurenceMapForDid(didList){
+    var promises = [];
+
+    didList.forEach( did =>{
+        promises.push(new Promise ((resolve, reject) =>{
+            const sql = `DELETE from SnapshotOccurenceMap where did=${did.did}`;
+            database.execV2(sql)
+                .then(function(){
+                    resolve();
+                })
+                .catch(function(err) {
+                    reject(err);
+                });
+
+        }))
+
+    });
+
+    return Promise.all(promises)
+        .then(() => {
+            return "SUCCESS";
+        })
+        .catch((err) =>{
+            logging.error(err);
+            return [];
+        });
+
+}
+
+function deleteSnapshotOccurenceMapFromDB(modulePathList){
+    const deferred = Q.defer();
+    var sql = `SELECT did FROM Defect `;
+
+    _.forEach(modulePathList, function(modulePath, idx){
+        if(idx == 0){
+            sql += " Where modulePath = " +  database.toSqlValue(modulePath);
+        }else {
+            sql += " or modulePath = " + database.toSqlValue(modulePath);
+        }
+    });
+
+
+    database.execV2(sql)
+        .then(function(result) {
+            deleteSnapshotOccurenceMapForDid(result)
+            .then(function(){
+                    deferred.resolve(modulePathList);
+                });
+        })
+        .catch(function(err) {
+            deferred.reject(err);
+        });
+
+    return deferred.promise;
+}
+
+
 function deleteDefectFromDB(modulePathList){
     const deferred = Q.defer();
+
     var sql = "delete from Defect";
     _.forEach(modulePathList, function(modulePath, idx){
         if(idx == 0){
@@ -141,6 +199,7 @@ function deleteDefectFromDB(modulePathList){
             sql += " or modulePath = " + database.toSqlValue(modulePath);
         }
     });
+
     database.execV2(sql)
         .then(function() {
             deferred.resolve(modulePathList);
@@ -168,8 +227,9 @@ exports.deleteModulePathList = function(req, res){
         deleteCodeMetricsFromDB(modulePathList)
             .then(deleteFunctionMetricFromDB)
             .then(deleteSourceCodeMapFromDB)
-            .then(deleteDefectFromDB)
             .then(deleteSnapshotDefectMapFromDB)
+            .then(deleteSnapshotOccurenceMapFromDB)
+            .then(deleteDefectFromDB)
             .then(function(){
                 res.send({status:'ok'});
             })
