@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	
+		<meta charset="utf-8" />
+		<!--basic styles-->
+		<link href="asset/css/bootstrap.css" rel="stylesheet" />
+		<link rel="stylesheet" href="asset/css/dexter.min.css" />
+		<link rel="stylesheet" href="asset/css/font-awesome.min.css" />
+		<!--[if IE 7]>
+			<link rel="stylesheet" href="asset/css/font-awesome-ie7.min.css">
+		<![endif]-->
+
+		<link rel="stylesheet" href="asset/css/prettify.css" />
+		
+		<script src="asset/js/jquery-2.0.3.min.js"></script>
+		<!--[if IE]>
+			<script src="asset/js/jquery.min.js"></script>
+		<![endif]-->
+
+		<script src="asset/js/prettify.js"></script>
+		<script type="text/javascript">
+			$(function() {
+			
+				window.prettyPrint && prettyPrint();
+				$('#id-check-horizontal').removeAttr('checked').on('click', function(){
+					$('#dt-list-1').toggleClass('dl-horizontal').prev().html(this.checked ? '&lt;dl class="dl-horizontal"&gt;' : '&lt;dl&gt;');
+				});
+			
+			})
+		</script>
+
+	</head>
+
+	<body>
+
+		<div class="space-12"></div>
+		<div class="table-grid-info table-grid-info-striped">
+			
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Checker Code</div>
+				<div class="table-grid-value"><h5 class="header blue"><i class="fa fa-bug"></i>&nbsp;
+					sec_ri_secure_storage</h5>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Description </div>
+				<div class="table-grid-value-highlight"><i class="fa fa-th"></i>&nbsp;
+					important infomation is hardcoded in a binary. so, hardware hacker can dump it.
+					<br>If this is not hardcoded important information then, mark this as a false alarm and skip this.
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Severity </div>
+				<div class="table-grid-value">
+					Critical 
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Detector / Bug Pattern </div>
+				<div class="table-grid-value">
+*key*, *id*, *ip*, *serial*, *sn*, *duid*, *card*, *pass*
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> More Information </div>
+				<div class="table-grid-value">
+-
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Bad Code </div>
+				<div class="table-grid-value">
+			<pre class="prettyprint linenums warning">
+hard coded important information.
+char AES_KEY[] = {0x12, 0x34, 0x56, 0x78, 0x12, 0x34, 0x56, 0x78, 0x12, 0x34, 0x56, 0x78, 0x12, 0x34, 0x56, 0x78, 0x12, 0x34, 0x56, 0x78};
+</pre>
+			</div>
+			</div>
+       
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Good Code </div>
+				<div class="table-grid-value">
+			<pre class="prettyprint linenums correct">
+1. request a credential with a raw data via an e-mail to jy1108.lee@samsung.com.
+here is an request form)
+
+Module Name = YOUR_MODULE_NAME
+Requested by = YOUR_NAME and E-MAIL
+Owner = WHO INCHARGE OF THIS MODULE
+Reason = to store private key
+
+-----BEGIN ClOUD SECRET KEY-----
+Axxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy
+-----END ClOUD SECRET KEY-----
+you can get 000000x.bin file.
+
+
+
+2. you need to modify RPM spec file and CMakeLists.txt
+RPM spec file example)
+XXX.spec
+BuildRequires: pkgconfig(libtzplatform-config)
+BuildRequires: pkgconfig(securestorage-client)
+BuildRequires: pkgconfig(sdp)
+Requires: securestorage-client
+Requires: sdp 
+
+%define RO_PATH %{TZ_SYS_RO_APP}/%{name}/
+
+%build
+%cmake . \
+        -DRO_PATH=%{RO_PATH}
+ 
+%files
+%manifest %{name}.manifest
+%defattr(-,root,root,-)
+%{RO_PATH}/*
+
+
+
+/**/CMakeLists.txt example)
+CMakeLists.txt 
+pkg_check_modules(ss_pkgs REQUIRED
+        libtzplatform-config
+        securestorage-client
+        sdp
+)
+ADD_DEFINITIONS(-DRO_PATH:string="${RO_PATH}")
+TARGET_LINK_LIBRARIES(${PRJ} ${ss_pkgs_LDFLAGS})
+INSTALL(FILES ${PROJECT_SOURCE_DIR}/Crt/000000X.bin DESTINATION ${RO_PATH})
+
+
+
+3. you need to init security module.
+#include <sdp/sdp_api.h>
+#define BIN_PATH RO_PATH "/000000x.bin"
+ 
+int sdp_init()
+{
+        // install package from file
+        char* file_name = BIN_PATH;
+        unsigned int options = SDP_OPT_ENC_USE_PREDEFINED_KEY;
+        int ret = sdp_install_from_file( file_name, options, NULL );
+        if (ret == SDP_RET_SUCCESS || ret == SDP_RET_DOUBLE_CHECK_ON_NEXT_BOOT)
+        {
+                SLOGI("[module_name] [%d] .bin [%s, ret=%d ], install ok", __LINE__, file_name, ret );
+                ret = 0;
+        }
+        else
+        {
+                SLOGE("[module_name] [%d] .bin [%s, ret=%d ], install fail", __LINE__, file_name, ret );
+        }
+        return ret;
+}
+
+
+
+4. now you can get the decrypted_data_buffer using ss_read API with given credential and x.bin
+#include <ss/ss_api.h> 
+#define DATAOBJ_NAME "secretkey"
+const unsigned module_id = 0x57e2214cU; // sample credential , you have to use  your own credential 
+const unsigned long long uuid1 = 0x1f86d2029ae8aa34ULL; // sample credential , you have to use  your own credential 
+const unsigned long long uuid2 = 0x0032ebb881eedfa6ULL; // sample credential , you have to use  your own credential 
+const unsigned cred_ver_maj = 1;
+const unsigned cred_ver_min = 0;
+ 
+int ss_read_and_use_sample_code()
+{
+        ss_credential_s creds;
+        ss_init_credential(&creds, module_id , uuid1 , uuid2, cred_ver_maj, cred_ver_min);
+ 
+        unsigned char* ret_buf_raw = NULL;
+        size_t ret_buf_size = 0;
+ 
+        int ret = ss_read(    &ret_buf_raw,       &ret_buf_size,           0,    NULL,   DATAOBJ_NAME,    &creds,        SS_OPT_UNIQUE | SS_OPT_PERMANENT    );
+        if( ret == SS_RET_CANT_FIND_REQUESTED_DATA )
+        {
+                // Object is not found in SecureStorage,
+                // needs to be re-installed by sdp_install_from_file API call.
+                SLOGE("[module_name] [%d] .bin is not installed. Need to re-install", __LINE__ );
+                return -1;
+        }
+        else if( ret == SS_RET_SUCCESS )
+        {
+                // TODO:
+                // use object ret_buf_raw here
+                // Copy or use immediately
+                // Delete after use
+                ss_free_buffer( ret_buf_raw );
+                return 0;
+        }
+        else
+        {
+                SLOGE("[module_name] [%d] SS error %d", __LINE__, ret );
+                return ret;
+        }
+}
+
+</pre>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> CWE ID </div>
+				<div class="table-grid-value">
+				<a href="asset/CWE_ID.html" target="_blank">0 </a>
+				</div>
+			</div>
+
+			<div class="table-grid-row">
+				<div class="table-grid-label"> Code Review Asset </div>
+				<div class="table-grid-value">
+				 N/A
+
+				</div>
+			</div>
+			<div class="table-grid-row">
+				<div class="table-grid-label"> URLs </div>
+				<div class="table-grid-value"> <i class="fa fa-link"></i>&nbsp;
+				 <!--#### 아래 체커 수정 시 예시가 될만한 페이지가 있다면 입력해주세요ex) href="URL" -->
+				 
+					 						
+					
+																
+				</div>
+			</div>
+	</div>
+	<div class="space-20"></div>
+</body>
+<html>
