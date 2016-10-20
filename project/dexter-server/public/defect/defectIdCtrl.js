@@ -627,17 +627,17 @@ defectApp.controller('DefectIdCtrl', function($scope, $http, $sce, $location, $a
             {field:'checkerCode', displayName:'Checker'},
             {field:'occurenceCount', displayName:'Count', width:70, resizable: true, cellClass:'textAlignCenter', cellTemplate: '<div ng-class="{redBG: row.getProperty(col.field) >= 10}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>' },
             {field:'occurenceLine', displayName:'Line No.', width:70, resizable: true },
-            {field:'severityCode', displayName:'Severity', width:70,resizable: true, cellClass:'textAlignCenter', cellTemplate: '<div ng-class="{redFG: isMajor(row.getProperty(col.field))}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>' },
-            {field:'statusCode', displayName:'Status', width:80, resizable: true, cellClass:'textAlignCenter', cellTemplate: '<div ng-class="{redBG: isStatusNew(row.getProperty(col.field))}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>' },
-            {field:'currentStatusCode', visible:false, displayName:'cur.Status', width:82, resizable: true, cellClass:'textAlignCenter', cellTemplate: '<div class="ngCellText">{{row.getProperty(col.field)}}</div>' },
+            {field:'severityCode', displayName:'Severity', width:70,resizable: true, cellClass:'textAlignCenter', cellFilter:'nullFilter', cellTemplate: '<div ng-class="{redFG: isMajor(row.getProperty(col.field))}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>' },
+            {field:'statusCode', displayName:'Status', width:80, resizable: true, cellClass:'textAlignCenter', cellFilter:'nullFilter',cellTemplate: '<div ng-class="{redBG: isStatusNew(row.getProperty(col.field))}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>' },
+            {field:'currentStatusCode', visible:false, displayName:'cur.Status', width:82, resizable: true,cellFilter:'nullFilter', cellClass:'textAlignCenter', cellTemplate: '<div class="ngCellText">{{row.getProperty(col.field)}}</div>' },
             {field:'categoryName', displayName:'Category', width:80, resizable: true, cellClass:'textAlignCenter', cellTemplate: '<div ng-class="{yellowBlackBG: isSecurity(row.getProperty(col.field))}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>',
-                cellFilter:'nullDataFilter'},
-            {field:'modulePath', displayName:'Module',width:250, resizable: true, cellFilter:'nullModuleFilter', cellTemplate: '<div class="ngCellText">{{row.getProperty(col.field)}}</div>'},
+                cellFilter:'nullFilter'},
+            {field:'modulePath', displayName:'Module',width:250, resizable: true, cellFilter:'nullFilter', cellTemplate: '<div class="ngCellText">{{row.getProperty(col.field)}}</div>'},
             {field:'fileName', displayName:'File', resizable: true, cellTemplate: '<div class="ngCellText">{{row.getProperty(col.field)}}</div>'},
-            {field:'className', displayName:'Class', resizable: true, cellFilter:'nullClassFilter', cellTemplate: '<div class="ngCellText">{{getOnlyClassName(row.getProperty(col.field))}}</div>'},
-            {field:'methodName', displayName:'Method/Function', cellFilter:'nullMethodFilter', resizable: true},
-            {field:'language', displayName:'Language', cellClass:'textAlignCenter', width:85, resizable: true, cellclass:'textAlignCenter' },
-            {field:'toolName',displayName:'Tool',visible:false, cellClass:'textAlignCenter', width:85, resizable: true, cellclass:'textAlignCenter' },
+            {field:'className', displayName:'Class', resizable: true, cellFilter:'nullFilter', cellTemplate: '<div class="ngCellText">{{getOnlyClassName(row.getProperty(col.field))}}</div>'},
+            {field:'methodName', displayName:'Method/Function', cellFilter:'nullFilter', resizable: true},
+            {field:'language', displayName:'Language', cellClass:'textAlignCenter', width:85, resizable: true},
+            {field:'toolName',displayName:'Tool',visible:false, cellClass:'textAlignCenter', width:85, resizable: true},
             {field:'modifierId', displayName:'Author', resizable: true,  cellClass:'textAlignCenter'},
             {field:'modifiedDateTime', displayName:'Date', resizable: true, cellClass:'textAlignCenter',
                 cellTemplate: '<div><div class="ngCellText">{{row.getProperty(col.field) | date:"yyyy-MM-dd HH:mm:ss"}}</div></div>' },
@@ -821,18 +821,6 @@ defectApp.controller('DefectIdCtrl', function($scope, $http, $sce, $location, $a
         })
     };
 
-    /*var getSnapshotOccurenceInFile = function(selectedDefect, snapshotId){
-     $http.get("/api/v1/snapshot/occurenceInFile", {
-     params: {
-     'modulePath': base64.encode($scope.selectedDefectModulePath),
-     'fileName': selectedDefect.fileName,
-     'snapshotId' : snapshotId
-     }
-     }).then(function (results) {
-     $scope.defectOccurrences[results.config.params.fileName] = (results.data) || 'undefined';
-     setSelectedDidDetail($scope.defectOccurrences[results.config.params.fileName]);
-     });
-     };*/
     var getSnapshotOccurenceInFile = function (selectedDefect, snapshotId) {
         const getSnapshotOccurenceInFileUrl = '/api/v2/snapshot/occurence-in-file';
 
@@ -1028,18 +1016,7 @@ defectApp.controller('DefectIdCtrl', function($scope, $http, $sce, $location, $a
     };
 });
 
-defectApp.filter('nullMethodFilter', function() {
-    return function(input) {
-        return input == 'null' ? 'N/A' : input;
-    };
-});
-
-defectApp.filter('nullModuleFilter', function() {
-    return function(input) {
-        return input == 'null' ? 'N/A' : input;
-    };
-});
-defectApp.filter('nullClassFilter', function() {
+defectApp.filter('nullFilter', function() {
     return function(input) {
         return input == 'null' ? 'N/A' : input;
     };

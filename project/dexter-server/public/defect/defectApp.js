@@ -1,4 +1,5 @@
-var defectApp = angular.module("defectApp", ['ngRoute', 'angularTreeview', 'ngGrid', 'ngAnimate', 'ui.bootstrap', 'ngSanitize','ngCsv']);
+var defectApp = angular.module("defectApp",
+    ['ngRoute', 'angularTreeview', 'ngGrid', 'ngAnimate', 'ui.bootstrap', 'ngSanitize','ngCsv']);
 
 defectApp.config(function($routeProvider){
     $routeProvider
