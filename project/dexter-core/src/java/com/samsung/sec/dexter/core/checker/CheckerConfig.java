@@ -121,7 +121,7 @@ public class CheckerConfig {
         checkerMap = new HashMap<>(checkerList.size());
         for (Checker checker : checkerList) {
             checkerMap.put(checker.getCode(), checker);
-        }
+        }       
 
         checkerList = null;
     }

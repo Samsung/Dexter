@@ -85,6 +85,7 @@ public class BaseDexterPluginManager implements IDexterPluginManager, IDexterHom
                     String pluginName = plugin.getDexterPluginDescription().getPluginName();
                     CheckerConfig cc = client.getDexterPluginChecker(plugin, pluginName);
                     plugin.setCheckerConfig(cc);
+                    plugin.getCheckerConfig().checkerListToMap();
                 }
             }
         };

@@ -395,7 +395,7 @@ public class DexterCLIOption implements IDexterCLIOption {
                 continue;
 
             if (Strings.isNullOrEmpty(enabledChecker.getLanguage()) == false &&
-                    enabledChecker.getLanguage().equals(description.getLanguage()) == false)
+                    enabledChecker.getLanguage().equals(description.getLanguage().name()) == false)
                 continue;
 
             final String checkerCode = enabledChecker.getCode().intern();

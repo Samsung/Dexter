@@ -62,7 +62,7 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
     private static PluginDescription PLUGIN_DESCRIPTION = new PluginDescription(CppcheckDexterPlugin.PLUGIN_NAME,
             PLUGIN_NAME,
             PLUGIN_VERSION,
-            DexterConfig.LANGUAGE.CPP, "Dexter plug-in for Cppcheck");;
+            DexterConfig.LANGUAGE.CPP, "Dexter plug-in for Cppcheck");
 
     /*
      * (non-Javadoc)
