@@ -40,6 +40,7 @@ import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 import com.samsung.sec.dexter.core.plugin.PluginDescription;
 import com.samsung.sec.dexter.core.plugin.PluginVersion;
+import com.samsung.sec.dexter.core.util.DexterUtil;
 
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -53,7 +54,9 @@ import net.xeoh.plugins.base.annotations.PluginImplementation;
 
 @PluginImplementation
 public class DexterOpensourcePlugin implements IDexterPlugin {
-    private CheckerConfig checkerConfig;
+	protected CheckerConfig checkerConfig = new CheckerConfig(DexterOpensourcePlugin.PLUGIN_NAME,
+            DexterConfig.LANGUAGE.ALL);
+    
     public final static String PLUGIN_NAME = "dexter-opensource";
     private final static PluginVersion PLUGIN_VERSION = new PluginVersion("0.10.6");
     private final static PluginDescription PLUGIN_DESCRIPTION = new PluginDescription("Samsung Electroincs",
@@ -71,11 +74,10 @@ public class DexterOpensourcePlugin implements IDexterPlugin {
         initCheckerConfig();
     }
 
-    protected synchronized void initCheckerConfig() {
+    protected void initCheckerConfig() {
         try {
             Reader reader = new InputStreamReader(
                     this.getClass().getClassLoader().getResourceAsStream("checker-config.json"));
-
             Gson gson = new Gson();
             this.checkerConfig = gson.fromJson(reader, CheckerConfig.class);
             this.checkerConfig.checkerListToMap();
@@ -83,6 +85,7 @@ public class DexterOpensourcePlugin implements IDexterPlugin {
             throw new DexterRuntimeException(e.getMessage(), e);
         }
     }
+    
 
     @Override
     public void destroy() {}
