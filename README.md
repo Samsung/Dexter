@@ -11,7 +11,7 @@ Dexter helps you to improve coding skills. Whenever you save a source file, Dext
 - [Dexter Introduction Video(4min)](https://youtu.be/86exIHcwi6c)
 - [Dexter Wiki (How to install/Use)](https://dexter.atlassian.net)
 
-## Downloads (ver. 0.10.5, 23. Sep. 2016)
+## Downloads (ver. 0.10.6, 20. Oct. 2016)
 
 #### Eclipse Update Site
 ##### Eclipse JAVA+CPP 
@@ -19,12 +19,12 @@ Dexter helps you to improve coding skills. Whenever you save a source file, Dext
 - Win 64bit: http://dl.bintray.com/minho/dexter-eclipse-64
 
 #####Eclipse JAVA
-- Win 32bit: http://dl.bintray.com/minho/dexter-eclipse-java-64
+- Win 32bit: http://dl.bintray.com/minho/dexter-eclipse-java-32
 - Win 64bit: http://dl.bintray.com/minho/dexter-eclipse-java-64
 
 #####Eclipse C/C++
 - Win 32bit: http://dl.bintray.com/minho/dexter-eclipse-cpp-32
-- Win 64bit: http://dl.bintray.com/minho/dexter-eclipse-cpp-32
+- Win 64bit: http://dl.bintray.com/minho/dexter-eclipse-cpp-64
 
 #####Tizen SDK 
 - Win 32bit: http://dl.bintray.com/minho/dexter-tizen-sdk-32
@@ -32,18 +32,18 @@ Dexter helps you to improve coding skills. Whenever you save a source file, Dext
 
 
 #### Dexter Daemon for Source Insight
-- [Win 32bit](https://dexter.atlassian.net/wiki/download/attachments/6258746/dexter-daemon_0.10.5_32.zip?api=v2)
-- [Win 64bit](https://dexter.atlassian.net/wiki/download/attachments/6258746/dexter-daemon_0.10.5_64.zip?api=v2)
+- [Win 32bit](https://dexter.atlassian.net/wiki/download/attachments/6258746/dexter-daemon_0.10.6_32.zip?api=v2)
+- [Win 64bit](https://dexter.atlassian.net/wiki/download/attachments/6258746/dexter-daemon_0.10.6_64.zip?api=v2)
  
 #### Dexter CLI
-- [Win/Linux/Mac 32bit](https://dexter.atlassian.net/wiki/download/attachments/6258746/dexter-cli_0.10.5_32.zip?api=v2)
-- [Win/Linux/Mac 64bit](https://dexter.atlassian.net/wiki/download/attachments/6258746/dexter-cli_0.10.5_64.zip?api=v2)
+- [Win/Linux/Mac 32bit](https://dexter.atlassian.net/wiki/download/attachments/6258746/dexter-cli_0.10.6_32.zip?api=v2)
+- [Win/Linux/Mac 64bit](https://dexter.atlassian.net/wiki/download/attachments/6258746/dexter-cli_0.10.6_64.zip?api=v2)
 
 #### Dexter Server
-- [Win/Linux/Mac](https://dexter.atlassian.net/wiki/download/attachments/6258746/dexter-server_0.10.5.zip?api=v2)
+- [Win/Linux/Mac](https://dexter.atlassian.net/wiki/download/attachments/6258746/dexter-server_0.10.6.zip?api=v2)
 
 #### Dexter Monitor
-- [Win/Linux/Mac](https://dexter.atlassian.net/wiki/download/attachments/6258746/dexter-monitor_0.10.5.zip?api=v2)
+- [Win/Linux/Mac](https://dexter.atlassian.net/wiki/download/attachments/6258746/dexter-monitor_0.10.6.zip?api=v2)
  
 ## Supports
 - Eclipse IDE for Java language (Kepler 4.3+)
