@@ -38,7 +38,7 @@ monitorApp.config(function($routeProvider){
         })
         .when("/current-project/", {
             controller: "CurrentProjectCtrl",
-            templateUrl: "view/currentProjectCtrl.html"
+            templateUrl: "view/currentProjectView.html"
         })
         .when("/current-user/", {
             controller: "CurrentUserCtrl",
