@@ -52,7 +52,7 @@ import net.xeoh.plugins.base.annotations.PluginImplementation;
 @PluginImplementation
 public class CppcheckDexterPlugin implements IDexterPlugin {
     public final static String PLUGIN_NAME = "cppcheck";
-    public final static PluginVersion PLUGIN_VERSION = new PluginVersion("0.10.5");
+    public final static PluginVersion PLUGIN_VERSION = new PluginVersion("0.10.6");
 
     private CppcheckWrapperByTemplate cppcheck = new CppcheckWrapperByTemplate();
     //private CppcheckWrapper cppcheck = new CppcheckWrapper();

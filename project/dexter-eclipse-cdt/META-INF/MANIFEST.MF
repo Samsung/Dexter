@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dexter Eclipse CDT
 Bundle-SymbolicName: dexter-eclipse-cdt;singleton:=true
-Bundle-Version: 0.10.5
+Bundle-Version: 0.10.6
 Bundle-Activator: com.samsung.sec.dexter.eclipse.cdt.DexterEclipseCDTActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.core.resources,
