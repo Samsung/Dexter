@@ -35,7 +35,13 @@ $ bower install
          >     "department":"Dexter Team",
          >     "title":"Software engineer",
          >     "employeenumber":"1234"}]
+4. `serverRequestTimeout`
+    - It is a timeout value for request to dexter-servers in a slow network environment.
+    - Default value is 5 seconds.
 
+5. `projectStatusRefreshInterval`
+    - It is an Auto-refresh interval value for Current Project Status page.
+    - Default value is 60 seconds.
 
 #### Run dexter-monitor as a web server
 ```
