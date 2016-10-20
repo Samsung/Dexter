@@ -55,7 +55,7 @@ import net.xeoh.plugins.base.annotations.PluginImplementation;
 public class DexterOpensourcePlugin implements IDexterPlugin {
     private CheckerConfig checkerConfig;
     public final static String PLUGIN_NAME = "dexter-opensource";
-    private final static PluginVersion PLUGIN_VERSION = new PluginVersion("0.10.5");
+    private final static PluginVersion PLUGIN_VERSION = new PluginVersion("0.10.6");
     private final static PluginDescription PLUGIN_DESCRIPTION = new PluginDescription("Samsung Electroincs",
             PLUGIN_NAME,
             PLUGIN_VERSION,

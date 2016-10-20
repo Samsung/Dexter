@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Dexter Metrics
 Bundle-SymbolicName: dexter-metrics;singleton:=true
-Bundle-Version: 0.10.5
+Bundle-Version: 0.10.6
 Bundle-Activator: DexterMetricsActivator
 Require-Bundle: org.eclipse.core.runtime,
  dexter-core

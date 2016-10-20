@@ -24,7 +24,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * -------------------------------------------------------------------------------------------------------------------
- * Version : 0.10.5
+ * Version : 0.10.6
  * -------------------------------------------------------------------------------------------------------------------
  * Add Key Assignments :
  *   - markDexterDefectToFalseAlarm() : to mark defect status as a false alarm  (async: 3~5 sec)
