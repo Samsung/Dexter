@@ -6,11 +6,11 @@
  * modification, are permitted provided that the following conditions are met:
  * 
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  * 
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -22,73 +22,73 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.samsung.sec.dexter.core.analyzer;
+
+import com.samsung.sec.dexter.core.config.DexterConfigFile;
+import com.samsung.sec.dexter.core.config.IDexterConfigFile;
 
 import java.io.File;
 import java.util.List;
 
-import com.samsung.sec.dexter.core.config.DexterConfigFile;
-
 public class AnalysisEntityFactory implements IAnalysisEntityFactory {
-	@Override
-	public AnalysisConfig createAnalysisConfig() {
-		return new AnalysisConfig();
-	}
+    @Override
+    public AnalysisConfig createAnalysisConfig() {
+        return new AnalysisConfig();
+    }
 
-	@Override
-	public AnalysisConfig copyAnalysisConfigWithoutSourcecode(final AnalysisConfig baseAnalysisConfig) {
-		return new AnalysisConfig(baseAnalysisConfig);
-	}
-	
-	public void test(){
-		
-	}
-	
-	@Override
+    @Override
+    public AnalysisConfig copyAnalysisConfigWithoutSourcecode(final AnalysisConfig baseAnalysisConfig) {
+        return new AnalysisConfig(baseAnalysisConfig);
+    }
+
+    @Override
     public AnalysisConfig createAnalsysiConfigFromDexterConfigFile(final File dexterConfigFilePath) {
-		DexterConfigFile configFile = new DexterConfigFile();
-		configFile.loadFromFile(dexterConfigFilePath);
-		return configFile.toAnalysisConfig();
-	}
-	
+        IDexterConfigFile configFile = new DexterConfigFile();
+        configFile.loadFromFile(dexterConfigFilePath);
+        return configFile.toAnalysisConfig();
+    }
+
     @Override
     public AnalysisResult createAnalysisResult(final AnalysisConfig config) {
-		final AnalysisResult result = new AnalysisResult();
-		
-		result.setFileName(config.getFileName());
-		result.setModulePath(config.getModulePath());
-		result.setProjectName(config.getProjectName());
-		result.setProjectFullPath(config.getProjectFullPath());
-		result.setDefectGroupId(config.getDefectGroupId());
-		result.setSnapshotId(config.getSnapshotId());
-		result.setSourceFileFullPath(config.getSourceFileFullPath());
-		result.setResultFileFullPath(config.getResultFileFullPath());
-		result.setCodeMetrics(config.getCodeMetrics());
-//		result.setResultHandler(config.getResultHandler());
-		
-		return result;
-	}
+        final AnalysisResult result = new AnalysisResult();
 
-	@Override
-	public AnalysisResult createAnalysisResult(List<AnalysisResult> resultList) {
-		final AnalysisResult result = new AnalysisResult();
-		final AnalysisResult base = resultList.get(0);
-		
-		result.setFileName(base.getFileName());
-		result.setModulePath(base.getModulePath());
-		result.setProjectName(base.getProjectName());
-		result.setProjectFullPath(base.getProjectFullPath());
-		result.setDefectGroupId(base.getDefectGroupId());
-		result.setSnapshotId(base.getSnapshotId());
-		result.setSourceFileFullPath(base.getSourceFileFullPath());
-		result.setResultFileFullPath(base.getResultFileFullPath());
-		result.setCodeMetrics(base.getCodeMetrics());
-		
-		for(int i=0; i<resultList.size(); i++){
-			result.getDefectList().addAll(resultList.get(i).getDefectList());
-		}
-		
-		return result;
-	}
+        result.setFileName(config.getFileName());
+        result.setModulePath(config.getModulePath());
+        result.setProjectName(config.getProjectName());
+        result.setProjectFullPath(config.getProjectFullPath());
+        result.setDefectGroupId(config.getDefectGroupId());
+        result.setSnapshotId(config.getSnapshotId());
+        result.setSourceFileFullPath(config.getSourceFileFullPath());
+        result.setResultFileFullPath(config.getResultFileFullPath());
+        result.setCodeMetrics(config.getCodeMetrics());
+        result.setFunctionMetrics(config.getFunctionMetrics());
+        result.setAnalysisType(config.getAnalysisType());
+        // result.setResultHandler(config.getResultHandler());
+
+        return result;
+    }
+
+    @Override
+    public AnalysisResult createAnalysisResult(List<AnalysisResult> resultList) {
+        final AnalysisResult result = new AnalysisResult();
+        final AnalysisResult base = resultList.get(0);
+
+        result.setFileName(base.getFileName());
+        result.setModulePath(base.getModulePath());
+        result.setProjectName(base.getProjectName());
+        result.setProjectFullPath(base.getProjectFullPath());
+        result.setDefectGroupId(base.getDefectGroupId());
+        result.setSnapshotId(base.getSnapshotId());
+        result.setSourceFileFullPath(base.getSourceFileFullPath());
+        result.setResultFileFullPath(base.getResultFileFullPath());
+        result.setCodeMetrics(base.getCodeMetrics());
+        result.setFunctionMetrics(base.getFunctionMetrics());
+
+        for (int i = 0; i < resultList.size(); i++) {
+            result.getDefectList().addAll(resultList.get(i).getDefectList());
+        }
+
+        return result;
+    }
 }

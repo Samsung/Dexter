@@ -2,8 +2,8 @@
 <feature
       id="dexter.eclipse.feature.32"
       label="Dexter Eclipse Feature 32bit"
-      version="0.9.2"
-      provider-name="Samsung Electronics VD SE Lab">
+      version="0.10.6"
+      provider-name="Samsung Electronics VD SE">
 
    <description url="http://www.example.com/description">
       Dexter Eclipse(Coding-time Static Analysis)
@@ -1426,6 +1426,27 @@ Public License instead of this License.  But first, please read
 
    <plugin
          id="dexter-opensource"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="dexter-eclipse-cdt"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="dexter-eclipse-jdt"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="dexter-vd-cpp"
          download-size="0"
          install-size="0"
          version="0.0.0"

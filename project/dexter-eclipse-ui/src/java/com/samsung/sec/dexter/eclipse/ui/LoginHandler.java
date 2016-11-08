@@ -6,11 +6,11 @@
  * modification, are permitted provided that the following conditions are met:
  * 
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  * 
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -22,43 +22,44 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.samsung.sec.dexter.eclipse.ui;
+
+import com.samsung.sec.dexter.eclipse.ui.login.LoginDialog;
 
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.handlers.HandlerUtil;
 
-import com.samsung.sec.dexter.eclipse.ui.login.LoginDialog;
-
 /**
  * Our sample handler extends AbstractHandler, an IHandler base class.
+ * 
  * @see org.eclipse.core.commands.IHandler
  * @see org.eclipse.core.commands.AbstractHandler
  */
 public class LoginHandler extends AbstractHandler {
-	/**
-	 * The constructor.
-	 */
-	public LoginHandler() {
-	}
+    /**
+     * The constructor.
+     */
+    public LoginHandler() {}
 
-	/**
-	 * the command has been executed, so extract extract the needed information
-	 * from the application context.
-	 */
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		final IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-		
-		final LoginDialog dialog = new LoginDialog(window.getShell());
-		
-		if(dialog.open() != InputDialog.OK){
-			return null;
-		}
-		
-		return null;
-	}
+    /**
+     * the command has been executed, so extract extract the needed information
+     * from the application context.
+     */
+    public Object execute(ExecutionEvent event) throws ExecutionException {
+        if (LoginDialog.isOpened()) {
+            return null;
+        }
+
+        final IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
+
+        final LoginDialog dialog = new LoginDialog(window.getShell());
+        dialog.setBlockOnOpen(true);
+
+        dialog.open();
+        return null;
+    }
 }

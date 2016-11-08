@@ -39,15 +39,25 @@
                 <span class="glyphicon glyphicon-remove"></span>&nbsp;Remove File Tree
             </button-->
 
-            <button  id="treeBtn"  class="btn btn-xs btn-info" ng-click="loadCurrentFileTree('showFileTreeBtn')">
+            <button  id="treeBtn"  class="btn btn-xs btn-info" ng-click="loadFileTreeFromDB('showFileTreeBtn')">
                 <span class="glyphicon glyphicon-align-left"></span>&nbsp;{{isFileTreeBtnTitleHidden}}
             </button>&nbsp;
 
-            <a href="#" class="exportDefect">
+            <!--a href="#" class="exportDefect">
                 <button  id="exportTreeBtn"  class="btn btn-xs btn-success">
                     <span class="glyphicon glyphicon-save"></span> Export Defect List
                 </button>
-            </a>
+            </a-->
+            <button class="btn btn-xs btn-success" csv-header="getCSVHeader()"
+                    ng-csv="getCSVContent()" lazy-load="true" filename="{{projectName}}.csv" field-separator=",">
+                <span class="glyphicon glyphicon-save"></span> Export Defect List
+            </button>&nbsp;
+
+            <button class="btn btn-xs btn-warning" csv-header="getCSVHeader()"
+                    ng-csv="getSecurityCSVContent()" lazy-load="true" filename="{{projectName}}-Security.csv" field-separator=",">
+                <span class="glyphicon glyphicon-save"></span> Security Report
+            </button>
+
 
         </div>
         </p>
@@ -69,19 +79,6 @@
 </div>
 <div class="detailTab">
     <div class="row" >
-        <!--div class="col-lg-4">
-            <tabset justified="false" vertical="true" type="pills" >
-                <div  align="right" ng-hide="isButtonHidden">
-                </div>
-                <tab ng-repeat="defectSelection in defectSelections"
-                     ng-click="setCurrentDetail(defectSelection.checkerCode, defectSelection.modulePath, defectSelection.fileName, defectSelection.did)"
-                     heading="Defect ID : {{defectSelection.did}} / {{defectSelection.checkerCode}}">
-                </tab>
-            </tabset>
-            <br>
-        </div>
-
-        <div class="col-lg-8" ng-hide="isHidedDetailTab"-->
         <div ng-hide="isDetailTabHidden">
             <tabset justified="false" type="pills" >
                 <ul class="nav nav-tabs nav-justified">
@@ -197,7 +194,7 @@
                                     </div>
                                 </div>
                                 <hr>
-                                <div class="panel panel-info" ng-repeat="defectOccurenceInformation in defectOccurenceInformations" ng-if="currentDetailDid == defectOccurenceInformation.did">
+                                <!--div class="panel panel-info" ng-repeat="defectOccurenceInformation in defectOccurenceInformations" ng-if="currentDetailDid == defectOccurenceInformation.did">
                                     <div class="panel-body">
                                         &nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;Occurrence at<strong>&nbsp;{{currentDetailFileName}} : {{defectOccurenceInformation.startLine}}</strong>
                                     </div>
@@ -209,6 +206,22 @@
                                         &nbsp;&nbsp;<span class="glyphicon glyphicon-link"></span> CharEnd : <strong>{{defectOccurenceInformation.charEnd}} </strong> &nbsp;&nbsp;&nbsp;
                                         &nbsp;&nbsp;<span class="glyphicon glyphicon-link"></span> CharStart : <strong>{{defectOccurenceInformation.charStart}}</strong>  &nbsp;&nbsp;&nbsp;
                                     </div>
+                                </div-->
+
+
+                                <div class="panel panel-info" ng-repeat="currentDetailDefect in currentDetailDefectList">
+                                    <div class="panel-body">
+                                        &nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-map-marker"></span>&nbsp;&nbsp;Occurrence at<strong>&nbsp;{{currentDetailFileName}} : {{currentDetailDefect.startLine}}</strong>
+                                    </div>
+                                    <div class="panel-footer">
+                                        &nbsp;&nbsp;<span class="glyphicon glyphicon-link"></span> did : <strong>{{currentDetailDefect.did}}</strong>  &nbsp;&nbsp;&nbsp;
+                                        &nbsp;&nbsp;<span class="glyphicon glyphicon-link"></span> VariableName : <strong>{{currentDetailDefect.variableName}}</strong>  &nbsp;&nbsp;&nbsp;
+                                        &nbsp;&nbsp;<span class="glyphicon glyphicon-link"></span> StringValue : <strong>{{currentDetailDefect.stringValue}}</strong>  &nbsp;&nbsp;&nbsp;
+                                        &nbsp;&nbsp;<span class="glyphicon glyphicon-link"></span> FileName : <strong>{{currentDetailDefect.fieldName}}</strong> &nbsp;&nbsp;&nbsp;
+                                        &nbsp;&nbsp;<span class="glyphicon glyphicon-link"></span> CharStart : <strong>{{currentDetailDefect.charStart}} </strong> &nbsp;&nbsp;&nbsp;
+                                        &nbsp;&nbsp;<span class="glyphicon glyphicon-link"></span> CharEnd : <strong>{{currentDetailDefect.charEnd}}</strong>  &nbsp;&nbsp;&nbsp;
+                                    </div>
+
                                 </div>
                             </div>
                         </div>

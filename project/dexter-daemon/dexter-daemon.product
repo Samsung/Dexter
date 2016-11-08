@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Dexter Daemon" uid="dexter_daemon" id="dexter-daemon.product" application="dexter-daemon.application" version="0.9.2" useFeatures="true" includeLaunchers="true">
+<product name="Dexter Daemon" uid="dexter_daemon" id="dexter-daemon.product" application="dexter-daemon.application" version="0.10.6" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
-      <programArgs>-clean</programArgs>
+      <programArgs>-clean
+      </programArgs>
       <vmArgs>-Xms64m
 -Xmx128m
 -XX:MaxPermSize=128m
@@ -141,7 +142,7 @@
    </plugins>
 
    <features>
-      <feature id="dexter.daemon.feature.32" version="0.9.2"/>
+      <feature id="dexter.daemon.feature.64" version="0.10.6"/>
    </features>
 
    <configurations>
@@ -151,5 +152,12 @@
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
    </configurations>
+
+   <preferencesInfo>
+      <targetfile overwrite="false"/>
+   </preferencesInfo>
+
+   <cssInfo>
+   </cssInfo>
 
 </product>

@@ -1,10 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Eclipse help plug-in for Static Analysis Tool(dexter)
-Bundle-SymbolicName: dexter-eclipse-help; singleton:=true
-Bundle-Version: 0.9.2
+Bundle-SymbolicName: dexter-eclipse-help;singleton:=true
+Bundle-Version: 0.10.6
 Bundle-Activator: dexter_eclipse_help.Activator
-Bundle-Vendor: Samsung Electronics VD SE Lab
+Bundle-Vendor: Samsung Electronics VD SE
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

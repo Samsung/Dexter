@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.5 -->
+    <link rel="stylesheet" href="./asset/css/bootstrapAdminLTE.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="./asset/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="./asset/css/ionicons.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="./asset/css/AdminLTE.min.css">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="./asset/css/skin-black-light.min.css">
+</head>
+<body>
+<div>
+    <!--section class="content"-->
+        <script>
+            $.urlHostIP = function (){
+                var results = new RegExp('[0-9]{1,}.[0-9]{1,}.[0-9]{1,}.[0-9]{1,}').exec(window.location.href);
+                return results[0] || 0 ;
+            };
+
+            $.urlHostPort = function(){
+                var results = new RegExp(':[0-9]{1,}').exec(window.location.href);
+                var port = new RegExp('[0-9]{1,}').exec(results[0]);
+                return port[0] || 0;
+            };
+
+            var topCCList ={
+                fileName:[],
+                value:[]
+            };
+            var topSLOCList ={
+                fileName:[],
+                value:[]
+            };
+            var topClassList ={
+                fileName:[],
+                value:[]
+            };
+            var topMethodList ={
+                fileName:[],
+                value:[]
+            };
+
+            var apiTopCCUrl = "/api/v1/codeMetrics/topCC";
+            var apiTopMethodUrl = "/api/v1/codeMetrics/topMethod";
+            var apiTopSLOCUrl = "/api/v1/codeMetrics/topSloc";
+            var apiTopClassUrl = "/api/v1/codeMetrics/topClass";
+            var apiCodeMetricsQuantityUrl = "/api/v1/codeMetrics/quantity";
+            var apiCodeMetricsThresholdUrl = "/api/v1/codeMetrics/threshold";
+
+            var baseUrl = "http://"+ $.urlHostIP() + ":" + $.urlHostPort();
+
+
+            var codeMetricsQuantity = "";
+            var codeMetricsThreshold = [];
+
+            $.get(baseUrl+apiCodeMetricsQuantityUrl, function(data){
+                codeMetricsQuantity = data.result;
+
+            });
+
+            $.get(baseUrl+apiCodeMetricsThresholdUrl, function(data){
+                codeMetricsThreshold = data.result;
+            });
+
+            function setHtml(idx, value, fileName){
+                var html = idx  + "/ " + " [" + value +"] " +  fileName;
+                return html;
+            }
+
+            $.get(baseUrl+apiTopCCUrl, function(data){
+                var topCCHtml ="";
+                for(var i=0; i< data.result.length; i++){
+                    topCCList.fileName[i] = data.result[i].fileName;
+                    topCCList.value[i] = data.result[i].metricValue;
+                    if(i===0 && topCCList.fileName[i] !== 'None' ){
+                        topCCHtml += "<br><b>" + setHtml((i+1), topCCList.value[i], topCCList.fileName[i]) + "</b>";
+                    }else if(i===0 && topCCList.fileName[i]=='None'){
+                        topCCHtml += "<br> <b>None</b>";
+                    }else if(i!==0 && topCCList.fileName[i] !=='None'){
+                        topCCHtml += "<br>" + setHtml((i+1), topCCList.value[i], topCCList.fileName[i]);
+                    }else {
+                        topCCHtml += "<br>&nbsp;";
+                    }
+                }
+                $('#ccSecLine').html(topCCHtml);
+
+            });
+
+            $.get(baseUrl+apiTopMethodUrl, function(data){
+                var topMethodHtml ="";
+                for(var i=0;i<data.result.length; i++){
+                    topMethodList.fileName[i] = data.result[i].fileName;
+                    topMethodList.value[i] = data.result[i].metricValue;
+
+                    if(i===0 && topMethodList.fileName[i] !== 'None' ){
+                        topMethodHtml += "<br> <b>"+ setHtml((i+1), topMethodList.value[i], topMethodList.fileName[i]) + "</b>";
+                    }else if(i===0 && topMethodList.fileName[i]=='None'){
+                        topMethodHtml += "<br> <b>None</b>";
+                    }else if(i!==0 && topMethodList.fileName[i] !=='None'){
+                        topMethodHtml += "<br>" + setHtml((i+1), topMethodList.value[i], topMethodList.fileName[i]);
+                    }else{
+                        topMethodHtml += "<br>&nbsp;";
+                    }
+                }
+                $('#methodSecLine').html(topMethodHtml);
+
+            });
+
+            function addComma(data_value) {
+                return Number(data_value).toLocaleString('en').split(".")[0];
+            }
+
+            $.get(baseUrl+apiTopSLOCUrl, function(data){
+                var topSLOCHtml ="";
+                for(var i=0;i<data.result.length; i++){
+                    topSLOCList.fileName[i] = data.result[i].fileName;
+                    topSLOCList.value[i] = data.result[i].metricValue;
+
+                    if(i===0 && topSLOCList.fileName[i] !== 'None' ){
+                        topSLOCHtml += "<br> <b>"+ setHtml((i+1), addComma(topSLOCList.value[i]), topSLOCList.fileName[i]) +"</b>";
+                    }else if(i===0 && topSLOCList.fileName[i]=='None'){
+                        topSLOCHtml += "<br> <b>None</b>";
+                    }else if(i!==0 && topSLOCList.fileName[i] !=='None'){
+                        topSLOCHtml += "<br>" + setHtml((i+1), addComma(topSLOCList.value[i]), topSLOCList.fileName[i]);
+                    }else{
+                        topSLOCHtml += "<br>&nbsp;";
+                    }
+                }
+                $('#slocSecLine').html(topSLOCHtml);
+            });
+
+            $.get(baseUrl+apiTopClassUrl, function(data){
+                var topClassHtml ="";
+                for(var i=0;i<data.result.length; i++){
+                    topClassList.fileName[i] = data.result[i].fileName;
+                    topClassList.value[i] = data.result[i].metricValue;
+
+                    if(i===0 && topClassList.fileName[i] !== 'None' ){
+                        topClassHtml += "<br> <b>"+ setHtml((i+1), topClassList.value[i], topClassList.fileName[i]) +"</b>";
+                    }else if(i===0 && topSLOCList.fileName[i]=='None'){
+                        topClassHtml += "<br> <b>None</b>";
+                    }else if(i!==0 && topClassList.fileName[i] !=='None'){
+                        topClassHtml += "<br>" + setHtml((i+1), topClassList.value[i], topClassList.fileName[i]);
+                    }else{
+                        topClassHtml += "<br>&nbsp;";
+                    }
+                }
+                $('#classSecLine').html(topClassHtml);
+
+            });
+        </script>
+
+        <div class="row">
+            <div class="col-md-6" style="min-width: 500px">
+                <div class="box box-default collapsed-box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title" id="titleFileName"></h3>
+                        <div class="box-tools">
+                            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-toggle-down"></i></button>
+                        </div><!-- /.box-tools -->
+                    </div><!-- /.box-header -->
+                    <div class="box-body" id="titleModulePath">
+                    </div><!-- /.box-body -->
+                </div><!-- /.box -->
+            </div>
+        </div>
+
+
+
+
+        <div class="row" id="codeMetricsView">
+            <div class="col-lg-3 col-xs-6">
+                <!-- small box -->
+                    <div id="ccClass" class="small-box bg-green">
+                        <div class="inner">
+                            <h3 id="ccId"></h3>
+                            <span id="ccFirLine"><i class="fa fa-check-circle"></i>&nbsp;&nbsp;GOOD !</span>
+                            <p><span><br></span></p>
+                            <p class="attentionList"><small>
+                                <span class="glyphicon glyphicon-check" ></span>&nbsp;Warning - <font color="black">
+                                <span id="ccThreshold"></span><span id="ccSecLine"></span></font>
+                            </small>
+                            </p>
+                        </div>
+                        <div class="icon">
+                            <i id="ccIcon" class="fa fa-thumbs-o-up"></i>
+                        </div>
+                        <a href="../../../ccList" target="_blank" class="small-box-footer">
+                            More CC List in this project <i class="fa fa-arrow-circle-right"></i>
+                        </a>
+                    </div>
+            </div><!-- ./col -->
+
+
+
+            <div class="col-lg-3 col-xs-6">
+                <!-- small box -->
+                <div id="slocClass" class="small-box bg-green">
+                    <div class="inner">
+                        <h3 id="slocId"></h3>
+                        <span id="slocFirLine"><i class="fa fa-check-circle"></i>&nbsp;&nbsp;GOOD !</span>
+                        <p><span><br></span></p>
+                        <p class="attentionList"><small>
+                            <span class="glyphicon glyphicon-check"></span>&nbsp;Warning - <font color="black">
+                            <span id="slocThreshold"></span><span id="slocSecLine"></span></font>
+                        </small>
+                        </p>
+                    </div>
+                    <div class="icon">
+                        <i id="slocIcon" class="fa fa-thumbs-o-up"></i>
+                    </div>
+                    <a href="../../../slocList"  target="_blank" class="small-box-footer">
+                        More SLOC List in this project <i class="fa fa-arrow-circle-right"></i>
+                    </a>
+                </div>
+            </div><!-- ./col -->
+
+
+
+            <div class="col-lg-3 col-xs-6">
+                    <div id="classClass"  class="small-box bg-gray">
+                        <div class="inner" >
+                            <h3 id="classId"></h3>
+                            <span id="classFirLine"><i class="fa fa-check-circle"></i>&nbsp;&nbsp;GOOD !</span>
+                            <p><span><br></span></p>
+                            <p class="attentionList"><small>
+                                    <span class="glyphicon glyphicon-check"></span>&nbsp;Warning - <font color="black">
+                                    <span id="classThreshold"></span><span id="classSecLine"></span></font>
+                                </small>
+                            </p>
+                        </div>
+                        <div class="icon">
+                            <!--i id="classIcon" class="fa fa-thumbs-o-up"></i-->
+                        </div>
+                        <div class="small-box-footer">
+                            &nbsp;<!-->
+                        </div>
+                    </div>
+            </div><!-- ./col -->
+
+
+
+            <div class="col-lg-3 col-xs-6">
+                <div id="methodClass"  class="small-box bg-gray">
+                    <div class="inner">
+                        <h3 id="methodId"></h3>
+                        <span id="methodFirLine"><i class="fa fa-check-circle"></i>&nbsp;&nbsp;GOOD !</span>
+                        <p><span><br></span></p>
+                        <p class="attentionList"><small>
+                            <span class="glyphicon glyphicon-check"></span>&nbsp;Warning - <font color="black">
+                            <span id="methodThreshold"></span><span id="methodSecLine"></span></font>
+                        </small>
+                        </p>
+                    </div>
+                    <div class="icon">
+                        <!--i id="methodIcon" class="fa fa-thumbs-o-up"></i-->
+                    </div>
+                    <div class="small-box-footer">
+                        &nbsp;<!-->
+                    </div>
+                </div>
+
+            </div><!-- ./col -->
+
+        </div><!-- /.row -->
+        <!-- =========================================================== -->
+    <!--/section--><!-- /.content -->
+</div><!-- ./wrapper -->
+
+<!-- jQuery 2.1.4 -->
+<script src="./asset/plugins/jQuery-2.1.4.min.js"></script>
+<!-- Bootstrap 3.3.5 -->
+<script src="./asset/js/bootstrap.min.js"></script>
+<!-- Slimscroll -->
+<script src="./asset/plugins/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="./asset//plugins/fastclick.min.js"></script>
+<!-- AdminLTE App -->
+<script src="./asset/js/app.min.js"></script>
+</body>
+</html>

@@ -6,11 +6,11 @@
  * modification, are permitted provided that the following conditions are met:
  * 
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  * 
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -22,247 +22,229 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.samsung.sec.dexter.core.util;
 
-import java.security.cert.CertificateException;
-import java.util.List;
-
-import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.config.DefectGroup;
 import com.samsung.sec.dexter.core.config.DexterCode;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.filter.IFalseAlarmConfiguration;
+import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
+
+import java.security.cert.CertificateException;
+import java.util.List;
 
 /**
  * Mock for Handling Dexter Server(Database, etc)
  */
 public class DexterClientMock implements IDexterClient {
-	public String getDexterDashboardUrl() {
-	    return null;
+    public String getDexterDashboardUrl() {
+        return null;
     }
 
-	public String getDexterWebUrl() {
-	    return null;
+    public String getDexterWebUrl() {
+        return null;
     }
 
-	public boolean isCurrentUserAdmin() {
-	    return false;
+    public boolean isCurrentUserAdmin() {
+        return false;
     }
 
-	public int getCurrentUserNo() {
-	    return 0;
+    public int getCurrentUserNo() {
+        return 0;
     }
 
-	public void setCurrentUserNo(final int userNo) {
+    public void setCurrentUserNo(final int userNo) {}
+
+    public void setCurrentUserPwd(final String currentUserPwd) {}
+
+    public void setCurrentUserId(final String currentUserId) {}
+
+    public void setServerPort(final int serverPort) {}
+
+    public void setServerHost(final String serverHost) {}
+
+    public int getServerPort() {
+        return 0;
     }
 
-	public void setCurrentUserPwd(final String currentUserPwd) {
+    public String getServerHost() {
+        return null;
     }
 
-	public void setCurrentUserId(final String currentUserId) {
+    public String getServerHostForUI() {
+        return null;
     }
 
-	public void setServerPort(final int serverPort) {
+    public void setUserPwd(final String userPwd) {}
+
+    public void setUserId(final String userId) {}
+
+    public String getCurrentUserPwd() {
+        return null;
     }
 
-	public void setServerHost(final String serverHost) {
+    public String getSourceCode(final String modulePath, final String fileName) {
+        return null;
     }
 
-	public int getServerPort() {
-	    return 0;
+    public List<DexterCode> getCodes(final String codeKey) {
+        return null;
     }
 
-	public String getServerHost() {
-	    return null;
-    }
-	
-	public String getServerHostForUI() {
-	    return null;
+    public List<DefectGroup> getDefectGroupList() {
+        return null;
     }
 
-	public void setUserPwd(final String userPwd) {
+    public boolean deleteDefectGroup(final long defectGroupId) {
+        return false;
     }
 
-	public void setUserId(final String userId) {
+    public List<DefectGroup> getDefectGroupByGroupName(final String groupName) {
+        return null;
     }
 
-	public String getCurrentUserPwd() {
-	    return null;
+    public IFalseAlarmConfiguration getFalseAlarmTree() {
+        return null;
     }
 
-	public String getSourceCode(final String modulePath, final String fileName) {
-	    return null;
+    public int getLastFalseAlarmVersion() {
+        return 0;
     }
 
-	public List<DexterCode> getCodes(final String codeKey) {
-	    return null;
+    public boolean sendNewDefectFilter(final String content) throws CertificateException {
+        return false;
     }
 
-	public List<DefectGroup> getDefectGroupList() {
-	    return null;
+    public int getUserNo(final String userId, final String userPwd) {
+        return 0;
     }
 
-	public boolean deleteDefectGroup(final long defectGroupId) {
-	    return false;
+    public boolean hasAccount(final String id) {
+        return false;
     }
 
+    public void setDexterServer(final String serverAddress) {}
 
-	public List<DefectGroup> getDefectGroupByGroupName(final String groupName) {
-	    return null;
+    public boolean isServerAlive() {
+        return false;
     }
 
-
-	public IFalseAlarmConfiguration getFalseAlarmTree() {
-	    return null;
+    public boolean isServerAddressOk(final String serverAddress) {
+        return false;
     }
 
-	public int getLastFalseAlarmVersion() {
-	    return 0;
+    public String getCurrentUserId() {
+        return null;
     }
 
-
-	public boolean sendNewDefectFilter(final String content) throws CertificateException {
-	    return false;
+    public boolean isLogin() {
+        return false;
     }
 
-	public int getUserNo(final String userId, final String userPwd) {
-	    return 0;
-    }
+    public void setDexterServer(final String serverHost, final int serverPort) {}
 
-	public boolean hasAccount(final String id) {
-	    return false;
-    }
+    public void login() {}
 
-	public void setDexterServer(final String serverAddress) {
-    }
+    public void setWebResource(IDexterWebResource resource) {}
 
-	public boolean isServerAlive() {
-	    return false;
-    }
-
-	public boolean isServerAddressOk(final String serverAddress) {
-	    return false;
-    }
-
-	public String getCurrentUserId() {
-	    return null;
-    }
-
-	public boolean isLogin() {
-	    return false;
-    }
-
-	public void setDexterServer(final String serverHost, final int serverPort) {
-    }
-
-
-	public void login() {
-    }
-
-	public void setWebResource(IDexterWebResource resource) {
-    }
-
-	@Override
+    @Override
     public boolean updateDefectGroup(DefectGroup defectGroup) {
-	    // TODO Auto-generated method stub
-	    return false;
+        return false;
     }
 
-	@Override
+    @Override
     public void insertDefectGroup(DefectGroup defectGroup) {
-	    // TODO Auto-generated method stub
-	    
+
     }
 
-	@Override
+    @Override
     public long getGlobalDid(Defect defect) {
-	    // TODO Auto-generated method stub
-	    return 0;
+        return 0;
     }
 
-	@Override
+    @Override
     public void insertDefectFilter(Defect defect) {
-	    // TODO Auto-generated method stub
-	    
+
     }
 
-	@Override
+    @Override
     public void removeDefectFilter(Defect defect) {
-	    // TODO Auto-generated method stub
-	    
+
     }
 
-	@Override
+    @Override
     public void changeDefectStatus(Defect defect, String status) {
-	    // TODO Auto-generated method stub
-	    
+
     }
 
-	@Override
+    @Override
     public void deleteDefects(String modulePath, String fileName) {
-	    // TODO Auto-generated method stub
-	    
+
     }
 
-	@Override
-    public void createAccount(String id, String pwd, boolean isAdmin) {
-	    // TODO Auto-generated method stub
-	    
-    }
+    @Override
+    public void createAccount(String id, String pwd, boolean isAdmin) {}
 
-	@Override
+    @Override
     public void insertSourceCode(long snapshotId, long defectGroupId, String modulePath, String fileName,
-            String sourceCode) {
-	    // TODO Auto-generated method stub
-	    
-    }
+            String sourceCode) {}
 
-	@Override
-    public void sendAnalsysisResult(String resultJson) {
-	    // TODO Auto-generated method stub
-	    
-    }
+    @Override
+    public void sendAnalsysisResult(String resultJson) {}
 
-	@Override
-    public void login(String id, String pwd) {
-	    // TODO Auto-generated method stub
-	    
-    }
+    @Override
+    public void login(String id, String pwd) {}
 
-	@Override
-    public void setCurrentUserAdmin(boolean isAdmin) {
-	    // TODO Auto-generated method stub
-	    
-    }
+    @Override
+    public void setCurrentUserAdmin(boolean isAdmin) {}
 
-	@Override
-    public void setLogin(boolean b) {
-	    // TODO Auto-generated method stub
-	    
-    }
+    @Override
+    public void setLogin(boolean b) {}
 
-	@Override
+    @Override
     public String getDexterPluginUpdateUrl() {
-	    // TODO Auto-generated method stub
-	    return null;
+        return null;
     }
-	
-	@Override
-	public void addLoginInfoListener(final IDexterLoginInfoListener listener) {
-	}
-	
-	@Override
-	public void removeLoginInfoListener(final IDexterLoginInfoListener listener) {
-	}
-	
-	@Override
-	public void runLoginInfoHandler(String oldServerHost, int oldServerPort, String oldUserId) {
-	}
-	
-	@Override
-	public CheckerConfig getDexterPluginChecker(IDexterPlugin plugin, String pluginName) {
-		return null ;
-	}
+
+    @Override
+    public CheckerConfig getDexterPluginChecker(IDexterPlugin plugin, String pluginName) {
+        return null;
+    }
+
+    @Override
+    public String getDexterCodeMetricsUrl() {
+        return "";
+    }
+
+    @Override
+    public String getDexterFunctionMetricsUrl() {
+        return "";
+    }
+
+    @Override
+    public boolean hasSupportedHelpHtmlFile(final StringBuilder url) {
+        return false;
+    }
+
+    void setWebResource(DummyDexterWebResource webResource) {}
+
+    @Override
+    public void handleWhenStandaloneMode() {}
+
+    @Override
+    public void handleWhenNotStandaloneMode() {}
+
+    @Override
+    public boolean isServerAlive(String serverAddress) {
+        return false;
+    }
+
+    @Override
+    public void insertSourceCodeCharSequence(long snapshotId, long defectGroupId, String modulePath, String fileName,
+            CharSequence sourceCode) {
+        // TODO Auto-generated method stub
+
+    }
 }

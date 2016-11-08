@@ -36,10 +36,22 @@ public class AnalysisLog {
 	private Date createdTime = new Date();
 	private String createdTimeStr = "";
 	private String fileName = "";
+	private String modulePath = "";
 	private String fileFullPath = "";
 	private int defectCount;
+	
 	private List<DefectLog> defectLogList = new ArrayList<DefectLog>(1);
 	
+	private List<String> functionList = new ArrayList<String> (0);
+	
+	public List<String> getFunctionList() {
+		return functionList;
+	}
+
+	public void setFunctionList(List<String> functionList) {
+		this.functionList = functionList;
+	}
+
 	/**
 	 * @param i 
 	 */
@@ -62,7 +74,12 @@ public class AnalysisLog {
     	this.fileName = fileName;
     }
 
-	/**
+    
+    public void setModulePath(final String modulePath){
+    	this.modulePath = modulePath;
+    }
+    
+    /**
 	 * @param defect 
 	 */
     public void addDefectLog(final Defect defect) {
@@ -72,6 +89,10 @@ public class AnalysisLog {
     	this.defectLogList.add(defectLog);
     }
 
+    public void addFunctionList(final String function){
+    	this.functionList.add(function); 
+    }
+    
 	/**
 	 * @param date2 
 	 */
@@ -107,6 +128,7 @@ public class AnalysisLog {
     	
     	return null;
     }
+   
 
 	/**
 	 * @return 
@@ -127,6 +149,13 @@ public class AnalysisLog {
 	}
 	
 	/**
+	 * @return the fileName
+	 */
+	public String getModulePath() {
+		return modulePath;
+	}
+	
+	/**
 	 * @return the createdTimeStr
 	 */
 	public String getCreatedTimeStr() {
@@ -137,6 +166,7 @@ public class AnalysisLog {
 		return this.rootLog;
 	}
 
+	
 	public void setRootLog(RootAnalysisLog rootAnalysisLog) {
 		this.rootLog = rootAnalysisLog;
 	}

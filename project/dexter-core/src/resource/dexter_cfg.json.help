@@ -3,7 +3,7 @@
 
 // single file in a directory
 {
-	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_0.9.2_64",
+	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_#.#.#_64",
 	"dexterServerIp":"dexter_server_ip",
 	"dexterServerPort":"dexter_server_port",
 	"projectName":"your_project_name",
@@ -20,7 +20,7 @@
 
 // single file in a directory and module
 {
-	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_0.9.2_64",
+	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_#.#.#_64",
 	"dexterServerIp":"dexter_server_ip",
 	"dexterServerPort":"dexter_server_port",
 	"projectName":"your_project_name",
@@ -37,7 +37,7 @@
 
 // Project
 {
-	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_0.9.2_64",
+	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_#.#.#_64",
 	"dexterServerIp":"dexter_server_ip",
 	"dexterServerPort":"dexter_server_port",
 	"projectName":"your_project_name",
@@ -52,7 +52,7 @@
 
 // Snapshot : If you want to collect snapshot data, you can put type of "SNAPSHOT". 
 {
-	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_0.9.2_64",
+	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_#.#.#_64",
 	"dexterServerIp":"dexter_server_ip",
 	"dexterServerPort":"dexter_server_port",
 	"projectName":"your_project_name",
@@ -70,7 +70,7 @@
 
 // 1 file unit
 {
-	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_0.9.2_64",
+	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_#.#.#_64",
 	"dexterServerIp":"dexter_server_ip",
 	"dexterServerPort":"dexter_server_port",
 	"projectName":"your_project_name",
@@ -87,7 +87,7 @@
 
 // n files unit
 {
-	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_0.9.2_64",
+	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_#.#.#_64",
 	"dexterServerIp":"dexter_server_ip",
 	"dexterServerPort":"dexter_server_port",
 	"projectName":"your_project_name",
@@ -105,7 +105,7 @@
 
 // project unit
 {
-	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_0.9.2_64",
+	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_#.#.#_64",
 	"dexterServerIp":"dexter_server_ip",
 	"dexterServerPort":"dexter_server_port",
 	"projectName":"your_project_name",
@@ -120,7 +120,7 @@
 
 // snapshot for project
 {
-	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_0.9.2_64",
+	"dexterHome":"your_dexter_cli_install_dir\dexter-cli_#.#.#_64",
 	"dexterServerIp":"dexter_server_ip",
 	"dexterServerPort":"dexter_server_port",
 	"projectName":"your_project_name",

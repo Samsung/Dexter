@@ -8,6 +8,7 @@ CREATE TABLE Account (
   CONSTRAINT pk_Account PRIMARY KEY (userNo)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
 CREATE TABLE Defect (
 	did	 				bigint NOT NULL AUTO_INCREMENT,
 	toolName			varchar(100) NOT NULL,
@@ -17,6 +18,7 @@ CREATE TABLE Defect (
 	modulePath			varchar(255),
 	className			varchar(255),
 	methodName			varchar(255),
+    categoryName		varchar(255),
 	severityCode		char(3) /* MAJ, MIN, CRC, ETC */,
 	statusCode			char(3) /* NEW, ASN, REV, SLV, CLS, FIX, EXC */,
 	message				varchar(2014),
@@ -27,6 +29,8 @@ CREATE TABLE Defect (
 	chargerNo			int,
 	reviewerNo			int,
 	approvalNo			int,
+	INDEX `idx_defect_creatorNo` (creatorNo),
+	INDEX `idx_defect_modifierNo` (modifierNo),
 	CONSTRAINT pk_Defect PRIMARY KEY (did)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -50,6 +54,9 @@ CREATE TABLE Occurence (
 	chargerNo			int,
 	reviewerNo			int,
 	approvalNo			int,
+	INDEX `idx_occurence_did` (did),
+	INDEX `idx_occurence_cretorNo` (creatorNo),
+	INDEX `idx_occurence_modifierNo` (modifierNo),
 	CONSTRAINT pk_Occurence PRIMARY KEY (oid)
 /*	FOREIGN KEY (localDid) REFERENCES Defect(localDid) ON DELETE CASCADE */
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -64,7 +71,7 @@ CREATE TABLE DefectFilter (
 	modulePath			varchar(255),
 	className			varchar(255),
 	methodName			varchar(255),
-	filterType			char(1) Not Null, /* F:False Alarm, E:Exclude Scope */
+	filterType			char(1) Not Null, /* F:False Alarm, E:Exclude Scope */	
 	createdDateTime 	timestamp NOT NULL DEFAULT now(),
 	creatorNo			int,
 	CONSTRAINT pk_DefectFilter PRIMARY KEY (fid)
@@ -89,6 +96,7 @@ CREATE TABLE SnapshotDefectMap (
 	modulePath			varchar(255),
 	className			varchar(255),
 	methodName			varchar(255),
+    categoryName		varchar(255),
 	severityCode		char(3) /* MAJ, MIN, CRC, ETC */,
 	statusCode			char(3) /* NEW, ASN, REV, SLV, CLS, FIX, EXC */,
 	message				varchar(2014),
@@ -99,6 +107,8 @@ CREATE TABLE SnapshotDefectMap (
 	chargerNo			int,
 	reviewerNo			int,
 	approvalNo			int,
+	INDEX `idx_snapshotdefectmap_creatorNo` (creatorNo),
+	INDEX `idx_snapshotdefectmap_modifierNo` (modifierNo),
 	CONSTRAINT pk_SnapshotDefect PRIMARY KEY (snapshotId, did),
 	FOREIGN KEY (snapshotId) REFERENCES Snapshot(id) ON DELETE CASCADE,
 	FOREIGN KEY (did) REFERENCES Defect(did)
@@ -106,7 +116,7 @@ CREATE TABLE SnapshotDefectMap (
 
 CREATE TABLE SnapshotOccurenceMap (
 	snapshotId			bigint NOT NULL,
-	did					bigint NOT NULL,
+	did					bigint NOT NULL,	
 	startLine			int NOT NULL,
 	endLine				int NOT NULL,
 	charStart			int,
@@ -123,7 +133,9 @@ CREATE TABLE SnapshotOccurenceMap (
 	chargerNo			int,
 	reviewerNo			int,
 	approvalNo			int,
-
+	INDEX `idx_snapshotoccurencemap_did` (did),
+	INDEX `idx_snapshotoccurencemap_creatorNo` (creatorNO),
+	INDEX `idx_snapshotoccurencemap_modifierNo` (modifierNo),
 	CONSTRAINT pk_SnapshotOccurenceMap PRIMARY KEY (snapshotId, did, startLine, endLine, charStart, charEnd),
 	FOREIGN KEY (snapshotId) REFERENCES Snapshot(id) ON DELETE CASCADE,
 	FOREIGN KEY (did) REFERENCES Defect(did)
@@ -137,7 +149,8 @@ CREATE TABLE SourceCodeMap (
 	sourceCode			mediumtext NOT NULL,
 	createdDateTime 	timestamp NOT NULL DEFAULT now(),
 	creatorNo			int,
-
+	INDEX `idx_sourcecodemap_creatorNo` (creatorNo),
+	INDEX `idx_sourcecodemap_modulePath` (modulePath),
 	CONSTRAINT pk_SnapshotSourceCodeMap PRIMARY KEY (id),
 	FOREIGN KEY (snapshotId) REFERENCES Snapshot(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -154,6 +167,22 @@ CREATE TABLE CodeMetrics (
 	lastYn				char(1) NOT NULL,
 
 	CONSTRAINT pk_CodeMetrics PRIMARY KEY (id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE FunctionMetrics (
+	id	bigint NOT NULL AUTO_INCREMENT,
+    snapshotId 	bigint,
+    fileName			varchar(255) NOT NULL,
+	modulePath			varchar(255),
+    functionName	 	varchar(255) NOT NULL,
+    cc					varchar(255) NOT NULL,
+    sloc				varchar(255) NOT NULL,
+    callDepth			varchar(255) NOT NULL,
+    createdDateTime		timestamp NOT NULL DEFAULT now(),
+    creatorNo			int Not NULL,
+    lastYn				char(1) NOT NULL,   
+    
+    CONSTRAINT pk_FunctionMetrics PRIMARY KEY (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE AnalysisLog (
@@ -230,7 +259,7 @@ Insert INTO Account (userId, userPwd, adminYn, createdDateTime) VALUES ('admin',
 Insert INTO Account (userId, userPwd, adminYn, createdDateTime) VALUES ('user', 'dexter', 'N', now());
 
 /* Configure */
-INSERT INTO Configure (codeKey, codeValue, codeName) VALUES ('db-version', '1.1.0', 'Dexter DB Version');
+INSERT INTO Configure (codeKey, codeValue, codeName) VALUES ('db-version', '1.1.1', 'Dexter DB Version');
 
 INSERT INTO Configure (codeKey, codeValue, codeName) VALUES ('severity', 'CRI', 'Critical');
 INSERT INTO Configure (codeKey, codeValue, codeName) VALUES ('severity', 'MAJ', 'Major');
@@ -252,17 +281,17 @@ INSERT INTO Configure (codeKey, codeValue, codeName) VALUES ('group-type', 'COM'
 INSERT INTO Configure (codeKey, codeValue, codeName) VALUES ('group-type', 'PRD', 'Product');
 INSERT INTO Configure (codeKey, codeValue, codeName) VALUES ('group-type', 'PRJ', 'Project');
 
-INSERT INTO DefectGroup (id, groupName, groupType, description, createdDateTime, creatorNo) VALUES (1, 'default', 'PRJ', '', now(), 1);
 
 
 /* DROP TABLES
-drop table Configure;
+drop table Configure; 
 drop table SharedDataVersion;
 drop table DefectGroupMap;
 drop table DefectGroup;
 drop table AccessLog;
 drop table AnalysisLog;
 drop table CodeMetrics;
+drop table FunctionMetrics;
 drop table SourceCodeMap;
 drop table SnapshotOccurenceMap;
 drop table SnapshotDefectMap;
@@ -272,3 +301,13 @@ drop table Occurence;
 drop table Defect;
 drop table Account;
 */
+
+
+
+
+
+
+
+
+
+

@@ -42,8 +42,13 @@ public class PreOccurence extends BaseDefect {
 	private String fieldName = "";
 	private String message = "";
 	private String severityCode = "";
+	private String categoryName = "";
 
 	
+	public String getCategoryName() {
+		return categoryName;
+	}
+
 	/**
 	 * @param severityCode the severityCode to set
 	 */
@@ -51,6 +56,11 @@ public class PreOccurence extends BaseDefect {
 		this.severityCode = severityCode;
 	}
 
+	public void setCategoryName(final String categoryName){
+		this.categoryName = categoryName;
+	}
+	
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -149,6 +159,7 @@ public class PreOccurence extends BaseDefect {
 		defect.setMethodName(methodName);
 //		defect.setMessage(message);		// ==> needs to summarize sub occurrences' messages
 		defect.setSeverityCode(severityCode);
+		defect.setCategoryName(categoryName);
 		defect.setLanguage(language);
 		defect.setToolName(toolName);
 		

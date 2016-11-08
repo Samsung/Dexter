@@ -24,7 +24,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * -------------------------------------------------------------------------------------------------------------------
- * Version : 0.9.2
+ * Version : 0.10.6
  * -------------------------------------------------------------------------------------------------------------------
  * Add Key Assignments :
  *   - markDexterDefectToFalseAlarm() : to mark defect status as a false alarm  (async: 3~5 sec)
@@ -49,7 +49,7 @@ macro initDexterGlobalVariables()
 	global g_showResultMsgDialog;	// 1: show,  0: hide
 	global g_waitDexterResult;		// 1: wait(synchronously),  0: no wait(asynchronously)
 	global g_analysisWhenOpen;		// 1: analysis when open, 0: not analysis when open a file(default)
-
+	global g_dexterPath;			// dexter daemon installation path
 
 	g_dexterRunning = 1;
 	g_maxUpdateCount = 6;
@@ -57,13 +57,15 @@ macro initDexterGlobalVariables()
 	g_dexterInitialized = 0;
 	g_dexterPrefix = "[Dexter] ";
 	g_lastFinished = "";
-	g_showResultMsgDialog = 0;
+	g_showResultMsgDialog = 0; 
 	g_waitDexterResult = 0;
 	g_analysisWhenOpen = 0;
+	
 
 	g_dexterConfig.sourceDirRegKey = "sourceDirRegKey"
 	g_dexterConfig.headerDirRegKey = "headerDirRegKey"
 	g_dexterConfig.dexterHomeRegKey = "dexterHomeRegKey"
+	g_dexterConfig.dexterInstallationPathRegKey = "dexterInstallationPathRegKey"
 	g_dexterConfig.sourceEncodingRegKey = "sourceEncodingRegKey"
 
 	g_dexterRunning = GetReg("g_dexterRunning");
@@ -82,7 +84,7 @@ macro initDexterGlobalVariables()
 	}
 
 	g_analysisWhenOpen = GetReg("g_analysisWhenOpen");
-	if(g_analysisWhenOpen == nil){
+	if(g_analysisWhenOpen == nil){  
 		g_analysisWhenOpen = 0;
 	}
 }
@@ -147,8 +149,8 @@ event DocumentOpen(sFile)
 event DocumentSaveComplete(sFile) // synchronously 
 //event DocumentChanged(sFile)  // asynchronously
 {
+
 	runDexter(sFile);
-	g_updateCount = g_maxUpdateCount;
 	stop;
 }
 
@@ -174,8 +176,13 @@ macro initDexter()
 
 	g_dexterConfig.sourceEncoding = GetReg(g_dexterConfig.sourceEncodingRegKey)
 
-	isInstalled = GetReg("g_dexterDaemon");
-	if(isInstalled == nil || isInstalled == "isInstalled" || isInstalled != 1){
+	g_dexterPath = GetReg(g_dexterConfig.dexterInstallationPathRegKey);
+	if(g_dexterPath != nil && g_dexterPath != "g_dexterPath"){
+		g_dexterDaemon = GetReg("g_dexterDaemon");
+		if(g_dexterDaemon == nil || g_dexterDaemon == "g_dexterDaemon" || g_dexterDaemon == 0){
+			RunCmdLine(g_dexterPath # "\\dexter.exe", g_dexterPath, 0);
+		}
+	} else {
 		error("Dexter Initialized failed");
 		Msg("You have to run Dexter Daemon first. If you didn't install, please install it first.");
 		stop;
@@ -231,13 +238,12 @@ macro runDexter(sFile)
 		stop;
 	}
 
-	createDexterConfFile();
-
-	/* don't use this until connecting cppcheck.dll
-	if(g_waitDexterResult == 1){
-		addDefectBookmarkSync();
+	g_dexterDaemon = GetReg("g_dexterDaemon");
+	if(g_dexterDaemon == nil || g_dexterDaemon == "g_dexterDaemon" || g_dexterDaemon == 0){
+		RunCmdLine(g_dexterPath # "\\dexter.exe", g_dexterPath, 0);
 	}
-	*/
+	
+	createDexterConfFile();
 }
 
 
@@ -443,7 +449,7 @@ macro markDexterDefectToFalseAlarm()
 	var hCurFile;
 	hCurFile = GetCurrentBuf();
 	if(hCurFile == hNil){
-		Msg("there is no open/target file");
+		//Msg("there is no open/target file");
 		stop;
 	}
 
@@ -502,7 +508,7 @@ macro createDexterConfFile()
 	projDir = GetProjDir(hprj);
 	hFile = GetCurrentBuf();
 	if(hFile == hNil){
-		Msg("There is no open/target file to analyze");
+		//Msg("There is no open/target file to analyze");
 		stop;
 	}
 
@@ -510,7 +516,7 @@ macro createDexterConfFile()
 	resultFileFullPath = getResultFilePathForCurrentFile();
 
 	if(resultFileFullPath == nil || resultFileFullPath == ""){
-		Msg("can't make result file full path in createDexterConfFile()");
+		//Msg("can't make result file full path in createDexterConfFile()");
 		stop;
 	}
 
@@ -526,7 +532,7 @@ macro createDexterConfFile()
 	if(hConfbuf == hNil){	
 		hConfbuf = NewBuf(confFile);
 		if(hConfbuf == hNil){
-			Msg("Invalid Dexter configuration file(Open Error) : " # confFile);
+			//Msg("Invalid Dexter configuration file(Open Error) : " # confFile);
 			stop;
 		}
 	}
@@ -560,6 +566,122 @@ macro createDexterConfFile()
 	SaveBuf(hConfbuf);
 	CloseBuf(hConfbuf);
 }
+
+macro createPlatzKeywordFile()
+{
+	if(g_dexterInitialized != 1){
+		stop;
+	}
+	var keyword;
+	var hFile;
+
+	hFile = GetCurrentBuf();
+	if(hFile == hNil){
+		//Msg("There is no open/target File to search");
+		stop;
+	}
+	keyword = GetKeywordFromCurrentLine(hFile);
+	if(keyword == nil){
+		Msg("There is no target keyword to search. Please move your insertion cursor and restart search macro");
+		stop;
+	}
+  
+	var hKeywordBuf;
+	var keywordFile;
+	var requestTime;
+	var contents;
+
+	initDexterHome();
+	keywordFile = g_dexterConfig.dexterHome # "\\bin\\daemon\\platz_keyword.json"
+	hKeywordBuf = OpenBuf(keywordFile);
+
+	if(hKeywordBuf == hNil){	
+		hKeywordBuf = NewBuf(keywordFile);
+		if(hKeywordBuf == hNil){
+			Msg("Invalid Platz Keyword file(Open Error) : " # keywordFile);
+			stop;
+		}
+	}
+	requestTime = getCurrentTimeString();	
+
+	contents = "{";
+	contents = contents # "\t\"keyword\":\"" # keyword # "\"";
+	contents = contents # "}";
+	emptyFileContent(hKeywordBuf, 0);
+	AppendBufLine(hKeywordBuf, contents);
+	SaveBuf(hKeywordBuf);
+	CloseBuf(hKeywordBuf);
+}
+
+macro GetKeywordFromCurrentLine(hbuf)
+{
+	var currentCursorIndex;
+	var current
+	var index;
+	var currentLineNumber;
+	var currentLineText;
+	var firstCharIndex;
+	var lastCharIndex;
+	var keyword;
+	
+	hwnd = GetCurrentWnd();
+	currentLineNumber = GetWndSelLnFirst(hwnd);
+	currentLineText = GetBufLine(hbuf,currentLineNumber);
+	currentCursorIndex = GetWndSelIchFirst(hwnd);
+	index = currentCursorIndex;
+
+
+	
+	if(checkAllowedChar(currentLineText[index]) == 0){
+		msg("[Dexter] You have to move your cursor on a character.");
+		stop;
+	}
+	
+	firstCharIndex = index;
+	while(index--){
+		if(checkAllowedChar(currentLineText[index]) == 0){
+			firstCharIndex = index+1;
+			break;
+		}
+	}
+
+	index = currentCursorIndex;
+	lastCharIndex = index;
+	while(index++){
+		if(checkAllowedChar(currentLineText[index]) == 0){
+			lastCharIndex = index-1;
+			break;
+		}
+	}
+
+	keyword = strmid(currentLineText,firstCharIndex,lastCharIndex+1);
+	return keyword;
+		
+}
+
+macro checkAllowedChar(char){
+	var asciiNum;
+	if(char ==Nil){
+		return 0;
+	}
+	asciiNum  =  AsciiFromChar(char);
+	if(asciiNum == 95 || asciiNum == 36){
+		return 1;
+	}
+	if(asciiNum >= 65 && asciiNum <=90){ 
+		return 1;
+	}
+	if(asciiNum >=97 && asciiNum <=122){
+		return 1;
+	}
+	if(asciiNum >=48 && asciiNum <=57){
+		return 1;
+	}
+	return 0;
+	
+	
+}
+
 
 macro createDefectFilterFile(defect, hFile, curLine)
 {
@@ -677,27 +799,11 @@ macro getResultFilePathForCurrentFile()
 	hFile = GetCurrentBuf();
 
 	if(hFile == hNil){
-		Msg("cann't open current file to created result file path");
 		return nil;
 		Stop;
 	}
 	
 	fileName = GetBufName(hFile);
-
-	/* for v1.12
-	eP = strlen(fileName);
-	if(fileName[1] == ":" && eP > 3){
-		bP = 3;
-		filePathFromPrj = strmid(fileName, bP, eP);	
-		return resultFolder # filePathFromPrj;
-	} else if(fileName[0] == "\\" && ep > 1) {
-		bP = 1;
-		filePathFromPrj = strmid(fileName, bP, eP);	
-		return resultFolder # filePathFromPrj;
-	} else {
-		return resultFolder # fileName;
-	}
-	*/
 
 	// for v1.11
 	eP = strlen(fileName);
@@ -713,8 +819,6 @@ macro getResultFilePathForCurrentFile()
 		bP = strlen(prjDir);
 		fLength = eP;
 		if(bP < 0 || eP < 0 || bP > fLength || eP > fLength){
-			//Msg("bp:" # bP # " ep:" # eP # " flenght:" # fLength);
-			//Msg("prjDir:" # prjDir # " fileName:" # fileName);
 			if(fileName[1] == ":"){
 				bP = 3;
 				filePathFromPrj = strmid(fileName, bP, eP);	
@@ -765,7 +869,7 @@ macro addBookmarkToCurFile()
 		var hBuf;
 		hBuf = GetCurrentBuf();
 		if(hBuf != hNil && IsBufRW(hBuf) == False){ // read only file
-			Msg("[Dexter] Cannot add bookmark(s) of defects into the current file due to read-only state.");
+			//Msg("[Dexter] Cannot add bookmark(s) of defects into the current file due to read-only state.");
 			stop;
 		}
 

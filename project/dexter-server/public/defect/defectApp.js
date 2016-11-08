@@ -1,4 +1,5 @@
-var defectApp = angular.module("defectApp", ['ngRoute', 'angularTreeview', 'ngGrid', 'ngAnimate', 'ui.bootstrap', 'ngSanitize']);
+var defectApp = angular.module("defectApp",
+    ['ngRoute', 'angularTreeview', 'ngGrid', 'ngAnimate', 'ui.bootstrap', 'ngSanitize','ngCsv']);
 
 defectApp.config(function($routeProvider){
     $routeProvider
@@ -13,9 +14,16 @@ defectApp.config(function($routeProvider){
         .when("/snapshot/:snapshotId/", {
             controller: "DefectCtrl",
             templateUrl: "defectTreeView.html"
-        }
+        })
+        .when("/:defectId",{
+            controller:"DefectIdCtrl",
+            templateUrl:"defectIdView.html"
+        })
+        .when("/snapshot/:snapshotId/:defectId",{
+            controller:"DefectIdCtrl",
+            templateUrl:"defectIdView.html"
+        });
 
-    );
     $routeProvider.otherwise({"redirectTo": "/"});
 });
 
@@ -33,6 +41,6 @@ defectApp.factory(
 
     }
 
-)
+);
 angular.element(document).ready(function() {
 });

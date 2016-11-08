@@ -29,6 +29,11 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Scanner;
+
+import com.google.common.base.Strings;
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.sun.jersey.spi.StringReader;
 
 class SourceCodeMatricsHelper
 {
@@ -111,7 +116,7 @@ class SourceCodeMatricsHelper
 
 		return array;
 	}
-
+	
 	/**
 	 * getLOCOfAllFiles(String source) method is responsible
 	 * for calculationg total SLOC (Source Line of Code)

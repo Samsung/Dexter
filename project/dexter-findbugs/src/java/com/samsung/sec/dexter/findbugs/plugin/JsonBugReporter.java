@@ -25,8 +25,6 @@
 */
 package com.samsung.sec.dexter.findbugs.plugin;
 
-import java.io.File;
-
 import javax.annotation.CheckForNull;
 
 import org.apache.log4j.Logger;
@@ -242,7 +240,6 @@ public class JsonBugReporter extends AbstractBugReporter {
 	protected void emitLine(String line) {
 		line = line.replaceAll("\t", "  ");
 		logger.error(line);
-//		System.err.println(line);
 	}
 
 	/*

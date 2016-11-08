@@ -37,13 +37,14 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Files;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
-import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.config.IDexterHomeListener;
 import com.samsung.sec.dexter.core.defect.Defect;
+import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
 
-public class RootAnalysisLog {
+public class RootAnalysisLog implements IDexterHomeListener{
 	private Queue<AnalysisLog> children = new LinkedList<AnalysisLog>();
 	
 	/**
@@ -61,7 +62,8 @@ public class RootAnalysisLog {
     		return;
     	}
     	
-    	for(File sub : resultDir.listFiles()){
+    	File[] resultFiles = DexterUtil.getSubFiles(resultDir);
+    	for(File sub : resultFiles){
     		if(sub.isFile()){
     			addAnalysisLogFromFile(sub);
     		}
@@ -76,7 +78,8 @@ public class RootAnalysisLog {
     		return;
     	}
     	
-    	for(final File subFile : resultOldDir.listFiles()){
+    	File[] subFiles = DexterUtil.getSubFiles(resultOldDir);
+    	for(final File subFile : subFiles){
     		if(subFile.isFile()){
     			addAnalysisLogFromFile(subFile);
     		}
@@ -105,21 +108,22 @@ public class RootAnalysisLog {
 	        	final Map map = gson.fromJson(content, Map.class);
 	        	@SuppressWarnings("rawtypes")
 	        	final List<LinkedTreeMap> defectList = (List<LinkedTreeMap>) map.get(ResultFileConstant.DEFECT_LIST);
+	        	final List<String> functionList = (List<String>) map.get(ResultFileConstant.FUNCTION_LIST);
 	        	
 	        	long datetime = -1;
 	        	final AnalysisLog resultLog = new AnalysisLog();
 	        	resultLog.setFileName((String) map.get(ResultFileConstant.FILE_NAME));
 	        	resultLog.setFileFullPath((String) map.get(ResultFileConstant.FULL_FILE_PATH));
+	        	resultLog.setModulePath((String) map.get(ResultFileConstant.MODULE_PATH));
 	        	resultLog.setDefectCount(Integer.parseInt((String)map.get(ResultFileConstant.DEFECT_COUNT)));
 	        	
 	        	final String fileStr = file.toString();
-	        	final int sp = fileStr.lastIndexOf("_") + 1;
-	        	final int ep = fileStr.lastIndexOf(".");
+	        	final int sp = fileStr.lastIndexOf('_') + 1;
+	        	final int ep = fileStr.lastIndexOf('.');
 	        	resultLog.setCreatedTimeStr(fileStr.substring(sp, ep));
 	        	
 	        	for(final LinkedTreeMap<String, Object> defectMap : defectList){
 	        		final Defect defect = Defect.fromMap(defectMap);
-	        		
 	        		datetime = defect.getModifiedDateTime();
 	        		if(datetime <= 0){
 	        			datetime = defect.getCreatedDateTime();
@@ -127,6 +131,12 @@ public class RootAnalysisLog {
 	        		resultLog.addDefectLog(defect);
 	        		
 	        	}
+	        	
+	        	if(functionList != null){
+		        	for(final String function : functionList ){
+		        		resultLog.addFunctionList(function);
+		        	}
+		        }
 	        	
 	        	resultLog.setCreatedTime(new Date(datetime));
 	        	
@@ -164,4 +174,9 @@ public class RootAnalysisLog {
     public AnalysisLog removeFirstChild() {
    		return this.children.poll();
     }
+
+	@Override
+	public void handleDexterHomeChanged(final String oldPath, final String newPath) {
+		loadFromLogFiles();
+	}
 }

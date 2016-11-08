@@ -36,6 +36,10 @@ var authUtil = require('./util/auth-util');
 var account = require("./routes/account");
 var analysis = require("./routes/analysis");
 var config = require("./routes/config");
+var codeMetrics = require("./routes/codeMetrics");
+var functionMetrics = require("./routes/functionMetrics");
+var monitor = require("./routes/monitor");
+var adminSE = require("./routes/adminSE");
 
 var app = express();
 
@@ -112,7 +116,7 @@ function setAppConfigure(){
         app.set('views', path.join(__dirname, 'views'));
         app.set('view engine', 'jade');
         app.use(express.static(path.join(__dirname, 'public')));
-        app.use(express.json({limit:'50mb'}));
+        app.use(express.json({limit:'300mb'}));
         app.use(express.urlencoded());
         app.use(express.methodOverride());
     });
@@ -138,7 +142,8 @@ function setAppConfigure(){
 
 function initModules(){
     log.init();
-    database.init().then(account.init());
+    database.init();
+    account.init();
 }
 
 function setCurrentUserIdAndNoOnRequest(req, res){
@@ -224,9 +229,11 @@ function initRestAPI(){
     app.post('/api/defect/markFalseDefect', auth, analysis.changeDefectToDismiss);
     app.post('/api/defect/markDefect', auth, analysis.changeDefectToNew);
     app.post('/api/defect/changeFix', auth, analysis.changeDefectToFix);
-    app.get('/api/defect/status/project', analysis.getProjectDefectStatus);
-    app.get('/api/defect/status/modulePath', analysis.getModuleDefectStatus);
-    app.get('/api/defect/status/fileName', analysis.getFileDefectStatus);
+
+    app.get('/api/defect/status/project', analysis.getProjectDefectStatus);   // Deprecated
+    app.get('/api/defect/status/modulePath', analysis.getModuleDefectStatus);   // Deprecated
+    app.get('/api/defect/status/fileName', analysis.getFileDefectStatus);   // Deprecated
+
     app.get('/api/defect', analysis.getDefectsByModuleAndFile);
     app.get('/api/defect/count', analysis.getDefectCountByModuleAndFile);
     app.get('/api/webDefectCount', analysis.getDefectCount);
@@ -295,7 +302,7 @@ function initRestAPI(){
     /* Analysis Result */
     app.post('/api/v1/analysis/result', auth, analysis.add);
     app.post('/api/v1/analysis/snapshot/source', auth, analysis.addSnapshotSourceCode);
-    app.get('/api/v1/analysis/snapshot/source', auth, analysis.getSnapshotSourceCode);
+    app.get('/api/v1/analysis/snapshot/source', auth, analysis.getSnapshotSourceCode); // Deprecated
     app.get('/api/v1/analysis/snapshot/checkSourceCode', auth, analysis.checkSnapshotSourceCode);
 
     /* Defect Filter */
@@ -308,15 +315,19 @@ function initRestAPI(){
 
     /* Defect */
     app.post('/api/v1/defect/gid', auth, analysis.getGlobalDid);
+    app.post('/api/v1/defect/deleteAll', auth, analysis.deleteDefect);
     app.delete('/api/v1/defect/deleteAll', auth, analysis.deleteDefect);
     app.post('/api/v1/defect/dismiss', auth, analysis.changeDefectStatus);
     app.get('/api/v1/defect/moduleAndFile', auth, analysis.getModuleAndFileName);
     app.post('/api/v1/defect/markFalseDefect', auth, analysis.changeDefectToDismiss);
     app.post('/api/v1/defect/markDefect', auth, analysis.changeDefectToNew);
     app.post('/api/v1/defect/changeFix', auth, analysis.changeDefectToFix);
-    app.get('/api/v1/defect/status/project', analysis.getProjectDefectStatus);
-    app.get('/api/v1/defect/status/modulePath', analysis.getModuleDefectStatus);
-    app.get('/api/v1/defect/status/fileName', analysis.getFileDefectStatus);
+
+    app.get('/api/v1/defect/status/project', analysis.getProjectDefectStatus);  // Deprecated
+    app.get('/api/v1/defect/status/modulePath', analysis.getModuleDefectStatus);  // Deprecated
+    app.get('/api/v1/defect/status/fileName', analysis.getFileDefectStatus);  // Deprecated
+
+
     app.get('/api/v1/defect', analysis.getDefectsByModuleAndFile);
     app.get('/api/v1/defect/count', analysis.getDefectCountByModuleAndFile);
     app.get('/api/v1/webDefectCount', analysis.getDefectCount);
@@ -326,7 +337,7 @@ function initRestAPI(){
     /* SnapshotDefectMap / SnapshotSourcecodeMap*/
     app.get('/api/v1/snapshot/snapshotList', analysis.getAllSnapshot);
     app.get('/api/v1/snapshot/showSnapshotDefectPage',analysis.getDefectListInSnapshot);
-    app.get('/api/v1/snapshot/occurenceInFile', analysis.getOccurencesByFileNameInSnapshot);
+    app.get('/api/v1/snapshot/occurenceInFile', analysis.getOccurencesByFileNameInSnapshot); // Deprecated
 
     /* code metrics */
     app.get('/api/v1/metrics', analysis.getCodeMetrics);
@@ -358,6 +369,74 @@ function initRestAPI(){
     /* Get Latest Checekr Config Json File */
     app.post('/api/v1/config/:pluginName', config.getCheckerConfigJsonFile);
 
+    /* Code Metrics For Dexter Client*/
+    app.get('/api/v1/codeMetrics/total', codeMetrics.getTotalCodeMetrics);
+    app.get('/api/v1/codeMetrics/', codeMetrics.getCodeMetricsFromClient);
+    app.get('/api/v1/codeMetrics/ccList', codeMetrics.getCodeMetricsForCC);
+    app.get('/api/v1/codeMetrics/sloc', codeMetrics.getFunctionMetricsForSloc);
+
+    app.post('/api/v1/codeMetrics/topCodeMetrics', codeMetrics.getTopCodeMetrics);
+
+    app.get('/api/v1/codeMetrics/topCC', codeMetrics.getTopCCForCodeMetrics);
+    app.get('/api/v1/codeMetrics/topMethod', codeMetrics.getTopMethodForCodeMetrics);
+    app.get('/api/v1/codeMetrics/topClass', codeMetrics.getTopClassForCodeMetrics);
+    app.get('/api/v1/codeMetrics/topSloc', codeMetrics.getTopSLOCForCodeMetrics);
+
+    app.get('/api/v1/codeMetrics/threshold', codeMetrics.getCodeMetricsThreshold);
+    app.get('/api/v1/codeMetrics/quantity', codeMetrics.getCodeMetricsQuantity);
+
+
+    /** API VERSION 2 **/
+    app.post('/api/v2/analysis/result', auth, analysis.addV2);
+    app.get('/api/v2/defect', analysis.getDefectsByModuleAndFileV2);
+    app.get('/api/v2/defect/:did', analysis.getDefectsByModuleAndFileForDid);
+
+    /* SnapshotDefectMap / SnapshotSourcecodeMap*/
+    app.get('/api/v2/snapshot/snapshotList', analysis.getAllSnapshotV2);
+    app.get('/api/v2/snapshot/security', analysis.getSnapshotDefectForSecurity);
+
+    app.get('/api/v2/snapshot/:snapshotId',analysis.getDefectListInSnapshotV2);
+    app.get('/api/v2/snapshot/:snapshotId/:did',analysis.getDefectListInSnapshotForDid);
+
+    /* Defect */
+    app.get('/api/v2/defect/status/project', analysis.getProjectDefectStatusV2);
+    app.get('/api/v2/defect/status/modulePath', analysis.getModuleDefectStatusV2);
+    app.get('/api/v2/defect/status/fileName', analysis.getFileDefectStatusV2);
+
+    app.get('/api/v2/defect/security', analysis.getDefectForSecurity);
+    app.post('/api/v2/defect/deleteAll', auth, analysis.deleteDefect);
+
+    app.get('/api/v2/functionMetrics/', functionMetrics.getTotalFunctionMetrics);
+    app.get('/api/v2/functionMetrics/All', functionMetrics.getAllFunctionMetrics);
+    app.post('/api/v2/functionMetrics', functionMetrics.getFunctionMetrics);
+
+    app.get('/api/2/codeMetrics/slocList', codeMetrics.getCodeMetricsForSloc);
+
+
+    /* Analysis Result */
+    app.post('/api/v2/analysis/snapshot/sourcecode', auth, analysis.getSnapshotSourceCodeV2);
+    app.post('/api/v2/snapshot/occurence-in-file', analysis.getOccurencesByFileNameInSnapshotV2);
+
+    /* EXPORT SECURITY REPORT */
+    app.get('/api/v2/security/snapshotAll', analysis.getSnapshotDefectForSecurity);
+    app.get('/api/v2/security/defectAll', analysis.getDefectForSecurity);
+
+    /* For CSV file */
+    app.get('/api/v2/defectAll', analysis.getDefectForCSV);
+    app.get('/api/v2/snapshotAll', analysis.getSnapshotDefectForCSV);
+
+    /* For Administrator */
+    app.get('/api/v2/module-path-list', adminSE.getModulePathList);
+    app.delete('/api/v2/module-path-list', auth, adminSE.deleteModulePathList);
+
+    app.get('/api/v2/defect-count', monitor.getDefectCount);
+    app.get('/api/v2/detailed-defect-count', monitor.getDetailedDefectCount);
+    app.get('/api/v2/user-count', monitor.getUserCount);
+    app.get('/api/v2/user-list', monitor.getUserList);
+
+
+    /** API VERSION 3 **/
+    app.post('/api/v3/analysis/result', auth, analysis.addV3);
 
 }
 
@@ -369,7 +448,7 @@ function startServer(){
         log.info('Dexter server location : ' + __dirname);
         log.info("Execution Mode : " + app.get('env'));
     });
-};
+}
 
 //use UT Code
 function stopServer (req, res){
@@ -387,7 +466,7 @@ function stopServer (req, res){
 
     dexterServer.close();
     process.exit(1);
-};
+}
 
 exports.forceStopServer = function(){
     dexterServer.close();
@@ -406,7 +485,7 @@ function deleteDexterDatabase (req, res){
     log.info('Dexter database will be removed by ' + userId);
     if(res != undefined) res.send("ok");
     database.deleteDexterDatabase();
-};
+}
 
 function checkServer (req, res){
     res.status(200);
@@ -414,7 +493,7 @@ function checkServer (req, res){
     //res.send({"isAlive":"ok"});
     //res.writeHead(200, { 'Content-Type': 'application/json' });
     //res.jsonp({"isAlive":"ok"});
-};
+}
 
 function checkServer2 (req, res){
     //res.writeHead(200, { 'Content-Type': 'application/json' });

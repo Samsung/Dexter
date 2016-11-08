@@ -1,4 +1,3 @@
-
 /**
  * Copyright (c) 2014 Samsung Electronics, Inc.,
  * All rights reserved.

@@ -6,11 +6,11 @@
  * modification, are permitted provided that the following conditions are met:
  * 
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  * 
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -22,138 +22,158 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+ */
 package com.samsung.sec.dexter.executor;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
 import com.google.common.base.Strings;
-import com.google.common.io.Files;
+import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResultFileManager;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.RunMode;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
-import com.samsung.sec.dexter.core.plugin.DexterPluginManager;
-import com.samsung.sec.dexter.core.util.DexterClient;
-import com.samsung.sec.dexter.core.util.DexterUtil;
+import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
+import com.samsung.sec.dexter.core.util.IDexterClient;
 import com.samsung.sec.dexter.metrics.CodeMetricsGenerator;
 
-public class DexterAnalyzerThread extends Thread{
-	private final static Logger logger = Logger.getLogger(DexterAnalyzerThread.class);
-	private AnalysisConfig config;
-//	private AnalysisResult result;
-	private DexterAnalyzer analyzer = DexterAnalyzer.getInstance();
-	
-	public DexterAnalyzerThread(AnalysisConfig config){
-		this.config = config;
-		//this.result = result;
-	}
-	
-	@Override
-	public void run() {
-		try{
-			// TODO: Dismissed / Excluding Scope 대상 파일인지 검사
-			// 0. Check parameters
-			if (checkAnalsysConfig(config) == false) {
-				logger.error("cannot analyze the file : " + config.getSourceFileFullPath());
-				return;
-			}
-	
-			// 1. add Header And Source Configuration
-			analyzer.addHeaderAndSourceConfiguration(config);
-	
-			// 2. decide whether save source code or not
-			analyzer.preSendSourceCode(config);
-			if (config.shouldSendSourceCode() || config.getSnapshotId() > 0
-			        || DexterConfig.getInstance().getRunMode() == RunMode.CLI) {
-				sendSourceCode(config);
-			}
-			analyzer.postSendSourceCode(config);
-	
-			// 3. check code metrics
-			analyzer.preRunCodeMetrics(config);
-			config.getCodeMetrics().setFileName(config.getFileName());
-			config.getCodeMetrics().setModulePath(config.getModulePath());
-			CodeMetricsGenerator.getCodeMetrics(config.getLanguageEnum(), config.getSourceFileFullPath(),
-			        config.getCodeMetrics());
-			analyzer.postRunCodeMetrics(config);
-	
-			// 4. call plugin's analyzer (static analysis)
-			analyzer.preRunStaticAnalysis(config);
-			List<AnalysisResult> resultList = DexterPluginManager.getInstance().analyze(config);
-			AnalysisResultFileManager.getInstance().writeJson(resultList);
-			logger.info("analyzed " + config.getSourceFileFullPath());
-			config.getResultHandler().handleAnalysisResult(resultList);
-			analyzer.postRunStaticAnalysis(config, resultList);
-		} catch (DexterRuntimeException e){
-			logger.error("analyzed failed  : " 	+ config.getSourceFileFullPath());
-		} catch (NoClassDefFoundError e) {
-			e.printStackTrace();
-			logger.error("analyzed failed  : " 	+ config.getSourceFileFullPath(), e);
-		}
-	}
+import java.io.File;
+import java.util.List;
 
-	private boolean checkAnalsysConfig(final AnalysisConfig config) {
-		if (Strings.isNullOrEmpty(config.getSourceFileFullPath()) || Strings.isNullOrEmpty(config.getFileName())) {
-			logger.error("Invalid Analysis Config : fileName or sourceFileFullPath is null or empty");
-			return false;
-		}
+import org.apache.log4j.Logger;
 
-		final File f = new File(config.getSourceFileFullPath());
-		if (f.isFile() == false || f.exists() == false || f.length() <= 0) {
-			logger.error("Invalid Analsis Config : file is not exist or 0 size : " + config.getSourceFileFullPath());
-			return false;
-		}
+public class DexterAnalyzerThread extends Thread {
+    private final static Logger logger = Logger.getLogger(DexterAnalyzerThread.class);
 
-		if (Strings.isNullOrEmpty(config.getProjectName()) || Strings.isNullOrEmpty(config.getProjectFullPath())) {
-			logger.error("Invalid Analysis Config : projectName or projectFullPath is null or empty");
-			return false;
-		}
+    private AnalysisConfig config;
+    private IDexterPluginManager pluginManager;
+    private IDexterClient client;
 
-		final File p = new File(config.getProjectFullPath());
-		if (p.isDirectory() == false || p.exists() == false) {
-			logger.error("Invalid Analsis Config : project full path is not exist or not directory : "
-			        + config.getProjectFullPath());
-			return false;
-		}
+    public void setFields(final AnalysisConfig config, final IDexterPluginManager pluginManager,
+            final IDexterClient client) {
+        assert config != null;
+        assert pluginManager != null;
+        assert client != null;
 
-		return true;
-	}
+        this.config = config;
+        this.pluginManager = pluginManager;
+        this.client = client;
+    }
 
-	// TODO 압축해서 보낼 것
-	private void sendSourceCode(final AnalysisConfig config) {
-		if (DexterClient.getInstance().isLogin() == false) {
-			return;
-		}
-		
-		for (final String base : config.getSourceBaseDirList()) {
-			final File file = DexterUtil.getFileFullPath(base, config.getModulePath(), config.getFileName());
-			
-			if(file.exists() == false || file.isFile() == false){
-				continue;
-			}
-			
-			try {
-				final StringBuilder src = new StringBuilder(1000);
-				for (final String content : Files.readLines(file, DexterConfig.getInstance().getSourceEncoding())) {
-					src.append(content).append(DexterUtil.LINE_SEPARATOR);
-				}
+    @Override
+    public void run() {
+        analyze(this.config, this.pluginManager, this.client);
+    }
 
-				DexterClient.getInstance().insertSourceCode(config.getSnapshotId(), config.getDefectGroupId(),
-				        config.getModulePath(), config.getFileName(), src.toString());
-			} catch (IOException e) {
-				logger.error(e.getMessage(), e);
-			} catch (DexterRuntimeException e) {
-				logger.error(e.getMessage(), e);
-            }
+    // TODO: Dismissed / Excluding Scope 대상 파일인지 검사
+    protected void analyze(final AnalysisConfig analysisConfig, final IDexterPluginManager dexterPluginManager,
+            final IDexterClient dexterClient) {
+        assert analysisConfig != null;
+        assert dexterPluginManager != null;
 
-			break;
-		}
-	}
+        try {
+            DexterAnalyzer analyzer = DexterAnalyzer.getInstance();
+
+            checkAnalsysConfig(analysisConfig);
+            analysisConfig.addHeaderAndSourceConfiguration(analyzer.getProjectAnalysisConfigurationList());
+
+            analyzer.preSendSourceCode(analysisConfig);
+            sendSourceCode(analysisConfig, dexterClient);
+            analyzer.postSendSourceCode(analysisConfig);
+
+            analyzer.preRunCodeMetrics(analysisConfig);
+            generateCodeMetrics(analysisConfig);
+            analyzer.postRunCodeMetrics(analysisConfig);
+
+            analyzer.preRunStaticAnalysis(analysisConfig);
+            List<AnalysisResult> resultList = runStaticAnalysis(analysisConfig, dexterPluginManager, dexterClient);
+            analyzer.postRunStaticAnalysis(analysisConfig, resultList);
+        } catch (DexterRuntimeException | NoClassDefFoundError e) {
+            logger.error("Dexter Analysis Failed : " + analysisConfig.getSourceFileFullPath(), e);
+            logger.error(new Gson().toJson(analysisConfig));
+        }
+    }
+
+    private void checkAnalsysConfig(final AnalysisConfig config) {
+        if (Strings.isNullOrEmpty(config.getSourceFileFullPath()) || Strings.isNullOrEmpty(config.getFileName())) {
+            throw new DexterRuntimeException(
+                    "Invalid Analysis Config : fileName or sourceFileFullPath is null or empty");
+        }
+
+        final File f = new File(config.getSourceFileFullPath());
+        if (f.isFile() == false || f.exists() == false || f.length() <= 0) {
+            throw new DexterRuntimeException(
+                    "Invalid Analysis Config : file is not exist or 0 size : " + config.getSourceFileFullPath());
+        }
+
+        if (f.length() > DexterConfig.SOURCE_FILE_SIZE_LIMIT) {
+            throw new DexterRuntimeException(
+                    "Dexter can't analyze a big file over " + DexterConfig.SOURCE_FILE_SIZE_LIMIT + " byte: "
+                            + config.getSourceFileFullPath() + "(" + f.length() + " byte)");
+        }
+
+        if (Strings.isNullOrEmpty(config.getProjectName()) || Strings.isNullOrEmpty(config.getProjectFullPath())) {
+            throw new DexterRuntimeException(
+                    "Invalid Analysis Config : projectName or projectFullPath is null or empty");
+        }
+
+        final File p = new File(config.getProjectFullPath());
+        if (p.isDirectory() == false || p.exists() == false) {
+            throw new DexterRuntimeException(
+                    "Invalid Analsis Config : project full path is not exist or not directory : "
+                            + config.getProjectFullPath());
+        }
+    }
+
+    // TODO 압축해서 보낼 것
+    private void sendSourceCode(final AnalysisConfig config, final IDexterClient client) {
+        if (isInvalidConditionToSendSourcecodes(config, client))
+            return;
+
+        try {
+            client.insertSourceCodeCharSequence(config.getSnapshotId(), config.getDefectGroupId(),
+                    config.getModulePath(),
+                    config.getFileName(), config.getSourcecodeThatReadIfNotExist().toString());
+        } catch (DexterRuntimeException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    private boolean isInvalidConditionToSendSourcecodes(final AnalysisConfig config, final IDexterClient client) {
+        if (config.shouldSendSourceCode() == false && config.getSnapshotId() <= 0
+                && DexterConfig.getInstance().getRunMode() != RunMode.CLI) {
+            return true;
+        }
+
+        if (client.isLogin() == false) {
+            return true;
+        }
+
+        final File file = new File(config.getSourceFileFullPath());
+        if (file.exists() == false || file.isFile() == false) {
+            logger.error(
+                    "cann't send a file to Dexter Server because it doesn't exist:" + config.getSourceFileFullPath());
+            return true;
+        }
+
+        return false;
+    }
+
+    private void generateCodeMetrics(final AnalysisConfig analysisConfig) {
+        analysisConfig.getCodeMetrics().setFileName(analysisConfig.getFileName());
+        analysisConfig.getCodeMetrics().setModulePath(analysisConfig.getModulePath());
+        CodeMetricsGenerator.getCodeMetrics(analysisConfig.getLanguageEnum(),
+                analysisConfig.getSourceFileFullPath(),
+                analysisConfig.getCodeMetrics(), analysisConfig.getFunctionMetrics(),
+                analysisConfig.getFunctionList());
+    }
+
+    private List<AnalysisResult> runStaticAnalysis(final AnalysisConfig analysisConfig,
+            final IDexterPluginManager dexterPluginManager, final IDexterClient dexterClient) {
+        List<AnalysisResult> resultList = dexterPluginManager.analyze(analysisConfig);
+        AnalysisResultFileManager.getInstance().writeJson(resultList);
+        logger.info("analyzed " + analysisConfig.getSourceFileFullPath());
+        analysisConfig.getResultHandler().handleAnalysisResult(resultList, dexterClient);
+        return resultList;
+    }
 }

@@ -25,134 +25,244 @@
  */
 
 "use strict";
-var mysql = require('mysql');
-var _ = require('lodash');
-var Promise = require('bluebird');
-
+var mysql = require("mysql");
 var logging = require('./logging');
 var util = require('./dexter-util');
-var databasePool;
+var Q = require('q');
+var _databasePool;
 
-/**
- * You should call this function before using this module.
- * this function rates and tests MySQL Database Pool
- * with global.runOptions's properties which are set by setRunOptionsByCliOptions9() in server.js
- *
- * @returns {*} BlueBird Promise Object
- */
+
 exports.init = function(){
-   return initDatabase();
+    setRunOptionsImmutable();
+    initDatabase();
 };
 
-/**
- * @param req no need to set any value
- * @param res if success, return the database name as a project name, Otherwise return error code 500
- */
+function setRunOptionsImmutable(){
+    Object.freeze(global.runOptions);
+}
+
 exports.getProjectName = function(req, res){
-    var projectName = getDatabaseName();
-
-    if(projectName === "unknown"){
-        res.send(500, {
-            status : "fail",
-            errorMessage : "cannot get project name because goloba.runOptions.databaseName is not valid",
-            projectName : projectName
-        });
-    } else {
-        res.send(200, {
-            status : "ok",
-            projectName :  projectName
-        });
-    }
+    res.send({
+        status : "ok",
+        projectName :  global.runOptions.databaseName
+    });
 };
 
-/**
- * @return if success, return database name, otherwise, return "unknonw" string
- * @type {getDatabaseName}
- */
-exports.getDatabaseName = getDatabaseName;
+exports.deleteDexterDatabase = function(){
+    // TODO : root account info from server.conf
+    global.runOptions.databaseAdminUser = 'dexterAdmin';
+    global.runOptions.databaseAdminPassword = "dex2admin";
 
-function getDatabaseName(){
-    if(_.has(global, ["runOptions", "databaseName"]) && global.runOptions.databaseName.length > 0){
-        return global.runOptions.databaseName;
-    } else {
-        return "unknown";
-    }
+    util.getLocalhostIp(function(localhostIp){
+        var scripts = [
+                "DROP DATABASE " + global.runOptions.databaseName
+        ];
+
+        runMysqlScript(scripts, 0);
+    });
 };
+
 
 function initDatabase(){
-    checkGlobalRunOptions();
+    initDbPool();
 
-    return createPool()
-        .then(checkDatabasePool);
-}
-
-function checkGlobalRunOptions(){
-    if(!global.runOptions
-        || !global.runOptions.hasOwnProperty("databaseHost")
-        || !global.runOptions.hasOwnProperty("databasePort")
-        || !global.runOptions.hasOwnProperty("databaseUser")
-        || !global.runOptions.hasOwnProperty("databasePassword")
-        || !global.runOptions.hasOwnProperty("databaseName"))
-        throw new Error("global.runOptions is not defined properly");
-}
-
-function createPool(){
-    return new Promise(function(resolve, reject){
-        databasePool = mysql.createPool({
-            host : global.runOptions.databaseHost,
-            port : global.runOptions.databasePort,
-            user : global.runOptions.databaseUser,
-            password: global.runOptions.databasePassword,
-            database : global.runOptions.databaseName,
-            connectionLimit : 10
-        });
-
-        if(databasePool)    resolve();
-        else reject(new Error('database pool is not valid'));
-    });
-}
-
-function checkDatabasePool() {
-    return new Promise(function(resolve, reject){
-        databasePool.query('SELECT 1 + 1 AS solution', function(err) {
-            if (err){
-                logging.error('Dexter Database Connection Failed : ' + global.runOptions.getDbUrl())
-                reject(err);
-            } else {
-                logging.info('Dexter Database Connected : ' + global.runOptions.getDbUrl());
-                resolve();
-            }
-        });
-    });
-}
-
-/**
- * sql will be executed
- *
- * @param sql       sql statement without ';' mark in the end of the statement
- * @param callback   If sql execution is success, callback function will be called. Otherwise never called
- *                      It can be replaced by Promise(bluebird) in the future
- */
-exports.exec = function (sql, callback){
-    databasePool.getConnection(function(err, connection){
+    _databasePool.query('SELECT 1 + 1 As solution', function(err) {
         if(err){
-            logging.error(err.message);
-            throw err;
-        } else if(connection){
-            if(connection.isClosed){
-                var msg = "Invalid DB Connection : closed";
-                logging.error(msg);
-                throw msg;
+            if(err.code === "ER_BAD_DB_ERROR"){
+                logging.error("There is no proper Dexter Database. You have to create it first.");
+
+                // TODO fix and test below codes
+                //installDexterDatabase(); return;
+            } else if (err.code === "ER_ACCESS_DENIED_ERROR") {
+                logging.error("You can not access Dexter Database by account '" + global.runOptions.databaseUser + "'.");
+                logging.error("You have to create and grant an account for Dexter Database in MySql console.")
+                logging.error("mysql> create user user_id identified by user_password;");
+                logging.error("mysql> grant all on 'dexter_db_name'.* to 'user_id'@'dexter_server_ip' identified by 'user_password';");
+                logging.error("mysql> flush privileges;");
+            } else if(err.code === "ECONNREFUSED"){
+                logging.error("There is no Mysql Instance. Please check your MySQL Connection : ");
             }
 
-            connection.query(sql, callback);
-            logging.debug(sql);
-            connection.release();
-        } else {
-            logging.debug(sql);
-            throw "unknown error when executing sql";
+            logging.error(err);
+            throw err;
         }
     });
+}
+
+function initDbPool(){
+    _databasePool = mysql.createPool({
+        /*    debug: true, */
+        host : global.runOptions.databaseHost,
+        port : global.runOptions.databasePort,
+        user : global.runOptions.databaseUser,
+        password: global.runOptions.databasePassword,
+        database : global.runOptions.databaseName
+        /*connectTimeout: 10000 */
+    });
+
+    _databasePool.query('SELECT 1 + 1 AS solution', function(err) {
+        if (err){
+            logging.error('Dexter Database Connection Failed : ' + global.runOptions.getDbUrl())
+        } else {
+            logging.info('Dexter Database Connected : ' + global.runOptions.getDbUrl());
+        }
+    });
+}
+
+// TODO should move to dexter-monitor module.
+function installDexterDatabase(){
+    logging.info("There is no Dexter Database(" + global.runOptions.databaseName + "). Thus Dexter Database will be installed.");
+
+    util.getLocalhostIp(function(localhostIp){
+        var scripts = [
+                "CREATE DATABASE " + global.runOptions.databaseName,
+                "CREATE USER '" + global.runOptions.databaseUser + "'@'" + localhostIp
+                    + "' IDENTIFIED BY '" + global.runOptions.databasePassword + "'",
+                "GRANT ALL PRIVILEGES ON " + global.runOptions.databaseName + ".* TO '" + global.runOptions.databaseUser
+                    + "'@'" + localhostIp + "' IDENTIFIED BY '" + global.runOptions.databasePassword + "'"
+        ];
+
+        runMysqlScript(scripts, 0);
+    });
+}
+
+function runMysqlScript(scripts, index){
+    if(scripts.length <= index){
+        return;
+    }
+
+    var cmd = "mysql -h " + global.runOptions.databaseHost
+        + " -u " + global.runOptions.databaseAdminUser
+        + " -p" + global.runOptions.databaseAdminPassword + " -e \"" + scripts[index] + "\"";
+
+    logging.info(cmd);
+
+    var exec = require('child_process').exec;
+    exec(cmd, function(error, stdout, stderr){
+        if(error){
+            if(error.code != 1){
+                logging.error(error);
+                logging.error("Execute Failed: " + cmd);
+                return;
+            }
+
+            logging.error(error);
+            process.exit(2);
+        }
+
+        logging.info("Executed: " + cmd);
+
+        if(++index >= scripts.length){
+            execMysqlScript(process.cwd() + "/config/ddl_lines.sql");
+        } else {
+            runMysqlScript(scripts, index);
+        }
+    });
+}
+
+
+function execMysqlScript(scriptFilePath){
+    var cmd = "mysql -h " + global.runOptions.databaseHost
+        + " -u " + global.runOptions.databaseUser
+        + " -p" + global.runOptions.databasePassword
+        + " " + global.runOptions.databaseName + " < " + scriptFilePath;
+
+    var exec = require('child_process').exec;
+    exec(cmd, function(error, stdout, stderr){
+        if(error){
+            /*
+            if(error.code != 1){
+                logging.error(error);
+                logging.error("Execute Failed: " + cmd);
+                return;
+            }
+            */
+
+            logging.error(error);
+            process.exit(3);
+        }
+
+        logging.info("Executed: " + cmd);
+        initDbPool();
+    });
+}
+
+exports.getDatabaseName = function(){
+    return global.runOptions.databaseName;
+};
+
+exports.exec = function (sql, callback){
+    _databasePool.getConnection(function(err, connection){
+        if(err){
+            logging.error(err.message);
+        }
+
+        if(connection){
+            if(connection.isClosed){
+                logging.error("Invalid DB Connection : closed");
+            }
+
+            var query = connection.query(sql, callback);
+            logging.debug(sql);
+            connection.release();
+        }
+    });
+};
+
+exports.execV2 = function (sql, args){
+    var deferred = Q.defer();
+    _databasePool.getConnection(function(err, connection){
+        if(err){
+            logging.error(err.message);
+            deferred.reject(new Error());
+        } else {
+            if(connection.isClosed){
+                var con_err = {message : "Invalid DB Connection : closed"};
+                logging.error(con_err.message);
+                deferred.reject(new Error(con_err));
+            } else {
+                logging.debug(sql);
+                var query = connection.query(sql, args, function(err, rows){
+                    connection.release();
+                    if(err){
+                        logging.error(err.message);
+                        deferred.reject(new Error(err));
+                    } else {
+                        deferred.resolve(rows);
+                    }
+                })
+            }
+        }
+    });
+    return deferred.promise;
+};
+
+exports.execute = function (sql, args){
+    var deferred = Q.defer();
+    _databasePool.getConnection(function(err, connection){
+        if (err) {
+            logging.error(err.message);
+            deferred.reject(new Error(err));
+        } else {
+            if(connection.isClosed){
+                var con_err = {message : "Invalid DB Connection : closed"};
+                logging.error(con_err.message);
+                deferred.reject(new Error(con_err));
+            } else {
+                logging.debug(sql);
+                var query = connection.query(sql, args, function(err, rows) {
+                    connection.release();
+                    if (err) {
+                        logging.error(err.message);
+                        deferred.reject(new Error(err));
+                    } else {
+                        deferred.resolve(rows);
+                    }
+                });
+            }
+        }
+    });
+    return deferred.promise;
 };
 
 exports.execTx = function (connection, sql, callback){
@@ -167,7 +277,7 @@ exports.execTx = function (connection, sql, callback){
 };
 
 exports.toSqlValue = function(value){
-    if(value == undefined || value == null || value === 'null' || value === ''){
+    if(value == undefined || value =='undefined'|| value == null || value === 'null' || value === ''){
         return "null";
     } else {
         var str = "" + value;
@@ -176,7 +286,7 @@ exports.toSqlValue = function(value){
 };
 
 exports.compareEqual = function(value){
-    if(value == undefined || value == 'null' || value == ''){
+    if(value == undefined || value =='undefined' || value == 'null' || value == null || value == ''){
         return " is null ";
     } else {
         return " = '" + value + "'";

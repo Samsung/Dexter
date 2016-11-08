@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Dexter Eclipse JDT
+Bundle-SymbolicName: dexter-eclipse-jdt;singleton:=true
+Bundle-Version: 0.10.6
+Bundle-Activator: com.samsung.sec.dexter.eclipse.jdt.DexterEclipseJdtActivator
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.ui,
+ org.eclipse.jdt.core,
+ dexter-core,
+ dexter-eclipse
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: Samsung Electronics VD SE Lab
+Bundle-ClassPath: .,
+ lib/guava-16.0.1.jar

@@ -25,6 +25,12 @@
 */
 package com.samsung.sec.dexter.eclipse.ui.action;
 
+import com.samsung.sec.dexter.core.defect.Defect;
+import com.samsung.sec.dexter.core.filter.AnalysisFilterHandler;
+import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
+import com.samsung.sec.dexter.eclipse.ui.view.AnalysisLogTreeView;
+import com.samsung.sec.dexter.eclipse.ui.view.DefectLog;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -37,48 +43,47 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
-import com.samsung.sec.dexter.core.defect.Defect;
-import com.samsung.sec.dexter.core.filter.AnalysisFilterHandler;
-import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
-import com.samsung.sec.dexter.eclipse.ui.view.AnalysisLogTreeView;
-import com.samsung.sec.dexter.eclipse.ui.view.DefectLog;
-
 public class UndismissDefect implements IObjectActionDelegate {
 	private Set<DefectLog> defectLogList = new HashSet<DefectLog>();
 	private IWorkbenchPart part;
-	
-	
+
 	public UndismissDefect() {
 	}
 
 	@Override
 	public void run(IAction action) {
-		if(defectLogList.size() == 0){
+		if (defectLogList.size() == 0) {
 			DexterUIActivator.LOG.error("the selection is not valid");
 			return;
 		}
-		
-		if(!(part.getSite().getPart() instanceof AnalysisLogTreeView)){
+
+		if (part == null) {
+			DexterUIActivator.LOG.error("Cannot make a defect");
+			return;
+		}
+
+		if (!(part.getSite().getPart() instanceof AnalysisLogTreeView)) {
 			MessageDialog.openError(part.getSite().getShell(), "error", "invalid part");
 			return;
 		}
-		
+
 		final AnalysisLogTreeView view = (AnalysisLogTreeView) part.getSite().getPart();
 		final Tree tree = view.getLogTreeView().getTree();
-		
-		if(tree.getItems() == null && tree.getItems().length == 0){
+
+		if (tree.getItems() == null && tree.getItems().length == 0) {
 			return;
 		}
-		
-		for(final DefectLog log : defectLogList){
-			if(log.isDismissed() == false){
+
+		for (final DefectLog log : defectLogList) {
+			if (log.isDismissed() == false) {
 				continue;
 			}
-			
+
 			final Defect defect = log.getDefect();
-			AnalysisFilterHandler.getInstance().removeDefectFilter(defect);
+			AnalysisFilterHandler.getInstance().removeDefectFilter(defect,
+					DexterUIActivator.getDefault().getDexterClient());
 			log.setDismissed(false);
-			
+
 			// 트리 화면 바꾸기
 			view.getLogTreeView().refresh(log);
 		}
@@ -86,20 +91,20 @@ public class UndismissDefect implements IObjectActionDelegate {
 
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
-		if(!(selection instanceof IStructuredSelection)){
+		if (!(selection instanceof IStructuredSelection)) {
 			defectLogList = new HashSet<DefectLog>();
 			return;
 		}
-		
+
 		final IStructuredSelection sel = (IStructuredSelection) selection;
 		@SuppressWarnings("rawtypes")
 		final Iterator iter = sel.iterator();
-		
+
 		defectLogList.clear();
-		while(iter.hasNext()){
+		while (iter.hasNext()) {
 			final Object obj = iter.next();
-			
-			if(obj instanceof DefectLog){
+
+			if (obj instanceof DefectLog) {
 				defectLogList.add((DefectLog) obj);
 			}
 		}

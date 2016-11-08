@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
+   <extension-point id="JDTUtil" name="Utilities of JDT" schema="schema/JDTUtil.exsd"/>
+   <extension-point id="CDTUtil" name="Utilities of CDT" schema="schema/CDTUtil.exsd"/>
 
    <extension
          id="dexterBuilder"
-         name="Dexter Project Builder"
+         name="%extension.name"
          point="org.eclipse.core.resources.builders">
       <builder
             hasNature="true">
@@ -15,7 +17,7 @@
    </extension>
    <extension
          id="dexterNature"
-         name="Dexter Project Nature(VD Static Analysis)"
+         name="%extension.name.0"
          point="org.eclipse.core.resources.natures">
       <runtime>
          <run
@@ -53,7 +55,7 @@
    </extension>
    <extension
          id="defectProblem"
-         name="Static Analysis Problem(Dexter)"
+         name="%extension.name.1"
          point="org.eclipse.core.resources.markers">
       <super
             type="org.eclipse.core.resources.problemmarker">
@@ -68,7 +70,7 @@
    
     <extension
    		 id="defectDismissedProblem"
-   		 name="Static Analysis Dismissed Defect(Dexter)"
+   		 name="%extension.name.2"
          point="org.eclipse.core.resources.markers">
       <super type="org.eclipse.core.resources.textmarker" />
       <super type="org.eclipse.core.resources.problemmarker" />
@@ -90,10 +92,10 @@
            colorPreferenceValue="93,93,93"
            contributesToHeader="false"
            highlightPreferenceKey="dexter.highlight"
-           highlightPreferenceValue="true"
+           highlightPreferenceValue="false"
            icon="icons/dismissed.gif"
            includeOnPreferencePage="true"
-           label="Dexter Dismissed Marker"
+           label="%specification.label"
            overviewRulerPreferenceKey="dexter.overview"
            overviewRulerPreferenceValue="true"
            presentationLayer="100"
@@ -147,10 +149,6 @@
             id="dexter-eclipse.objectContribution.createSnapshot"
             nameFilter="*"
             objectClass="org.eclipse.core.resources.IProject">
-         <filter
-         	name="projectNature"
-         	value="org.eclipse.jdt.core.javanature">
-         </filter>
          <action
                class="com.samsung.sec.dexter.eclipse.action.CreateSnapshotActionDelegate"
                enablesFor="+"
@@ -161,6 +159,26 @@
                tooltip="%CREATE_SNAPSHOT_TOOLTIP">
                <!--filter name="projectNature" value="org.eclipse.jdt.core.javanature" /-->
          </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="true"
+            id="dexter-eclipse.objectContribution.openCodeMetrics"
+            nameFilter="*"
+            objectClass="org.eclipse.core.resources.IFile">
+         <action
+               class="com.samsung.sec.dexter.eclipse.action.OpenCodeMetricsActionDelegate"
+               icon="icons/codeMetricsView7.gif"
+               id="dexter-eclipse.action.openCodeMetrics"
+               label="%OPEN_CODE_METRICS"
+               menubarPath="additions"
+               tooltip="%OPEN_CODE_METRICS_TOOLTIP">
+         </action>
+      </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="dexter-eclipse.objectContribution.openFunctionMetrics"
+            nameFilter="*"
+            objectClass="org.eclipse.core.resources.IFile">
       </objectContribution>
    </extension>
 

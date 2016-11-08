@@ -2,7 +2,8 @@
 <feature
       id="dexter.daemon.feature.32"
       label="Dexter Deamon Feature"
-      version="0.9.2">
+      version="0.10.6"
+      provider-name="Samsung Electronics VD SE">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -24,6 +25,14 @@
          id="org.eclipse.rcp"
          version="0.0.0"/>
 
+   <includes
+         id="org.eclipse.emf.common"
+         version="0.0.0"/>
+
+   <includes
+         id="org.eclipse.emf.ecore"
+         version="0.0.0"/>
+
    <requires>
       <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.ui"/>
@@ -34,7 +43,6 @@
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.core.filesystem"/>
       <import plugin="org.eclipse.ui.ide"/>
-      <import plugin="org.eclipse.jdt.core"/>
       <import plugin="org.eclipse.ui.workbench.texteditor"/>
       <import plugin="org.eclipse.jface.text"/>
    </requires>
@@ -138,13 +146,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.jdt.core"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.jface.text"
          download-size="0"
          install-size="0"
@@ -202,6 +203,69 @@
 
    <plugin
          id="dexter-vd-cpp"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="dexter-eclipse"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="dexter-eclipse-cdt"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.cdt.core"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.filebuffers"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.common"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.ecore"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.emf.ecore.xmi"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.variables"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.ltk.core.refactoring"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 BUndle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Name: Dexter Core
 Bundle-SymbolicName: dexter-core;singleton:=true
-Bundle-Version: 0.9.2
+Bundle-Version: 0.10.6
 Bundle-ClassPath: .,
  lib/jspf.core-1.0.2.jar,
  lib/jspf.remote-1.0.2.jar,
@@ -29,10 +29,10 @@ Bundle-ClassPath: .,
  lib/poi-3.11.jar,
  lib/poi-ooxml-3.11.jar,
  lib/poi-ooxml-schemas-3.11.jar,
- lib/org.eclipse.cdt.core_5.9.1.201502131403.jar,
  lib/commons-codec-1.9.jar,
  lib/commons-logging-1.2.jar,
- lib/org.eclipse.core.resources_3.7.101.v20120125-1505.jar
+ lib/org.eclipse.core.resources_3.7.101.v20120125-1505.jar,
+ lib/org.eclipse.cdt.core_5.9.1.201502131403.jar
 Export-Package: com.samsung.sec.dexter.core,
  com.samsung.sec.dexter.core.analyzer,
  com.samsung.sec.dexter.core.checker,
@@ -44,8 +44,19 @@ Export-Package: com.samsung.sec.dexter.core,
  com.samsung.sec.dexter.core.metrics,
  com.samsung.sec.dexter.core.plugin,
  com.samsung.sec.dexter.core.util,
- com.samsung.sec.dexter.util
-Bundle-Vendor: Samsung Electronics VD SE Lab
+ com.samsung.sec.dexter.util,
+ org.eclipse.cdt.core,
+ org.eclipse.cdt.core.dom.ast,
+ org.eclipse.cdt.core.dom.parser,
+ org.eclipse.cdt.core.dom.parser.c,
+ org.eclipse.cdt.core.dom.parser.cpp,
+ org.eclipse.cdt.core.model,
+ org.eclipse.cdt.core.parser,
+ org.eclipse.cdt.internal.core.dom.parser,
+ org.eclipse.cdt.internal.core.dom.parser.c,
+ org.eclipse.cdt.internal.core.dom.parser.cpp,
+ org.eclipse.cdt.internal.core.parser.scanner
+Bundle-Vendor: Samsung Electronics VD SE
 Bundle-Activator: com.samsung.sec.dexter.core.DexterCoreActivator
 Require-Bundle: org.eclipse.core.runtime,
  com.ibm.icu

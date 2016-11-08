@@ -35,6 +35,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	
 	IWorkbenchAction helpAction;
 	IWorkbenchAction aboutAction;
+	
 	/*
 	IWorkbenchAction preferencesAction;
 	*/
@@ -43,6 +44,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     }
 
     protected void makeActions(IWorkbenchWindow window) {
+    	
     	/*
     	helpAction = ActionFactory.HELP_CONTENTS.create(window);
     	register(helpAction);
@@ -55,6 +57,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
     }
 
     protected void fillMenuBar(IMenuManager menuBar) {
+    	
     	/*
     	MenuManager helpMenu = new MenuManager("&Help", IWorkbenchActionConstants.M_HELP);
     	helpMenu.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));

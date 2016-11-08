@@ -1,30 +1,6 @@
-/**
- * Copyright (c) 2014 Samsung Electronics, Inc.,
- * All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- * 
- * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
- * 
- * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
- * 
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
 package com.samsung.sec.dexter.vdcpp.checkerlogic;
 /**
+ *  @file   MacroParenthesis.java
  *  @brief  MacroParenthesis class source file
  *  @author adarsh.t
  *
@@ -39,6 +15,7 @@ package com.samsung.sec.dexter.vdcpp.checkerlogic;
  * you entered into with Samsung Electronics.
  */
 
+
 import java.util.Map;
 import org.eclipse.cdt.core.dom.ast.IASTFileLocation;
 import org.eclipse.cdt.core.dom.ast.IASTName;
@@ -49,7 +26,7 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.IMacroBinding;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
-import com.samsung.sec.dexter.core.checker.Checker;
+import com.samsung.sec.dexter.core.checker.IChecker;
 import com.samsung.sec.dexter.core.defect.PreOccurence;
 import com.samsung.sec.dexter.vdcpp.plugin.DexterVdCppPlugin;
 import com.samsung.sec.dexter.vdcpp.util.CppUtil;
@@ -61,7 +38,7 @@ public class MacroParenthesisCheckerLogic implements ICheckerLogic{
 	
 	@Override
 	public void analyze(final AnalysisConfig config, final AnalysisResult result, 
-			final Checker checker, IASTTranslationUnit unit) {
+			final IChecker checker, IASTTranslationUnit unit) {
 		translationUnit =unit;		
 		final IASTPreprocessorStatement[] macroStatementList = unit.getAllPreprocessorStatements();		
 		loop:
@@ -178,14 +155,14 @@ public class MacroParenthesisCheckerLogic implements ICheckerLogic{
 
 
 	private void fillDefectData(AnalysisConfig config,
-			AnalysisResult result, Checker checker,
+			AnalysisResult result, IChecker checker,
 			IASTFileLocation fileLocation, String message, String declaratorName) {
 		PreOccurence preOcc = createPreOccurence(config, checker, fileLocation, message,declaratorName);
 		result.addDefectWithPreOccurence(preOcc);
 
 	}
 	private PreOccurence createPreOccurence(AnalysisConfig config,
-			Checker checker, IASTFileLocation fileLocation, String msg,String declaratorName) {
+			IChecker checker, IASTFileLocation fileLocation, String msg,String declaratorName) {
 		final int startLine = fileLocation.getStartingLineNumber();
 		final int endLine = fileLocation.getEndingLineNumber();
 		final int startOffset = fileLocation.getNodeOffset();

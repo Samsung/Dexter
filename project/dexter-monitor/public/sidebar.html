@@ -1,0 +1,21 @@
+<div class="row">
+    <div class="sidebar">
+        <ul class="nav nav-sidebar">
+            <li><div><h3><b><i class="fa fa-home"></i>  Current</b></h3></div></li>
+            <li ng-class="{'active':isActiveView('/')}">
+                <a href="#/" uib-tooltip="Current installation rate and defect status of all groups" tooltip-placement="right" tooltip-append-to-body="true">Overview</a></li>
+            <li ng-class="{'active':isActiveView('/current-project/')}">
+                <a href="#/current-project/" uib-tooltip="Current status of all projects" tooltip-placement="right" tooltip-append-to-body="true">Project Status</a></li>
+            <li ng-class="{'active':isActiveView('/current-user/')}">
+                <a href="#/current-user/" uib-tooltip="Current user list of all projects" tooltip-placement="right" tooltip-append-to-body="true">User List</a></li>
+        </ul>
+        <br>
+        <ul class="nav nav-sidebar">
+            <li><div><h3><b><i class="fa fa-bar-chart"></i> Weekly</b></h3></div></li>
+            <li ng-class="{'active':isActiveView('/weekly-group/')}">
+                <a href="#/weekly-group/" uib-tooltip="Weekly defect and user status of all groups for a selected week" tooltip-placement="right" tooltip-append-to-body="true">Group Status</a></li>
+            <li ng-class="{'active':isActiveView('/weekly-project/')}">
+                <a href="#/weekly-project/" uib-tooltip="Weekly defect status of all projects" tooltip-placement="right" tooltip-append-to-body="true">Project Status</a></li>
+        </ul>
+    </div>
+</div>
