@@ -69,9 +69,8 @@ public class DexterClientIT {
 
     static boolean isTestable = true;
 
-    static IDexterClient dc = new DexterClient.DexterClientBuilder("", "").dexterServerIp("localhost")
-            .dexterServerPort(-1)
-            .build();
+    static IDexterClient dc = new EmptyDexterClient();
+    
 
     /**
      * @throws java.lang.Exception

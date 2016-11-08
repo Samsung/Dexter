@@ -55,92 +55,14 @@ import org.apache.log4j.Logger;
 
 public class DexterClient implements IDexterClient, IDexterStandaloneListener {
     private final static Logger LOG = Logger.getLogger(DexterClient.class);
-    private final static String HTTP_PREFIX = "http://";
 
-    private final String serverHost;
-    private final int serverPort;
-    private final String currentUserId;
-    private final String currentUserPwd;
-
-    private boolean isLogin;
+	private boolean isLogin;
     private int currentUserNo;
     private boolean isCurrentUserAdmin;
     private IDexterWebResource webResource;
 
-    private DexterClient(final String ip, final int port, final String id, final String password,
-            final IDexterWebResource webResource) {
+    public DexterClient(final IDexterWebResource webResource) {
         this.webResource = webResource;
-        this.serverHost = ip;
-        this.serverPort = port;
-        this.currentUserId = id;
-        this.currentUserPwd = password;
-    }
-
-    public static class DexterClientBuilder {
-        private IDexterWebResource webResource;
-        private String serverHost;
-        private int serverPort;
-        private String currentUserId;
-        private String currentUserPwd;
-
-        public DexterClientBuilder(final String userId, final String password) {
-            this.currentUserId = userId;
-            this.currentUserPwd = password;
-        }
-
-        public DexterClientBuilder userId(final String userId) {
-            this.currentUserId = userId;
-            return this;
-        }
-
-        public DexterClientBuilder password(final String password) {
-            this.currentUserPwd = password;
-            return this;
-        }
-
-        public DexterClientBuilder dexterServerIp(final String ip) {
-            this.serverHost = ip;
-            return this;
-        }
-
-        public DexterClientBuilder dexterServerPort(final int port) {
-            this.serverPort = port;
-            return this;
-        }
-
-        public DexterClientBuilder dexterServerAddress(final String serverAddress) {
-            final StringTokenizer st = new StringTokenizer(serverAddress, ":");
-
-            if (st.hasMoreTokens()) {
-                this.serverHost = st.nextToken();
-            }
-
-            if (st.hasMoreTokens()) {
-                final String portStr = st.nextToken();
-                if (portStr.matches("[0-9]+")) {
-                    this.serverPort = Integer.parseInt(portStr);
-                }
-            }
-
-            return this;
-        }
-
-        public DexterClientBuilder dexterWebResource(final IDexterWebResource webResource) {
-            this.webResource = webResource;
-            return this;
-        }
-
-        public IDexterClient build() {
-            assert Strings.isNullOrEmpty(serverHost) == false;
-            assert serverPort != 0;
-            assert Strings.isNullOrEmpty(currentUserId) == false;
-            assert Strings.isNullOrEmpty(currentUserPwd) == false;
-
-            if (webResource == null)
-                webResource = new JerseyDexterWebResource();
-
-            return new DexterClient(serverHost, serverPort, currentUserId, currentUserPwd, webResource);
-        }
     }
 
     /** @return the isLogin */
@@ -152,7 +74,7 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
     /** @return the currentUserId */
     @Override
     public String getCurrentUserId() {
-        return currentUserId;
+        return webResource.getCurrentUserId();
     }
 
     private boolean isResultOk(final String resultText) {
@@ -194,7 +116,7 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
         assert Strings.isNullOrEmpty(id) == false;
         assert Strings.isNullOrEmpty(pwd) == false;
 
-        String text = webResource.getText(getServiceUrl(DexterConfig.CHECK_ACCOUNT), id, pwd);
+        String text = webResource.getText(DexterConfig.CHECK_ACCOUNT, id, pwd);
 
         final Gson gson = new Gson();
         @SuppressWarnings("unchecked")
@@ -210,19 +132,15 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
         }
     }
 
-    private String getServiceUrl(String serviceUrl) {
-        return HTTP_PREFIX + this.serverHost + ":" + this.serverPort + serviceUrl;
-    }
-
     /** @return boolean */
     @Override
     public void login() {
-        assert Strings.isNullOrEmpty(this.currentUserId) == false;
-        assert Strings.isNullOrEmpty(this.currentUserPwd) == false;
+        assert Strings.isNullOrEmpty(webResource.getCurrentUserId()) == false;
+        assert Strings.isNullOrEmpty(webResource.getCurrentUserPassword()) == false;
 
         try {
-            login(this.currentUserId, this.currentUserPwd);
-            LOG.debug("Log-in successfully : " + this.currentUserId);
+            login(webResource.getCurrentUserId(), webResource.getCurrentUserPassword());
+            LOG.debug("Log-in successfully : " + webResource.getCurrentUserId());
         } catch (DexterRuntimeException e) {
             LOG.debug(e.getMessage(), e);
         }
@@ -240,7 +158,7 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
 
         if (isLogin == false) {
             throw new DexterRuntimeException(
-                    "You are not log-in or your account(" + currentUserId + ") doesn't exist in Dexter Server.");
+                    "You are not log-in or your account(" + webResource.getCurrentUserId() + ") doesn't exist in Dexter Server.");
         }
 
         String resultText = "";
@@ -250,11 +168,11 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
         if (DexterConfig.getInstance().getRunMode() == DexterConfig.RunMode.CLI) {
             Gson gson = new Gson();
             String jsonBody = gson.toJson(body);
-            resultText = webResource.postWithBodyforCLI(getServiceUrl(DexterConfig.PUT_ANALYSIS_RESULT_V3),
-                    this.currentUserId, this.currentUserPwd, jsonBody);
+            resultText = webResource.postWithBodyforCLI(DexterConfig.PUT_ANALYSIS_RESULT_V3,
+            		webResource.getCurrentUserId(), webResource.getCurrentUserPassword(), jsonBody);
         } else {
-            resultText = webResource.postWithBody(getServiceUrl(DexterConfig.PUT_ANALYSIS_RESULT_V3),
-                    this.currentUserId, this.currentUserPwd, body);
+            resultText = webResource.postWithBody(DexterConfig.PUT_ANALYSIS_RESULT_V3,
+            		webResource.getCurrentUserId(), webResource.getCurrentUserPassword(), body);
         }
         checkResultOk(resultText);
     }
@@ -286,11 +204,11 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
         if (DexterConfig.getInstance().getRunMode().equals(DexterConfig.RunMode.CLI)) {
             Gson gson = new Gson();
             String jsonBody = gson.toJson(body);
-            resultText = webResource.postWithBodyforCLI(getServiceUrl(DexterConfig.POST_SNAPSHOT_SOURCECODE),
-                    this.currentUserId, this.currentUserPwd, jsonBody);
+            resultText = webResource.postWithBodyforCLI(DexterConfig.POST_SNAPSHOT_SOURCECODE,
+            		webResource.getCurrentUserId(), webResource.getCurrentUserPassword(), jsonBody);
         } else {
-            resultText = webResource.postWithBody(getServiceUrl(DexterConfig.POST_SNAPSHOT_SOURCECODE),
-                    this.currentUserId, this.currentUserPwd, body);
+            resultText = webResource.postWithBody(DexterConfig.POST_SNAPSHOT_SOURCECODE,
+            		webResource.getCurrentUserId(), webResource.getCurrentUserPassword(), body);
         }
 
         checkResultOk(resultText);
@@ -314,11 +232,11 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
         if (DexterConfig.getInstance().getRunMode().equals(DexterConfig.RunMode.CLI)) {
             Gson gson = new Gson();
             String jsonBody = gson.toJson(body);
-            resultText = webResource.postWithBodyforCLI(getServiceUrl(DexterConfig.POST_SNAPSHOT_SOURCECODE),
-                    this.currentUserId, this.currentUserPwd, jsonBody);
+            resultText = webResource.postWithBodyforCLI(DexterConfig.POST_SNAPSHOT_SOURCECODE,
+            		webResource.getCurrentUserId(), webResource.getCurrentUserPassword(), jsonBody);
         } else {
-            resultText = webResource.postWithBody(getServiceUrl(DexterConfig.POST_SNAPSHOT_SOURCECODE),
-                    this.currentUserId, this.currentUserPwd, body);
+            resultText = webResource.postWithBody(DexterConfig.POST_SNAPSHOT_SOURCECODE,
+                    webResource.getCurrentUserId(), webResource.getCurrentUserPassword(), body);
         }
 
         checkResultOk(resultText);
@@ -367,8 +285,7 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
         assert Strings.isNullOrEmpty(serverAddress) == false;
 
         try {
-            final String text = webResource.getText(HTTP_PREFIX + serverAddress + DexterConfig.CHECK_SERVER_ADDRESS,
-                    "", "");
+            final String text = webResource.getText(DexterConfig.CHECK_SERVER_ADDRESS,"", "");
             return "ok".equals(text);
         } catch (Exception e) {
             LOG.debug(e.getMessage(), e);
@@ -385,14 +302,14 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
      */
     @Override
     public boolean isServerAlive() {
-        if (Strings.isNullOrEmpty(serverHost) || serverPort <= 0) {
+        if (Strings.isNullOrEmpty(webResource.getServerHostname()) || webResource.getServerPort() <= 0) {
             LOG.debug("Invalid Dexter Server or Port, maybe you need to login on Dexter Server");
             return false;
         }
 
         try {
-            final String text = webResource.getText(getServiceUrl(DexterConfig.CHECK_SERVER_ADDRESS),
-                    this.currentUserId, this.currentUserPwd);
+            final String text = webResource.getText(DexterConfig.CHECK_SERVER_ADDRESS,
+                    webResource.getCurrentUserId(), webResource.getCurrentUserPassword());
             return "ok".equals(text);
         } catch (Exception e) {
             if ("java.net.ConnectException: Connection refused: connect".equals(e.getMessage())) {
@@ -410,8 +327,8 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
             if (DexterConfig.getInstance().isStandalone()) {
                 throw new Exception();
             } else {
-                final String text = webResource.getConnectionResult(url.toString(), this.currentUserId,
-                        this.currentUserPwd);
+                final String text = webResource.getConnectionResult(url.toString(), webResource.getCurrentUserId(),
+                        webResource.getCurrentUserPassword());
                 if ("false".equals(text)) {
                     return false;
                 } else {
@@ -439,8 +356,8 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
         }
 
         try {
-            final String text = webResource.getText(getServiceUrl(DexterConfig.CHECK_HAS_ACCOUNT + "/" + id),
-                    this.currentUserId, this.currentUserPwd);
+            final String text = webResource.getText(DexterConfig.CHECK_HAS_ACCOUNT + "/" + id,
+                    webResource.getCurrentUserId(), webResource.getCurrentUserPassword());
             return isResultOk(text);
         } catch (DexterRuntimeException e) {
             LOG.debug(e.getMessage(), e);
@@ -463,7 +380,7 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
         }
 
         final StringBuilder url = new StringBuilder(1024);
-        url.append(getServiceUrl(DexterConfig.ADD_ACCOUNT)).append("?userId=").append(id).append("&userId2=")
+        url.append(DexterConfig.ADD_ACCOUNT).append("?userId=").append(id).append("&userId2=")
                 .append(pwd);
 
         if (isAdmin) {
@@ -473,7 +390,7 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
         }
 
         url.trimToSize();
-        final String text = webResource.postText(url.toString(), this.currentUserId, this.currentUserPwd);
+        final String text = webResource.postText(url.toString(), webResource.getCurrentUserId(), webResource.getCurrentUserPassword());
 
         checkResultOk(text);
     }
@@ -491,8 +408,8 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
         body.put("defectStatus", status);
         body.put("a", status);
 
-        String text = webResource.postWithBody(getServiceUrl(DexterConfig.DISMISS_DEFECT), this.currentUserId,
-                this.currentUserPwd, body);
+        String text = webResource.postWithBody(DexterConfig.DISMISS_DEFECT, webResource.getCurrentUserId(),
+                webResource.getCurrentUserPassword(), body);
         checkResultOk(text);
     }
 
@@ -506,8 +423,8 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
         final Map<String, Object> body = new HashMap<String, Object>();
         body.put("defect", defect.toJson());
 
-        final String text = webResource.postWithBody(getServiceUrl(DexterConfig.FILTER_FALSE_ALARM), this.currentUserId,
-                this.currentUserPwd, body);
+        final String text = webResource.postWithBody(DexterConfig.FILTER_FALSE_ALARM, webResource.getCurrentUserId(),
+                webResource.getCurrentUserPassword(), body);
         checkResultOk(text);
     }
 
@@ -524,8 +441,8 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
         final Map<String, Object> body = new HashMap<String, Object>();
         body.put("defect", defect.toJson());
 
-        String text = webResource.postWithBody(getServiceUrl(DexterConfig.FILTER_DELETE_FALSE_ALARM),
-                this.currentUserId, this.currentUserPwd, body);
+        String text = webResource.postWithBody(DexterConfig.FILTER_DELETE_FALSE_ALARM,
+                webResource.getCurrentUserId(), webResource.getCurrentUserPassword(), body);
         checkResultOk(text);
     }
 
@@ -533,8 +450,8 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
     @Override
     public int getLastFalseAlarmVersion() {
         try {
-            Map<String, Object> result = webResource.getMap(getServiceUrl(DexterConfig.GET_FALSE_ALARM_VERSION),
-                    currentUserId, currentUserPwd);
+            Map<String, Object> result = webResource.getMap(DexterConfig.GET_FALSE_ALARM_VERSION,
+                    webResource.getCurrentUserId(), webResource.getCurrentUserPassword());
 
             if (result == null || result.get("version") == null) {
                 LOG.debug("There is no version for False Alarm Data");
@@ -561,8 +478,8 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
     public IFalseAlarmConfiguration getFalseAlarmTree() {
         final IFalseAlarmConfiguration tree = new FalseAlarmConfigurationTree();
 
-        final String text = webResource.getText(getServiceUrl(DexterConfig.FILTER_FALSE_ALARM), this.currentUserId,
-                this.currentUserPwd);
+        final String text = webResource.getText(DexterConfig.FILTER_FALSE_ALARM, webResource.getCurrentUserId(),
+                webResource.getCurrentUserPassword());
         @SuppressWarnings("unchecked")
         final List<Map<String, String>> result = new Gson().fromJson(text, List.class);
 
@@ -588,7 +505,7 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
     public String getDexterPluginUpdateUrl() {
         try {
             final StringBuilder url = new StringBuilder(1024);
-            url.append(getServiceUrl(DexterConfig.GET_DEXTER_PLUGIN_UPDATE_URL)).append("/")
+            url.append(DexterConfig.GET_DEXTER_PLUGIN_UPDATE_URL).append("/")
                     .append(DexterUtil.getBit());
 
             url.trimToSize();
@@ -617,8 +534,8 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
         body.put("defect", defect.toJson());
 
         try {
-            final String text = webResource.postWithBody(getServiceUrl(DexterConfig.POST_GLOBAL_DID),
-                    this.currentUserId, this.currentUserPwd, body);
+            final String text = webResource.postWithBody(DexterConfig.POST_GLOBAL_DID,
+                    webResource.getCurrentUserId(), webResource.getCurrentUserPassword(), body);
 
             final Map<String, String> result = getResultMap(text);
 
@@ -646,8 +563,8 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
         body.put(ResultFileConstant.MODULE_PATH, modulePath);
         body.put(ResultFileConstant.FILE_NAME, fileName);
 
-        final String text = webResource.deleteWithBody(getServiceUrl(DexterConfig.DEFECT_DELETE), this.currentUserId,
-                this.currentUserPwd, body);
+        final String text = webResource.deleteWithBody(DexterConfig.DEFECT_DELETE, webResource.getCurrentUserId(),
+                webResource.getCurrentUserPassword(), body);
         checkResultOk(text);
     }
 
@@ -657,7 +574,7 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
         assert !Strings.isNullOrEmpty(groupName);
 
         final Map<String, Object> result = webResource.getMap(
-                getServiceUrl(DexterConfig.DEFECT_GROUP + "/" + groupName), this.currentUserId, this.currentUserPwd);
+                DexterConfig.DEFECT_GROUP + "/" + groupName, webResource.getCurrentUserId(), webResource.getCurrentUserPassword());
 
         if ("ok".equals(result.get("status"))) {
             final String resultJson = (String) result.get("result");
@@ -688,8 +605,8 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
         body.put("creatorNo", defectGroup.getCreatorNo());
         body.put("parentId", defectGroup.getParentId());
 
-        final String text = webResource.postWithBody(getServiceUrl(DexterConfig.DEFECT_GROUP), this.currentUserId,
-                this.currentUserPwd, body);
+        final String text = webResource.postWithBody(DexterConfig.DEFECT_GROUP, webResource.getCurrentUserId(),
+                webResource.getCurrentUserPassword(), body);
         checkResultOk(text);
     }
 
@@ -713,8 +630,8 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
         body.put("parentId", defectGroup.getParentId());
 
         try {
-            final String text = webResource.putWithBody(getServiceUrl(DexterConfig.DEFECT_GROUP), this.currentUserId,
-                    this.currentUserPwd, body);
+            final String text = webResource.putWithBody(DexterConfig.DEFECT_GROUP, webResource.getCurrentUserId(),
+                    webResource.getCurrentUserPassword(), body);
             return isResultOk(text);
         } catch (DexterRuntimeException e) {
             LOG.error(e.getMessage(), e);
@@ -728,8 +645,8 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
         assert defectGroupId > 0;
 
         try {
-            String text = webResource.deleteWithBody(getServiceUrl(DexterConfig.DEFECT_GROUP + "/" + defectGroupId),
-                    this.currentUserId, this.currentUserPwd, new HashMap<String, Object>(0));
+            String text = webResource.deleteWithBody(DexterConfig.DEFECT_GROUP + "/" + defectGroupId,
+                    webResource.getCurrentUserId(), webResource.getCurrentUserPassword(), new HashMap<String, Object>(0));
             return isResultOk(text);
         } catch (DexterRuntimeException e) {
             LOG.error(e.getMessage(), e);
@@ -741,8 +658,8 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
     public List<DefectGroup> getDefectGroupList() {
         String text;
         try {
-            text = webResource.getText(getServiceUrl(DexterConfig.DEFECT_GROUP), this.currentUserId,
-                    this.currentUserPwd);
+            text = webResource.getText(DexterConfig.DEFECT_GROUP, webResource.getCurrentUserId(),
+                    webResource.getCurrentUserPassword());
         } catch (DexterRuntimeException e) {
             LOG.error(e.getMessage(), e);
             return new ArrayList<DefectGroup>(0);
@@ -769,8 +686,8 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
         assert !Strings.isNullOrEmpty(codeKey);
 
         try {
-            final String text = webResource.getText(getServiceUrl(DexterConfig.CODE + "/" + codeKey),
-                    this.currentUserId, this.currentUserPwd);
+            final String text = webResource.getText(DexterConfig.CODE + "/" + codeKey,
+                    webResource.getCurrentUserId(), webResource.getCurrentUserPassword());
 
             final Gson gson = new Gson();
             final Map<String, String> result = getResultMap(text);
@@ -798,7 +715,7 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
                 + "&changeToBase64=false";
 
         try {
-            return webResource.getText(getServiceUrl(url), this.currentUserId, this.currentUserPwd);
+            return webResource.getText(url, webResource.getCurrentUserId(), webResource.getCurrentUserPassword());
         } catch (DexterRuntimeException e) {
             LOG.error(e.getMessage(), e);
             return "";
@@ -809,7 +726,7 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
     /** @return String */
     @Override
     public String getCurrentUserPwd() {
-        return this.currentUserPwd;
+        return webResource.getCurrentUserPassword();
     }
 
     /**
@@ -824,17 +741,13 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
     /** @return the serverHost */
     @Override
     public String getServerHost() {
-        if (Strings.isNullOrEmpty(serverHost)) {
-            throw new DexterRuntimeException("ServerHost is not set");
-        }
-
-        return serverHost;
+    	return webResource.getServerHostname();
     }
 
     /** @return the serverPort */
     @Override
     public int getServerPort() {
-        return serverPort;
+    	return webResource.getServerPort();
     }
 
     /**
@@ -871,9 +784,10 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
     @Override
     public String getDexterWebUrl() {
         if (getServerHost().startsWith("http")) {
-            return this.serverHost + ":" + this.serverPort + "/defect";
+            return webResource.getServerHostname() + ":" + webResource.getServerPort() + "/defect";
         } else {
-            return HTTP_PREFIX + this.serverHost + ":" + this.serverPort + "/defect";
+           // return HTTP_PREFIX + webResource.getServerHostname() + ":" + webResource.getServerPort() + "/defect";
+            return webResource.getServiceUrl("/defect");
         }
     }
 
@@ -881,9 +795,10 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
     @Override
     public String getDexterDashboardUrl() {
         if (getServerHost().startsWith("http")) {
-            return this.serverHost + ":" + this.serverPort + "/dashboard";
+            return webResource.getServerHostname() + ":" + webResource.getServerPort() + "/dashboard";
         } else {
-            return HTTP_PREFIX + this.serverHost + ":" + this.serverPort + "/dashboard";
+            //return HTTP_PREFIX + webResource.getServerHostname() + ":" + webResource.getServerPort() + "/dashboard";
+            return webResource.getServiceUrl("/dashboard");
         }
     }
 
@@ -891,9 +806,10 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
     @Override
     public String getDexterCodeMetricsUrl() {
         if (getServerHost().startsWith("http")) {
-            return this.serverHost + ":" + this.serverPort + "/codeMetrics";
+            return webResource.getServerHostname() + ":" + webResource.getServerPort() + "/codeMetrics";
         } else {
-            return HTTP_PREFIX + this.serverHost + ":" + this.serverPort + "/codeMetrics";
+            //return HTTP_PREFIX + webResource.getServerHostname() + ":" + webResource.getServerPort() + "/codeMetrics";
+            return webResource.getServiceUrl("/codeMetrics");
         }
     }
 
@@ -901,9 +817,10 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
     @Override
     public String getDexterFunctionMetricsUrl() {
         if (getServerHost().startsWith("http")) {
-            return this.serverHost + ":" + this.serverPort + "/functionMetrics";
+            return webResource.getServerHostname() + ":" + webResource.getServerPort() + "/functionMetrics";
         } else {
-            return HTTP_PREFIX + this.serverHost + ":" + this.serverPort + "/functionMetrics";
+            //return HTTP_PREFIX + webResource.getServerHostname() + ":" + webResource.getServerPort() + "/functionMetrics";
+        	return webResource.getServiceUrl("/functionMetrics");
         }
     }
 
@@ -913,8 +830,8 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
     }
 
     @Override
-    public void handleWhenNotStandaloneMode() {
-        setWebResource(new JerseyDexterWebResource());
+    public void handleWhenNotStandaloneMode(DexterServerConfig serverConfig) {
+        setWebResource(new JerseyDexterWebResource(serverConfig));
     }
 
     @Override
@@ -925,8 +842,8 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
     public CheckerConfig getDexterPluginChecker(IDexterPlugin plugin, String pluginName) {
         try {
             String text = webResource.postText(
-                    getServiceUrl(DexterConfig.GET_DEXTER_PLUGIN_CHECKER_JSON_FILE + "/" + pluginName),
-                    this.currentUserId, this.currentUserPwd);
+                    DexterConfig.GET_DEXTER_PLUGIN_CHECKER_JSON_FILE + "/" + pluginName,
+                    webResource.getCurrentUserId(), webResource.getCurrentUserPassword());
             if (!(text.equals(DexterConfig.NO_UPDATE_CHECKER_CONFIG))) {
                 Gson gson = new Gson();
                 CheckerConfig cc = gson.fromJson(text, CheckerConfig.class);
@@ -948,8 +865,8 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
             body.put(ResultFileConstant.MODULE_PATH, modulePath);
             body.put(ResultFileConstant.FUNCTION_LIST, functionList);
 
-            final String text = webResource.postWithBody(getServiceUrl(DexterConfig.POST_FUNCTION_METRICS),
-                    this.currentUserId, this.currentUserPwd, body);
+            final String text = webResource.postWithBody(DexterConfig.POST_FUNCTION_METRICS,
+                    webResource.getCurrentUserId(), webResource.getCurrentUserPassword(), body);
 
             checkResultOk(text);
         } catch (DexterRuntimeException e) {

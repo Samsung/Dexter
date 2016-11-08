@@ -28,6 +28,7 @@ package com.samsung.sec.dexter.core.config;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
+import com.samsung.sec.dexter.core.util.DexterServerConfig;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 
 import java.io.File;
@@ -501,12 +502,12 @@ public class DexterConfig {
         }
     }
 
-    public synchronized void runListenerHandlerWhenNotStandalone() {
+    public synchronized void runListenerHandlerWhenNotStandalone(DexterServerConfig serverConfig) {
         for (int i = 0; i < dexterStandaloneListenerList.size(); i++) {
             final IDexterStandaloneListener listener = dexterStandaloneListenerList.get(i);
 
             if (listener != null) {
-                listener.handleWhenNotStandaloneMode();
+                listener.handleWhenNotStandaloneMode(serverConfig);
             } else {
                 dexterStandaloneListenerList.remove(i--);
             }
