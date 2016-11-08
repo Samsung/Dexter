@@ -1,0 +1,8 @@
+language: java
+before_install: cd project
+
+jdk:
+  - oraclejdk7
+
+gradle check
+
