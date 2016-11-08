@@ -30,6 +30,8 @@ import java.util.Map;
 import com.samsung.sec.dexter.core.exception.DexterException;
 
 public interface IDexterWebResource {
+	public void setDexterServerConfig(final DexterServerConfig serverConfig);
+	
 	/**
 	 * RESTful API 
 	 * METHOD: GET
@@ -128,4 +130,11 @@ public interface IDexterWebResource {
 	 */
 	
 	public String getConnectionResult(final String uri, final String id, final String pwd);		
+	
+	public String getServiceUrl(String serviceUrl);
+	
+	public String getCurrentUserId();
+	public String getCurrentUserPassword();
+	public String getServerHostname();
+	public int getServerPort();
 }

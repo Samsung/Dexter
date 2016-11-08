@@ -43,9 +43,21 @@ public class JerseyDexterWebResource implements IDexterWebResource {
 	//private final static Logger logger = Logger.getLogger(DefaultDexterWebResource.class);
 	private static final String AUTHORIZATION = "Authorization";
 	private static final String APPLICATION_TYPE_JSON = "application/json";
+	
+	private DexterServerConfig serverConfig;
+	
 	private Client jsonClient;
 	private Client stringClient;
 	private Client pojoClient;
+	
+	public JerseyDexterWebResource(final DexterServerConfig serverConfig) {
+		this.serverConfig = serverConfig;
+	}
+	
+	@Override
+	public void setDexterServerConfig(DexterServerConfig serverConfig) {
+		this.serverConfig = serverConfig;
+	}
 	
 	private Client getStringClient() {
 		if(stringClient == null){
@@ -64,9 +76,9 @@ public class JerseyDexterWebResource implements IDexterWebResource {
 		return stringClient;
 	}
 	
-	private WebResource getStringResource(final String uri, final String id, final String pwd){
+	private WebResource getStringResource(final String uri){
 		getStringClient();
-		final WebResource resource = stringClient.resource(uri);
+		final WebResource resource = stringClient.resource(getServiceUrl(uri));
 		
 		return resource;
 	}
@@ -92,7 +104,7 @@ public class JerseyDexterWebResource implements IDexterWebResource {
 	
 	private WebResource getJsonResource(final String uri, final String id, final String pwd){
 		getJsonPojoMappingClient();
-		final WebResource resource = jsonClient.resource(uri);
+		final WebResource resource = jsonClient.resource(getServiceUrl(uri));
 		resource.accept(APPLICATION_TYPE_JSON)
 		        .type(APPLICATION_TYPE_JSON)
 		        .header(AUTHORIZATION, "Basic " + DexterUtil.getBase64String(id + ":" + pwd));
@@ -121,7 +133,7 @@ public class JerseyDexterWebResource implements IDexterWebResource {
 	
 	private WebResource getPojoResource(final String uri, final String id, final String pwd){
 		getPojoMappingClient();
-		final WebResource resource = pojoClient.resource(uri);
+		final WebResource resource = pojoClient.resource(getServiceUrl(uri));
 		
 		resource.accept(APPLICATION_TYPE_JSON)
 		        .type(APPLICATION_TYPE_JSON)
@@ -139,7 +151,7 @@ public class JerseyDexterWebResource implements IDexterWebResource {
 	 */
 	@Override
 	public String getText(final String uri, final String id, final String pwd) {
-		final WebResource resource = getStringResource(uri, id, pwd);
+		final WebResource resource = getStringResource(getServiceUrl(uri));
 
 		try {
 			return resource.accept(APPLICATION_TYPE_JSON)
@@ -156,12 +168,12 @@ public class JerseyDexterWebResource implements IDexterWebResource {
 	@SuppressWarnings("unchecked")
     @Override
 	public Map<String, Object> getMap(final String uri, final String id, final String pwd)  {
-		final WebResource jsonResource = getJsonResource(uri, id, pwd);
+		final WebResource jsonResource = getJsonResource(getServiceUrl(uri), id, pwd);
 		
 		try {
 			return (Map<String, Object>) jsonResource.get(Map.class);
 		} catch (ClientHandlerException e) {
-			throw new DexterRuntimeException(e.getMessage() + " : Connection refused connect. check your server is on > " + uri, e);
+			throw new DexterRuntimeException(e.getMessage() + " : Connection refused connect. check your server is on > " + getServiceUrl(uri), e);
 		} catch (Exception e){
 			throw new DexterRuntimeException(e.getMessage(), e);
 		}
@@ -169,7 +181,7 @@ public class JerseyDexterWebResource implements IDexterWebResource {
 	
 	@Override
 	public String postWithBody(final String uri, final String id, final String pwd, final Map<String, Object> body){
-		final WebResource resource = getPojoResource(uri, id, pwd);
+		final WebResource resource = getPojoResource(getServiceUrl(uri), id, pwd);
 		
 		try{
 			return resource.accept(APPLICATION_TYPE_JSON)
@@ -177,7 +189,7 @@ public class JerseyDexterWebResource implements IDexterWebResource {
 	        .header(AUTHORIZATION, getAuthorizationValue(id, pwd))
 	        .post(String.class, body);
 		} catch (ClientHandlerException e) {
-			throw new DexterRuntimeException(e.getMessage() + " : Connection refused connect. check your server is on > " + uri, e);
+			throw new DexterRuntimeException(e.getMessage() + " : Connection refused connect. check your server is on > " + getServiceUrl(uri), e);
 		} catch (Exception e){
 			throw new DexterRuntimeException(e.getMessage(), e);
 		}
@@ -185,7 +197,7 @@ public class JerseyDexterWebResource implements IDexterWebResource {
 	
 	@Override
 	public String putWithBody(final String uri, final String id, final String pwd, final Map<String, Object> body){
-		final WebResource resource = getPojoResource(uri, id, pwd);
+		final WebResource resource = getPojoResource(getServiceUrl(uri), id, pwd);
 		
 		try{
 			return resource.accept(APPLICATION_TYPE_JSON)
@@ -193,7 +205,7 @@ public class JerseyDexterWebResource implements IDexterWebResource {
 			        .header(AUTHORIZATION, getAuthorizationValue(id, pwd))
 			        .post(String.class, body);
 		} catch (ClientHandlerException e) {
-			throw new DexterRuntimeException(e.getMessage() + " : Connection refused connect. check your server is on > " + uri, e);
+			throw new DexterRuntimeException(e.getMessage() + " : Connection refused connect. check your server is on > " + getServiceUrl(uri), e);
 		} catch (Exception e){
 			throw new DexterRuntimeException(e.getMessage(), e);
 		}
@@ -201,7 +213,7 @@ public class JerseyDexterWebResource implements IDexterWebResource {
 	
 	@Override
     public String deleteWithBody(final String uri, final String id, final String pwd, final Map<String, Object> body)  {
-		final WebResource resource = getPojoResource(uri, id, pwd);
+		final WebResource resource = getPojoResource(getServiceUrl(uri), id, pwd);
 		
 		try{
 			return resource.accept(APPLICATION_TYPE_JSON)
@@ -209,7 +221,7 @@ public class JerseyDexterWebResource implements IDexterWebResource {
 			        .header(AUTHORIZATION, getAuthorizationValue(id, pwd))
 			        .post(String.class, body);
 		} catch (ClientHandlerException e) {
-			throw new DexterRuntimeException(e.getMessage() + " : Connection refused connect. check your server is on > " + uri, e);
+			throw new DexterRuntimeException(e.getMessage() + " : Connection refused connect. check your server is on > " + getServiceUrl(uri), e);
 		} catch (Exception e){
 			throw new DexterRuntimeException(e.getMessage(), e);
 		}
@@ -217,7 +229,7 @@ public class JerseyDexterWebResource implements IDexterWebResource {
 	
 	@Override
     public String postText(final String uri, final String id, final String pwd){
-		final WebResource resource = getPojoResource(uri, id, pwd);
+		final WebResource resource = getPojoResource(getServiceUrl(uri), id, pwd);
 		
 		try{
 			return resource.accept(APPLICATION_TYPE_JSON)
@@ -225,14 +237,14 @@ public class JerseyDexterWebResource implements IDexterWebResource {
 			        .header(AUTHORIZATION, getAuthorizationValue(id, pwd))
 			        .post(String.class);
 		} catch (ClientHandlerException e) {
-			throw new DexterRuntimeException(e.getMessage() + " : Connection refused connect. check your server is on > " + uri, e);
+			throw new DexterRuntimeException(e.getMessage() + " : Connection refused connect. check your server is on > " + getServiceUrl(uri), e);
 		} catch (Exception e){
 			throw new DexterRuntimeException(e.getMessage(), e);
 		}
 	}
 
 	public String getConnectionResult(final String uri, final String id, final String pwd) {
-		final WebResource resource = getStringResource(uri, id, pwd);
+		final WebResource resource = getStringResource(getServiceUrl(uri));
 		
 		try{
 			return resource.accept(APPLICATION_TYPE_JSON)
@@ -246,13 +258,72 @@ public class JerseyDexterWebResource implements IDexterWebResource {
 
 	@Override
 	public String postWithBodyforCLI(String uri, String id, String pwd, String bodyJson) {
-		final WebResource resource = getPojoResource(uri, id, pwd);
+		final WebResource resource = getPojoResource(getServiceUrl(uri), id, pwd);
 
 		try{
 			return resource.accept(APPLICATION_TYPE_JSON)
 	        .type(APPLICATION_TYPE_JSON)
 	        .header(AUTHORIZATION, getAuthorizationValue(id, pwd))
 	        .post(String.class, bodyJson);
+		} catch (ClientHandlerException e) {
+			throw new DexterRuntimeException(e.getMessage() + " : Connection refused connect. check your server is on > " + getServiceUrl(uri), e);
+		} catch (Exception e){
+			throw new DexterRuntimeException(e.getMessage(), e);
+		}
+	}
+
+	@Override
+	public String getServiceUrl(String serviceUrl) {
+		assert serverConfig != null;
+		
+		return serverConfig.getServiceUrl(serviceUrl);
+	}
+
+	@Override
+	public String getCurrentUserId() {
+		assert serverConfig != null;
+		
+		return serverConfig.getUserId();
+	}
+	
+	@Override
+	public String getCurrentUserPassword() {
+		assert serverConfig != null;
+		
+		return serverConfig.getUserPwd();
+	}
+
+	@Override
+	public String getServerHostname() {
+		assert serverConfig != null;
+		return serverConfig.getHostname();
+	}
+
+	@Override
+	public int getServerPort() {
+		assert serverConfig != null;
+		return serverConfig.getPort();
+	}
+	
+	public static String getTextWithoutLogin(final String uri) {
+		Client client;
+		
+		int timeout = DexterConfig.getInstance().getServerConnectionTimeOut();
+		// Think about Pooling of Clients
+		final ClientConfig config = new DefaultClientConfig();
+		config.getClasses().add(StringProvider.class);
+		config.getProperties().put(ClientConfig.PROPERTY_READ_TIMEOUT, timeout);
+		config.getProperties().put(ClientConfig.PROPERTY_CONNECT_TIMEOUT, timeout);
+		
+		client = Client.create(config);
+		client.setConnectTimeout(timeout);
+		client.setReadTimeout(timeout);
+		
+		final WebResource resource = client.resource(uri);
+
+		try {
+			return resource.accept(APPLICATION_TYPE_JSON)
+	        		.get(String.class);
 		} catch (ClientHandlerException e) {
 			throw new DexterRuntimeException(e.getMessage() + " : Connection refused connect. check your server is on > " + uri, e);
 		} catch (Exception e){

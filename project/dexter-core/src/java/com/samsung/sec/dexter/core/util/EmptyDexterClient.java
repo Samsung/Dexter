@@ -25,6 +25,11 @@
  */
 package com.samsung.sec.dexter.core.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
 import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.config.DefectGroup;
@@ -35,11 +40,6 @@ import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.filter.EmptyFalseAlarmConfiguration;
 import com.samsung.sec.dexter.core.filter.IFalseAlarmConfiguration;
 import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import org.apache.log4j.Logger;
 
 public class EmptyDexterClient implements IDexterClient {
     private final static Logger LOG = Logger.getLogger(EmptyDexterClient.class);
@@ -199,7 +199,7 @@ public class EmptyDexterClient implements IDexterClient {
     }
 
     @Override
-    public void handleWhenNotStandaloneMode() {}
+    public void handleWhenNotStandaloneMode(DexterServerConfig serverConfig) {}
 
     @Override
     public void handleWhenStandaloneMode() {}
@@ -226,9 +226,7 @@ public class EmptyDexterClient implements IDexterClient {
         assert Strings.isNullOrEmpty(serverAddress) == false;
 
         try {
-            IDexterWebResource webResource = new JerseyDexterWebResource();
-            final String text = webResource.getText(HTTP_PREFIX + serverAddress + DexterConfig.CHECK_SERVER_ADDRESS,
-                    "", "");
+            final String text = JerseyDexterWebResource.getTextWithoutLogin(HTTP_PREFIX + serverAddress + DexterConfig.CHECK_SERVER_ADDRESS);
             return "ok".equals(text);
         } catch (Exception e) {
             LOG.debug(e.getMessage(), e);
