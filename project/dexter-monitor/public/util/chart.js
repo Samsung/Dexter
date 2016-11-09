@@ -25,7 +25,7 @@
  */
 "use strict";
 
-const OVERVIEW_SUMMARY_CHART_MAX = 5;
+const OVERVIEW_SUMMARY_CHART_MAX = 52;
 
 function randomColorFactor() {
     return Math.round(Math.random() * 255);
