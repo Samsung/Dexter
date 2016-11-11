@@ -379,18 +379,18 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
             throw new DexterRuntimeException("Password length must be 4 to 20.");
         }
 
-        final StringBuilder url = new StringBuilder(1024);
-        url.append(DexterConfig.ADD_ACCOUNT).append("?userId=").append(id).append("&userId2=")
+        final StringBuilder restApiPath = new StringBuilder(1024);
+        restApiPath.append(DexterConfig.ADD_ACCOUNT).append("?userId=").append(id).append("&userId2=")
                 .append(pwd);
 
         if (isAdmin) {
-            url.append("&isAdmin=Y");
+            restApiPath.append("&isAdmin=Y");
         } else {
-            url.append("&isAdmin=N");
+            restApiPath.append("&isAdmin=N");
         }
 
-        url.trimToSize();
-        final String text = webResource.postText(url.toString(), webResource.getCurrentUserId(), webResource.getCurrentUserPassword());
+        restApiPath.trimToSize();
+        final String text = webResource.postText(restApiPath.toString(), webResource.getCurrentUserId(), webResource.getCurrentUserPassword());
 
         checkResultOk(text);
     }
@@ -504,12 +504,12 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
     @Override
     public String getDexterPluginUpdateUrl() {
         try {
-            final StringBuilder url = new StringBuilder(1024);
-            url.append(DexterConfig.GET_DEXTER_PLUGIN_UPDATE_URL).append("/")
+            final StringBuilder restApiPath = new StringBuilder(1024);
+            restApiPath.append(DexterConfig.GET_DEXTER_PLUGIN_UPDATE_URL).append("/")
                     .append(DexterUtil.getBit());
 
-            url.trimToSize();
-            final String text = webResource.getText(url.toString(), "", "");
+            restApiPath.trimToSize();
+            final String text = webResource.getText(restApiPath.toString(), "", "");
 
             final Map<String, String> result = getResultMap(text);
 
@@ -711,11 +711,11 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
     /** @return char[] */
     @Override
     public String getSourceCode(final String modulePath, final String fileName) {
-        final String url = DexterConfig.SOURCE_CODE + "?fileName=" + fileName + "&modulePath=" + modulePath
+        final String restApiPath = DexterConfig.SOURCE_CODE + "?fileName=" + fileName + "&modulePath=" + modulePath
                 + "&changeToBase64=false";
 
         try {
-            return webResource.getText(url, webResource.getCurrentUserId(), webResource.getCurrentUserPassword());
+            return webResource.getText(restApiPath, webResource.getCurrentUserId(), webResource.getCurrentUserPassword());
         } catch (DexterRuntimeException e) {
             LOG.error(e.getMessage(), e);
             return "";
