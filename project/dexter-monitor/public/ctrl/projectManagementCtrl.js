@@ -25,11 +25,36 @@
  */
 "use strict";
 
-monitorApp.controller("ProjectManagementCtrl", function($scope) {
+monitorApp.controller("ProjectManagementCtrl", function($scope, $mdDialog) {
 
     initialize();
 
     function initialize() {
     }
 
+		$scope.createProject = function($event) {
+		
+			$mdDialog.show(
+			  $mdDialog.alert()
+				.parent(angular.element(document.querySelector('#popupContainer')))
+				.clickOutsideToClose(true)
+				.title('Create new Dexter Server')
+				.textContent('You can specify some description text in here.')
+				.ok('Create')
+				.targetEvent($event)
+			);
+		};
+		
+	  $scope.deleteProject = function($event) {
+
+		var confirm = $mdDialog.confirm()
+			  .title('Delete existing Dexter Server')
+			  .textContent('Are you sure to stop and delete Dexter Server Instance? ')
+			  .targetEvent($event)
+			  .ok('Yes')
+			  .cancel('Cancel');
+
+		$mdDialog.show(confirm);
+	  };
+    
 });

@@ -17,5 +17,14 @@
             <li ng-class="{'active':isActiveView('/weekly-project/')}">
                 <a href="#/weekly-project/" uib-tooltip="Weekly defect status of all projects" tooltip-placement="right" tooltip-append-to-body="true">Project Status</a></li>
         </ul>
+		<br>
+	    <ul class="nav nav-sidebar" ng-controller="ProjectManagementCtrl" >
+            <li><div><h3><b><i class="fa fa-cog"></i> Server</b></h3></div></li>
+            <li>
+                <a href='' ng-click="createProject($event)" uib-tooltip="Create new Dexter Server instance" tooltip-placement="right" tooltip-append-to-body="true">Create Server</a></li>
+            <li>
+                <a href='' ng-click="deleteProject($event)" uib-tooltip="Delete existing Dexter Server instance" tooltip-placement="right" tooltip-append-to-body="true">Delete Server</a></li>
+        </ul>
     </div>
 </div>
+<div class="md-padding dialogdemoBasicUsage" id="popupContainer" ng-cloak="" ></div>
