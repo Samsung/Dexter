@@ -224,4 +224,8 @@ monitorApp.service('ProjectService', function($http, $log, $q, ServerStatusServi
 				return portNumbersUsed.length>0;
             });
 	}
+	
+	this.createProject = function(newProject) {
+		return $http.post('/api/v2/create-project', {project:newProject});
+	}
 });

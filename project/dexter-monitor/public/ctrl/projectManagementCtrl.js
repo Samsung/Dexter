@@ -25,16 +25,18 @@
  */
 "use strict";
 
-monitorApp.controller("ProjectManagementCtrl", function($scope, $mdDialog, $log, $location, ProjectService) {
+monitorApp.controller("ProjectManagementCtrl", function($scope, $mdDialog, $log, $location, $sce, ProjectService) {
 
     initialize();
 
     function initialize() {
     }
-
-
+		$scope.$watch('newProject', function(newProject){
+			$scope.status =  $sce.trustAsHtml('Server will be created on <a href="' + newProject.hostName + ":" + newProject.portNumber + "/#/\">" + newProject.hostName + ":" + newProject.portNumber + "</a>");
+		},true);
+	
 		$scope.languages = ["CPP", "JAVA"];
-		$scope.newProject = {hostName: $location.host()};
+		$scope.newProject = {hostName: $location.host(), portNumber:""};
 					
 		$scope.showCreateProjectDialog = function(ev) {
 						
@@ -55,7 +57,16 @@ monitorApp.controller("ProjectManagementCtrl", function($scope, $mdDialog, $log,
 					$scope.validationError = errorMessage;
 					$log.error($scope.validationError);
 				} else {
-					$mdDialog.hide();
+						$scope.status =  $sce.trustAsHtml("Creating new server ");
+					ProjectService.createProject(newProject).then (function(result) {
+						$log.info(result);
+						if (result.data.status==200) {
+							$scope.status =  $sce.trustAsHtml("Server created successfully!");							
+						} else {
+							$scope.status =  $sce.trustAsHtml("Server creation failed!");
+							$scope.validationError = result.data.errorMessage;
+						}
+					});					
 				}
 			});						
 		};
@@ -65,7 +76,7 @@ monitorApp.controller("ProjectManagementCtrl", function($scope, $mdDialog, $log,
 		}
 		
 		function validateProjectData(newProject) {
-			
+
 			let validationResult = validateCompletness(newProject);
 			
 			if (validationResult) {

@@ -164,6 +164,7 @@ function setWebApis(){
 
     app.get('/api/v2/project-list', project.getProjectList);
     app.get('/api/v2/snapshot-summary', project.getSnapshotSummary);
+	app.post('/api/v2/create-project',project.createProject);
 }
 
 function initModules(){

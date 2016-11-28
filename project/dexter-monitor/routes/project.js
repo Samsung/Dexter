@@ -71,6 +71,24 @@ exports.saveSnapshotSummary = function() {
         })
 };
 
+exports.createProject = function(req, res) {
+
+	createProjectInternal()
+    .then(() => {
+        log.info('Dexter Server instance created');
+		res.send({status:"ok", errorMessage: err.message});
+    })
+    .catch((err) => {
+        log.error(`Failed to create Dexter Server instance : ${err.message}`);
+        res.send({status:"fail", errorMessage: err.message});
+    });
+
+};
+
+function createProjectInternal(resolve, summary) {
+	return new Promise((resolve, summary) => {resolve();});
+}
+
 function insertSnapshotSummaryToDatabase(summary) {
     const year = moment().get('year');
     const weekOfYear = moment().isoWeek();

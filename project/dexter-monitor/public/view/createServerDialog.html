@@ -28,7 +28,7 @@
 				<input ng-model="newProject.adminPassword" ng-change="clearValidationError()" placeholder="e.g. MyPa$$word">
 			</md-input-container>
 		</div>
-		<div> Server will be created on <a ng-model="newProject" href="http://{{newProject.hostName}}:{{newProject.portNumber}}/#" >{{newProject.hostName}}:{{newProject.portNumber}}</a></div> 
+		<div ng-bind-html="status" > </div> 
 		<div style="color: red" ng-model="validationError" > {{validationError}} </div>
 	</md-dialog-content>
 		
