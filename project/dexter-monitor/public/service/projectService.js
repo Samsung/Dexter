@@ -206,4 +206,22 @@ monitorApp.service('ProjectService', function($http, $log, $q, ServerStatusServi
                 return [];
             });
     };
+	
+	this.isProjectNameUsed = function(projectName) {
+        return ServerStatusService.getActiveServerList()
+            .then((rows) => {
+				let projectNames = _.map(rows, 'projectName');
+				let projectNamesUsed = _.filter(projectNames, (usedProjectName) => usedProjectName==projectName);
+				return projectNamesUsed.length>0;
+            });
+	}
+	
+	this.isPortNumberUsed = function(portNumber) {
+        return ServerStatusService.getActiveServerList()
+            .then((rows) => {
+				let portNumbers = _.map(rows, 'portNumber');
+				let portNumbersUsed = _.filter(portNumbers, (usedPortNumber) => usedPortNumber==portNumber);
+				return portNumbersUsed.length>0;
+            });
+	}
 });

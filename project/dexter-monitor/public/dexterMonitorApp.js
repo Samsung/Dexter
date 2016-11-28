@@ -23,7 +23,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-var monitorApp = angular.module("dexterMonitorApp", ['ngRoute', 'ngAnimate', 'ngTouch', 'ngMaterial',
+var monitorApp = angular.module("dexterMonitorApp", ['ngRoute', 'ngAnimate', 'ngMaterial',
         'ui.grid', 'ui.grid.resizeColumns', 'ui.grid.moveColumns', 'ui.grid.exporter', 'ui.grid.autoResize',
         'ui.bootstrap'])
     .factory('_', ['$window', function($window){

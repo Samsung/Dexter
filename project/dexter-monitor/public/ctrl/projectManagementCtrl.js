@@ -25,24 +25,89 @@
  */
 "use strict";
 
-monitorApp.controller("ProjectManagementCtrl", function($scope, $mdDialog) {
+monitorApp.controller("ProjectManagementCtrl", function($scope, $mdDialog, $log, ProjectService) {
 
     initialize();
 
     function initialize() {
     }
 
-		$scope.createProject = function($event) {
+
+		$scope.languages = ["CPP", "JAVA"];
 		
-			$mdDialog.show(
-			  $mdDialog.alert()
-				.parent(angular.element(document.querySelector('#popupContainer')))
-				.clickOutsideToClose(true)
-				.title('Create new Dexter Server')
-				.textContent('You can specify some description text in here.')
-				.ok('Create')
-				.targetEvent($event)
-			);
+		$scope.showCreateProjectDialog = function(ev) {
+			
+			$mdDialog.show({
+			controller: "ProjectManagementCtrl",
+			  templateUrl: '/view/createServerDialog.html',
+			  parent: angular.element(document.querySelector('#popupContainer')),
+			  targetEvent: ev,
+			  clickOutsideToClose:true
+			});
 		};
+		
+		$scope.createServer = function(newProject) {
+			
+			validateProjectData(newProject).then(
+			(errorMessage) => {
+				if (errorMessage) {
+					$scope.validationError = errorMessage;
+					$log.error($scope.validationError);
+				} else {
+					$mdDialog.hide();
+				}
+			});						
+		};
+		
+		$scope.clearValidationError = function() {
+			$scope.validationError = ""
+		}
+		
+		function validateProjectData(newProject) {
+			
+			let validationResult = validateCompletness(newProject);
+			
+			if (validationResult) {
+				return Promise.resolve(validationResult);
+			} else {
+				return validateProjectNameUsage(newProject).then ( function(validationResult) {
+					if (validationResult) {
+						return validationResult;
+					} else {
+						return validatePortNumberUsage(newProject);
+					}
+				});
+			}
+		}
+		
+		function validateCompletness(newProject) {
+			if (!newProject.projectName) {
+				return "Project name must not empty";
+			} else if (!newProject.portNumber) {
+				return "Port number must not empty";
+			} else if (!newProject.language) {
+				return "Project language must not empty";
+			} else if (!newProject.adminName) {
+				return "Administrator name must not empty";
+			} else if (!newProject.adminPassword) {
+				return "Administrator password must not empty";
+			} 
+		}
+		
+		function validateProjectNameUsage(newProject) {
+			return ProjectService.isProjectNameUsed(newProject.projectName).then ( function(used) {
+				if (used) {
+					return "Project Name is already in use";
+				}
+			});
+		}
+		
+		function validatePortNumberUsage(newProject) {
+			return ProjectService.isPortNumberUsed(newProject.portNumber).then ( function(used) {
+				if (used) {
+					return "Port Number is already in use";
+				}
+			});
+		}		
 		
 });
