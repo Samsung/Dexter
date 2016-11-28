@@ -25,7 +25,7 @@
  */
 "use strict";
 
-monitorApp.controller("ProjectManagementCtrl", function($scope, $mdDialog, $log, ProjectService) {
+monitorApp.controller("ProjectManagementCtrl", function($scope, $mdDialog, $log, $location, ProjectService) {
 
     initialize();
 
@@ -34,9 +34,10 @@ monitorApp.controller("ProjectManagementCtrl", function($scope, $mdDialog, $log,
 
 
 		$scope.languages = ["CPP", "JAVA"];
-		
+		$scope.newProject = {hostName: $location.host()};
+					
 		$scope.showCreateProjectDialog = function(ev) {
-			
+						
 			$mdDialog.show({
 			controller: "ProjectManagementCtrl",
 			  templateUrl: '/view/createServerDialog.html',
@@ -108,6 +109,7 @@ monitorApp.controller("ProjectManagementCtrl", function($scope, $mdDialog, $log,
 					return "Port Number is already in use";
 				}
 			});
-		}		
+		}
+
 		
 });
