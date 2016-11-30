@@ -20,5 +20,6 @@
         "password":"Database User Password",
         "name":"Database Name"
     },
-    "userInfoUrl":"User info URL"
+    "userInfoUrl":"User info URL",
+	"dexterServerPath":"../dexter-server/"
 }
