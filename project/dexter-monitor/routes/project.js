@@ -37,6 +37,7 @@ const server = require('./server');
 const fs = require('fs');
 const os = require('os');
 const exec = require('child_process').exec;
+const path = require('path');
 
 exports.getProjectList = function(req, res) {
     const sql = "SELECT projectName, projectType, groupName, language   "+
@@ -109,15 +110,30 @@ function insertDexterMonitorEntry(project) {
 function startDexterServer(project) {
 	var npmInstallCmd = `npm install`;
 	var nodeCmd = `node server.js -database.name=${project.projectName} -p=${project.portNumber} -database.host=${global.config.database.host} -database.user=${global.config.database.user} -database.password=${global.config.database.password}`;
+	var dexterServerPath = path.resolve(global.config.dexterServerPath);
 	log.info("Starting new Dexter Server instance");
-	
-	var cmd;
-	if (os.type()=="Linux") {
-		//TODO: implement spawning with superviord 
+	var child;
+        if (os.type()=="Linux") {
+		var supervisordEntry = `\n[program:dexter-${project.projectName}] \n` +
+					`command=` + nodeCmd + `\n` +
+					`directory=` + dexterServerPath;
+		var supervisordConfPath = '/etc/supervisord.conf';
+                try {
+		   // if supervisord is installed, dexter server will be managed by it
+		   fs.accessSync(supervisordConfPath);
+                   fs.appendFileSync(supervisordConfPath,supervisordEntry);
+		   var cmd = "supervisorctl update";
+		   child = exec(cmd); 
+		   log.info("Added Supervisor entry");
+                } catch(err) {
+		   // if no supervisord is installed, the normal node process is run
+                   var cmd = npmInstallCmd + ' && ' + nodeCmd;	
+	           child = exec(cmd, {cwd: dexterServerPath});
+                }
 	} else {
 		cmd = 'start cmd /k' + '\"' + npmInstallCmd + ' && ' + nodeCmd + '\"';
+	        child = exec(cmd, {cwd: dexterServerPath, detached:true});
 	}
-	var child = exec(cmd, {cwd: global.config.dexterServerPath, detached: true});
 	child.on('error', function( err ){ throw err });
 }
 
