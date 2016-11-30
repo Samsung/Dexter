@@ -109,8 +109,13 @@ public class Main {
         if (cliOption.isStandAloneMode()) {
             return new EmptyDexterClient();
         } else {
-        	IDexterWebResource webResource = new JerseyDexterWebResource(new DexterServerConfig(cliOption.getUserId(), cliOption.getUserPassword(),
-        			cliOption.getServerHostIp(), cliOption.getServerPort()));
+        	IDexterWebResource webResource = new JerseyDexterWebResource(
+        			new DexterServerConfig(
+        					cliOption.getUserId(), 
+	    					cliOption.getUserPassword(),
+	    					cliOption.getServerHostIp(), 
+	    					cliOption.getServerPort()));
+        	
             return new DexterClient(webResource);
         }
     }
