@@ -96,9 +96,9 @@ exports.createProject = function(req, res) {
 }
 
 function createDexterServerDatabase(project) {
-	const sql = `CREATE DATABASE ${project.projectName}; USE ${project.projectName};`
-			   + fs.readFileSync(`${global.config.dexterServerPath}/config/ddl.sql`).toString();	
-			   + `USE ${global.config.database.name};`;
+	const sql = `CREATE DATABASE ${project.projectName}; USE ${project.projectName};`+
+			    fs.readFileSync(`${global.config.dexterServerPath}/config/ddl.sql`).toString()+
+			    `USE ${global.config.database.name};`;
 	return database.exec(sql).then(() => project);
 }
 
