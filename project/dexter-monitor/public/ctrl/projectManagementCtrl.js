@@ -77,7 +77,7 @@ monitorApp.controller("ProjectManagementCtrl", function($scope, $mdDialog, $log,
 		
 		function validateProjectData(newProject) {
 
-			let validationResult = validateCompletness(newProject);
+			let validationResult = validateCompletness(newProject) || validateProjectName(newProject);
 			
 			if (validationResult) {
 				return Promise.resolve(validationResult);
@@ -104,6 +104,13 @@ monitorApp.controller("ProjectManagementCtrl", function($scope, $mdDialog, $log,
 			} else if (!newProject.adminPassword) {
 				return "Administrator password must not empty";
 			} 
+		}
+		
+		function validateProjectName(newProject) {
+			let projectName = newProject.projectName;
+			if (!(projectName.match(/^[a-z0-9]+$/i))) {
+				return 'Project name can contain only numbers and letters';
+			}
 		}
 		
 		function validateProjectNameUsage(newProject) {
