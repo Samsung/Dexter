@@ -103,8 +103,9 @@ function createDexterServerDatabase(project) {
 }
 
 function insertDexterMonitorEntry(project) {
-	var sql = `INSERT INTO ProjectInfo (projectName, pid, requester, administrator, portNumber, createdDateTime, language, hostIP, projectYear, emailingWhenServerDead, groupName, dbName) VALUES ('${project.projectName}', '${project.projectName}','${project.adminName}', '${project.adminName}', '${project.portNumber}', now(), '${project.language}', '${project.hostName}', YEAR(now()), 'Y', '','${project.projectName}')`;
-	return database.exec(sql).then(() => project);
+	var sql = `INSERT INTO ProjectInfo (projectName, pid, requester, administrator, portNumber, createdDateTime, language, hostIP, projectYear, emailingWhenServerDead, groupName, dbName) VALUES (?,?,?,?,?, now(), ?, ?, YEAR(now()), 'Y', '',?)`;
+	var args  = [project.projectName, project.projectName, project.adminName, project.adminName, project.portNumber, project.language, project.hostName, project.projectName];
+	return database.exec(sql, args).then(() => project);
 }
 
 function startDexterServer(project) {
