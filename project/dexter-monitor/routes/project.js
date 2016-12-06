@@ -96,44 +96,44 @@ exports.createProject = function(req, res) {
 }
 
 function createDexterServerDatabase(project) {
-	var sql = `CREATE DATABASE ${project.projectName}; USE ${project.projectName};`;
-		sql += fs.readFileSync(`${global.config.dexterServerPath}/config/ddl.sql`).toString();	
-		sql += `USE ${global.config.database.name};`;
+	const sql = `CREATE DATABASE ${project.projectName}; USE ${project.projectName};`
+			   + fs.readFileSync(`${global.config.dexterServerPath}/config/ddl.sql`).toString();	
+			   + `USE ${global.config.database.name};`;
 	return database.exec(sql).then(() => project);
 }
 
 function insertDexterMonitorEntry(project) {
-	var sql = `INSERT INTO ProjectInfo (projectName, pid, requester, administrator, portNumber, createdDateTime, language, hostIP, projectYear, emailingWhenServerDead, groupName, dbName) VALUES (?,?,?,?,?, now(), ?, ?, YEAR(now()), 'Y', '',?)`;
-	var args  = [project.projectName, project.projectName, project.adminName, project.adminName, project.portNumber, project.language, project.hostName, project.projectName];
+	const sql = `INSERT INTO ProjectInfo (projectName, pid, requester, administrator, portNumber, createdDateTime, language, hostIP, projectYear, emailingWhenServerDead, groupName, dbName) VALUES (?,?,?,?,?, now(), ?, ?, YEAR(now()), 'Y', '',?)`;
+	const args  = [project.projectName, project.projectName, project.adminName, project.adminName, project.portNumber, project.language, project.hostName, project.projectName];
 	return database.exec(sql, args).then(() => project);
 }
 
 function startDexterServer(project) {
-	var npmInstallCmd = `npm install`;
-	var nodeCmd = `node server.js -database.name=${project.projectName} -p=${project.portNumber} -database.host=${global.config.database.host} -database.user=${global.config.database.user} -database.password=${global.config.database.password}`;
+	const npmInstallCmd = `npm install`;
+	const nodeCmd = `node server.js -database.name=${project.projectName} -p=${project.portNumber} -database.host=${global.config.database.host} -database.user=${global.config.database.user} -database.password=${global.config.database.password}`;
 	var dexterServerPath = path.resolve(global.config.dexterServerPath);
 	log.info("Starting new Dexter Server instance");
 	var child;
         if (os.type()=="Linux") {
-		var supervisordEntry = `\n[program:dexter-${project.projectName}] \n` +
+		const supervisordEntry = `\n[program:dexter-${project.projectName}] \n` +
 					`command=` + nodeCmd + `\n` +
 					`directory=` + dexterServerPath;
-		var supervisordConfPath = '/etc/supervisord.conf';
+		const supervisordConfPath = '/etc/supervisord.conf';
                 try {
 		   // if supervisord is installed, dexter server will be managed by it
 		   fs.accessSync(supervisordConfPath);
                    fs.appendFileSync(supervisordConfPath,supervisordEntry);
-		   var cmd = "supervisorctl update";
+		   const cmd = "supervisorctl update";
 		   child = exec(cmd); 
 		   log.info("Added Supervisor entry");
                 } catch(err) {
 		   // if no supervisord is installed, the normal node process is run
-                   var cmd = npmInstallCmd + ' && ' + nodeCmd;	
+                   const cmd = npmInstallCmd + ' && ' + nodeCmd;	
 	           child = exec(cmd, {cwd: dexterServerPath});
                 }
 	} else {
-		cmd = 'start cmd /k' + '\"' + npmInstallCmd + ' && ' + nodeCmd + '\"';
-	        child = exec(cmd, {cwd: dexterServerPath, detached:true});
+		const cmd = 'start cmd /k' + '\"' + npmInstallCmd + ' && ' + nodeCmd + '\"';
+	    child = exec(cmd, {cwd: dexterServerPath, detached:true});
 	}
 	child.on('error', function( err ){ throw err });
 }
