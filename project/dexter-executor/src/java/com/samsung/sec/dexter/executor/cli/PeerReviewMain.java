@@ -34,8 +34,10 @@ import org.apache.log4j.Logger;
 import com.samsung.sec.dexter.core.config.*;
 import com.samsung.sec.dexter.core.config.DexterConfig.RunMode;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.executor.DexterAnalyzer;
 
 public class PeerReviewMain {
+	private final static ICLILog cliLog = new CLILog(System.out);
 	private final static Logger log = Logger.getLogger(Main.class);
 	private final IDexterCLIOption cliOption;
 	private final IDexterConfigFile dexterConfigFile;
@@ -50,17 +52,21 @@ public class PeerReviewMain {
 	}
 
 	public static void main(String[] args) {
+		IDexterCLIOption cliOption = new DexterCLIOption(args);
 		PeerReviewMain peerReviewMain;
 
 		try {
 			peerReviewMain = new PeerReviewMain(
 					DexterConfig.getInstance(),
-					new DexterCLIOption(args),
+					cliOption,
 					new DexterConfigFile(),
 					new PeerReviewConfigJob(
 							DexterConfig.getInstance(), 
 							new PeerReviewController(
-									new PeerReviewHomeMonitor(Executors.newFixedThreadPool(0), FileSystems.getDefault().newWatchService())), 
+									new PeerReviewHomeMonitor(
+											Executors.newFixedThreadPool(1), 
+											FileSystems.getDefault().newWatchService(),
+											new PeerReviewCLIAnalyzer(cliOption, cliLog,  DexterAnalyzer.getInstance()))), 
 							Executors.newScheduledThreadPool(1)));
 			
 		} catch (IOException e) {
@@ -84,6 +90,7 @@ public class PeerReviewMain {
 		dexterConfigFile.loadFromFile(new File(cliOption.getConfigFilePath()));
 		dexterConfig.setRunMode(RunMode.CLI);
 		dexterConfig.setDexterHome(dexterConfigFile.getDexterHome());
+		dexterConfig.createInitialFolderAndFiles();
 		
 	}
 

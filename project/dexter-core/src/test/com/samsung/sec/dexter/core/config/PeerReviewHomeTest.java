@@ -6,6 +6,8 @@ import static org.mockito.Mockito.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
+import com.samsung.sec.dexter.core.config.DexterConfig.AnalysisType;
 import com.samsung.sec.dexter.core.util.DexterServerConfig;
 
 public class PeerReviewHomeTest {
@@ -26,4 +28,11 @@ public class PeerReviewHomeTest {
 		assertEquals(true, peerReviewHome.isActive());
 	}
 
+	@Test
+	public void testToAnalysisConfig() {
+		AnalysisConfig analysisConfig = peerReviewHome.toAnalysisConfig();
+		
+		assertEquals("testProject", analysisConfig.getProjectName());
+		assertEquals(AnalysisType.FILE, analysisConfig.getAnalysisType());
+	}
 }

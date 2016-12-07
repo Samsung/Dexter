@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -17,9 +18,9 @@ import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterServerConfig;
 
 public class PeerReviewController {
-	PeerReviewHomeMonitor peerReviewHomeMonitor;
-	JSONParser jsonParser;
-	List<PeerReviewHome> peerReviewHomeList;
+	private final static Logger log = Logger.getLogger(Main.class);
+	private PeerReviewHomeMonitor peerReviewHomeMonitor;
+	private List<PeerReviewHome> peerReviewHomeList;
 	
 	public PeerReviewController(PeerReviewHomeMonitor peerReviewHomeMonitor) {
 		this.peerReviewHomeMonitor = peerReviewHomeMonitor;
@@ -36,6 +37,7 @@ public class PeerReviewController {
 	}
 	
 	private void updatePeerReviewHome(File configFile) {
+		log.info("Update peer review home");
 		try {
 			JSONParser jsonParser = new JSONParser();
 			JSONObject jsonObject = (JSONObject)jsonParser.parse(new FileReader(configFile));		

@@ -24,6 +24,7 @@ import com.samsung.sec.dexter.core.util.DexterServerConfig;
 public class PeerReviewHomeMonitorTest {
 	ExecutorService excutorService;
 	PeerReviewHomeMonitor homeMonitor;
+	PeerReviewCLIAnalyzer cliAnalyzer;
 	
 	@Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -31,26 +32,22 @@ public class PeerReviewHomeMonitorTest {
 	@Before
 	public void setUp() throws Exception {
 		excutorService = mock(ExecutorService.class);
-		homeMonitor = new PeerReviewHomeMonitor(excutorService, FileSystems.getDefault().newWatchService());
+		cliAnalyzer = mock(PeerReviewCLIAnalyzer.class);
+		homeMonitor = new PeerReviewHomeMonitor(excutorService, FileSystems.getDefault().newWatchService(), cliAnalyzer);
 	}
 
-	@Test(expected = RuntimeException.class)
-	public void testUpdate_restartExcuterService() throws InterruptedException, IOException {
+	@Test
+	public void testUpdate_submitRunnableTask() throws InterruptedException, IOException {
 		List<PeerReviewHome> homeList = createTestPeerReviewHomeListForMapTest();
-		doThrow(new RuntimeException()).when(excutorService).execute(any(Runnable.class));
 		
 		homeMonitor.update(homeList);
 		
-		InOrder inOrder = inOrder(excutorService);
-		inOrder.verify(excutorService).awaitTermination(anyLong(), any(TimeUnit.class));
-		inOrder.verify(excutorService).execute(any(Runnable.class));
-		
+		verify(excutorService).submit(any(Runnable.class));
 	}
 	
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void testUpdate_makePeerReviewWatchMapWithRightSize() throws IOException {
 		List<PeerReviewHome> homeList = createTestPeerReviewHomeListForMapTest();
-		doThrow(new RuntimeException()).when(excutorService).execute(any(Runnable.class));
 		
 		homeMonitor.update(homeList);
 		

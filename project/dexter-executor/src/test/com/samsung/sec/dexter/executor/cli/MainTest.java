@@ -159,7 +159,7 @@ public class MainTest {
     }
 
     @Test
-    public void test_createDexterClient_should_return_empty_object_when_standalone_mode() {
+    public void test_createDexterClient_shouldeturn_empty_object_when_standalone_mode() {
         String id = "user";
         String password = "password";
         String[] args = { "-u", id, "-p", password, "-f", "./src/test/dexter_conf_java.json" };

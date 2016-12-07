@@ -1,15 +1,19 @@
 package com.samsung.sec.dexter.executor.cli;
 
 import java.io.File;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
+import org.apache.log4j.Logger;
 
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.IDexterHomeListener;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 
 public class PeerReviewConfigJob implements Runnable, IDexterHomeListener {
+	private final static Logger log = Logger.getLogger(PeerReviewConfigJob.class);
 	private final DexterConfig dexterConfig;
 	private final PeerReviewController peerReviewController;
 	private final ScheduledExecutorService scheduler;
@@ -34,15 +38,14 @@ public class PeerReviewConfigJob implements Runnable, IDexterHomeListener {
 	@Override
 	public void run() {
 		if (isConfigFileChanged()) {
+			log.info("Peer-review config file is changed");
 			peerReviewController.update(configFile);
 		}
 	}
 	
 	private boolean isConfigFileChanged() {
 		long configFileLastModifiedTime = configFile.lastModified();
-		if (configFileLastModifiedTime == 0L)
-			throw new DexterRuntimeException("Peer-review config file dosen't exist : " + configFile.getPath());
-			
+		
 		if (configFileLastModifiedTime == configFileSyncTime)
 			return false;
 		
@@ -74,6 +77,9 @@ public class PeerReviewConfigJob implements Runnable, IDexterHomeListener {
 			throw new DexterRuntimeException("Dexter home is null");
 			
 		configFile = new File(dexterHome + DEFAULT_CONFIG_DIR + DEFAULT_CONFIG_NAME);
+		if (!configFile.exists())
+			throw new DexterRuntimeException("Peer-review config file doesn't exist : " + configFile.getPath());
+		
 		this.configFileSyncTime = 0;
 	}
 

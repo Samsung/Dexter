@@ -1,5 +1,9 @@
 package com.samsung.sec.dexter.core.config;
 
+import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
+import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
+import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
+import com.samsung.sec.dexter.core.config.DexterConfig.AnalysisType;
 import com.samsung.sec.dexter.core.util.DexterServerConfig;
 
 public class PeerReviewHome {
@@ -46,4 +50,15 @@ public class PeerReviewHome {
 	public void setProjectName(String projectName) {
 		this.projectName = projectName;
 	}
+	
+	public AnalysisConfig toAnalysisConfig() {
+        IAnalysisEntityFactory configFactory = new AnalysisEntityFactory();
+        AnalysisConfig analysisConfig = configFactory.createAnalysisConfig();
+
+        analysisConfig.setProjectName(projectName);
+        analysisConfig.setProjectFullPath(sourceDir);
+        analysisConfig.setAnalysisType(AnalysisType.FILE);
+
+        return analysisConfig;
+    }
 }
