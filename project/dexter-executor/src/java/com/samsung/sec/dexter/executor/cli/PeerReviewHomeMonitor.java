@@ -72,7 +72,11 @@ public class PeerReviewHomeMonitor implements Runnable {
 	}
 	
 	private void registerHomeForWatch(final PeerReviewHome home, final Map<WatchKey, PeerReviewWatch> peerReviewWatchMap) {
-		registerPathForWatch(Paths.get(home.getSourceDir()), home, peerReviewWatchMap);
+		try {
+			registerPathForWatch(Paths.get(home.getSourceDir()), home, peerReviewWatchMap);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void registerPathForWatch(final Path dir, final PeerReviewHome home, final Map<WatchKey, PeerReviewWatch> peerReviewWatchMap) {
@@ -160,14 +164,14 @@ public class PeerReviewHomeMonitor implements Runnable {
 			}
 
 			Path filePath = getFilePathFromWatchEvent(event, peerReviewWatch.getWatchingPath());
-			log.info(String.format("Watched >> %s: %s%n", event.kind().name(), filePath));
+			log.debug(String.format("Watched >> %s: %s%n", event.kind().name(), filePath));
 
 
 			if (kind == ENTRY_CREATE && Files.isDirectory(filePath, NOFOLLOW_LINKS)) {
 				registerPathForWatch(filePath, peerReviewWatch.getHome(), peerReviewWatchMap);
 			}
 
-			if (isSourceFile(filePath)) {
+			if (isValidSourceFile(filePath)) {
 				changedFileList.add(filePath.toString());
 			}
 		}
@@ -187,12 +191,24 @@ public class PeerReviewHomeMonitor implements Runnable {
         return parentPath.resolve(fileName);
 	}
 	
-	private boolean isSourceFile(Path filePath) {
+	private boolean isValidSourceFile(Path filePath) {
 		Pattern pattern = Pattern.compile(
 				"^\\w+.*\\.(cpp|c\\+\\+|c|h|hpp|h\\+\\+|java|cs|js|html)$", 
 				Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(filePath.getFileName().toString());
 		
-		return Files.isRegularFile(filePath, NOFOLLOW_LINKS) && matcher.matches();
+		return Files.isRegularFile(filePath, NOFOLLOW_LINKS) && matcher.matches() && !isEmptyFile(filePath);
+	}
+	
+	private boolean isEmptyFile(Path filePath) {
+		long fileSize = 0;
+		
+		try {
+			fileSize = Files.size(filePath);
+			log.info("file size : " + fileSize);
+		} catch (IOException e) {
+		}
+		
+		return fileSize == 0;
 	}
 }

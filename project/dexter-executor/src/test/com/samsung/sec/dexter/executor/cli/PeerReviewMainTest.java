@@ -11,6 +11,7 @@ import org.junit.Test;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.IDexterConfigFile;
 import com.samsung.sec.dexter.core.config.DexterConfig.RunMode;
+import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
 
 public class PeerReviewMainTest {
 	DexterConfig dexterConfig;
@@ -18,6 +19,7 @@ public class PeerReviewMainTest {
 	IDexterConfigFile dexterConfigFile;
 	PeerReviewConfigJob configJob;
 	PeerReviewMain peerReviewMain;
+	IDexterPluginManager pluginManager;
 	
 	@Before
 	public void setUp() {
@@ -25,10 +27,11 @@ public class PeerReviewMainTest {
 		cliOption = mock(IDexterCLIOption.class);
 		configJob = mock(PeerReviewConfigJob.class);
 		dexterConfigFile = mock(IDexterConfigFile.class);
+		pluginManager = mock(IDexterPluginManager.class);
 		
 		when(cliOption.getConfigFilePath()).thenReturn("./");
 		
-		peerReviewMain = new PeerReviewMain(dexterConfig, cliOption, dexterConfigFile, configJob);
+		peerReviewMain = new PeerReviewMain(dexterConfig, cliOption, dexterConfigFile, configJob, pluginManager);
 	}
 	  
 	@Test

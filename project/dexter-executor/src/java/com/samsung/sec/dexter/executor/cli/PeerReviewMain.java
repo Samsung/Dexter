@@ -31,9 +31,15 @@ import java.nio.file.FileSystems;
 import java.util.concurrent.Executors;
 import org.apache.log4j.Logger;
 
+import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.config.*;
 import com.samsung.sec.dexter.core.config.DexterConfig.RunMode;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.plugin.IDexterPluginInitializer;
+import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
+import com.samsung.sec.dexter.core.util.EmptyDexterClient;
+import com.samsung.sec.dexter.core.util.IDexterClient;
+import com.samsung.sec.dexter.executor.CLIPluginInitializer;
 import com.samsung.sec.dexter.executor.DexterAnalyzer;
 
 public class PeerReviewMain {
@@ -43,16 +49,20 @@ public class PeerReviewMain {
 	private final IDexterConfigFile dexterConfigFile;
 	private final PeerReviewConfigJob configJob;
 	private final DexterConfig dexterConfig;
+	private final IDexterPluginManager pluginManager;
 
-	public PeerReviewMain(DexterConfig dexterConfig, IDexterCLIOption cliOption, IDexterConfigFile dexterConfigFile, PeerReviewConfigJob configJob) {
+	public PeerReviewMain(DexterConfig dexterConfig, IDexterCLIOption cliOption, IDexterConfigFile dexterConfigFile, 
+			PeerReviewConfigJob configJob, IDexterPluginManager pluginManager) {
 		this.dexterConfig = dexterConfig;
 		this.cliOption = cliOption;
 		this.dexterConfigFile = dexterConfigFile;
 		this.configJob = configJob;
+		this.pluginManager = pluginManager;
 	}
 
 	public static void main(String[] args) {
 		IDexterCLIOption cliOption = new DexterCLIOption(args);
+		IDexterPluginManager pluginManager = loadDexterPlugins(new EmptyDexterClient(), cliOption);
 		PeerReviewMain peerReviewMain;
 
 		try {
@@ -66,8 +76,13 @@ public class PeerReviewMain {
 									new PeerReviewHomeMonitor(
 											Executors.newFixedThreadPool(1), 
 											FileSystems.getDefault().newWatchService(),
-											new PeerReviewCLIAnalyzer(cliOption, cliLog,  DexterAnalyzer.getInstance()))), 
-							Executors.newScheduledThreadPool(1)));
+											new PeerReviewCLIAnalyzer(cliOption, 
+													cliLog,  
+													DexterAnalyzer.getInstance(), 
+													pluginManager,
+													new AnalysisEntityFactory()))), 
+							Executors.newScheduledThreadPool(1)),
+					pluginManager);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -75,11 +90,19 @@ public class PeerReviewMain {
 		}
 
 		peerReviewMain.initDexterConfig();
+		peerReviewMain.initDexterPlungins();
 		peerReviewMain.startConfigJob();
-		
+	}
+	
+	private static IDexterPluginManager loadDexterPlugins(final IDexterClient client, final IDexterCLIOption cliOption) {
+        IDexterPluginInitializer initializer = new CLIPluginInitializer(cliLog);
+        IDexterPluginManager pluginManager = new CLIDexterPluginManager(initializer, client, cliLog, cliOption);
 
-        
-
+        return pluginManager;
+    }
+	
+	public void initDexterPlungins() {
+		pluginManager.initDexterPlugins();
 	}
 
 	public void startConfigJob() {

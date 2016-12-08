@@ -18,25 +18,30 @@ public class PeerReviewCLIAnalyzer {
 	private final ICLILog cliLog;
 	private final IDexterCLIOption cliOption;
 	private final DexterAnalyzer dexterAnalyzer;
+	private final IDexterPluginManager pluginManager;
+	private final AnalysisEntityFactory analysisEntityFactory;
 	
-	public PeerReviewCLIAnalyzer(IDexterCLIOption cliOption, ICLILog cliLog, DexterAnalyzer dexterAnalyzer) {
+	public PeerReviewCLIAnalyzer(IDexterCLIOption cliOption, ICLILog cliLog, DexterAnalyzer dexterAnalyzer, 
+			IDexterPluginManager pluginManager, AnalysisEntityFactory analysisEntityFactory) {
 		this.cliOption = cliOption;
 		this.cliLog = cliLog;
 		this.dexterAnalyzer = dexterAnalyzer;
+		this.pluginManager = pluginManager;
+		this.analysisEntityFactory = analysisEntityFactory;
 	}
 
 	public void analyze(List<String> changedFileList, PeerReviewHome home) {
 		IDexterClient dexterClient = createDexterClient(home);
+		pluginManager.setDexterClient(dexterClient);
+		loginOrCreateAccount(dexterClient, cliOption);
+		
 		AnalysisConfig baseAnalysisConfig = home.toAnalysisConfig();
 		IAnalysisResultHandler analysisResultHandler = new CLIAnalysisResultHandler(dexterClient.getDexterWebUrl(), cliOption, cliLog);
-		IDexterPluginManager dexterPluginManager = loadDexterPlugins(dexterClient, cliOption);
-		
-		loginOrCreateAccount(dexterClient, cliOption);
 		
 		for (String changedFile : changedFileList) {
 			dexterAnalyzer.runAsync(
             		createAnalysisConfig(changedFile, analysisResultHandler, baseAnalysisConfig), 
-            		dexterPluginManager, 
+            		pluginManager, 
             		dexterClient);
 		}
 	}
@@ -62,7 +67,7 @@ public class PeerReviewCLIAnalyzer {
 	
 	private AnalysisConfig createAnalysisConfig(final String fileFullPath,
             final IAnalysisResultHandler cliAnalysisResultHandler, final AnalysisConfig baseAnalysisConfig) {
-        final AnalysisConfig config = new AnalysisEntityFactory()
+        final AnalysisConfig config = analysisEntityFactory
                 .copyAnalysisConfigWithoutSourcecode(baseAnalysisConfig);
 
         config.setResultHandler(cliAnalysisResultHandler);
