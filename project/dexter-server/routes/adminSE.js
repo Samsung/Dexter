@@ -26,216 +26,232 @@
 "use strict";
 var database = require("../util/database");
 var logging = require('../util/logging');
-var _ = require('lodash');
 var dutil = require('../util/dexter-util');
+const mysql = require("mysql");
+const _ = require('lodash');
 const Q = require('q');
+const Promise = require('bluebird');
 
-exports.getModulePathList = function(req, res){
+exports.getModulePathList = function (req, res) {
     var sql = "SELECT modulePath FROM Defect group by modulePath order by modulePath";
 
     database.execV2(sql)
-        .then(function(rows) {
-            res.send({status:'ok', rows: rows} );
+        .then((rows) => {
+            res.send({status: 'ok', rows: rows});
         })
-        .catch(function(err) {
-            logging.error(err);
-            res.send({status:"fail", errorMessage: err.message});
+        .catch(error => {
+            logging.error(error);
+            res.send({status: "fail", errorMessage: error.message});
         });
 };
 
-function deleteCodeMetricsFromDB(modulePathList){
-    const deferred = Q.defer();
+function deleteCodeMetricsFromDB(modulePathList) {
     var sql = "delete from CodeMetrics";
 
-    _.forEach(modulePathList, function(modulePath, idx){
-        if(idx == 0){
-            sql += " Where modulePath = " +  database.toSqlValue(modulePath);
-        }else {
-            sql += " or modulePath = " + database.toSqlValue(modulePath);
+    _.forEach(modulePathList, (modulePath, idx) => {
+        if (idx == 0) {
+            sql += " Where modulePath " + database.compareEqualWithEscape(modulePath);
+        } else {
+            sql += " or modulePath " + database.compareEqualWithEscape(modulePath);
         }
     });
 
-    database.execV2(sql)
-        .then(function() {
-            deferred.resolve(modulePathList);
+    return database.execV2(sql)
+        .then(() => {
+            return Promise.resolve(modulePathList);
         })
-        .catch(function(err) {
-            deferred.reject(err);
+        .catch(error => {
+            return Promise.reject(error);
         });
-
-    return deferred.promise;
-
 }
 
-function deleteFunctionMetricFromDB(modulePathList){
-    const deferred = Q.defer();
+function deleteFunctionMetricFromDB(modulePathList) {
     var sql = "delete from FunctionMetrics";
-    _.forEach(modulePathList, function(modulePath, idx){
-        if(idx === 0){
-            sql += " Where modulePath = " +  database.toSqlValue(modulePath);
-        }else {
-            sql += " or modulePath = " + database.toSqlValue(modulePath);
+
+    _.forEach(modulePathList, (modulePath, idx) => {
+        if (idx === 0) {
+            sql += " Where modulePath " + database.compareEqualWithEscape(modulePath);
+        } else {
+            sql += " or modulePath " + database.compareEqualWithEscape(modulePath);
         }
     });
 
-    database.execV2(sql)
-        .then(function() {
-            deferred.resolve(modulePathList);
+    return database.execV2(sql)
+        .then(() => {
+            return Promise.resolve(modulePathList);
         })
-        .catch(function(err) {
-            deferred.reject(err);
+        .catch(error => {
+            return Promise.reject(error);
         });
-    return deferred.promise;
 }
 
-function deleteSourceCodeMapFromDB(modulePathList){
-    const deferred = Q.defer();
+function deleteSourceCodeMapFromDB(modulePathList) {
     var sql = "delete from SourceCodeMap";
-    _.forEach(modulePathList, function(modulePath, idx){
-        if(idx === 0){
-            sql += " Where modulePath = " +  database.toSqlValue(modulePath);
-        }else {
-            sql += " or modulePath = " + database.toSqlValue(modulePath);
+    _.forEach(modulePathList, (modulePath, idx) => {
+        if (idx === 0) {
+            sql += " Where modulePath " + database.compareEqualWithEscape(modulePath);
+        } else {
+            sql += " or modulePath " + database.compareEqualWithEscape(modulePath);
         }
     });
-    database.execV2(sql)
-        .then(function() {
-            deferred.resolve(modulePathList);
+    return database.execV2(sql)
+        .then(() => {
+            return Promise.resolve(modulePathList);
         })
-        .catch(function(err) {
-            deferred.reject(err);
+        .catch(error => {
+            return Promise.reject(error);
         });
-
-    return deferred.promise;
 }
 
-function deleteSnapshotDefectMapFromDB(modulePathList){
-    const deferred = Q.defer();
+function deleteSnapshotDefectMapFromDB(modulePathList) {
     var sql = "delete from SnapshotDefectMap";
-    _.forEach(modulePathList, function(modulePath, idx){
-        if(idx ==0){
-            sql += " Where modulePath = " +  database.toSqlValue(modulePath);
-        }else {
-            sql += " or modulePath = " + database.toSqlValue(modulePath);
+    _.forEach(modulePathList, (modulePath, idx) => {
+        if (idx === 0) {
+            sql += " Where modulePath " + database.compareEqualWithEscape(modulePath);
+        } else {
+            sql += " or modulePath " + database.compareEqualWithEscape(modulePath);
         }
     });
 
-    database.execV2(sql)
-        .then(function() {
-            deferred.resolve(modulePathList);
+    return database.execV2(sql)
+        .then(() => {
+            return Promise.resolve(modulePathList);
         })
-        .catch(function(err) {
-            deferred.reject(err);
+        .catch(error => {
+            return Promise.reject(error);
         });
-
-    return deferred.promise;
 }
 
-function deleteSnapshotOccurenceMapForDid(didList){
+function deleteSnapshotOccurenceMapForDid(didList) {
     var promises = [];
 
-    didList.forEach( did =>{
-        promises.push(new Promise ((resolve, reject) =>{
-            const sql = `DELETE from SnapshotOccurenceMap where did=${did.did}`;
+    _.forEach(didList, (did) => {
+        promises.push(new Promise((resolve, reject) => {
+            const sql = `DELETE from SnapshotOccurenceMap where did=${mysql.escape(did.did)}`;
             database.execV2(sql)
-                .then(function(){
+                .then(() => {
                     resolve();
                 })
-                .catch(function(err) {
-                    reject(err);
+                .catch((error) => {
+                    reject(error);
                 });
-
         }))
-
     });
 
     return Promise.all(promises)
         .then(() => {
             return "SUCCESS";
         })
-        .catch((err) =>{
-            logging.error(err);
+        .catch(error => {
+            logging.error(error);
             return [];
         });
-
 }
 
-function deleteSnapshotOccurenceMapFromDB(modulePathList){
-    const deferred = Q.defer();
+function deleteOccurenceMapForDid(didList) {
+    var promises = [];
+
+    _.forEach(didList, (did) => {
+        promises.push(new Promise((resolve, reject) => {
+            const sql = `DELETE from Occurence where did=${mysql.escape(did.did)}`;
+            database.execV2(sql)
+                .then(() => {
+                    resolve();
+                })
+                .catch((error) => {
+                    reject(error);
+                });
+        }))
+    });
+
+    return Promise.all(promises)
+        .then(() => {
+            return "SUCCESS";
+        })
+        .catch(error => {
+            logging.error(error);
+            return [];
+        });
+}
+
+
+function deleteSnapshotOccurenceMapFromDB(modulePathList) {
     var sql = `SELECT did FROM Defect `;
 
-    _.forEach(modulePathList, function(modulePath, idx){
-        if(idx == 0){
-            sql += " Where modulePath = " +  database.toSqlValue(modulePath);
-        }else {
-            sql += " or modulePath = " + database.toSqlValue(modulePath);
+    _.forEach(modulePathList, (modulePath, idx) => {
+        if (idx == 0) {
+            sql += " Where modulePath " + database.compareEqualWithEscape(modulePath);
+        } else {
+            sql += " or modulePath " + database.compareEqualWithEscape(modulePath);
         }
     });
 
-
-    database.execV2(sql)
-        .then(function(result) {
-            deleteSnapshotOccurenceMapForDid(result)
-            .then(function(){
-                    deferred.resolve(modulePathList);
+    return database.execV2(sql)
+        .then((result)=> {
+            return deleteSnapshotOccurenceMapForDid(result)
+                .then(deleteOccurenceMapForDid(result))
+                .then(() => {
+                    return Promise.resolve(modulePathList);
                 });
         })
-        .catch(function(err) {
-            deferred.reject(err);
+        .catch(error => {
+            return Promise.reject(error);
         });
-
-    return deferred.promise;
 }
 
 
-function deleteDefectFromDB(modulePathList){
-    const deferred = Q.defer();
+function deleteDefectFromDB(modulePathList) {
+    var sql = "DELETE from Defect";
 
-    var sql = "delete from Defect";
-    _.forEach(modulePathList, function(modulePath, idx){
-        if(idx == 0){
-            sql += " Where modulePath = " +  database.toSqlValue(modulePath);
-        }else {
-            sql += " or modulePath = " + database.toSqlValue(modulePath);
+    _.forEach(modulePathList,  (modulePath, idx) => {
+        if (idx == 0) {
+            sql += " Where modulePath " + database.compareEqualWithEscape(modulePath);
+        } else {
+            sql += " or modulePath " + database.compareEqualWithEscape(modulePath);
         }
     });
 
-    database.execV2(sql)
-        .then(function() {
-            deferred.resolve(modulePathList);
+    return database.execV2(sql)
+        .then(() => {
+            return Promise.resolve(modulePathList);
         })
-        .catch(function(err) {
-            deferred.reject(err);
+        .catch(error => {
+            return Promise.reject(error);
         });
-
-    return deferred.promise;
 }
 
-exports.deleteModulePathList = function(req, res){
-    let modulePathList =[];
-    if(_.has(req,"query.modulePathList") && req.query.modulePathList) {
-        if(req.query.modulePathListLength < 0 ){
-            res.send({status:"fail", errorMessage: "Please selected module Path"});
-        }
-        var temp = req.query.modulePathList;
-        if( typeof temp === "string" ){
-            modulePathList = temp.split(',');
-        }else{
-            res.send({status:"fail", errorMessage: "'modulePathList' must be String"});
-        }
-
-        deleteCodeMetricsFromDB(modulePathList)
-            .then(deleteFunctionMetricFromDB)
-            .then(deleteSourceCodeMapFromDB)
-            .then(deleteSnapshotDefectMapFromDB)
-            .then(deleteSnapshotOccurenceMapFromDB)
-            .then(deleteDefectFromDB)
-            .then(function(){
-                res.send({status:'ok'});
-            })
-            .catch(function(err) {
-                logging.info(`catch` + err.toString());
-            });
-
+exports.deleteModulePathList = function (req, res) {
+    if (!(_.has(req, "query.modulePathList") && req.query.modulePathList)) {
+        res.send({status: "fail", errorMessage: "Please selected module Path"});
+        return;
     }
+
+    if (req.query.modulePathListLength < 0) {
+        res.send({status: "fail", errorMessage: "Please selected module Path"});
+        return;
+    }
+
+    if (typeof req.query.modulePathList !== "string") {
+        res.send({status: "fail", errorMessage: "'modulePathList' must be String"});
+        return;
+    }
+
+    var modulePathList = req.query.modulePathList.split(',');
+
+    deleteCodeMetricsFromDB(modulePathList)
+        .then(deleteFunctionMetricFromDB)
+        .then(deleteSourceCodeMapFromDB)
+        .then(deleteSnapshotDefectMapFromDB)
+        .then(deleteSnapshotOccurenceMapFromDB)
+        .then(deleteDefectFromDB)
+        .then(() => {
+            res.send({status: 'ok'});
+        })
+        .catch(error => {
+            logging.info(`[ERROR][CATCH]: ${error}`);
+
+        });
 };
+
+
+  

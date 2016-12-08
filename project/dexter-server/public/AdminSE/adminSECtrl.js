@@ -1,5 +1,6 @@
+"use strict";
 adminSEApp.controller('adminSECtrl', function($scope, $http, $location ,$routeParams, $log) {
-    "use strict";
+    const NONE_MODULE_PATH = 'undefined';
 
     $('select').on('select2:select', function (event) {
         addModulePathList(event);
@@ -37,35 +38,49 @@ adminSEApp.controller('adminSECtrl', function($scope, $http, $location ,$routePa
     }
 
     var init = function(){
+        isShownLoadingImage();
         $scope.modulePathList = [];
         $scope.selectedModulePathList = [];
         $(".select2").select2({});
         $('select').trigger('change.select2'); // Notify only Select2 of changes
+        getModulePathList();
     };
 
     init();
 
-    var getModulePathListUrl ='/api/v2/module-path-list';
-    $http.get(getModulePathListUrl, {
-    }).then(function(result){
-        if(isHttpResultOK(result)){
-            $scope.modulePathList = [];
-            angular.forEach(result.data.rows, function(index){
-                $scope.modulePathList.push(index.modulePath);
-            });
+    function isShownLoadingImage(){
+        angular.element('#showLoading').show();
+    }
 
-            $(".select2").select2({
-                data : $scope.modulePathList
-            });
-        }
-    }, function(results){
-        $log.error('Error code:' + results.status+';');
-    });
+    function isHiddenLoadingImage(){
+        angular.element('#showLoading').hide();
+    }
 
+    function getModulePathList(){
+        const  getModulePathListUrl ='/api/v2/module-path-list';
 
+        $http.get(getModulePathListUrl, {
+        }).then(function(result){
+            if(isHttpResultOK(result)){
+                isHiddenLoadingImage();
+                $scope.modulePathList = [];
+                angular.forEach(result.data.rows, function(index){
+                    $scope.modulePathList.push(index.modulePath);
+                });
+                $scope.modulePathList.push(NONE_MODULE_PATH);
+
+                $(".select2").select2({
+                    data : $scope.modulePathList
+                });
+            }
+        }, function(results){
+            $log.error('Error code:' + results.status+';');
+        });
+    }
 
     $scope.deleteModulePathList = function(){
         alert("Defect can not restore if defect is once deleted in modulePath that you selected.");
+        isShownLoadingImage();
         var deleteModulePathListUrl = '/api/v2/module-path-list';
         $http.delete(deleteModulePathListUrl, {
             params : {
@@ -74,7 +89,8 @@ adminSEApp.controller('adminSECtrl', function($scope, $http, $location ,$routePa
             }
         }).then(function(result){
             if(isHttpResultOK(result)){
-                alert("Your selected module path data has been wiped.");
+                isHiddenLoadingImage();
+                alert("Your removal request is completed.");
                 location.reload(true);
             }
         }, function(result){

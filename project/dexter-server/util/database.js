@@ -293,6 +293,14 @@ exports.compareEqual = function(value){
     }
 };
 
+exports.compareEqualWithEscape = function(value){
+    if(value == undefined || value =='undefined' || value == 'null' || value == null || value == ''){
+        return " is null ";
+    } else {
+        return " = " + mysql.escape(value) ;
+    }
+};
+
 exports.getDateTime = function(value){
     var retValue;
 
