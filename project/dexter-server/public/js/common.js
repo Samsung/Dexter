@@ -47,12 +47,9 @@ function get_browser_version() {
 
 	return M[1];
 }
+
+
 function isHttpResultOK(result) {
-	if (result.data && result.data.status && result.data.status == 'ok')
-		return true;
-	else if(result.data && result.status =='200')
-		return true;
-	else
-		return false;
+	return (result.data && result.data.status && result.data.status == 'ok');
 }
 
