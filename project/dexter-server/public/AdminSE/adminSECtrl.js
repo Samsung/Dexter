@@ -103,6 +103,7 @@ adminSEApp.controller('adminSECtrl', function ($scope, $http, $location, $routeP
 
         $http.get(getModulePathListUrl, {}).then((result) => {
             hideLoadingImage();
+
             if (!isHttpResultOK(result)) {
                 alert("Error occured while updating the didList, please contact to SE admin.");
                 return;
@@ -162,13 +163,13 @@ adminSEApp.controller('adminSECtrl', function ($scope, $http, $location, $routeP
         }).then((result) => {
             hideLoadingImage();
 
-            if (isHttpResultOK(result)) {
-                alert("Your removal request is completed.");
-                location.reload(true);
+            if (!isHttpResultOK(result)) {
+                alert("Error occured while updating the modulePathList, please contact to SE admin.");
                 return;
             }
 
-            alert("The Delete request failed, please contact to SE admin.");
+            alert("Your removal request is completed.");
+            location.reload(true);
 
         }, function (result) {
             hideLoadingImage();
@@ -189,13 +190,13 @@ adminSEApp.controller('adminSECtrl', function ($scope, $http, $location, $routeP
         }).then((result)=> {
             hideLoadingImage();
 
-            if (isHttpResultOK(result)) {
-                alert("Your removal request is completed.");
-                location.reload(true);
+            if (!isHttpResultOK(result)) {
+                alert("Error occured while updating the modulePathList, please contact to SE admin.");
                 return;
             }
 
-            alert("The Delete request failed, please contact to SE admin.");
+            alert("Your removal request is completed.");
+            location.reload(true);
 
         }, (result)=> {
             hideLoadingImage();
