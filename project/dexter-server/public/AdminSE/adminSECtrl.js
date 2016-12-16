@@ -23,7 +23,7 @@ adminSEApp.controller('adminSECtrl', function ($scope, $http, $location, $routeP
     });
 
     function changeSelectedModuleCount() {
-        const count = parseInt($scope.selectedModulePathList.length);
+        const count = $scope.selectedModulePathList.length;
         $("#removeModuleCount").html(count);
         if (count > 0) {
             $("#isModuleSelected").removeClass("fa fa-folder").addClass("fa fa-folder-open");
@@ -33,7 +33,7 @@ adminSEApp.controller('adminSECtrl', function ($scope, $http, $location, $routeP
     }
 
     function changeSelectedDidCount() {
-        const count = parseInt($scope.selectedDidList.length);
+        const count = $scope.selectedDidList.length;
         $("#removeDidCount").html(count);
         if (count > 0) {
             $("#isDidSelected").removeClass("fa fa-minus-square").addClass("fa fa-bug");
@@ -43,42 +43,31 @@ adminSEApp.controller('adminSECtrl', function ($scope, $http, $location, $routeP
     }
 
     function addModulePathList(event) {
-        if (!event) {
+        if (!event)
             return;
-        }
-        JSON.stringify(event.params, function (key, value) {
-            $scope.selectedModulePathList.push(value.data.id);
-        });
+
+        $scope.selectedModulePathList.push(event.params.data.id);
     }
 
     function removeModulePathList(event) {
-        if (!event) {
+        if (!event)
             return;
-        }
 
-        JSON.stringify(event.params, function (key, value) {
-            $scope.selectedModulePathList.pop(value.data.id);
-        });
+        $scope.selectedModulePathList.pop(event.params.data.id);
     }
 
     function addDidList(event) {
-        if (!event) {
+        if (!event)
             return;
-        }
 
-        JSON.stringify(event.params, function (key, value) {
-            $scope.selectedDidList.push(value.data.id);
-        });
+        $scope.selectedDidList.push(event.params.data.id);
     }
 
     function removeDidList(event) {
-        if (!event) {
+        if (!event)
             return;
-        }
 
-        JSON.stringify(event.params, function (key, value) {
-            $scope.selectedDidList.pop(value.data.id);
-        });
+        $scope.selectedDidList.pop(event.params.data.id);
     }
 
 
@@ -113,17 +102,21 @@ adminSEApp.controller('adminSECtrl', function ($scope, $http, $location, $routeP
         const getModulePathListUrl = '/api/v3/did-list';
 
         $http.get(getModulePathListUrl, {}).then((result) => {
-            if (isHttpResultOK(result)) {
-                $scope.didList = [];
-                angular.forEach(result.data.rows, (index) => {
-                    $scope.didList.push(index.did);
-                });
-
-                $(".did-select").select2({
-                    data: $scope.didList
-                });
-                hideLoadingImage();
+            hideLoadingImage();
+            if (!isHttpResultOK(result)) {
+                alert("Error occured while updating the didList, please contact to SE admin.");
+                return;
             }
+
+            $scope.didList = [];
+            angular.forEach(result.data.rows, (index) => {
+                $scope.didList.push(index.did);
+            });
+
+            $(".did-select").select2({
+                data: $scope.didList
+            });
+
         }, function (results) {
             $log.error('Error code:' + results.status + ';');
         });
@@ -134,19 +127,24 @@ adminSEApp.controller('adminSECtrl', function ($scope, $http, $location, $routeP
         const getModulePathListUrl = '/api/v2/module-path-list';
 
         $http.get(getModulePathListUrl, {}).then(function (result) {
-            if (isHttpResultOK(result)) {
-                hideLoadingImage();
-                $scope.modulePathList = [];
-                angular.forEach(result.data.rows, function (index) {
-                    $scope.modulePathList.push(index.modulePath);
-                });
-                $scope.modulePathList.push(NONE_MODULE_PATH);
+            hideLoadingImage();
 
-                $(".module-select").select2({
-                    data: $scope.modulePathList
-                });
-                hideLoadingImage();
+            if (!isHttpResultOK(result)) {
+                alert("An error has occured while updating the didList, please contact to SE admin.");
+                return;
             }
+
+            $scope.modulePathList = [];
+            angular.forEach(result.data.rows, function (index) {
+                $scope.modulePathList.push(index.modulePath);
+            });
+            $scope.modulePathList.push(NONE_MODULE_PATH);
+
+            $(".module-select").select2({
+                data: $scope.modulePathList
+            });
+
+
         }, function (results) {
             $log.error('Error code:' + results.status + ';');
         });
@@ -162,11 +160,16 @@ adminSEApp.controller('adminSECtrl', function ($scope, $http, $location, $routeP
                 "modulePathListLength": $scope.selectedModulePathList.length
             }
         }).then((result) => {
+            hideLoadingImage();
+
             if (isHttpResultOK(result)) {
-                hideLoadingImage();
                 alert("Your removal request is completed.");
                 location.reload(true);
+                return;
             }
+
+            alert("The Delete request failed, please contact to SE admin.");
+
         }, function (result) {
             hideLoadingImage();
             alert("The Delete request failed, please contact to SE admin.");
@@ -185,12 +188,15 @@ adminSEApp.controller('adminSECtrl', function ($scope, $http, $location, $routeP
             }
         }).then((result)=> {
             hideLoadingImage();
+
             if (isHttpResultOK(result)) {
                 alert("Your removal request is completed.");
                 location.reload(true);
                 return;
             }
+
             alert("The Delete request failed, please contact to SE admin.");
+
         }, (result)=> {
             hideLoadingImage();
             alert("The Delete request failed, please contact to SE admin.");
