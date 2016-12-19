@@ -119,6 +119,7 @@ adminSEApp.controller('adminSECtrl', function ($scope, $http, $location, $routeP
             });
 
         }, function (results) {
+            hideLoadingImage();
             $log.error('Error code:' + results.status + ';');
         });
     };
@@ -147,6 +148,7 @@ adminSEApp.controller('adminSECtrl', function ($scope, $http, $location, $routeP
 
 
         }, function (results) {
+            hideLoadingImage();
             $log.error('Error code:' + results.status + ';');
         });
     };
