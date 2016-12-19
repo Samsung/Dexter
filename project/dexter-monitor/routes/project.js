@@ -85,7 +85,7 @@ exports.createProject = function(req, res) {
 		
 		//wait for the dexter server to start
 		setTimeout( () => {
-			log.info('Dexter Server instance created at:' + project.hostName + ":" + project.portNumber );
+			log.info('Dexter Server instance created at:' + project.hostIp + ":" + project.portNumber );
 			res.send({status:"ok"});
 		}, 5000);
     })
@@ -104,7 +104,7 @@ function createDexterServerDatabase(project) {
 
 function insertDexterMonitorEntry(project) {
 	const sql = `INSERT INTO ProjectInfo (projectName, pid, requester, administrator, portNumber, createdDateTime, language, hostIP, projectYear, emailingWhenServerDead, groupName, dbName) VALUES (?,?,?,?,?, now(), ?, ?, YEAR(now()), 'Y', '',?)`;
-	const args  = [project.projectName, project.projectName, project.adminName, project.adminName, project.portNumber, project.language, project.hostName, project.projectName];
+	const args  = [project.projectName, project.projectName, project.adminName, project.adminName, project.portNumber, project.language, project.hostIp, project.projectName];
 	return database.exec(sql, args).then(() => project);
 }
 
