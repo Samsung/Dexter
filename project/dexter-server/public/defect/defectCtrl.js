@@ -217,7 +217,6 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
                 angular.forEach(result, function (snapshotDefect) {
                     pushSnapshotDefect(snapshotDefect);
                 });
-                return;
             }
         })
     }
@@ -250,7 +249,6 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
                 angular.forEach(result, function (defect) {
                     pushDefect(defect);
                 });
-                return;
             }
         })
     }

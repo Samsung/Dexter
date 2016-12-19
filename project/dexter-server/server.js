@@ -438,6 +438,9 @@ function initRestAPI(){
     /** API VERSION 3 **/
     app.post('/api/v3/analysis/result', auth, analysis.addV3);
 
+    app.get('/api/v3/did-list', adminSE.getDidList);
+    app.delete('/api/v3/did-list', auth, adminSE.deleteDidList);
+
 }
 
 function startServer(){

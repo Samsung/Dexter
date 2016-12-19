@@ -117,12 +117,12 @@ function getLocalIPAddress(){
     }
 
     return '0.0.0.0';
-};
+}
 
 exports.getCliOptions = function() {
     var options = {};
 
-    _(process.argv).forEach(function(item){
+    _.forEach(process.argv, function(item){
         var option = item.split('=');
 
         if(isValidCliOption(option)){
@@ -130,7 +130,7 @@ exports.getCliOptions = function() {
             var key = option[0].substr(1, (option[0].length-1));
             options[key] = _.trim(option[1]);
         }
-    }).value();
+    });
 
     return {
         options: options,
