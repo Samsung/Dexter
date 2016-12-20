@@ -226,6 +226,6 @@ monitorApp.service('ProjectService', function($http, $log, $q, ServerStatusServi
 	}
 	
 	this.createProject = function(newProject) {
-		return $http.post('/api/v2/create-project', {project:newProject});
+		return $http.post('/api/v2/project', {project:newProject});
 	}
 });
