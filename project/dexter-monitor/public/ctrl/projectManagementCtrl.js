@@ -50,24 +50,24 @@ monitorApp.controller("ProjectManagementCtrl", function($scope, $mdDialog, $log,
 		};
 		
 		$scope.createServer = function(newProject) {
-			
+			$scope.clearValidationError();
 			validateProjectData(newProject).then(
 			(errorMessage) => {
 				if (errorMessage) {
 					$scope.validationError = errorMessage;
 					$log.error($scope.validationError);
-				} else {
-						$scope.validationError = "";
-						$scope.status =  $sce.trustAsHtml("Creating new server...");
-					ProjectService.createProject(newProject).then (function(result) {
-						if (result.data.status=='ok') {
-							$scope.status =  $sce.trustAsHtml('Server created at <a href="' + newProject.hostIp + ":" + newProject.portNumber + "/#/\">" + newProject.hostIp + ":" + newProject.portNumber + "</a> !");						
-						} else {
-							$scope.status =  $sce.trustAsHtml("Server creation failed!");
-							$scope.validationError = result.data.errorMessage;
-						}
-					});					
-				}
+					return;
+				}  
+				$scope.status =  $sce.trustAsHtml("Creating new server...");
+
+				ProjectService.createProject(newProject).then (function(result) {
+					if (result.data.status=='ok') {
+						$scope.status =  $sce.trustAsHtml('Server created at <a href="' + newProject.hostIp + ":" + newProject.portNumber + "/#/\">" + newProject.hostIp + ":" + newProject.portNumber + "</a> !");					
+					} else {
+						$scope.status =  $sce.trustAsHtml("Server creation failed!");
+						$scope.validationError = result.data.errorMessage;
+					}
+				});			
 			});						
 		};
 		
@@ -108,7 +108,7 @@ monitorApp.controller("ProjectManagementCtrl", function($scope, $mdDialog, $log,
 		
 		function validateProjectName(newProject) {
 			let projectName = newProject.projectName;
-			if (!(projectName.match(/^[a-z0-9]+$/i))) {
+			if (!(projectName.match(/^[a-z0-9_]+$/i))) {
 				return 'Project name can contain only numbers and letters';
 			}
 		}
