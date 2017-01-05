@@ -30,7 +30,7 @@ describe('Test defectIdCtrl', () => {
 
     var $controller, $scope, $rootScope;
 
-    beforeEach(inject((_$rootScope_, _$controller_) => {
+    beforeEach(inject(function (_$rootScope_, _$controller_) {
         $rootScope = _$rootScope_;
         $scope = $rootScope.$new();
         $controller = _$controller_;

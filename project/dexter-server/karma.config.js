@@ -49,7 +49,7 @@ module.exports = function(config) {
             {pattern: 'public/js/ng/**/*.js'},
             {pattern: 'public/js/util/**/*.js'},
             {pattern: 'public/js/*.js'},
-            {pattern: 'public/AdminSE/**/*.js'},
+            {pattern: 'public/AdminSE/*.js'},
             {pattern: 'public/admin/**/*.js'},
             {pattern: 'public/dashboard/**/*.js'},
             {pattern: 'public/defect/**/*.js'},
