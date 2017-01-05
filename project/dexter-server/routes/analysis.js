@@ -170,7 +170,7 @@ exports.getModuleDefectStatusV2 = function (req, res){
 
     sql += " group by modulePath order by modulePath ";
 
-    database.execV2(sql)
+    return database.execV2(sql)
         .then(function(rows) {
             res.send({status:'ok', rows: rows} );
         })
@@ -229,7 +229,7 @@ exports.getFileDefectStatusV2 = function (req, res){
 
     sql += " group by modulePath, fileName order by modulePath, fileName";
 
-    database.execV2(sql)
+    return database.execV2(sql)
         .then(function(rows) {
             res.send({status:'ok', rows: rows} );
         })
@@ -605,6 +605,20 @@ exports.getDefectCountByModuleAndFile = function (req, res){
     });
 };
 
+exports.getDefectCountByModuleAndFileV3 = function (req, res){
+    const sql = "SELECT count(did) as defectCount FROM Defect ";
+
+    return database.execV2(sql)
+        .then(function(rows) {
+            res.send({status:'ok', defectCount: rows[0].defectCount} );
+        })
+        .catch(function(err) {
+            logging.error(err);
+            res.send({status:"fail", errorMessage: err.message});
+        });
+};
+
+
 exports.getDefectCount = function (req, res){
     var sql = "select count(did) as defectCount from Defect";
 
@@ -968,9 +982,6 @@ exports.removeFalseAlarm = function (req, res){
     }
 };
 
-
-
-
 function deleteDefectFilter(res, defect, userNo, filterType){
     var sql = "DELETE FROM DefectFilter "
         + " WHERE filterType = " + database.toSqlValue(filterType)
@@ -1011,38 +1022,6 @@ function deleteDefectFilterByDid(res, did, userNo, filterType){
     });
 }
 
-exports.removeFileTree = function (req, res){
-    if(req == undefined || req.body == undefined || req.body.params == undefined ||
-	   req.body.params.fileList == undefined || req.body.params.modulePath == undefined){
-        res.send({status:"fail", errorMessage: "No modulePath or No fileName"})
-		return;
-    }
-
-    var modulePath =  base64.decode(req.body.params.modulePath);
-
-    var sql = "DELETE FROM SourceCodeMap WHERE 0 ";
-
-    for(var i=0; i<  req.body.params.fileList.length ; i++) {
-        var fileName = req.body.params.fileList[i];
-        if(fileName == ''){
-            break;
-        }
-        else {
-            sql = sql + "  or  (     modulePath " + database.compareEqual(modulePath)
-                + "         and fileName =  " + database.toSqlValue(fileName) +")";
-        }
-    }
-    database.exec(sql, function (err, result) {
-        if (err) {
-            logging.error(err.message);
-			res.send({status:"fail", errorMessage: err.message});
-        }
-        if (result) {
-            removeSnapshotDefectMap(req, res);
-        }
-    })
-};
-
 function removeDefectFilter(req, res){
     "use strict";
     if(req == undefined || req.body == undefined || req.body.params.fileList == undefined){
@@ -1072,38 +1051,6 @@ function removeDefectFilter(req, res){
         }
         if (result) {
             removeDefect(req, res);
-        }
-    })
-};
-
-function removeCodeMetrics(req, res){
-    "use strict";
-    if(req == undefined || req.body == undefined || req.body.params.fileList == undefined){
-        res.send({status:"fail", errorMessage: "No modulePath or No fileName"})
-    }
-
-    var modulePath = base64.decode(req.body.params.modulePath);
-    var sql = "DELETE FROM CodeMetrics WHERE fileName in ( SELECT fileName FROM Defect WHERE 0 ";
-
-    for(var i=0; i<  req.body.params.fileList.length ; i++) {
-        var fileName = req.body.params.fileList[i];
-        if(fileName == ''){
-            break;
-        }
-        else {
-            sql = sql + "  or  (     modulePath " + database.compareEqual(modulePath)
-                + "         and fileName =  " + database.toSqlValue(fileName) +")";
-        }
-    }
-
-    sql = sql + ")";
-
-    database.exec(sql, function (err, result) {
-        if (err) {
-            logging.error(err.message);
-        }
-        if (result) {
-            removeOccurence(req, res);
         }
     })
 };
@@ -1172,68 +1119,7 @@ function removeSnapshotOccurencemap(req, res){
             removeDefectFilter(req, res);
         }
     })
-};
-
-function removeOccurence(req, res){
-    "use strict";
-    if(req == undefined || req.body == undefined || req.body.params.fileList == undefined){
-        res.send({status:"fail", errorMessage: "No modulePath or No fileName"})
-    }
-
-    var modulePath = base64.decode(req.body.params.modulePath);
-    var sql = "DELETE FROM Occurence WHERE did in ( SELECT did FROM Defect WHERE 0 ";
-
-    for(var i=0; i<  req.body.params.fileList.length ; i++) {
-        var fileName = req.body.params.fileList[i];
-        if(fileName == ''){
-            break;
-        }
-        else {
-            sql = sql + "  or  (     modulePath " + database.compareEqual(modulePath)
-                + "         and fileName =  " + database.toSqlValue(fileName) +")";
-        }
-
-
-    }
-    sql = sql + ")";
-
-    database.exec(sql, function (err, result) {
-        if (err) {
-            logging.error(err.message);
-        }
-    })
 }
-
-function removeSnapshotDefectMap(req, res){
-    "use strict";
-    if(req == undefined || req.body == undefined || req.body.params.fileList == undefined){
-        res.send({status:"fail", errorMessage: "No modulePath or No fileName"})
-    }
-
-    var modulePath = base64.decode(req.body.params.modulePath);
-    var sql = "DELETE FROM SnapshotDefectMap WHERE 0 ";
-
-    for(var i=0; i<  req.body.params.fileList.length ; i++) {
-        var fileName = req.body.params.fileList[i];
-        if(fileName == ''){
-            break;
-        }
-        else {
-            sql = sql + "  or  (     modulePath " + database.compareEqual(modulePath)
-                + "         and fileName =  " + database.toSqlValue(fileName) +")";
-        }
-
-    }
-    database.exec(sql, function (err, result) {
-        if (err) {
-            logging.error(err.message);
-        }
-        if (result) {
-            removeCodeMetrics(req, res);
-        }
-    })
-};
-
 
 exports.addSnapshotSourceCode = function(req, res) {
     if(req.body.fileName === undefined || req.body.sourceCode === undefined){
@@ -1471,9 +1357,63 @@ exports.getSnapshotSourceCodeV2 = function(req, res) {
 };
 
 
+exports.getSnapshotSourceCodeV3 = function(req, res) {
+    if(req == undefined || req.body == undefined ||
+        req.body.params == undefined || req.body.params.fileName == undefined || req.body.params.snapshotId == undefined){
+        res.send({status:"fail", errorMessage: "No Data or No currentUserId"});
+        return;
+    }
+
+    var  fileName = req.body.params.fileName;
+    var modulePath = base64.decode(req.body.params.modulePath);
+    var snapshotId = req.body.params.snapshotId;
+
+    var isBase64 = req.body.params.changeToBase64 || true;
+
+    if(fileName == undefined || fileName == -1){
+        res.send({status:"fail", errorMessage: "Invalid Data"});
+        return;
+    }
+
+    var sql = '';
+    if(snapshotId != "undefined"){
+        sql = "SELECT sourceCode FROM SourceCodeMap "
+            + " WHERE "
+            + " fileName = " + database.toSqlValue(fileName)
+            + " and modulePath " + database.compareEqual(modulePath)
+            + " and snapshotId" + database.compareEqual(snapshotId)
+            + " ORDER BY createdDateTime desc LIMIT 1";
+    }
+    else{
+        sql = "SELECT sourceCode FROM SourceCodeMap "
+            + " WHERE "
+            + " fileName = " + database.toSqlValue(fileName)
+            + " and modulePath " + database.compareEqual(modulePath)
+            + " ORDER BY createdDateTime desc LIMIT 1";
+    }
+
+    database.exec(sql, function (err, result) {
+        if (err) {
+            logging.error(err.message);
+            res.send({status: "fail", errorMessage: err.message});
+            return;
+        }
+
+        if (result && result[0]) {
+            if(isBase64){
+                res.send({status:"ok", sourceCode: new Buffer(result[0].sourceCode, 'base64').toString('utf8')});
+            } else {
+                res.send({status:"ok", sourceCode: result[0].sourceCode})
+
+            }
+        }
+    });
+};
+
+
 exports.checkSnapshotSourceCode = function(req, res) {
     if(req == undefined || req.query == undefined || req.query.fileName == undefined || req.currentUserId == undefined){
-        res.send({status:"fail", errorMessage: "No Data or No currentUserId"})
+        res.send({status:"fail", errorMessage: "No Data or No currentUserId"});
 		return;
     }
 

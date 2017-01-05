@@ -24,24 +24,64 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-describe('defectApp ', function(){
+describe('Test defectCtrl', () => {
 
     beforeEach(module("defectApp"));
 
-    var monitorController, scope;
+    var $controller, $scope, $rootScope;
 
-    beforeEach(inject(function($rootScope, $controller){
-        scope = $rootScope.$new();
-        monitorController = $controller('DefectCtrl', {
-            $scope: scope
-        });
+    beforeEach(inject((_$rootScope_, _$controller_) => {
+        $rootScope = _$rootScope_;
+        $scope = $rootScope.$new();
+        $controller = _$controller_;
     }));
 
-    /*it('test run', function(){
-        var testVar = 'abc';
-        console.log("EEEEEEEEEEEEEEE")
-        assert.equal(testVar, 'abc');
+    describe('For toggleShowFileTreeBtn()', () => {
+        it('Should SUCCESS: To get show message for FileTree button', (done) => {
+            $controller('DefectCtrl', {
+                $scope: $scope,
+                $routeParams: {}
+            });
+            $scope.toggleShowFileTreeBtn(true);
+            assert.equal($scope.isFileTreeHidden, true);
+            assert.equal($scope.isFileTreeBtnTitleHidden, 'Show File Tree');
+            done();
+        });
 
-        scope.checkLogin('admin');
-    });*/
+        it('Should SUCCESS: To get hide message for FileTree button', (done) => {
+            $controller('DefectCtrl', {
+                $scope: $scope,
+                $routeParams: {}
+            });
+            $scope.toggleShowFileTreeBtn(false);
+            assert.equal($scope.isFileTreeHidden, false);
+            assert.equal($scope.isFileTreeBtnTitleHidden, 'Hide File Tree');
+            done();
+        });
+    });
+
+    describe('For getCSVHeader()', () => {
+        it('Should SUCCESS: To get csv header information when SNAPSHOT VIEW', (done) => {
+            $controller('DefectCtrl', {
+                $scope: $scope,
+                $routeParams: {}
+            });
+            $scope.isSnapshotView = true;
+            const headerInfo = $scope.getCSVHeader();
+            assert.equal(headerInfo.length, 20);
+            done();
+        });
+
+        it('Should SUCCESS: To get csv header information when DEFECT VIEW', (done) => {
+            $controller('DefectCtrl', {
+                $scope: $scope,
+                $routeParams: {}
+            });
+            $scope.isSnapshotView = false;
+            const headerInfo = $scope.getCSVHeader();
+            assert.equal(headerInfo.length, 19);
+            done();
+        });
+    });
+
 });

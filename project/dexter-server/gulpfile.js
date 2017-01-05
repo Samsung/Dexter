@@ -34,8 +34,7 @@ gulp.task('test-front-end', function(done){
         configFile: __dirname + '/karma.config.js',
         singleRun: true
     }, function(result){
-        console.log(result);
-        done();
+        done(result);
     });
 });
 

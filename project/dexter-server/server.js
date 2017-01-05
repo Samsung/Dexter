@@ -219,7 +219,6 @@ function initRestAPI(){
     app.get('/api/filter/false-alarm-list', auth, analysis.getAllFalseAlarmList);
     app.post('/api/filter/false-alarm', auth, analysis.addFalseAlarm);
     app.post('/api/filter/delete-false-alarm', auth, analysis.removeFalseAlarm);
-    app.post('/api/filter/delete-file-tree', auth, analysis.removeFileTree);
 
     /* Defect */
     app.post('/api/defect/gid', auth, analysis.getGlobalDid);
@@ -310,8 +309,6 @@ function initRestAPI(){
     app.get('/api/v1/filter/false-alarm', auth, analysis.getAllFalseAlarm);
     app.get('/api/v1/filter/false-alarm-list', auth, analysis.getAllFalseAlarmList);
     app.post('/api/v1/filter/false-alarm', auth, analysis.addFalseAlarm);
-    app.post('/api/v1/filter/delete-false-alarm', auth, analysis.removeFalseAlarm);
-    app.post('/api/v1/filter/delete-file-tree', auth, analysis.removeFileTree);
 
     /* Defect */
     app.post('/api/v1/defect/gid', auth, analysis.getGlobalDid);
@@ -436,11 +433,16 @@ function initRestAPI(){
 
 
     /** API VERSION 3 **/
+    app.get('/api/v3/projectName', database.getProjectName);
+
     app.post('/api/v3/analysis/result', auth, analysis.addV3);
 
     app.get('/api/v3/did-list', adminSE.getDidList);
     app.delete('/api/v3/did-list', auth, adminSE.deleteDidList);
 
+    /* Analysis Result */
+    app.get('/api/v3/defect/count', analysis.getDefectCountByModuleAndFileV3);
+    app.post('/api/v3/analysis/snapshot/sourcecode', auth, analysis.getSnapshotSourceCodeV3);
 }
 
 function startServer(){

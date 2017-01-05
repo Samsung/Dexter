@@ -24,34 +24,33 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-describe('Test defectIdCtrl', function(){
+describe('Test defectIdCtrl', () => {
 
     beforeEach(module("defectApp"));
 
     var $controller, $scope, $rootScope;
 
-    beforeEach(inject(function(_$rootScope_, _$controller_ ){
+    beforeEach(inject((_$rootScope_, _$controller_) => {
         $rootScope = _$rootScope_;
         $scope = $rootScope.$new();
         $controller = _$controller_;
     }));
 
-    describe('For checkSnapshotView()', function(){
-        it('Should fail when Default Page', function(done){
+    describe('For checkSnapshotView()', () => {
+        it('Should fail when Default Page', (done) => {
             $controller('DefectIdCtrl', {
                 $scope: $scope,
-                $routeParams : {
-                }
+                $routeParams: {}
             });
             $scope.checkSnapshotView();
             assert.equal($scope.isSnapshotView, false);
             done();
         });
 
-        it('Should success when Snapshot Page', function(done){
+        it('Should success when Snapshot Page', (done) => {
             $controller('DefectIdCtrl', {
                 $scope: $scope,
-                $routeParams : {
+                $routeParams: {
                     snapshotId: 150000
                 }
             });
@@ -61,22 +60,21 @@ describe('Test defectIdCtrl', function(){
         });
     });
 
-    describe('For checkDefectIdView()', function(){
-        it('Should fail when Default Page', function(done){
+    describe('For checkDefectIdView()', () => {
+        it('Should fail when Default Page', (done) => {
             $controller('DefectIdCtrl', {
                 $scope: $scope,
-                $routeParams : {
-                }
+                $routeParams: {}
             });
             $scope.checkDefectIdView();
             assert.equal($scope.isDefectIdView, false);
             done();
         });
 
-        it('Should success when Snapshot Page', function(done){
+        it('Should success when Snapshot Page', (done) => {
             $controller('DefectIdCtrl', {
                 $scope: $scope,
-                $routeParams : {
+                $routeParams: {
                     defectId: 144
                 }
             });
