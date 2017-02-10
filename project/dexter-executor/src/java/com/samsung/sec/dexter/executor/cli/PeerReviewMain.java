@@ -90,7 +90,6 @@ public class PeerReviewMain {
 		}
 
 		peerReviewMain.initDexterConfig();
-		peerReviewMain.initDexterPlungins();
 		peerReviewMain.startConfigJob();
 	}
 	

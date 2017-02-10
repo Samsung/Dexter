@@ -4,10 +4,13 @@ import static java.nio.file.StandardWatchEventKinds.*;
 import static java.nio.file.LinkOption.*;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.WatchEvent.Kind;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +41,7 @@ public class PeerReviewHomeMonitor implements Runnable {
 	private Map<WatchKey, PeerReviewWatch> peerReviewWatchMap;
 	private Future<?> monitoringFuture;
 	private MonitoringState monitoringState;
+	private final AnalyzedFileInfo lastAnalyzedFileInfo;
 	
 	private enum MonitoringState { STOP, RUNNING, CANCEL }; 
 	private final static long WATCH_POLL_TIMEOUT = 5;
@@ -49,6 +53,7 @@ public class PeerReviewHomeMonitor implements Runnable {
 		this.peerReviewWatchMap = new HashMap<WatchKey, PeerReviewWatch>();
 		monitoringFuture = null;
 		monitoringState = MonitoringState.STOP;
+		lastAnalyzedFileInfo = new AnalyzedFileInfo();
 	}
 	
 	public void update(List<PeerReviewHome> peerReviewHomeList) {
@@ -171,8 +176,9 @@ public class PeerReviewHomeMonitor implements Runnable {
 				registerPathForWatch(filePath, peerReviewWatch.getHome(), peerReviewWatchMap);
 			}
 
-			if (isValidSourceFile(filePath)) {
+			if (isValidSourceFile(filePath) && !lastAnalyzedFileInfo.equals(filePath)) {
 				changedFileList.add(filePath.toString());
+				lastAnalyzedFileInfo.set(filePath);
 			}
 		}
 
@@ -197,18 +203,7 @@ public class PeerReviewHomeMonitor implements Runnable {
 				Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(filePath.getFileName().toString());
 		
-		return Files.isRegularFile(filePath, NOFOLLOW_LINKS) && matcher.matches() && !isEmptyFile(filePath);
+		return Files.isRegularFile(filePath, NOFOLLOW_LINKS) && matcher.matches();
 	}
 	
-	private boolean isEmptyFile(Path filePath) {
-		long fileSize = 0;
-		
-		try {
-			fileSize = Files.size(filePath);
-			log.info("file size : " + fileSize);
-		} catch (IOException e) {
-		}
-		
-		return fileSize == 0;
-	}
 }
