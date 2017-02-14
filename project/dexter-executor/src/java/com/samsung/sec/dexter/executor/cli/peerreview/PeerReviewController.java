@@ -1,4 +1,4 @@
-package com.samsung.sec.dexter.executor.cli;
+package com.samsung.sec.dexter.executor.cli.peerreview;
 
 import java.io.File;
 import java.io.FileReader;
@@ -16,6 +16,7 @@ import org.json.simple.parser.ParseException;
 import com.samsung.sec.dexter.core.config.PeerReviewHome;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterServerConfig;
+import com.samsung.sec.dexter.executor.cli.Main;
 
 public class PeerReviewController {
 	private final static Logger log = Logger.getLogger(Main.class);

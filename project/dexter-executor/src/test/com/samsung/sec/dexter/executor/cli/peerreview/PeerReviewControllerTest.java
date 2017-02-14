@@ -1,4 +1,4 @@
-package com.samsung.sec.dexter.executor.cli;
+package com.samsung.sec.dexter.executor.cli.peerreview;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -19,6 +19,8 @@ import com.google.common.io.Files;
 import com.samsung.sec.dexter.core.config.PeerReviewHome;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterServerConfig;
+import com.samsung.sec.dexter.executor.cli.peerreview.PeerReviewController;
+import com.samsung.sec.dexter.executor.cli.peerreview.PeerReviewHomeMonitor;
 
 public class PeerReviewControllerTest {
 	PeerReviewHomeMonitor peerReviewHomeMonitor;

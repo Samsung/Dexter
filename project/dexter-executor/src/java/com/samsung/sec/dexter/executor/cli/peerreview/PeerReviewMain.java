@@ -23,7 +23,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.samsung.sec.dexter.executor.cli;
+package com.samsung.sec.dexter.executor.cli.peerreview;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,6 +41,12 @@ import com.samsung.sec.dexter.core.util.EmptyDexterClient;
 import com.samsung.sec.dexter.core.util.IDexterClient;
 import com.samsung.sec.dexter.executor.CLIPluginInitializer;
 import com.samsung.sec.dexter.executor.DexterAnalyzer;
+import com.samsung.sec.dexter.executor.cli.CLIDexterPluginManager;
+import com.samsung.sec.dexter.executor.cli.CLILog;
+import com.samsung.sec.dexter.executor.cli.DexterCLIOption;
+import com.samsung.sec.dexter.executor.cli.ICLILog;
+import com.samsung.sec.dexter.executor.cli.IDexterCLIOption;
+import com.samsung.sec.dexter.executor.cli.Main;
 
 public class PeerReviewMain {
 	private final static ICLILog cliLog = new CLILog(System.out);

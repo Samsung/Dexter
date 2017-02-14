@@ -1,4 +1,4 @@
-package com.samsung.sec.dexter.executor.cli;
+package com.samsung.sec.dexter.executor.cli.peerreview;
 
 import java.util.List;
 
@@ -13,6 +13,13 @@ import com.samsung.sec.dexter.core.util.IDexterClient;
 import com.samsung.sec.dexter.core.util.JerseyDexterWebResource;
 import com.samsung.sec.dexter.executor.CLIPluginInitializer;
 import com.samsung.sec.dexter.executor.DexterAnalyzer;
+import com.samsung.sec.dexter.executor.cli.AccountHandler;
+import com.samsung.sec.dexter.executor.cli.CLIAnalysisResultHandler;
+import com.samsung.sec.dexter.executor.cli.CLIDexterPluginManager;
+import com.samsung.sec.dexter.executor.cli.EmptyAccountHandler;
+import com.samsung.sec.dexter.executor.cli.IAccountHandler;
+import com.samsung.sec.dexter.executor.cli.ICLILog;
+import com.samsung.sec.dexter.executor.cli.IDexterCLIOption;
 
 public class PeerReviewCLIAnalyzer {
 	private final ICLILog cliLog;

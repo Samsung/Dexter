@@ -1,4 +1,4 @@
-package com.samsung.sec.dexter.executor.cli;
+package com.samsung.sec.dexter.executor.cli.peerreview;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -12,6 +12,9 @@ import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.IDexterConfigFile;
 import com.samsung.sec.dexter.core.config.DexterConfig.RunMode;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
+import com.samsung.sec.dexter.executor.cli.IDexterCLIOption;
+import com.samsung.sec.dexter.executor.cli.peerreview.PeerReviewConfigJob;
+import com.samsung.sec.dexter.executor.cli.peerreview.PeerReviewMain;
 
 public class PeerReviewMainTest {
 	DexterConfig dexterConfig;

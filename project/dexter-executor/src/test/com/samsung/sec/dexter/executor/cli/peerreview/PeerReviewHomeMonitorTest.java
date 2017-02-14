@@ -1,4 +1,4 @@
-package com.samsung.sec.dexter.executor.cli;
+package com.samsung.sec.dexter.executor.cli.peerreview;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -20,6 +20,8 @@ import org.mockito.InOrder;
 
 import com.samsung.sec.dexter.core.config.PeerReviewHome;
 import com.samsung.sec.dexter.core.util.DexterServerConfig;
+import com.samsung.sec.dexter.executor.cli.peerreview.PeerReviewCLIAnalyzer;
+import com.samsung.sec.dexter.executor.cli.peerreview.PeerReviewHomeMonitor;
 
 public class PeerReviewHomeMonitorTest {
 	ExecutorService excutorService;
