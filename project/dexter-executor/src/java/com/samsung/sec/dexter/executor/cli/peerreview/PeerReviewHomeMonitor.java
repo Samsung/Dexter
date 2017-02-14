@@ -44,7 +44,7 @@ public class PeerReviewHomeMonitor implements Runnable {
 	private MonitoringState monitoringState;
 	private final AnalyzedFileInfo lastAnalyzedFileInfo;
 	
-	private enum MonitoringState { STOP, RUNNING, CANCEL }; 
+	public enum MonitoringState { STOP, RUNNING, CANCEL }; 
 	private final static long WATCH_POLL_TIMEOUT = 5;
 	
 	public PeerReviewHomeMonitor(ExecutorService excutorService, WatchService watchService, PeerReviewCLIAnalyzer peerReviewCLIAnalyzer) {
@@ -205,6 +205,14 @@ public class PeerReviewHomeMonitor implements Runnable {
 		Matcher matcher = pattern.matcher(filePath.getFileName().toString());
 		
 		return Files.isRegularFile(filePath, NOFOLLOW_LINKS) && matcher.matches();
+	}
+	
+	public MonitoringState getMonitoringState() {
+		return monitoringState;
+	}
+	
+	public void cancel() {
+		cancelMonitoring();
 	}
 	
 }

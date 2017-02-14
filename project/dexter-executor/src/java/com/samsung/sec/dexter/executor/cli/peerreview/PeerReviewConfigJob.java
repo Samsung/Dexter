@@ -53,10 +53,17 @@ public class PeerReviewConfigJob implements Runnable, IDexterHomeListener {
 		return true;
 	}
 	
-	public void start() {
+	public void start() throws InterruptedException, ExecutionException {
 		setConfigFile();
 		startScheduler();
 		registDexterHomeListener();
+		
+		try {
+			waitScheduler();
+		} catch (Exception e) {
+			cancelScheduler();
+			throw e;
+		}
 	}
 	
 	private void registDexterHomeListener() {
@@ -65,6 +72,10 @@ public class PeerReviewConfigJob implements Runnable, IDexterHomeListener {
 
 	private void startScheduler() {
 		configJobFuture = scheduler.scheduleAtFixedRate(this, 0L, SCHEDULE_INTERVAL, TimeUnit.SECONDS);
+	}
+	
+	private void waitScheduler() throws InterruptedException, ExecutionException {
+		configJobFuture.get();
 	}
 	
 	private void cancelScheduler() {

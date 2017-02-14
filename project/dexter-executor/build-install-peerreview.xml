@@ -124,11 +124,11 @@
 	<target name="create_dexter_executor_jar">
 		<jar destfile="${dist-bin}/dexter-executor.jar" basedir="${exec-bin-path}">
 			<manifest>
-				<attribute name="Main-Class" value="com.samsung.sec.dexter.executor.cli.PeerReviewMain" />
+				<attribute name="Main-Class" value="com.samsung.sec.dexter.executor.cli.peerreview.PeerReviewMain" />
 				<attribute name="Class-Path" value="." />
 			</manifest>
 
-			<zipgroupfileset dir="${exec-lib-path}" includes="commons-cli-1.2.jar, commons-io-2.4.jar, gson-2.2.4.jar, guava-16.0.1.jar, log4j-1.2.17.jar" />
+			<zipgroupfileset dir="${exec-lib-path}" includes="commons-cli-1.2.jar, commons-io-2.4.jar, gson-2.2.4.jar, guava-16.0.1.jar, log4j-1.2.17.jar json-simple-1.1.1.jar" />
 
 			<zipfileset excludes="META_INF/*.SF" src="${temp}/dexter-core_${version}.jar" />
 			<zipfileset excludes="META_INF/*.SF" src="${temp}/dexter-metrics_${version}.jar" />

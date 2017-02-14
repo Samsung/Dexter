@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -61,7 +62,7 @@ public class PeerReviewMainTest {
 	}
 
 	@Test
-	public void testStart_startConfigJob() {
+	public void testStart_startConfigJob() throws InterruptedException, ExecutionException {
 		peerReviewMain.startConfigJob();
 		
 		verify(configJob).start();

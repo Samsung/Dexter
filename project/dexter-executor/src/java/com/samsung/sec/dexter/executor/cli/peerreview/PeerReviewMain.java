@@ -28,6 +28,7 @@ package com.samsung.sec.dexter.executor.cli.peerreview;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import org.apache.log4j.Logger;
 
@@ -78,25 +79,29 @@ public class PeerReviewMain {
 					new DexterConfigFile(),
 					new PeerReviewConfigJob(
 							DexterConfig.getInstance(), 
-							new PeerReviewController(
-									new PeerReviewHomeMonitor(
-											Executors.newFixedThreadPool(1), 
-											FileSystems.getDefault().newWatchService(),
-											new PeerReviewCLIAnalyzer(cliOption, 
-													cliLog,  
-													DexterAnalyzer.getInstance(), 
-													pluginManager,
-													new AnalysisEntityFactory()))), 
+							createPeerReviewController(cliOption, pluginManager),
 							Executors.newScheduledThreadPool(1)),
 					pluginManager);
 			
-		} catch (IOException e) {
+			peerReviewMain.initDexterConfig();
+			peerReviewMain.startConfigJob();
+			
+		} catch (IOException | InterruptedException | ExecutionException e) {
 			e.printStackTrace();
-			throw new DexterRuntimeException("IOEception occurred on Init");
+			System.exit(-1);
 		}
-
-		peerReviewMain.initDexterConfig();
-		peerReviewMain.startConfigJob();
+	}
+	
+	private static PeerReviewController createPeerReviewController(IDexterCLIOption cliOption, IDexterPluginManager pluginManager) throws IOException {
+		return new PeerReviewController(
+				new PeerReviewHomeMonitor(
+						Executors.newFixedThreadPool(1), 
+						FileSystems.getDefault().newWatchService(),
+						new PeerReviewCLIAnalyzer(cliOption, 
+								cliLog,  
+								DexterAnalyzer.getInstance(), 
+								pluginManager,
+								new AnalysisEntityFactory())));
 	}
 	
 	private static IDexterPluginManager loadDexterPlugins(final IDexterClient client, final IDexterCLIOption cliOption) {
@@ -110,7 +115,7 @@ public class PeerReviewMain {
 		pluginManager.initDexterPlugins();
 	}
 
-	public void startConfigJob() {
+	public void startConfigJob() throws InterruptedException, ExecutionException {
 		configJob.start();
 	}
 
