@@ -109,8 +109,13 @@ public class Main {
         if (cliOption.isStandAloneMode()) {
             return new EmptyDexterClient();
         } else {
-        	IDexterWebResource webResource = new JerseyDexterWebResource(new DexterServerConfig(cliOption.getUserId(), cliOption.getUserPassword(),
-        			cliOption.getServerHostIp(), cliOption.getServerPort()));
+        	IDexterWebResource webResource = new JerseyDexterWebResource(
+        			new DexterServerConfig(
+        					cliOption.getUserId(), 
+	    					cliOption.getUserPassword(),
+	    					cliOption.getServerHostIp(), 
+	    					cliOption.getServerPort()));
+        	
             return new DexterClient(webResource);
         }
     }
@@ -122,7 +127,7 @@ public class Main {
 
         loginOrCreateAccount(client, cliOption);
 
-        final AnalysisConfig baseAnalysisConfig = createBaseAnalysisConfig(client, cliOption, configFile);
+        final AnalysisConfig baseAnalysisConfig = createBaseAnalysisConfig(cliOption, configFile);
         final IAnalysisResultHandler cliAnalysisResultHandler = createCLIAnalysisResultHandler(client,
                 cliOption);
         final IDexterPluginManager pluginManager = loadDexterPlugins(client, cliOption);
@@ -160,7 +165,7 @@ public class Main {
         return new CLIAnalysisResultHandler(client.getDexterWebUrl(), cliOption, cliLog);
     }
 
-    private AnalysisConfig createBaseAnalysisConfig(final IDexterClient client, final IDexterCLIOption cliOption,
+    private AnalysisConfig createBaseAnalysisConfig(final IDexterCLIOption cliOption,
             final IDexterConfigFile configFile) {
         initDexterConfig(cliOption, configFile);
 

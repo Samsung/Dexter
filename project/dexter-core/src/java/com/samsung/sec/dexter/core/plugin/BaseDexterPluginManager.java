@@ -179,4 +179,9 @@ public class BaseDexterPluginManager implements IDexterPluginManager, IDexterHom
         for (IDexterPlugin plugin : pluginList)
             plugin.handleDexterHomeChanged(oldPath, newPath);
     }
+
+	@Override
+	public void setDexterClient(IDexterClient dexterClient) {
+		this.client = dexterClient;
+	}
 }
