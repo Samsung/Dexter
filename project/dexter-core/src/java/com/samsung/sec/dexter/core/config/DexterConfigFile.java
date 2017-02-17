@@ -48,7 +48,7 @@ import org.apache.log4j.Logger;
 public class DexterConfigFile implements IDexterConfigFile {
     static Logger log = Logger.getLogger(DexterConfigFile.class);
 
-    private String dexterHome;
+    protected String dexterHome;
     private String dexterServerIp;
     private int dexterServerPort;
     private String projectName;

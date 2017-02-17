@@ -39,6 +39,7 @@ import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginInitializer;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
 import com.samsung.sec.dexter.core.util.EmptyDexterClient;
+import com.samsung.sec.dexter.core.util.FileService;
 import com.samsung.sec.dexter.core.util.IDexterClient;
 import com.samsung.sec.dexter.executor.CLIPluginInitializer;
 import com.samsung.sec.dexter.executor.DexterAnalyzer;
@@ -76,7 +77,7 @@ public class PeerReviewMain {
 			peerReviewMain = new PeerReviewMain(
 					DexterConfig.getInstance(),
 					cliOption,
-					new DexterConfigFile(),
+					new PeerReviewConfigFile(new FileService()),
 					new PeerReviewConfigJob(
 							DexterConfig.getInstance(), 
 							createPeerReviewController(cliOption, pluginManager),
