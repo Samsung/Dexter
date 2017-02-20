@@ -204,7 +204,14 @@ public class PeerReviewHomeMonitor implements Runnable {
 				Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(filePath.getFileName().toString());
 		
-		return Files.isRegularFile(filePath, NOFOLLOW_LINKS) && matcher.matches();
+		long fileSize;
+		try {
+			fileSize = Files.size(filePath);
+		} catch (IOException e) {
+			fileSize = 0;
+		}
+		
+		return Files.isRegularFile(filePath, NOFOLLOW_LINKS) && matcher.matches() && fileSize > 0;
 	}
 	
 	public MonitoringState getMonitoringState() {
