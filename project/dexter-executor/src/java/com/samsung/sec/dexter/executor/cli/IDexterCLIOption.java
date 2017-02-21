@@ -85,4 +85,6 @@ public interface IDexterCLIOption {
 
     void setDexterServerPort(final int dexterServerPort);
 
+	void printHelp(String message);
+
 }

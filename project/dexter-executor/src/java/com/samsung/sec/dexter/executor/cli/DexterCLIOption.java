@@ -30,6 +30,7 @@ import com.google.common.io.Files;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.exception.InvalidArgumentRuntimeException;
 import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 import com.samsung.sec.dexter.core.plugin.PluginDescription;
 import com.samsung.sec.dexter.core.util.DexterUtil;
@@ -41,12 +42,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.apache.commons.io.Charsets;
 
-public class DexterCLIOption implements IDexterCLIOption {
+public class DexterCLIOption implements IDexterCLIOption {	
+	private final static ICLILog cliLog = new CLILog(System.out);
     // configuration
     private CommandMode commandMode = CommandMode.STATIC_ANALYSIS;
     private boolean isAsynchronous = false;
@@ -67,12 +70,27 @@ public class DexterCLIOption implements IDexterCLIOption {
 
     private String serverHost = "";
     private int serverPort = -1;
+    
+    private HelpFormatter helpFormatter;
+    private Options rawOptions = null;
+    private final static String commandFormat = "peer-review [options] ...";
 
-    public DexterCLIOption(String[] args) {
-        createCliOptionFromArguments(args);
-    }
+    public DexterCLIOption(String[] args, HelpFormatter helpFormatter) {
+    	this.helpFormatter = helpFormatter;
+    	
+    	try {
+    		createCliOptionFromArguments(args);
+    	} catch (InvalidArgumentRuntimeException e) {
+    		if (rawOptions != null) {
+    			cliLog.info(e.getMessage() + "\n\n");
+    			helpFormatter.printHelp(commandFormat, rawOptions);
+    		}
+    		
+    		throw e;
+    	}
+	}
 
-    @Override
+	@Override
     public void createCliOptionFromArguments(final String[] args) {
         final CommandLine commandLine = createCommandLine(args);
         setFieldsByCommandLine(commandLine);
@@ -84,10 +102,10 @@ public class DexterCLIOption implements IDexterCLIOption {
     }
 
     private CommandLine createCommandLine(final String[] args) {
-        final Options options = createCliOptions(args);
+    	rawOptions = createCliOptions(args);
 
         try {
-            return new PosixParser().parse(options, args);
+            return new PosixParser().parse(rawOptions, args);
         } catch (final ParseException e) {
             throw new DexterRuntimeException(e.getMessage(), e);
         }
@@ -413,4 +431,10 @@ public class DexterCLIOption implements IDexterCLIOption {
     public void setDexterServerPort(int dexterServerPort) {
         this.serverPort = dexterServerPort;
     }
+
+	@Override
+	public void printHelp(String message) {
+		//helpFormatter.printHelp(message, rawOptions);
+			
+	}
 }

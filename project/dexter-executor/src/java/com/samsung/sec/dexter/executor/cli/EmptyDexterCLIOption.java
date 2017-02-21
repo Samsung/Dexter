@@ -105,4 +105,7 @@ public class EmptyDexterCLIOption implements IDexterCLIOption {
     @Override
     public void checkCheckerEnablenessByCliOption(IDexterPlugin plguin) {}
 
+	@Override
+	public void printHelp(String message) {}
+
 }
