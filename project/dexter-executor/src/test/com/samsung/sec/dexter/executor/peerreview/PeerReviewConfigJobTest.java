@@ -1,4 +1,4 @@
-package com.samsung.sec.dexter.executor.cli.peerreview;
+package com.samsung.sec.dexter.executor.peerreview;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -17,8 +17,8 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 import com.samsung.sec.dexter.core.config.DexterConfig;
-import com.samsung.sec.dexter.executor.cli.peerreview.PeerReviewConfigJob;
-import com.samsung.sec.dexter.executor.cli.peerreview.PeerReviewController;
+import com.samsung.sec.dexter.executor.peerreview.PeerReviewConfigJob;
+import com.samsung.sec.dexter.executor.peerreview.PeerReviewController;
 
 public class PeerReviewConfigJobTest {
 	DexterConfig dexterConfig;

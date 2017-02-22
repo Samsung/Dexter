@@ -1,4 +1,4 @@
-package com.samsung.sec.dexter.executor.cli.peerreview;
+package com.samsung.sec.dexter.executor.peerreview;
 
 import java.nio.file.SimpleFileVisitor;
 

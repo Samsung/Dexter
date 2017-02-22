@@ -1,6 +1,8 @@
-package com.samsung.sec.dexter.executor.cli.peerreview;
+package com.samsung.sec.dexter.executor.peerreview.cli;
 
 import java.util.List;
+
+import org.apache.log4j.Logger;
 
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
@@ -22,6 +24,7 @@ import com.samsung.sec.dexter.executor.cli.ICLILog;
 import com.samsung.sec.dexter.executor.cli.IDexterCLIOption;
 
 public class PeerReviewCLIAnalyzer {
+	private final static Logger log = Logger.getLogger(PeerReviewCLIAnalyzer.class);
 	private final ICLILog cliLog;
 	private final IDexterCLIOption cliOption;
 	private final DexterAnalyzer dexterAnalyzer;
@@ -59,7 +62,7 @@ public class PeerReviewCLIAnalyzer {
 
         final IAccountHandler accountHandler = createAccountHandler(client, cliOption);
         if (accountHandler.loginOrCreateAccount() == false) {
-            cliLog.error("Failed to login or create new account");
+        	log.error("Failed to login or create new account");
             System.exit(1);
         }
     }

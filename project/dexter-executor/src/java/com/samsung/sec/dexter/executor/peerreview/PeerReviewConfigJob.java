@@ -1,4 +1,4 @@
-package com.samsung.sec.dexter.executor.cli.peerreview;
+package com.samsung.sec.dexter.executor.peerreview;
 
 import java.io.File;
 import java.util.concurrent.ExecutionException;

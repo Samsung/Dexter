@@ -1,4 +1,4 @@
-package com.samsung.sec.dexter.executor.cli.peerreview;
+package com.samsung.sec.dexter.executor.peerreview;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 import static java.nio.file.LinkOption.*;
@@ -33,6 +33,7 @@ import com.samsung.sec.dexter.core.config.PeerReviewWatch;
 import com.samsung.sec.dexter.core.config.DexterConfig.AnalysisType;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.executor.cli.AnalyzedFileInfo;
+import com.samsung.sec.dexter.executor.peerreview.cli.PeerReviewCLIAnalyzer;
 
 public class PeerReviewHomeMonitor implements Runnable {
 	private final static Logger log = Logger.getLogger(PeerReviewHomeMonitor.class);
