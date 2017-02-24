@@ -3,6 +3,7 @@ package com.samsung.sec.dexter.core.config;
 import java.util.Map;
 
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.core.util.FileService;
 
 public class PeerReviewConfigFile extends DexterConfigFile {
@@ -13,12 +14,7 @@ public class PeerReviewConfigFile extends DexterConfigFile {
 	}
 	
 	protected void checkDexterConfigMap(final Map<String, Object> map) {
-        checkNullofMap(map);
-    }
-	
-    private void checkNullofMap(final Map<String, Object> map) {
-        if (map == null || map.size() == 0)
-            throw new DexterRuntimeException("Dexter Configuration Error : empty");
+		DexterUtil.checkNullOrEmptyOfMap(map);
     }
     
     @Override

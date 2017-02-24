@@ -24,7 +24,7 @@ public class PeerReviewConfigFileTest {
 	}
 
 	@Test
-	public void checkDexterConfigMap_doNotCheckProjectFullPath() {
+	public void checkDexterConfigMap_doNotCheckProjectFullPathExists() {
 		try {
 			// given
 			Map<String, Object> map = createTestConfigMap();
@@ -35,6 +35,21 @@ public class PeerReviewConfigFileTest {
 			// then
 			assert(false);
 		}
+	}
+	
+	@Test(expected = DexterRuntimeException.class)
+	public void checkDexterConfigMap_throwExceptionIfNullMap() {
+		// when
+		configFile.checkDexterConfigMap(null);
+	}
+	
+	@Test(expected = DexterRuntimeException.class)
+	public void checkDexterConfigMap_throwExceptionIfEmptyMap() {
+		// given
+		Map<String, Object> map = new HashMap<String, Object>();
+		
+		// when
+		configFile.checkDexterConfigMap(map);
 	}
 
 	private Map<String, Object> createTestConfigMap() {

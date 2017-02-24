@@ -209,15 +209,10 @@ public class DexterConfigFile implements IDexterConfigFile {
     }
 
     protected void checkDexterConfigMap(final Map<String, Object> map) {
-        checkNullofMap(map);
+    	DexterUtil.checkNullOrEmptyOfMap(map);
         checkFieldExistence(map);
         checkFolderExistence(map);
         checkTypeAndFollowingFields(map);
-    }
-
-    private void checkNullofMap(final Map<String, Object> map) {
-        if (map == null || map.size() == 0)
-            throw new DexterRuntimeException("Dexter Configuration Error : empty");
     }
 
     private void checkFieldExistence(final Map<String, Object> map) {
