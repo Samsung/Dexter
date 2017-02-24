@@ -32,13 +32,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 
 import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.PosixParser;
 import org.apache.log4j.Logger;
 
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.config.*;
 import com.samsung.sec.dexter.core.config.DexterConfig.RunMode;
-import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.exception.InvalidArgumentRuntimeException;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginInitializer;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
@@ -52,13 +50,13 @@ import com.samsung.sec.dexter.executor.cli.CLILog;
 import com.samsung.sec.dexter.executor.cli.DexterCLIOption;
 import com.samsung.sec.dexter.executor.cli.ICLILog;
 import com.samsung.sec.dexter.executor.cli.IDexterCLIOption;
-import com.samsung.sec.dexter.executor.cli.Main;
 import com.samsung.sec.dexter.executor.peerreview.PeerReviewConfigJob;
 import com.samsung.sec.dexter.executor.peerreview.PeerReviewController;
 import com.samsung.sec.dexter.executor.peerreview.PeerReviewHomeMonitor;
 
 public class PeerReviewMain {
 	private final static ICLILog cliLog = new CLILog(System.out);
+	private final static Logger log = Logger.getLogger(PeerReviewMain.class);
 	private final IDexterCLIOption cliOption;
 	private final IDexterConfigFile dexterConfigFile;
 	private final PeerReviewConfigJob configJob;
@@ -94,7 +92,7 @@ public class PeerReviewMain {
 			peerReviewMain.startConfigJob();
 			
 		} catch (IOException | InterruptedException | ExecutionException e) {
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 			System.exit(-1);
 		} catch (InvalidArgumentRuntimeException e) {
 			// print usage message

@@ -83,7 +83,7 @@ public class PeerReviewHomeMonitor implements Runnable {
 		try {
 			registerPathForWatch(Paths.get(home.getSourceDir()), home, peerReviewWatchMap);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 	}
 	
@@ -106,7 +106,7 @@ public class PeerReviewHomeMonitor implements Runnable {
 			    }
 			});
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 			throw new DexterRuntimeException("IOException occurred on registering peer-review home with watch");
 		} 
 	}
@@ -119,8 +119,7 @@ public class PeerReviewHomeMonitor implements Runnable {
 				// DPR: get 을 cancel 로 테스트
 				monitoringFuture.get();
 			} catch (InterruptedException | ExecutionException e) {
-				// DPR: log 로 변경
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 			} finally {
 				log.info("Monitoring is canceled.");
 			}
@@ -151,7 +150,7 @@ public class PeerReviewHomeMonitor implements Runnable {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 			Thread.currentThread().interrupt();
 		} finally {
 			monitoringState = MonitoringState.STOP;
