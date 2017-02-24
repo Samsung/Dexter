@@ -58,6 +58,7 @@ public class PeerReviewHomeMonitor implements Runnable {
 		lastAnalyzedFileInfo = new AnalyzedFileInfo();
 	}
 	
+	// DPR: 이름 restart 로 
 	public void update(List<PeerReviewHome> peerReviewHomeList) {
 		cancelMonitoring();
 		updatePeerReviewHomeMap(peerReviewHomeList);
@@ -115,8 +116,10 @@ public class PeerReviewHomeMonitor implements Runnable {
 			monitoringState = MonitoringState.CANCEL;
 			
 			try {
+				// DPR: get 을 cancel 로 테스트
 				monitoringFuture.get();
 			} catch (InterruptedException | ExecutionException e) {
+				// DPR: log 로 변경
 				e.printStackTrace();
 			} finally {
 				log.info("Monitoring is canceled.");

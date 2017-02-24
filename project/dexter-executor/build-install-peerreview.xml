@@ -124,7 +124,7 @@
 	<target name="create_dexter_executor_jar">
 		<jar destfile="${dist-bin}/dexter-executor.jar" basedir="${exec-bin-path}">
 			<manifest>
-				<attribute name="Main-Class" value="com.samsung.sec.dexter.executor.cli.peerreview.PeerReviewMain" />
+				<attribute name="Main-Class" value="com.samsung.sec.dexter.executor.peerreview.cli.PeerReviewMain" />
 				<attribute name="Class-Path" value="." />
 			</manifest>
 

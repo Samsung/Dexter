@@ -71,13 +71,10 @@ public class DexterCLIOption implements IDexterCLIOption {
     private String serverHost = "";
     private int serverPort = -1;
     
-    private HelpFormatter helpFormatter;
     private Options rawOptions = null;
     private final static String commandFormat = "peer-review [options] ...";
 
     public DexterCLIOption(String[] args, HelpFormatter helpFormatter) {
-    	this.helpFormatter = helpFormatter;
-    	
     	try {
     		createCliOptionFromArguments(args);
     	} catch (InvalidArgumentRuntimeException e) {
@@ -432,9 +429,4 @@ public class DexterCLIOption implements IDexterCLIOption {
         this.serverPort = dexterServerPort;
     }
 
-	@Override
-	public void printHelp(String message) {
-		//helpFormatter.printHelp(message, rawOptions);
-			
-	}
 }

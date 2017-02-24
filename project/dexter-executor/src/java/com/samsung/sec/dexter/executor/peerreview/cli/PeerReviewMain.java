@@ -32,6 +32,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 
 import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.PosixParser;
 import org.apache.log4j.Logger;
 
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
@@ -100,7 +101,7 @@ public class PeerReviewMain {
 			System.exit(-1);
 		}
 	}
-	
+
 	private static PeerReviewController createPeerReviewController(IDexterCLIOption cliOption, IDexterPluginManager pluginManager) throws IOException {
 		return new PeerReviewController(
 				new PeerReviewHomeMonitor(
