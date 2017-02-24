@@ -3,14 +3,10 @@ package com.samsung.sec.dexter.executor.peerreview;
 import static java.nio.file.StandardWatchEventKinds.*;
 import static java.nio.file.LinkOption.*;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.WatchEvent.Kind;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,13 +20,8 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
-import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
-import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
-import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
-import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.PeerReviewHome;
 import com.samsung.sec.dexter.core.config.PeerReviewWatch;
-import com.samsung.sec.dexter.core.config.DexterConfig.AnalysisType;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.executor.cli.AnalyzedFileInfo;
 import com.samsung.sec.dexter.executor.peerreview.cli.PeerReviewCLIAnalyzer;
@@ -58,8 +49,7 @@ public class PeerReviewHomeMonitor implements Runnable {
 		lastAnalyzedFileInfo = new AnalyzedFileInfo();
 	}
 	
-	// DPR: 이름 restart 로 
-	public void update(List<PeerReviewHome> peerReviewHomeList) {
+	public void restart(List<PeerReviewHome> peerReviewHomeList) {
 		cancelMonitoring();
 		updatePeerReviewHomeMap(peerReviewHomeList);
 		startMonitoring();

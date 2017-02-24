@@ -103,12 +103,12 @@ public class PeerReviewControllerTest {
 	}
 	
 	@Test
-	public void testUpdate_callUpdateToHomeMonitor() throws IOException {
+	public void testUpdate_restartHomeMonitor() throws IOException {
 		File jsonFile = makeTestPeerReviewJson();
 		
 		peerReviewController.update(jsonFile);
 		
-		verify(peerReviewHomeMonitor).update(eq(peerReviewController.getPeerReviewHomeList()));
+		verify(peerReviewHomeMonitor).restart(eq(peerReviewController.getPeerReviewHomeList()));
 	}
 	
 	private File makeTestPeerReviewJson() throws IOException {

@@ -31,15 +31,15 @@ public class PeerReviewController {
 	public void update(File configFile) {
 		try {
 			updatePeerReviewHome(configFile);
-			notifyToMonitor();
+			restartMonitor();
 		} catch (Exception e) {
 			cancelMonitor();
 			throw e;
 		}
 	}
 	
-	private void notifyToMonitor() {
-		peerReviewHomeMonitor.update(peerReviewHomeList);
+	private void restartMonitor() {
+		peerReviewHomeMonitor.restart(peerReviewHomeList);
 	}
 	
 	private void cancelMonitor() {
