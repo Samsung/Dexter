@@ -46,19 +46,19 @@ public class PeerReviewHomeMonitorTest {
 	}
 
 	@Test
-	public void testUpdate_submitRunnableTask() throws InterruptedException, IOException {
+	public void testRestart_submitRunnableTask() throws InterruptedException, IOException {
 		List<PeerReviewHome> homeList = createTestPeerReviewHomeListForMapTest();
 		
-		homeMonitor.update(homeList);
+		homeMonitor.restart(homeList);
 		
 		verify(excutorService).submit(any(Runnable.class));
 	}
 	
 	@Test
-	public void testUpdate_makePeerReviewWatchMapWithRightSize() throws IOException {
+	public void testRestart_makePeerReviewWatchMapWithRightSize() throws IOException {
 		List<PeerReviewHome> homeList = createTestPeerReviewHomeListForMapTest();
 		
-		homeMonitor.update(homeList);
+		homeMonitor.restart(homeList);
 		
 		assertEquals(3, homeMonitor.getPeerReviewWatchMap().size());
 	}
@@ -84,7 +84,7 @@ public class PeerReviewHomeMonitorTest {
 	public void cancel_setMonitoringStateToCancel() throws IOException {
 		// given
 		List<PeerReviewHome> homeList = createTestPeerReviewHomeListForMapTest();
-		homeMonitor.update(homeList);
+		homeMonitor.restart(homeList);
 		
 		// when
 		homeMonitor.cancel();
