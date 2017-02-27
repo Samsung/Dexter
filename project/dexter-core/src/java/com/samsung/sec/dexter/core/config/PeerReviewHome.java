@@ -1,5 +1,6 @@
 package com.samsung.sec.dexter.core.config;
 
+import com.google.gson.annotations.SerializedName;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
@@ -7,9 +8,10 @@ import com.samsung.sec.dexter.core.config.DexterConfig.AnalysisType;
 import com.samsung.sec.dexter.core.util.DexterServerConfig;
 
 public class PeerReviewHome {
-	private DexterServerConfig dexterServerConfig;
+	private transient DexterServerConfig dexterServerConfig;
 	private String projectName;
 	private String sourceDir;
+	@SerializedName("active") 
 	private boolean isActive;
 	
 	public PeerReviewHome(DexterServerConfig dexterServerConfig, String projectName, String sourceDir, boolean isActive) {
@@ -61,4 +63,28 @@ public class PeerReviewHome {
 
         return analysisConfig;
     }
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false; 
+		
+		if (this.getClass() != obj.getClass()) 
+			return false;
+		
+		if (this == obj) 
+			return true;
+
+		PeerReviewHome that = (PeerReviewHome)obj;
+		
+		return isSameObject(this.projectName, that.projectName) &&
+				isSameObject(this.sourceDir, that.sourceDir) &&
+				isSameObject(this.dexterServerConfig, that.dexterServerConfig) &&
+				this.isActive == that.isActive;
+	}
+	
+	private boolean isSameObject(Object src, Object dest) {
+		return src == null ? dest == null : src.equals(dest);
+	}
+
 }

@@ -4,12 +4,12 @@ import java.util.Map;
 
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterUtil;
-import com.samsung.sec.dexter.core.util.FileService;
+import com.samsung.sec.dexter.core.util.FileUtil;
 
 public class PeerReviewConfigFile extends DexterConfigFile {
-	private FileService fileService;
+	private FileUtil fileService;
 	
-	public PeerReviewConfigFile(FileService fileService) {
+	public PeerReviewConfigFile(FileUtil fileService) {
 		this.fileService = fileService;
 	}
 	
