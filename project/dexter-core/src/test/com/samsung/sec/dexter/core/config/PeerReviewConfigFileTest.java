@@ -11,15 +11,15 @@ import org.junit.Test;
 
 import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
-import com.samsung.sec.dexter.core.util.FileService;
+import com.samsung.sec.dexter.core.util.FileUtil;
 
 public class PeerReviewConfigFileTest {
 	PeerReviewConfigFile configFile;
-	FileService fileService;
+	FileUtil fileService;
 	
 	@Before
 	public void setUp() throws Exception {
-		fileService = mock(FileService.class);
+		fileService = mock(FileUtil.class);
 		configFile = new PeerReviewConfigFile(fileService);
 	}
 

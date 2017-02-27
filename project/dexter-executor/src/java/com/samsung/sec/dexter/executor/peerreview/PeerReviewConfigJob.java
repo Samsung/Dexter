@@ -40,6 +40,7 @@ public class PeerReviewConfigJob implements Runnable, IDexterHomeListener {
 		if (isConfigFileChanged()) {
 			log.info("Peer-review config file is changed");
 			peerReviewController.update(configFile);
+			updateConfigFileSyncTime();
 		}
 	}
 	
@@ -49,8 +50,11 @@ public class PeerReviewConfigJob implements Runnable, IDexterHomeListener {
 		if (configFileLastModifiedTime == configFileSyncTime)
 			return false;
 		
-		configFileSyncTime = configFileLastModifiedTime;
 		return true;
+	}
+	
+	private void updateConfigFileSyncTime() {
+		configFileSyncTime = configFile.lastModified();
 	}
 	
 	public void start() throws InterruptedException, ExecutionException {
@@ -112,3 +116,4 @@ public class PeerReviewConfigJob implements Runnable, IDexterHomeListener {
 	
 
 }
+ 

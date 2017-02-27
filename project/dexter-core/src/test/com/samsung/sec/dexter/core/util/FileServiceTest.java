@@ -12,14 +12,14 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
 public class FileServiceTest {
-	FileService fileService;
+	FileUtil fileService;
 	
 	@Rule
 	public final TemporaryFolder tempFolder = new TemporaryFolder();
 
 	@Before
 	public void setUp() throws Exception {
-		fileService = new FileService();
+		fileService = new FileUtil();
 	}
 
 	@Test

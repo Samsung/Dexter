@@ -48,7 +48,7 @@ public class PeerReviewConfigJobTest {
 	}
 	
 	@Test
-	public void testRun_callUpdateIfConfigFileIsChanged() throws IOException, InterruptedException, ExecutionException {		
+	public void run_callUpdateIfConfigFileIsChanged() throws IOException, InterruptedException, ExecutionException {		
 		configJob.start();
 		configJob.run();
 		
@@ -56,7 +56,7 @@ public class PeerReviewConfigJobTest {
 	}
 	
 	@Test
-	public void testRun_doNotCallUpdateIfConfigFileIsNotChanged() throws IOException, InterruptedException, ExecutionException {		
+	public void run_doNotCallUpdateIfConfigFileIsNotChanged() throws IOException, InterruptedException, ExecutionException {		
 		configJob.start();
 		configJob.run();
 		
@@ -66,21 +66,21 @@ public class PeerReviewConfigJobTest {
 	}
 	
 	@Test 
-	public void testStart_setConfigFile() throws InterruptedException, ExecutionException {
+	public void start_setConfigFile() throws InterruptedException, ExecutionException {
 		configJob.start();
 		
 		assertNotNull(configJob.getConfigFile());
 	}
 	
 	@Test 
-	public void testStart_startScheduler() throws InterruptedException, ExecutionException {
+	public void start_startScheduler() throws InterruptedException, ExecutionException {
 		configJob.start();
 		
 		verify(scheduler).scheduleAtFixedRate(eq(configJob), anyLong(), anyLong(), eq(TimeUnit.SECONDS));
 	}
 
 	@Test 
-	public void testStart_registDexterHomeListener() throws InterruptedException, ExecutionException {
+	public void start_registDexterHomeListener() throws InterruptedException, ExecutionException {
 		configJob.start();
 		
 		verify(dexterConfig).addDexterHomeListener(eq(configJob));

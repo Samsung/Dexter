@@ -17,7 +17,15 @@ public class PeerReviewHomeTest {
 	@Before
 	public void setUp() throws Exception {
 		dexterServerConfig = mock(DexterServerConfig.class);
-		peerReviewHome = new PeerReviewHome(dexterServerConfig, "testProject", "/test", true);
+		peerReviewHome = createTestPeerReviewHome();
+	}
+
+	private PeerReviewHome createTestPeerReviewHome() {
+		return new PeerReviewHome(dexterServerConfig, "testProject", "/test", true);
+	}
+
+	private PeerReviewHome createTestPeerReviewHomeWithNull() {
+		return new PeerReviewHome(dexterServerConfig, null, "/test", true);
 	}
 
 	@Test
@@ -35,4 +43,57 @@ public class PeerReviewHomeTest {
 		assertEquals("testProject", analysisConfig.getProjectName());
 		assertEquals(AnalysisType.FILE, analysisConfig.getAnalysisType());
 	}
+	
+	@Test
+	public void equals_givenNull_returnFalse() {
+		// when
+		boolean result = peerReviewHome.equals(null);
+		
+		// then
+		assertEquals(false, result);
+	}
+
+	@Test
+	public void equals_givenSameObject_returnTrue() {
+		// when
+		boolean result = peerReviewHome.equals(peerReviewHome);
+		
+		// then
+		assertEquals(true, result);
+	}
+
+	@Test
+	public void equals_givenSameContents_returnTrue() {
+		// given
+		PeerReviewHome that = createTestPeerReviewHome();
+		// when
+		boolean result = peerReviewHome.equals(that);
+		
+		// then
+		assertEquals(true, result);
+	}
+
+	@Test
+	public void equals_givenSameContentsWithNullValue_returnTrue() {
+		// given
+		PeerReviewHome thisHome = createTestPeerReviewHomeWithNull();
+		PeerReviewHome thatHome = createTestPeerReviewHomeWithNull();
+		// when
+		boolean result = thisHome.equals(thatHome);
+		
+		// then
+		assertEquals(true, result);
+	}
+
+	@Test
+	public void equals_givenDifferentContents_returnFalse() {
+		// given
+		PeerReviewHome thatHome = createTestPeerReviewHomeWithNull();
+		// when
+		boolean result = peerReviewHome.equals(thatHome);
+		
+		// then
+		assertEquals(false, result);
+	}
+
 }
