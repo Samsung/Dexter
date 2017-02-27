@@ -4,7 +4,7 @@
    <extension
          point="dexter-executor.DexterPlugin">
       <DexterPlugin
-            class="com.samsung.sec.dexter.peerreview.plugin.DexterPeerReviewPlugIn">
+            class="com.samsung.sec.dexter.peerreview.plugin.DexterPeerReviewPlugin">
       </DexterPlugin>
    </extension>
 

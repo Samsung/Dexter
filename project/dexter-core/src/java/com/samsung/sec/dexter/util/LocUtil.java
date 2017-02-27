@@ -25,6 +25,8 @@
 */
 package com.samsung.sec.dexter.util;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class LocUtil
 {
@@ -326,4 +328,15 @@ class LocUtil
         
         return sbuf.toString();
     }
+    
+	static int getLineUsingIndex(CharSequence data, int start) {
+	    int line = 1;
+	    Pattern pattern = Pattern.compile("\n");
+	    Matcher matcher = pattern.matcher(data);
+	    matcher.region(0, start);
+	    while(matcher.find()) {
+	        line++;
+	    }
+	    return(line);
+	}
 }

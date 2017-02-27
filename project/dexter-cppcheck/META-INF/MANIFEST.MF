@@ -19,8 +19,7 @@ Bundle-ClassPath: .,
  lib/commons-io-2.4.jar
 Require-Bundle: org.eclipse.core.runtime,
  dexter-core,
- dexter-executor,
- org.eclipse.cdt.core
+ dexter-executor
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Samsung Electronics VD SE
