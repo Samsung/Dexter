@@ -25,15 +25,17 @@
  */
 package com.samsung.sec.dexter.peerreview.plugin;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import org.apache.log4j.Logger;
 
@@ -50,7 +52,6 @@ import com.samsung.sec.dexter.core.defect.Occurence;
 import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 import com.samsung.sec.dexter.core.plugin.PluginDescription;
 import com.samsung.sec.dexter.core.plugin.PluginVersion;
-import com.samsung.sec.dexter.core.util.DexterUtil;
 
 import net.xeoh.plugins.base.annotations.PluginImplementation;
 
@@ -106,19 +107,45 @@ public class DexterPeerReviewPlugin implements IDexterPlugin {
 		return null;
 	}
 
+	static int[] createNewArray(int[] oldArray, int maxLine) {
+		int[] newArray = new int[maxLine + 1];
+		for (int index = 1; index < maxLine + 1; index++) {
+			newArray[index] = oldArray[index];
+		}
+		return newArray;
+	}
+
+	public int[] makeOffsetArray(CharSequence sourcecode) {
+		int[] offsets = new int[sourcecode.length()];
+
+		int line = 1;
+		Pattern pattern = Pattern.compile("\n");
+		Matcher matcher = pattern.matcher(sourcecode);
+		matcher.region(0, sourcecode.length());
+		while (matcher.find()) {
+			offsets[line + 1] = matcher.end();
+			line++;
+		}
+		int[] newOffsets = createNewArray(offsets, line);
+		return newOffsets;
+	}
+
 	@Override
 	public AnalysisResult analyze(AnalysisConfig config) {
 		final CharSequence sourcecode = config.getSourcecodeThatReadIfNotExist();
 		AnalysisResult result = analysisEntityFactory.createAnalysisResult(config);
 
 		try {
-			List<DPRComment> comments = getAllDPRCommentFromSourcecode(sourcecode);
+			int[] offsets = makeOffsetArray(sourcecode);
+			List<DPRComment> comments = getAllDPRCommentFromSourcecode(offsets, sourcecode);
 			List<Defect> defectList = makeDefectList(config, comments);
 			result.setDefectList(defectList);
-		} catch (PatternSyntaxException e) {
+		} catch (Exception e) {
 			logger.error("incorrect regExp:");
 			logger.error(e.getMessage(), e);
+
 		}
+
 		return result;
 	}
 
@@ -128,9 +155,9 @@ public class DexterPeerReviewPlugin implements IDexterPlugin {
 		ArrayList<DPRComment> crcDefects = Lists.newArrayList();
 
 		for (DPRComment comment : comments) {
-			if ("CRI".contains(comment.getSeverity())) {
+			if ("CRI".equals(comment.getSeverity())) {
 				criDefects.add(comment);
-			} else if ("MAJ".contains(comment.getSeverity())) {
+			} else if ("MAJ".equals(comment.getSeverity())) {
 				majDefects.add(comment);
 			} else {
 				crcDefects.add(comment);
@@ -180,7 +207,7 @@ public class DexterPeerReviewPlugin implements IDexterPlugin {
 	}
 
 	static String getFullCommentWithoutLineSeparator(String comment) {
-		return comment.replace("\r\n", "").replace("\n", "").trim();
+		return comment.replaceAll("(\r\n|\n)", "").replaceAll("\\s+", " ").trim();
 	}
 
 	private HashMap<String, String> getSeverityAndCommentFromFullComment(String comment) {
@@ -205,6 +232,8 @@ public class DexterPeerReviewPlugin implements IDexterPlugin {
 		} else if (defaultMatcher.find()) {
 			severity = "CRC";
 			reviewComment = comment.substring(defaultMatcher.end());
+		} else {
+			// nothing to do
 		}
 
 		HashMap<String, String> infoHashMap = new HashMap<String, String>();
@@ -212,17 +241,6 @@ public class DexterPeerReviewPlugin implements IDexterPlugin {
 		infoHashMap.put("comment", reviewComment.trim());
 
 		return infoHashMap;
-	}
-
-	static int getLineFromSourcecode(CharSequence sourcecode, int start) {
-		int line = 1;
-		Pattern pattern = Pattern.compile("\n");
-		Matcher matcher = pattern.matcher(sourcecode);
-		matcher.region(0, start);
-		while (matcher.find()) {
-			line++;
-		}
-		return (line);
 	}
 
 	@Override
@@ -239,7 +257,7 @@ public class DexterPeerReviewPlugin implements IDexterPlugin {
 		return new String[] { "c", "cpp", "h", "hpp", "java" };
 	}
 
-	public ArrayList<DPRComment> getAllDPRCommentFromSourcecode(CharSequence sourcecode) {
+	public ArrayList<DPRComment> getAllDPRCommentFromSourcecode(int[] offsets, CharSequence sourcecode) {
 		final String regExp = "(?:/\\*.*[w]*(DPR:)(?:[^*]|(?:\\*+[^*/]))*\\*+/)|(?://.*[w]*(DPR:).*)";
 		ArrayList<DPRComment> matchList = new ArrayList<>();
 
@@ -248,8 +266,8 @@ public class DexterPeerReviewPlugin implements IDexterPlugin {
 
 		while (matcher.find()) {
 			DPRComment comment = new DPRComment();
-			comment.setStartLine(getLineFromSourcecode(sourcecode, matcher.start()));
-			comment.setEndLine(getLineFromSourcecode(sourcecode, matcher.end()));
+			comment.setStartLine(getLineFromOffset(offsets, matcher.start()));
+			comment.setEndLine(getLineFromOffset(offsets, matcher.end()));
 			comment.setFullComment(getFullCommentWithoutLineSeparator(matcher.group()));
 
 			HashMap<String, String> infoHashMap = getSeverityAndCommentFromFullComment(comment.getFullComment());
@@ -259,5 +277,35 @@ public class DexterPeerReviewPlugin implements IDexterPlugin {
 			matchList.add(comment);
 		}
 		return matchList;
+	}
+
+	protected int getLineFromOffset(int[] offsets, int offset) {
+		boolean flag = false;
+		int index = -1;
+
+		int low = 0;
+		int mid = 0;
+		int high = offsets.length - 1;
+
+		while ((low <= high)) {
+			mid = ((low + high) / 2);
+			if (offsets[mid] == offset) {
+				flag = true;
+				index = mid;
+				break;
+			}
+
+			if (offsets[mid] < offset) {
+				low = mid + 1;
+			} else {
+				high = mid - 1;
+			}
+
+			if ((low == mid || mid == high) && flag == false) {
+				index = high;
+				break;
+			}
+		}
+		return (index);
 	}
 }
