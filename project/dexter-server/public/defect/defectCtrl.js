@@ -1,15 +1,25 @@
-defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $anchorScroll, $routeParams, $log, $filter) {
-    "use strict";
+"use strict";
+defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $anchorScroll, $routeParams, $log, $filter, defectService) {
 
-    var isSnapshotView = function () {
+    const SHOW_FILE_TREE_MESSAGE = 'Show File Tree';
+    const HIDE_FILE_TREE_MESSAGE = 'Hide File Tree';
+    const SECURITY_CHECKER = 'SECURITY';
+    const LOGIN_MESSAGE = 'Login';
+
+    var rowHeight = 28;
+    var headerHeight = 30;
+    var commentIndex1 = [];
+    var commentIndex2 = [];
+
+    function isSnapshotView() {
         if ($routeParams.snapshotId === undefined) {
             return false;
         }
         $scope.snapshotId = $routeParams.snapshotId;
         return true;
-    };
+    }
 
-    var init = function () {
+    function init() {
         $scope.isSnapshotView = isSnapshotView();
 
         $scope.fileTreeId = {};
@@ -20,9 +30,10 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         $scope.isAdminUser = false;
         $scope.isCurrentLoginId = false;
 
-        $scope.isFileTreeBtnTitleHidden = 'Show File Tree';
+        $scope.isFileTreeBtnTitleHidden = SHOW_FILE_TREE_MESSAGE;
+        $scope.isHideLoginBtnTitle = LOGIN_MESSAGE;
 
-        $('#animatiroonTab').css('display', 'none');
+        $('#animationTab').css('display', 'none');
         $('#animationTab').css('left', document.body.clientWidth);
 
         $scope.search = {
@@ -56,75 +67,41 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
 
         $scope.csvContent = [];
         $scope.csvSnapshotContent = [];
-        $scope.defaultGroups= [];
+        $scope.defaultGroups = [];
 
         $scope.totalServerItems = 0;
         $scope.projectName = "";
 
-        initLocalStorage();
-        getProjectName();
         checkLogin();
-        getDefaultGroups();
-    };
-
-    var commentIndex1 = [];
-    var commentIndex2 = [];
+        setProjectName();
+        initPageSizeFromLocalStorage();
+        initGroupsFromLocalStorage();
+    }
 
     init();
 
-    var url = $location.absUrl().split('?');
+    function showDefects() {
+        if ($scope.isSnapshotView) {
+            loadSnapshotDefectData();
+        } else {
+            loadDefectData();
+        }
+    }
 
     $scope.getCSVHeader = function () {
         if ($scope.isSnapshotView) {
-            return ["Did", "Checker", "Count", "Line No", "Severity", "Category", "Snapshot Status", "Current Status",
-                "Module", "File", "Class", "Method/Function", "Language", "Tool", "Author", "Date", "", "", "URL", url];
+            return defectService.getCSVHeaderForSnapshotView();
         } else {
-            return ["Did", "Checker", "Count", "Line No", "Severity", "Category", "Status",
-                "Module", "File", "Class", "Method/Function", "Language", "Tool", "Author", "Date", "", "", "URL", url];
+            return defectService.getCSVHeaderForDefectView();
         }
     };
 
-    var SECURITY_CHECKER = 'SECURITY';
-
     function pushNoDefect() {
-        $scope.csvContent.push({
-            'Did': 0,
-            'Checker': 'None',
-            'Count': 0,
-            'Line No': 0,
-            'Severity': 0,
-            'Category': 'None',
-            'Status': 'None',
-            'Module': 'None',
-            'File': 'None',
-            'Class': 'None',
-            'Method/Function': 'None',
-            'Language': 'None',
-            'Tool': 'None',
-            'Author': 'None',
-            'Date': 'There is no defect in this project'
-        });
+        $scope.csvContent.push(defectService.getDefaultDefectInfo());
     }
 
     function pushNoSnapshotDefect() {
-        $scope.csvSnapshotContent.push({
-            'Did': 'None',
-            'Checker': 'None',
-            'Count': 0,
-            'Line No': 0,
-            'Severity': 'None',
-            'Category': 'None',
-            'Snapshot Status': 'None',
-            'Current Status': 'None',
-            'Module': 'None',
-            'File': 'None',
-            'Class': 'None',
-            'Method/Function': 'None',
-            'Language': 'None',
-            'Tool': 'None',
-            'Author': 'None',
-            'Date': 'None'
-        });
+        $scope.csvSnapshotContent.push(defectService.getDefaultSnapshotDefectInfo());
     }
 
     function pushDefect(defect) {
@@ -195,7 +172,6 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
                 angular.forEach(result, function (defect) {
                     pushDefect(defect);
                 });
-                return;
             }
         })
     }
@@ -270,7 +246,6 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
                 angular.forEach(result, function (snapshotDefect) {
                     pushSnapshotDefect(snapshotDefect);
                 });
-                return;
             }
         })
     }
@@ -334,12 +309,12 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
                 loadModuleTreeFromDB('modulePath', 'module', node.name);
                 break;
             case 'module':
-                var modulePath = node.name;
+                modulePath = node.name;
                 loadFileTreeFromDB('fileName', 'file', modulePath);
                 break;
             case 'file':
-                var modulePath = node.modulePath;
-                var fileName = node.name;
+                modulePath = node.modulePath;
+                fileName = node.name;
                 break;
         }
         setModulePathAndFileNameInSearch(modulePath, fileName);
@@ -347,7 +322,7 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         showDefects();
     }
 
-    var loadFileTreeFromDB = function (state, type, modulePath) {
+    function loadFileTreeFromDB(state, type, modulePath) {
         var url = '/api/v2/defect/status/' + state;
         $http.get(url, {
             params: {
@@ -372,10 +347,12 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
                     });
                 });
             }
-        }).catch(console.error);
-    };
+        }).catch((error) => {
+            $log.error(error);
+        });
+    }
 
-    var loadModuleTreeFromDB = function (state, type) {
+    function loadModuleTreeFromDB(state, type) {
         var url = '/api/v2/defect/status/' + state;
         $http.get(url, {
             params: {
@@ -399,13 +376,15 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
                     });
                 });
             }
-        }).catch(console.error);
-    };
-
-    function toggleShowFileTreeBtn(isShowState) {
-        $scope.isFileTreeHidden = isShowState;
-        $scope.isFileTreeBtnTitleHidden = ((isShowState === true) ? 'Show File Tree' : 'Hide File Tree');
+        }).catch((error) => {
+            $log.error(error);
+        });
     }
+
+    $scope.toggleShowFileTreeBtn = function(isShowState) {
+        $scope.isFileTreeHidden = isShowState;
+        $scope.isFileTreeBtnTitleHidden = ((isShowState === true) ? SHOW_FILE_TREE_MESSAGE : HIDE_FILE_TREE_MESSAGE);
+    };
 
     function checkLogin() {
         $http.get("/api/v1/accounts/checkLogin", {}).then(function (results) {
@@ -420,21 +399,17 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         });
     }
 
-    function initLocalStorage() {
+    function initPageSizeFromLocalStorage() {
         window.localStorage['pageSize'] = (window.localStorage['pageSize']) || 500;
         window.localStorage['currentPage'] = parseInt(window.localStorage['currentPage']) || 1;
     }
 
-    function getProjectName() {
-        $http.get('/api/v1/projectName', {}).then(function (result) {
-            if (result && result.data) {
-                var html = 'Defect : ' + result.data.projectName;
-                $scope.projectName = result.data.projectName;
-                $('#indexTitle').html(html);
-            }
-        }, function (results) {
-            $log.error(results);
-        });
+    function setProjectName() {
+        defectService.loadProjectName()
+            .then(projectName => {
+                $scope.projectName = projectName;
+                $('#indexTitle').html(`Defect: ${projectName}`);
+            })
     }
 
     function moveTopOfPage() {
@@ -448,22 +423,18 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         window.localStorage.removeItem('selectTree');
     }
 
-    var resetAdminUserFlag = function () {
+    function resetAdminUserFlag() {
         $scope.isAdminUser = false;
         $scope.isCurrentLoginId = false;
-    };
+    }
 
     moveTopOfPage();
     resetAdminUserFlag();
 
     $scope.isFileTreeHidden = true;
     $scope.isLoginBtnHidden = true;
-    $('#animatiroonTab').css('display', 'none');
+    $('#animationTab').css('display', 'none');
     $('#animationTab').css('left', document.body.clientWidth);
-
-    $scope.isFileTreeBtnTitleHidden = 'Show File Tree';
-    $scope.isHideLoginBtnTitle = 'Login';
-
 
     $scope.deselectSelectionList = function () {
         $scope.defectSelections.length = 0;
@@ -472,19 +443,20 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
     };
 
     /* all of the alert MSG */
-    var hideDefectAlertMSG = function () {
+    function hideDefectAlertMSG() {
         angular.element('#showDefectAlert').hide();
-    };
+    }
 
-    var showDefectAlertMSG = function (_str, _status) {
+    function showDefectAlertMSG(_str, _status) {
         var alertStatus = _status;
         var status = _status;
         status = (status == 'success') ? 'glyphicon-ok' : 'glyphicon-exclamation-sign';
         alertStatus = (alertStatus == 'success') ? 'alert-success' : 'alert-warning';
-        var showAlertDefectMSG = "<a class='close' data-dismiss='alert' aria-hidden='true'><div class='defect-alert " + alertStatus + " fade in'>" +
-            "x </a><span class='glyphicon " + status + "'>&nbsp;</span><strong></strong>" + _str + " </strong></div>";
+        const showAlertDefectMSG = "<a class='close' data-dismiss='alert' aria-hidden='true'><div class='defect-alert "
+            + alertStatus + " fade in'>" + "x </a><span class='glyphicon " + status + "'>&nbsp;</span><strong></strong>"
+            + _str + " </strong></div>";
         angular.element('#showDefectAlert').show().html(showAlertDefectMSG);
-    };
+    }
 
     function successLogin(results) {
         $scope.isAdminUser = results.isAdmin;
@@ -496,7 +468,7 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         $scope.currentLoginId = results.userId;
         $scope.isHideLoginBtnTitle = $scope.currentLoginId + "/ logout";
 
-        var str = "You have successfully logged in of Dexter Web. Welcome : " + $scope.currentLoginId + ". ";
+        const str = "You have successfully logged in of Dexter Web. Welcome : " + $scope.currentLoginId + ". ";
         angular.element('#showDefectAlert').html(showDefectAlertMSG(str, 'success'));
         setTimeout(hideDefectAlertMSG, 5000);
     }
@@ -513,7 +485,7 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
                 if (results.data.userId) {
                     successLogin(results.data);
                 } else {
-                    var str = "Please check Your ID or PW and use the Dexter account.";
+                    const str = "Please check Your ID or PW and use the Dexter account.";
                     angular.element('#showDefectAlert').html(showDefectAlertMSG(str, 'error'));
                     setTimeout(hideDefectAlertMSG, 5000);
                 }
@@ -523,21 +495,21 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         } else {
             $scope.isLoginBtnHidden = true;
             alert("Do you really want to logout on Dexter Web?");
-            $scope.isHideLoginBtnTitle = 'Login';
+            $scope.isHideLoginBtnTitle = LOGIN_MESSAGE;
             logout();
         }
     };
 
-    var openAdminPage = function () {
+    function openAdminPage() {
         window.open('../admin', 'Dexter Admin Configuration', 'width=1204 height=580 left=50% top=50%');
-    };
+    }
 
     $scope.checkAdmin = function () {
         $http.get("/api/v1/accounts/checkAdmin", {}).then(function (results) {
             if (results.data.isAdmin) {
                 successAdminLogin(results.data);
             } else {
-                var str = "Please use Dexter Admin Account.";
+                const str = "Please use Dexter Admin Account.";
                 angular.element('#showDefectAlert').html(showDefectAlertMSG(str, 'error'));
                 setTimeout(hideDefectAlertMSG, 5000);
             }
@@ -596,13 +568,12 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         }
     }
 
-
     $scope.isDetailTabHidden = false;
     $scope.isButtonHidden = true;
     $scope.didList = [];
 
     //only administrator
-    var fixSelectedItem = function () {
+    function fixSelectedItem() {
         $scope.didList = [];
         for (var i = 0; i < $scope.defectSelections.length; i++) {
             if ($scope.defectSelections[i].statusCode != 'FIX') {
@@ -634,9 +605,9 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
             angular.element('#showDefectAlert').html(showDefectAlertMSG(str, 'error'));
             setTimeout(hideDefectAlertMSG, 5000);
         });
-    };
+    }
 
-    $scope.changeDefectStatus = function (defectStatus) {
+    function changeDefectStatus(defectStatus) {
         $http.post("/api/v1/defect/" + defectStatus, {
             params: {
                 didList: $scope.didList
@@ -648,25 +619,23 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
                     $scope.fileTree.splice(i, 0, moduleItem);
                 }
             }
-            var str = "Success to Apply for changed. ";
+            const str = "Success to Apply for changed. ";
             angular.element('#showDefectAlert').html(showDefectAlertMSG(str, 'success'));
             setTimeout(hideDefectAlertMSG, 5000);
             showDefects();
         }, function (results) {
-            // error
             $log.error("Error: " + results.data + "; " + results.status);
-            var str = "An unexpected error has occurred, It isn't changed status of defects. ";
+            const str = "An unexpected error has occurred, It isn't changed status of defects. ";
             angular.element('#showDefectAlert').html(showDefectAlertMSG(str, 'error'));
             setTimeout(hideDefectAlertMSG, 5000);
         });
-    };
+    }
 
-    var markDefectStatusByjQuery = function (state) {
+    function markDefectStatusByjQuery(state) {
         $scope.didList = [];
         $scope.didList[0] = $scope.currentDetailDid;
-        $scope.changeDefectStatus(state);
-
-    };
+        changeDefectStatus(state);
+    }
 
     $scope.markDefectStatusByAngular = function (state) {
         if ($scope.defectSelections.length == 0) {
@@ -677,37 +646,12 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         var selectedItem = $scope.defectSelections;
 
         for (var i = 0, len = selectedItem.length; i < len; i++) {
-
             if (selectedItem[i].statusCode != "EXC" || selectedItem[i].statusCode != "NEW") {
                 $scope.didList[i] = selectedItem[i].did;
                 dismissSelectedDefect(selectedItem[i].did, true);
             }
         }
-        $scope.changeDefectStatus(state);
-    };
-
-    $scope.removeDefectFromDB = function () {
-        $scope.fileList = [];
-        if (window.localStorage['fileName'] != '') {
-            if (confirm("Did you remove [" + window.localStorage['modulePath'] + "/" + window.localStorage['fileName'] + " ] file in workspace?")) {
-                $scope.fileList = window.localStorage['fileName'].split(' ');
-                $http.post("/api/v1/filter/delete-file-tree", {
-                    params: {
-                        modulePath: base64.encode(window.localStorage['modulePath']),
-                        fileList: $scope.fileList
-                    }
-                }).then(function (results) {
-                    $scope.loadFileTreeFromDB('removeFileTreeBtn');
-                    removeLocalStorageOfResources();
-                }, function (results) {
-                });
-            }
-        }
-        else {
-            var str = "Please select any module or file in File Tree. ";
-            angular.element('#showDefectAlert').html(showDefectAlertMSG(str, 'error'));
-            setTimeout(hideDefectAlertMSG, 5000);
-        }
+        changeDefectStatus(state);
     };
 
     $scope.fileTree = [];
@@ -716,17 +660,13 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         $scope.pagingOptions.currentPage = page;
     }
 
-    function showDefects() {
-        loadTotalDefectInformation();
-    }
 
     function setModulePathAndFileNameInSearch(modulePath, fileName) {
         $scope.search.modulePath = modulePath;
         $scope.search.fileName = fileName;
     }
 
-
-    var dismissSelectedDefect = function (did, isActive) {
+    function dismissSelectedDefect(did, isActive) {
         if (isActive == true) {
             $http.post('/api/v1/filter/false-alarm', {
                 params: {did: did}
@@ -746,18 +686,15 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
                 $log.error(results.data + results.status);
             });
         }
-    };
+    }
 
     $scope.getOnlyClassName = function (className) {
         if (className == null) {
             return "";
         }
-        else {
-            var start = className.lastIndexOf(".") + 1;
-            return className.substring(start);
-        }
+        var start = className.lastIndexOf(".") + 1;
+        return className.substring(start);
     };
-
 
     $scope.isStatusNotNew = function (value) {
         return (value == 'EXC') || (value == 'FIX');
@@ -810,24 +747,20 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         }
     }, true);
 
-    var rowHeight = 28;
-    var headerHeight = 30;
-
-
-    function loadTotalDefectInformation() {
-        if ($scope.isSnapshotView) {
-            showSnapshotDefectPage();
-        }
-        else {
-            showDefectPage();
-        }
+    function loadSnapshotDefectData() {
+        setSnapshotColumnField();
+        loadSnapshotDefect();
     }
 
-    function showSnapshotDefectPage() {
-        setSnapshotColumnField();
-        var snapshotId = $scope.snapshotId;
-        var url = '/api/v2/snapshot/' + snapshotId;
-        $http.get(url, {}).then(function (results) {
+    function loadDefectData() {
+        loadDefectCount();
+        loadDefect();
+    }
+
+    function loadSnapshotDefect() {
+        const snapshotId = $scope.snapshotId;
+        const loadSnapshotURL = '/api/v2/snapshot/' + snapshotId;
+        $http.get(loadSnapshotURL, {}).then(function (results) {
             if (results && results.data) {
                 $scope.defectList = results.data.defectInSnapshot;
                 $scope.totalServerItems = results.data.length;
@@ -840,8 +773,18 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         });
     }
 
-    function showDefectPage() {
-        var defectParams = {
+    function loadDefectCount() {
+        $http.get('/api/v3/defect/count', {}).then(function (results) { // success
+            if (isHttpResultOK(results)) {
+                $scope.totalServerItems = results.data.defectCount;
+            }
+        }, function (results) { // error
+            $log.error(results.status);
+        });
+    }
+
+    function loadDefect() {
+        const defectParams = {
             'did': $scope.search.did,
             'modulePath': base64.encode($scope.search.modulePath),
             'fileName': $scope.search.fileName,
@@ -853,16 +796,6 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
             'currentPage': $scope.pagingOptions.currentPage,
             'pageSize': $scope.pagingOptions.pageSize
         };
-
-        $http.get('/api/v1/defect/count', {
-            params: defectParams
-        }).then(function (results) { // success
-            if (results && results.data) {
-                $scope.totalServerItems = results.data.defectCount;
-            }
-        }, function (results) { // error
-            $log.error(results.status);
-        });
 
         $http.get('/api/v2/defect', {
             params: defectParams
@@ -876,27 +809,60 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         });
     }
 
-    var setSnapshotColumnField = function () {
+    function setSnapshotColumnField() {
         angular.forEach($scope.gridOptions.columnDefs, function (obj) {
             if (obj.field === 'currentStatusCode') {
                 obj.visible = true;
-                obj.cellTemplate = '<div ng-class="{greenBG: isStatusNotNew(row.getProperty(col.field))}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>';
+                obj.cellTemplate = '<div ng-class="{greenBG: isStatusNotNew(row.getProperty(col.field))}">' +
+                    '<div class="ngCellText">{{row.getProperty(col.field)}}</div></div>';
             }
             if (obj.field === 'statusCode') {
                 obj.displayName = 'snap.Status';
-                obj.cellTemplate = '<div class="ngCellText">{{row.getProperty(col.field)}}</div>';
+                obj.cellTemplate = defaultCellTemplate();
             }
         });
-    };
+    }
 
-
-    function getDefaultGroups(){
-        if(window.localStorage['defectDefaultGroups'] === undefined
-            || window.localStorage['defectDefaultGroups'].length == 0){
-            return ;
+    function initGroupsFromLocalStorage() {
+        if (window.localStorage['defectDefaultGroups'] === undefined
+            || window.localStorage['defectDefaultGroups'].length == 0) {
+            return;
         }
-        $scope.defaultGroups =[];
+        $scope.defaultGroups = [];
         $scope.defaultGroups = window.localStorage['defectDefaultGroups'].split(',');
+    }
+
+    function statusCodeCellTemplate() {
+        return '<div ng-class="{redBG: isStatusNew(row.getProperty(col.field))}">' +
+            '<div class="ngCellText">{{row.getProperty(col.field)}}</div></div>';
+    }
+
+    function occurenceCountTemplate() {
+        return '<div ng-class="{redBG: row.getProperty(col.field) >= 5}">' +
+            '<div class="ngCellText">{{row.getProperty(col.field)}}</div></div>';
+    }
+
+
+    function occurenceLineCellTemplate() {
+        return '<div ng-class="{redFG: isMajor(row.getProperty(col.field))}">' +
+            '<div class="ngCellText">{{row.getProperty(col.field)}}</div></div>';
+    }
+
+    function categoryNameCellTemplate() {
+        return '<div ng-class="{yellowBlackBG: isSecurity(row.getProperty(col.field))}">' +
+            '<div class="ngCellText">{{row.getProperty(col.field)}}</div></div>';
+    }
+
+    function defaultCellTemplate() {
+        return '<div class="ngCellText">{{row.getProperty(col.field)}}</div>';
+    }
+
+    function classNameCellTemplate() {
+        return '<div class="ngCellText">{{getOnlyClassName(row.getProperty(col.field))}}</div>';
+    }
+
+    function dateCellTemplate() {
+        return '<div><div class="ngCellText">{{row.getProperty(col.field) | date:"yyyy-MM-dd HH:mm:ss"}}</div></div>';
     }
 
     $scope.gridOptions = {
@@ -930,94 +896,63 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
             {field: 'did', displayName: 'ID', width: 80, cellClass: 'textAlignCenter'},
             {field: 'checkerCode', displayName: 'Checker'},
             {
-                field: 'occurenceCount',
-                displayName: 'Count',
-                width: 70,
-                resizable: true,
-                cellClass: 'textAlignCenter',
-                cellTemplate: '<div ng-class="{redBG: row.getProperty(col.field) >= 10}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>'
+                field: 'occurenceCount', displayName: 'Count', width: 70, resizable: true, cellClass: 'textAlignCenter',
+                cellTemplate: occurenceCountTemplate()
             },
-            {field: 'occurenceLine', displayName: 'Line No.', width: 70, resizable: true},
+            {field: 'occurenceLine', displayName: 'Line No.', width: 70, resizable: true, cellFilter: 'nullFilter',},
             {
                 field: 'severityCode',
                 displayName: 'Severity',
                 width: 70,
                 resizable: true,
                 cellClass: 'textAlignCenter',
-                cellTemplate: '<div ng-class="{redFG: isMajor(row.getProperty(col.field))}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>'
-            },
-            {
-                field: 'statusCode',
-                displayName: 'Status',
-                width: 80,
-                resizable: true,
-                cellClass: 'textAlignCenter',
-                cellTemplate: '<div ng-class="{redBG: isStatusNew(row.getProperty(col.field))}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>'
-            },
-            {
-                field: 'currentStatusCode',
-                visible: false,
-                displayName: 'cur.Status',
-                width: 82,
-                resizable: true,
-                cellClass: 'textAlignCenter',
-                cellTemplate: '<div class="ngCellText">{{row.getProperty(col.field)}}</div>'
-            },
-            {
-                field: 'categoryName',
-                displayName: 'Category',
-                width: 80,
-                resizable: true,
                 cellFilter: 'nullFilter',
+                cellTemplate: occurenceLineCellTemplate()
+            },
+            {
+                field: 'statusCode', displayName: 'Status', width: 80, resizable: true, cellClass: 'textAlignCenter',
+                cellTemplate: statusCodeCellTemplate()
+            },
+            {
+                field: 'currentStatusCode', visible: false, displayName: 'cur.Status', width: 82, resizable: true,
                 cellClass: 'textAlignCenter',
-                cellTemplate: '<div ng-class="{yellowBlackBG: isSecurity(row.getProperty(col.field))}"><div class="ngCellText">{{row.getProperty(col.field)}}</div></div>'
+                cellTemplate: defaultCellTemplate(),
             },
             {
-                field: 'modulePath',
-                displayName: 'Module',
-                width: 250,
-                resizable: true,
-                cellFilter: 'nullFilter',
-                cellTemplate: '<div class="ngCellText">{{row.getProperty(col.field)}}</div>'
+                field: 'categoryName', displayName: 'Category', width: 80, resizable: true, cellFilter: 'nullFilter',
+                cellClass: 'textAlignCenter',
+                cellTemplate: categoryNameCellTemplate()
             },
             {
-                field: 'fileName',
-                displayName: 'File',
-                resizable: true,
-                cellTemplate: '<div class="ngCellText">{{row.getProperty(col.field)}}</div>'
+                field: 'modulePath', displayName: 'Module', width: 250, resizable: true, cellFilter: 'nullFilter',
+                cellTemplate: defaultCellTemplate(),
             },
             {
-                field: 'className',
-                displayName: 'Class',
-                resizable: true,
-                cellFilter: 'nullFilter',
-                cellTemplate: '<div class="ngCellText">{{getOnlyClassName(row.getProperty(col.field))}}</div>'
+                field: 'fileName', displayName: 'File', resizable: true,
+                cellTemplate: defaultCellTemplate()
+            },
+            {
+                field: 'className', displayName: 'Class', resizable: true, cellFilter: 'nullFilter',
+                cellTemplate: classNameCellTemplate(),
             },
             {field: 'methodName', displayName: 'Method/Function', resizable: true, cellFilter: 'nullFilter'},
             {
-                field: 'language',
-                displayName: 'Language',
-                cellClass: 'textAlignCenter',
-                width: 85,
-                resizable: true,
+                field: 'language', displayName: 'Language', cellClass: 'textAlignCenter', width: 85, resizable: true,
                 cellFilter: 'nullFilter'
             },
             {
-                field: 'toolName',
-                displayName: 'Tool',
-                visible: false,
-                cellClass: 'textAlignCenter',
-                width: 85,
+                field: 'toolName', displayName: 'Tool', visible: false, cellClass: 'textAlignCenter', width: 85,
                 resizable: true
             },
             {field: 'modifierId', displayName: 'Author', resizable: true, cellClass: 'textAlignCenter'},
             {
                 field: 'modifiedDateTime', displayName: 'Date', resizable: true, cellClass: 'textAlignCenter',
-                cellTemplate: '<div><div class="ngCellText">{{row.getProperty(col.field) | date:"yyyy-MM-dd HH:mm:ss"}}</div></div>'
+                cellTemplate: dateCellTemplate(),
             },
-            {field: 'message', displayName: "Description", visible: false, resizable: true}
+            {field: 'message', displayName: "Description", visible: false, resizable: true},
         ]
     };
+
     showDefects();
 
     $scope.selectDefectRow = function () {
@@ -1037,15 +972,15 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         });
     };
 
-    $scope.$on('ngGridEventGroups', function(event, groups){
+    $scope.$on('ngGridEventGroups', function (event, groups) {
         setDefaultGroups(groups);
     });
 
-    function setDefaultGroups(groups){
+    function setDefaultGroups(groups) {
         let defaultGroups = [];
 
-        window.localStorage['defectDefaultGroups'] ='';
-        _.forEach( groups,function(groupName){
+        window.localStorage['defectDefaultGroups'] = '';
+        angular.forEach(groups, function (groupName) {
             defaultGroups.push(groupName.field);
         });
         window.localStorage['defectDefaultGroups'] = defaultGroups;
@@ -1077,7 +1012,7 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
 
     $scope.selectedDidListInGrid = [];
     $scope.$watch('defectSelections.length', function (newVal, oldVal) {
-        if ($scope.defectSelections.length === 0 ){
+        if ($scope.defectSelections.length === 0) {
             window.localStorage['defectSelections'] = '';
             $scope.selectedDidListInGrid = [];
             $scope.isDetailTabHidden = true;
@@ -1173,8 +1108,7 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         if ($scope.isSnapshotView) {
             snapshotId = $scope.snapshotId;
             getSnapshotOccurenceInFile();
-        }
-        else {
+        } else {
             snapshotId = 'undefined';
             getOccurenceInFile(selectedDefect);
 
@@ -1184,7 +1118,7 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
 
     var setSelectedDidDetail = function (defectOccurrence) {
         $scope.currentDetailDefectList = [];
-        angular.forEach(defectOccurrence, function (defect, idx) {
+        angular.forEach(defectOccurrence, function (defect) {
             if (defect.did === $scope.currentDetailDid) {
                 var tempDefect = [];
                 tempDefect.did = defect.did;
@@ -1251,7 +1185,7 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
     };
 
     var loadSnapshotSourceCode = function (selectedDefect, snapshotId) {
-        const getSnapshotSourceCodeUrl = '/api/v2/analysis/snapshot/sourcecode';
+        const getSnapshotSourceCodeUrl = '/api/v3/analysis/snapshot/sourcecode';
         $http.post(getSnapshotSourceCodeUrl, {
             params: {
                 'modulePath': base64.encode($scope.selectedDefectModulePath),
@@ -1261,7 +1195,7 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         }).then(function (results) {
             if (isHttpResultOK(results)) {
                 var defectSourceCodes = {};
-                defectSourceCodes.source = results.data;
+                defectSourceCodes.source = results.data.sourceCode;
                 defectSourceCodes.fileName = results.config.data.params.fileName;
                 defectSourceCodes.modulePath = base64.decode(results.config.data.params.modulePath);
                 displaySourceCode(defectSourceCodes);
@@ -1391,8 +1325,3 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
     };
 });
 
-defectApp.filter('nullFilter', function () {
-    return function (input) {
-        return input == 'null' ? 'N/A' : input;
-    };
-});

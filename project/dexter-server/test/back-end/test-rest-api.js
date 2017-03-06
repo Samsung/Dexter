@@ -262,8 +262,6 @@ describe('RESTful API Test Suite', function() {
 
             // post
             {apiUrl:'api/v1/filter/false-alarm', statusCode:200, methodType: 'POST'},
-            {apiUrl:'api/v1/filter/delete-false-alarm', statusCode:200, methodType: 'POST'},
-            {apiUrl:'api/v1/filter/delete-file-tree', statusCode:200, methodType: 'POST'}
         ];
 
         itWithTestData(testData);

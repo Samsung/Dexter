@@ -508,57 +508,6 @@ describe('Test analysis.js', function() {
 		});
 	});
 
-	describe('For removeFileTree()', function() {
-		afterEach(function() {
-			database.exec.restore();
-		});
-		it('Should success in normal case', function (done) {
-			sinon.stub(logging, 'error');
-			sinon.stub(database, 'exec', function (sql, callback) {
-				callback(null, ['test']);
-			});
-			
-			req = {body:{params:{fileList:['testFile1','testFile2'], modulePath:'testModule'}}};
-
-			analysis.removeFileTree(req, res);
-
-			assert.equal(result.status, 'ok');
-			res.send.calledOnce.should.be.true;
-			logging.error.called.should.be.false;
-			done();
-		});
-
-		it('Should fail when request params are invalid', function (done) {
-			sinon.stub(logging, 'error');
-			sinon.stub(database, 'exec', function (sql, callback) {
-				callback(null, ['test']);
-			});
-
-			req = {body:{params:{fileList:['testFile1','testFile2']}}};
-
-			analysis.removeFileTree(req, res);
-
-			assert.equal(result.status, 'fail');
-			res.send.calledOnce.should.be.true;
-			done();
-		});
-
-		it('Should fail when DB error occurs', function (done) {
-			sinon.stub(logging, 'error');
-			sinon.stub(database, 'exec', function (sql, callback) {
-				callback({message:'testError'}, null);
-			});
-
-			req = {body:{params:{fileList:['testFile1','testFile2'], modulePath:'testModule'}}};
-
-			analysis.removeFileTree(req, res);
-
-			assert.equal(result.status, 'fail');
-			res.send.calledOnce.should.be.true;
-			done();
-		});
-	});
-
 	describe('For getGlobalDid()', function() {
 		afterEach(function() {
 			database.exec.restore();
@@ -1390,5 +1339,29 @@ describe('Test analysis.js', function() {
 			done();
 		});
 	});
+
+    describe('For getDefectCountByModuleAndFileV3()', function () {
+        afterEach(function () {
+            database.execV2.restore();
+        });
+
+        it('Should success in normal case', function (done) {
+            sinon.stub(logging, 'error');
+
+            var queryResult = ['test'];
+            sinon.stub(database, 'execV2', function (sql) {
+                return Q.resolve(queryResult);
+            });
+
+            req = {};
+
+            analysis.getDefectCountByModuleAndFileV3(req, res)
+                .done(() => {
+                    assert.equal(result.status, 'ok');
+                    done();
+                });
+        });
+
+    });
 
 });

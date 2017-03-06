@@ -31,7 +31,6 @@ var util = require('./dexter-util');
 var Q = require('q');
 var _databasePool;
 
-
 exports.init = function(){
     setRunOptionsImmutable();
     initDatabase();
@@ -41,11 +40,8 @@ function setRunOptionsImmutable(){
     Object.freeze(global.runOptions);
 }
 
-exports.getProjectName = function(req, res){
-    res.send({
-        status : "ok",
-        projectName :  global.runOptions.databaseName
-    });
+exports.getProjectName = function (req, res) {
+    res.send({status: "ok", projectName: global.runOptions.databaseName});
 };
 
 exports.deleteDexterDatabase = function(){

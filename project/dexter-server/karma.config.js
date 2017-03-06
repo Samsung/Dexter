@@ -30,7 +30,6 @@ module.exports = function(config) {
         // base path that will be used to resolve all patterns (eg. files, exclude)
         basePath: '',
 
-
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
         frameworks: ['mocha', 'chai'],
@@ -41,8 +40,6 @@ module.exports = function(config) {
             'karma-chai'
         ],
 
-
-
         // list of files to exclude
         files: [
             {pattern: 'public/css/**/*.css'},
@@ -52,10 +49,12 @@ module.exports = function(config) {
             {pattern: 'public/js/ng/**/*.js'},
             {pattern: 'public/js/util/**/*.js'},
             {pattern: 'public/js/*.js'},
+            {pattern: 'public/AdminSE/*.js'},
             {pattern: 'public/admin/**/*.js'},
             {pattern: 'public/dashboard/**/*.js'},
             {pattern: 'public/defect/**/*.js'},
             {pattern: 'public/defect/**/defectIdCtrl.js'},
+            {pattern: 'public/service/**/*.js'},
             {pattern: 'test/front-end/**/*.js'}
         ],
         exclude: [
