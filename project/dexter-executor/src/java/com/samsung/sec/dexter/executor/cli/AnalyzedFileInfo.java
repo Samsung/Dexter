@@ -9,7 +9,7 @@ public class AnalyzedFileInfo {
 	private long lastModifiedTime;
 	private String filePathString;
 	
-	private static final long TIME_OFFSET = 50; // msec 
+	private static final long TIME_OFFSET = 200; // msec 
 	
 	public AnalyzedFileInfo() {
 		this.fileSize = 0;

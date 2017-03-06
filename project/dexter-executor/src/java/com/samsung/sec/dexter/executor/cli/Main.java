@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.log4j.Logger;
 
 import com.google.common.base.Stopwatch;
@@ -65,7 +66,7 @@ public class Main {
         Main cliMain = new Main();
 
         try {
-            final IDexterCLIOption cliOption = new DexterCLIOption(args);
+            final IDexterCLIOption cliOption = new DexterCLIOption(args, new HelpFormatter());
 
             switch (cliOption.getCommandMode()) {
                 case CREATE_ACCOUNT:

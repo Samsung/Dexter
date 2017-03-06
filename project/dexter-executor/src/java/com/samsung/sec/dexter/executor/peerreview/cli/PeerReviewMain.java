@@ -23,21 +23,25 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package com.samsung.sec.dexter.executor.cli.peerreview;
+package com.samsung.sec.dexter.executor.peerreview.cli;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
+
+import org.apache.commons.cli.HelpFormatter;
 import org.apache.log4j.Logger;
 
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.config.*;
 import com.samsung.sec.dexter.core.config.DexterConfig.RunMode;
-import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.exception.InvalidArgumentRuntimeException;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginInitializer;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
 import com.samsung.sec.dexter.core.util.EmptyDexterClient;
+import com.samsung.sec.dexter.core.util.FileService;
 import com.samsung.sec.dexter.core.util.IDexterClient;
 import com.samsung.sec.dexter.executor.CLIPluginInitializer;
 import com.samsung.sec.dexter.executor.DexterAnalyzer;
@@ -46,11 +50,13 @@ import com.samsung.sec.dexter.executor.cli.CLILog;
 import com.samsung.sec.dexter.executor.cli.DexterCLIOption;
 import com.samsung.sec.dexter.executor.cli.ICLILog;
 import com.samsung.sec.dexter.executor.cli.IDexterCLIOption;
-import com.samsung.sec.dexter.executor.cli.Main;
+import com.samsung.sec.dexter.executor.peerreview.PeerReviewConfigJob;
+import com.samsung.sec.dexter.executor.peerreview.PeerReviewController;
+import com.samsung.sec.dexter.executor.peerreview.PeerReviewHomeMonitor;
 
 public class PeerReviewMain {
 	private final static ICLILog cliLog = new CLILog(System.out);
-	private final static Logger log = Logger.getLogger(Main.class);
+	private final static Logger log = Logger.getLogger(PeerReviewMain.class);
 	private final IDexterCLIOption cliOption;
 	private final IDexterConfigFile dexterConfigFile;
 	private final PeerReviewConfigJob configJob;
@@ -67,36 +73,43 @@ public class PeerReviewMain {
 	}
 
 	public static void main(String[] args) {
-		IDexterCLIOption cliOption = new DexterCLIOption(args);
-		IDexterPluginManager pluginManager = loadDexterPlugins(new EmptyDexterClient(), cliOption);
-		PeerReviewMain peerReviewMain;
-
 		try {
+			IDexterCLIOption cliOption = new DexterCLIOption(args, new HelpFormatter());
+			IDexterPluginManager pluginManager = loadDexterPlugins(new EmptyDexterClient(), cliOption);
+			PeerReviewMain peerReviewMain;
+			
 			peerReviewMain = new PeerReviewMain(
 					DexterConfig.getInstance(),
 					cliOption,
-					new DexterConfigFile(),
+					new PeerReviewConfigFile(new FileService()),
 					new PeerReviewConfigJob(
 							DexterConfig.getInstance(), 
-							new PeerReviewController(
-									new PeerReviewHomeMonitor(
-											Executors.newFixedThreadPool(1), 
-											FileSystems.getDefault().newWatchService(),
-											new PeerReviewCLIAnalyzer(cliOption, 
-													cliLog,  
-													DexterAnalyzer.getInstance(), 
-													pluginManager,
-													new AnalysisEntityFactory()))), 
+							createPeerReviewController(cliOption, pluginManager),
 							Executors.newScheduledThreadPool(1)),
 					pluginManager);
 			
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new DexterRuntimeException("IOEception occurred on Init");
+			peerReviewMain.initDexterConfig();
+			peerReviewMain.startConfigJob();
+			
+		} catch (IOException | InterruptedException | ExecutionException e) {
+			log.error(e.getMessage(), e);
+			System.exit(-1);
+		} catch (InvalidArgumentRuntimeException e) {
+			// print usage message
+			System.exit(-1);
 		}
+	}
 
-		peerReviewMain.initDexterConfig();
-		peerReviewMain.startConfigJob();
+	private static PeerReviewController createPeerReviewController(IDexterCLIOption cliOption, IDexterPluginManager pluginManager) throws IOException {
+		return new PeerReviewController(
+				new PeerReviewHomeMonitor(
+						Executors.newFixedThreadPool(1), 
+						FileSystems.getDefault().newWatchService(),
+						new PeerReviewCLIAnalyzer(cliOption, 
+								cliLog,  
+								DexterAnalyzer.getInstance(), 
+								pluginManager,
+								new AnalysisEntityFactory())));
 	}
 	
 	private static IDexterPluginManager loadDexterPlugins(final IDexterClient client, final IDexterCLIOption cliOption) {
@@ -110,7 +123,7 @@ public class PeerReviewMain {
 		pluginManager.initDexterPlugins();
 	}
 
-	public void startConfigJob() {
+	public void startConfigJob() throws InterruptedException, ExecutionException {
 		configJob.start();
 	}
 

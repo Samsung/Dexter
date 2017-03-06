@@ -1,4 +1,4 @@
-package com.samsung.sec.dexter.executor.cli.peerreview;
+package com.samsung.sec.dexter.executor.peerreview;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 import static java.nio.file.LinkOption.*;
@@ -33,6 +33,7 @@ import com.samsung.sec.dexter.core.config.PeerReviewWatch;
 import com.samsung.sec.dexter.core.config.DexterConfig.AnalysisType;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.executor.cli.AnalyzedFileInfo;
+import com.samsung.sec.dexter.executor.peerreview.cli.PeerReviewCLIAnalyzer;
 
 public class PeerReviewHomeMonitor implements Runnable {
 	private final static Logger log = Logger.getLogger(PeerReviewHomeMonitor.class);
@@ -44,7 +45,7 @@ public class PeerReviewHomeMonitor implements Runnable {
 	private MonitoringState monitoringState;
 	private final AnalyzedFileInfo lastAnalyzedFileInfo;
 	
-	private enum MonitoringState { STOP, RUNNING, CANCEL }; 
+	public enum MonitoringState { STOP, RUNNING, CANCEL }; 
 	private final static long WATCH_POLL_TIMEOUT = 5;
 	
 	public PeerReviewHomeMonitor(ExecutorService excutorService, WatchService watchService, PeerReviewCLIAnalyzer peerReviewCLIAnalyzer) {
@@ -57,6 +58,7 @@ public class PeerReviewHomeMonitor implements Runnable {
 		lastAnalyzedFileInfo = new AnalyzedFileInfo();
 	}
 	
+	// DPR: 이름 restart 로 
 	public void update(List<PeerReviewHome> peerReviewHomeList) {
 		cancelMonitoring();
 		updatePeerReviewHomeMap(peerReviewHomeList);
@@ -81,7 +83,7 @@ public class PeerReviewHomeMonitor implements Runnable {
 		try {
 			registerPathForWatch(Paths.get(home.getSourceDir()), home, peerReviewWatchMap);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
 	}
 	
@@ -104,7 +106,7 @@ public class PeerReviewHomeMonitor implements Runnable {
 			    }
 			});
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 			throw new DexterRuntimeException("IOException occurred on registering peer-review home with watch");
 		} 
 	}
@@ -114,9 +116,10 @@ public class PeerReviewHomeMonitor implements Runnable {
 			monitoringState = MonitoringState.CANCEL;
 			
 			try {
+				// DPR: get 을 cancel 로 테스트
 				monitoringFuture.get();
 			} catch (InterruptedException | ExecutionException e) {
-				e.printStackTrace();
+				log.error(e.getMessage(), e);
 			} finally {
 				log.info("Monitoring is canceled.");
 			}
@@ -147,7 +150,7 @@ public class PeerReviewHomeMonitor implements Runnable {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error(e.getMessage(), e);
 			Thread.currentThread().interrupt();
 		} finally {
 			monitoringState = MonitoringState.STOP;
@@ -204,7 +207,22 @@ public class PeerReviewHomeMonitor implements Runnable {
 				Pattern.CASE_INSENSITIVE);
 		Matcher matcher = pattern.matcher(filePath.getFileName().toString());
 		
-		return Files.isRegularFile(filePath, NOFOLLOW_LINKS) && matcher.matches();
+		long fileSize;
+		try {
+			fileSize = Files.size(filePath);
+		} catch (IOException e) {
+			fileSize = 0;
+		}
+		
+		return Files.isRegularFile(filePath, NOFOLLOW_LINKS) && matcher.matches() && fileSize > 0;
+	}
+	
+	public MonitoringState getMonitoringState() {
+		return monitoringState;
+	}
+	
+	public void cancel() {
+		cancelMonitoring();
 	}
 	
 }

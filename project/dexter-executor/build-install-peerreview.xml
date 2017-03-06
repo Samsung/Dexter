@@ -32,14 +32,14 @@
 		depends="clean, create_dexter_core_jar, create_dexter_metrics_jar, create_dexter_executor_jar, 
 				copy_dexter_peer_review_jar">
 		
-		<echo file="${dist-bin}/dexter.bat" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar -u %1 -p %2</echo>
-		<echo file="${dist-bin}/dexter.sh" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar -u $1 -p $2</echo>
+		<echo file="${dist-bin}/peer-review.bat" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar -u %1 -p %2</echo>
+		<echo file="${dist-bin}/peer-review.sh" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar -u $1 -p $2</echo>
 		
 		<echo file="${dist-bin}/create-user.bat" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar -c -u %1 -p %2 -h %3 -o %4</echo>
 		<echo file="${dist-bin}/create-user.sh" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar -c -u $1 -p $2 -h $3 -o $4</echo>
 		
-		<echo file="${dist-bin}/dexter2.bat" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar %*</echo>
-		<echo file="${dist-bin}/dexter2.sh" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar $@</echo>
+		<echo file="${dist-bin}/peer-review.bat" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar %*</echo>
+		<echo file="${dist-bin}/peer-review.sh" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar $@</echo>
 				
 		<copy file="${core-prj-path}/src/resource/dexter_cfg.json" todir="${dist-bin}" />
 		<copy file="${core-prj-path}/src/resource/dexter_cfg.json.help" todir="${dist-bin}" />
@@ -124,11 +124,11 @@
 	<target name="create_dexter_executor_jar">
 		<jar destfile="${dist-bin}/dexter-executor.jar" basedir="${exec-bin-path}">
 			<manifest>
-				<attribute name="Main-Class" value="com.samsung.sec.dexter.executor.cli.PeerReviewMain" />
+				<attribute name="Main-Class" value="com.samsung.sec.dexter.executor.peerreview.cli.PeerReviewMain" />
 				<attribute name="Class-Path" value="." />
 			</manifest>
 
-			<zipgroupfileset dir="${exec-lib-path}" includes="commons-cli-1.2.jar, commons-io-2.4.jar, gson-2.2.4.jar, guava-16.0.1.jar, log4j-1.2.17.jar" />
+			<zipgroupfileset dir="${exec-lib-path}" includes="commons-cli-1.2.jar, commons-io-2.4.jar, gson-2.2.4.jar, guava-16.0.1.jar, log4j-1.2.17.jar json-simple-1.1.1.jar" />
 
 			<zipfileset excludes="META_INF/*.SF" src="${temp}/dexter-core_${version}.jar" />
 			<zipfileset excludes="META_INF/*.SF" src="${temp}/dexter-metrics_${version}.jar" />

@@ -33,10 +33,13 @@ import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import org.apache.commons.cli.HelpFormatter;
+
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfigFile;
 import com.samsung.sec.dexter.core.config.IDexterConfigFile;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.exception.InvalidArgumentRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.core.util.EmptyDexterClient;
 import com.samsung.sec.dexter.core.util.IDexterClient;
@@ -50,10 +53,10 @@ public class MainTest {
         String[] args = {};
         try {
             Main cliMain = new Main();
-            new DexterCLIOption(args);
+            new DexterCLIOption(args, new HelpFormatter());
             assertNotNull(cliMain.getCLILog());
             fail();
-        } catch (DexterRuntimeException e) {
+        } catch (InvalidArgumentRuntimeException e) {
             assertTrue(e.getMessage().startsWith("You missed option(s) :  -u -p"));
         }
     }
@@ -63,10 +66,10 @@ public class MainTest {
         String[] args = { "-c" };
         try {
             Main cliMain = new Main();
-            new DexterCLIOption(args);
+            new DexterCLIOption(args, new HelpFormatter());
             assertNotNull(cliMain.getCLILog());
             fail();
-        } catch (DexterRuntimeException e) {
+        } catch (InvalidArgumentRuntimeException e) {
             assertTrue(e.getMessage().startsWith("You missed option(s) :  -h -o -u -p"));
         }
     }
@@ -76,10 +79,10 @@ public class MainTest {
         String[] args = { "-c", "-u", "user", "-p", "password" };
         try {
             Main cliMain = new Main();
-            new DexterCLIOption(args);
+            new DexterCLIOption(args, new HelpFormatter());
             assertNotNull(cliMain.getCLILog());
             fail();
-        } catch (DexterRuntimeException e) {
+        } catch (InvalidArgumentRuntimeException e) {
             assertTrue(e.getMessage().startsWith("You missed option(s) :  -h -o"));
         }
     }
@@ -89,10 +92,10 @@ public class MainTest {
         String[] args = { "-c", "-u", "user", "-p", "password", "-h", "100.100.100.100" };
         try {
             Main cliMain = new Main();
-            new DexterCLIOption(args);
+            new DexterCLIOption(args, new HelpFormatter());
             assertNotNull(cliMain.getCLILog());
             fail();
-        } catch (DexterRuntimeException e) {
+        } catch (InvalidArgumentRuntimeException e) {
             assertTrue(e.getMessage().startsWith("You missed option(s) :  -o"));
         }
     }
@@ -108,7 +111,7 @@ public class MainTest {
 
         Main cliMain = new Main();
         Main spyMain = spy(cliMain);
-        IDexterCLIOption cliOption = new DexterCLIOption(args);
+        IDexterCLIOption cliOption = new DexterCLIOption(args, new HelpFormatter());
         IDexterClient client = new EmptyDexterClient();
         when(spyMain.createDexterClient(cliOption)).thenReturn(client);
 
@@ -133,7 +136,7 @@ public class MainTest {
         String[] args = { "-s", "-f", "./src/test/dexter_conf_java.json" };
 
         Main cliMain = new Main();
-        IDexterCLIOption cliOption = new DexterCLIOption(args);
+        IDexterCLIOption cliOption = new DexterCLIOption(args, new HelpFormatter());
         IDexterClient client = new EmptyDexterClient();
 
         IAccountHandler accountHandler = cliMain.createAccountHandler(client, cliOption);
@@ -149,7 +152,7 @@ public class MainTest {
         String[] args = { "-u", id, "-p", password, "-f", "./src/test/dexter_conf_java.json" };
 
         Main cliMain = new Main();
-        IDexterCLIOption cliOption = new DexterCLIOption(args);
+        IDexterCLIOption cliOption = new DexterCLIOption(args, new HelpFormatter());
         IDexterClient client = new EmptyDexterClient();
 
         IAccountHandler accountHandler = cliMain.createAccountHandler(client, cliOption);
@@ -165,7 +168,7 @@ public class MainTest {
         String[] args = { "-u", id, "-p", password, "-f", "./src/test/dexter_conf_java.json" };
 
         Main cliMain = new Main();
-        IDexterCLIOption cliOption = new DexterCLIOption(args);
+        IDexterCLIOption cliOption = new DexterCLIOption(args, new HelpFormatter());
         DexterConfig.getInstance().addSupprotingFileExtensions(new String[] { "java" });
         final IDexterConfigFile configFile = cliMain.createDexterConfigFile(cliOption);
 
@@ -198,7 +201,7 @@ public class MainTest {
         String[] args = { "-u", id, "-p", password, "-f", "./src/test/dexter_conf_java.json" };
 
         Main cliMain = new Main();
-        IDexterCLIOption cliOption = new DexterCLIOption(args);
+        IDexterCLIOption cliOption = new DexterCLIOption(args, new HelpFormatter());
         DexterConfig.getInstance().addSupprotingFileExtensions(new String[] { "java" });
 
         IDexterClient client = cliMain.createDexterClient(cliOption);
@@ -212,7 +215,7 @@ public class MainTest {
         String[] args = { "-s", "-f", "./src/test/dexter_conf_java.json" };
 
         Main cliMain = new Main();
-        IDexterCLIOption cliOption = new DexterCLIOption(args);
+        IDexterCLIOption cliOption = new DexterCLIOption(args, new HelpFormatter());
         DexterConfig.getInstance().addSupprotingFileExtensions(new String[] { "java" });
 
         IDexterClient client = cliMain.createDexterClient(cliOption);
@@ -232,11 +235,11 @@ public class MainTest {
 
         try {
             Main cliMain = new Main();
-            IDexterCLIOption cliOption = new DexterCLIOption(args);
+            IDexterCLIOption cliOption = new DexterCLIOption(args, new HelpFormatter());
             IDexterClient client = new EmptyDexterClient();
             cliMain.createAccountHandler(client, cliOption);
             fail();
-        } catch (DexterRuntimeException e) {
+        } catch (InvalidArgumentRuntimeException e) {
             assertTrue(e.getMessage().startsWith("you cannot use option '-s' and with '-u'"));
         }
 
@@ -254,7 +257,7 @@ public class MainTest {
         try {
             Main spyMain = spy(Main.class);
 
-            IDexterCLIOption cliOption = new DexterCLIOption(args);
+            IDexterCLIOption cliOption = new DexterCLIOption(args, new HelpFormatter());
             final IDexterConfigFile configFile = spyMain.createDexterConfigFile(cliOption);
             IDexterClient client = new EmptyDexterClient();
             when(spyMain.createDexterClient(cliOption)).thenReturn(client);
@@ -278,7 +281,7 @@ public class MainTest {
         try {
             Main spyMain = spy(Main.class);
 
-            IDexterCLIOption cliOption = new DexterCLIOption(args);
+            IDexterCLIOption cliOption = new DexterCLIOption(args, new HelpFormatter());
             final IDexterConfigFile configFile = spyMain.createDexterConfigFile(cliOption);
             IDexterClient client = new EmptyDexterClient();
             when(spyMain.createDexterClient(cliOption)).thenReturn(client);
@@ -303,7 +306,7 @@ public class MainTest {
         try {
             Main spyMain = spy(Main.class);
 
-            IDexterCLIOption cliOption = new DexterCLIOption(args);
+            IDexterCLIOption cliOption = new DexterCLIOption(args, new HelpFormatter());
             final IDexterConfigFile configFile = spyMain.createDexterConfigFile(cliOption);
             IDexterClient client = Mockito.mock(IDexterClient.class);
             when(spyMain.createDexterClient(cliOption)).thenReturn(client);

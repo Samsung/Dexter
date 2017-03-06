@@ -1,6 +1,6 @@
 package com.samsung.sec.dexter.executor.cli;
 
-import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.exception.*;
 
 import org.apache.commons.cli.CommandLine;
 
@@ -8,7 +8,7 @@ public class CommandLineAssert {
     public static void assertExclusiveOptions(final CommandLine cmd, final char firstOption,
             final char secondOption) {
         if (cmd.hasOption(firstOption) && cmd.hasOption(secondOption)) {
-            throw new DexterRuntimeException(
+            throw new InvalidArgumentRuntimeException(
                     "you cannot use option '-" + firstOption + "' and with '-" + secondOption + "'");
         }
     }
@@ -40,7 +40,7 @@ public class CommandLineAssert {
         }
 
         if (isMissing)
-            throw new DexterRuntimeException(errMessage.toString());
+            throw new InvalidArgumentRuntimeException(errMessage.toString());
     }
 
 }

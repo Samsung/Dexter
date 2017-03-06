@@ -1,4 +1,4 @@
-package com.samsung.sec.dexter.executor.cli.peerreview;
+package com.samsung.sec.dexter.executor.peerreview;
 
 import java.io.File;
 import java.io.FileReader;
@@ -29,12 +29,21 @@ public class PeerReviewController {
 	}
 
 	public void update(File configFile) {
-		updatePeerReviewHome(configFile);
-		notifyToMonitor();
+		try {
+			updatePeerReviewHome(configFile);
+			notifyToMonitor();
+		} catch (Exception e) {
+			cancelMonitor();
+			throw e;
+		}
 	}
 	
 	private void notifyToMonitor() {
 		peerReviewHomeMonitor.update(peerReviewHomeList);
+	}
+	
+	private void cancelMonitor() {
+		peerReviewHomeMonitor.cancel();
 	}
 	
 	private void updatePeerReviewHome(File configFile) {

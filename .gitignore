@@ -52,3 +52,6 @@ project/dexter-eclipse-cdt/bin/
 project/dexter-eclipse-jdt/bin/
 **/*.DS_Store
 	**/*.DS_Store?
+project/dexter-peer-review/log/
+project/dexter-peer-review/dist/
+project/dexter-peer-review/temp/

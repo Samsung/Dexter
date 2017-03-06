@@ -1,4 +1,4 @@
-package com.samsung.sec.dexter.executor.cli.peerreview;
+package com.samsung.sec.dexter.executor.peerreview.cli;
 
 import static org.mockito.Mockito.*;
 
@@ -18,7 +18,7 @@ import com.samsung.sec.dexter.core.util.IDexterClient;
 import com.samsung.sec.dexter.executor.DexterAnalyzer;
 import com.samsung.sec.dexter.executor.cli.ICLILog;
 import com.samsung.sec.dexter.executor.cli.IDexterCLIOption;
-import com.samsung.sec.dexter.executor.cli.peerreview.PeerReviewCLIAnalyzer;
+import com.samsung.sec.dexter.executor.peerreview.cli.PeerReviewCLIAnalyzer;
 
 public class PeerReviewCLIAnalyzerTest {
 	ICLILog cliLog;
