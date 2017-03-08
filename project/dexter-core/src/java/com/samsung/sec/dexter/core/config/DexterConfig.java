@@ -187,6 +187,11 @@ public class DexterConfig {
     //private ScheduledFuture<?> mergeFilterFuture = null;
 
     ////////////////////////////////////////////////////////////////////////////////////////////
+    
+    public static final String DPR_REG_EXP = "(?:/\\*.*[w]*(DPR:)(?:[^*]|(?:\\*+[^*/]))*\\*+/)|(?://.*[w]*(DPR:).*)";
+	public static final String CRITICAL_REG_EXP = "(?i).*\\[.*cri.*\\] | (?i).*\\[.*critical.*\\]";
+	public static final String MAJOR_REG_EXP = "(?i).*\\[.*maj.*\\] | (?i).*\\[.*major.*\\]";
+	public static final String SIMPLE_REG_EXP = ".*(DPR:)";
 
     public static enum RunMode {
         CLI, ECLIPSE, DAEMON, INTELLIJ, NETBEANS, SOURCE_INSIGHT

@@ -25,13 +25,8 @@
  */
 package com.samsung.sec.dexter.peerreview.plugin;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -45,10 +40,13 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
+import com.samsung.sec.dexter.core.checker.EmptyCheckerConfig;
+import com.samsung.sec.dexter.core.checker.ICheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.defect.Occurence;
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 import com.samsung.sec.dexter.core.plugin.PluginDescription;
 import com.samsung.sec.dexter.core.plugin.PluginVersion;
@@ -57,24 +55,33 @@ import net.xeoh.plugins.base.annotations.PluginImplementation;
 
 @PluginImplementation
 public class DexterPeerReviewPlugin implements IDexterPlugin {
+	protected ICheckerConfig checkerConfig = new EmptyCheckerConfig(DexterPeerReviewPlugin.PLUGIN_NAME,
+			DexterConfig.LANGUAGE.ALL);
 	private final static Logger logger = Logger.getLogger(DexterPeerReviewPlugin.class);
 
 	public final static String PLUGIN_NAME = "dexter-peerreview";
 	public final static PluginVersion PLUGIN_VERSION = new PluginVersion("0.0.1");
-	private static PluginDescription PLUGIN_DESCRIPTION;
+	private static PluginDescription PLUGIN_DESCRIPTION = new PluginDescription("Samsung Electroincs", PLUGIN_NAME,
+			PLUGIN_VERSION, DexterConfig.LANGUAGE.ALL, "Dexter Peer Review Plug-in");
 
 	private IAnalysisEntityFactory analysisEntityFactory = new AnalysisEntityFactory();
 
-	final String criticalRegExp = "(?i).*\\[.*cri.*\\] | (?i).*\\[.*critical.*\\]";
-	final String majorRegExp = "(?i).*\\[.*maj.*\\] | (?i).*\\[.*major.*\\]";
-	final String simpleRegExp = ".*(DPR:)";
+	public Pattern DPRPattern, criticalPattern, majorPattern, defaultPattern;
 
 	public DexterPeerReviewPlugin() {
+		init();
 	}
 
 	@Override
 	public void init() {
+		initPattern();
+	}
 
+	protected void initPattern() {
+		DPRPattern = Pattern.compile(DexterConfig.DPR_REG_EXP);
+		criticalPattern = Pattern.compile(DexterConfig.CRITICAL_REG_EXP);
+		majorPattern = Pattern.compile(DexterConfig.MAJOR_REG_EXP);
+		defaultPattern = Pattern.compile(DexterConfig.SIMPLE_REG_EXP);
 	}
 
 	@Override
@@ -84,35 +91,22 @@ public class DexterPeerReviewPlugin implements IDexterPlugin {
 
 	@Override
 	public void handleDexterHomeChanged(String oldPath, String newPath) {
-
+		init();
 	}
 
 	@Override
 	public PluginDescription getDexterPluginDescription() {
-		if (PLUGIN_DESCRIPTION == null) {
-			PLUGIN_DESCRIPTION = new PluginDescription("Samsung Electroincs", PLUGIN_NAME, PLUGIN_VERSION,
-					DexterConfig.LANGUAGE.CPP, "");
-		}
-
 		return PLUGIN_DESCRIPTION;
 	}
 
 	@Override
-	public void setCheckerConfig(CheckerConfig cc) {
-
+	public void setCheckerConfig(ICheckerConfig cc) {
+		this.checkerConfig = cc;
 	}
 
 	@Override
-	public CheckerConfig getCheckerConfig() {
-		return null;
-	}
-
-	static int[] createNewArray(int[] oldArray, int maxLine) {
-		int[] newArray = new int[maxLine + 1];
-		for (int index = 1; index < maxLine + 1; index++) {
-			newArray[index] = oldArray[index];
-		}
-		return newArray;
+	public ICheckerConfig getCheckerConfig() {
+		return this.checkerConfig;
 	}
 
 	public int[] makeOffsetArray(CharSequence sourcecode) {
@@ -121,13 +115,16 @@ public class DexterPeerReviewPlugin implements IDexterPlugin {
 		int line = 1;
 		Pattern pattern = Pattern.compile("\n");
 		Matcher matcher = pattern.matcher(sourcecode);
-		matcher.region(0, sourcecode.length());
-		while (matcher.find()) {
-			offsets[line + 1] = matcher.end();
-			line++;
+
+		try {
+			matcher.region(0, sourcecode.length());
+			while (matcher.find()) {
+				offsets[++line] = matcher.end();
+			}
+			return Arrays.copyOf(offsets, line + 1);
+		} catch (IllegalStateException e) {
+			throw new DexterRuntimeException(e.getMessage(), e);
 		}
-		int[] newOffsets = createNewArray(offsets, line);
-		return newOffsets;
 	}
 
 	@Override
@@ -143,9 +140,7 @@ public class DexterPeerReviewPlugin implements IDexterPlugin {
 		} catch (Exception e) {
 			logger.error("incorrect regExp:");
 			logger.error(e.getMessage(), e);
-
 		}
-
 		return result;
 	}
 
@@ -207,76 +202,72 @@ public class DexterPeerReviewPlugin implements IDexterPlugin {
 	}
 
 	static String getFullCommentWithoutLineSeparator(String comment) {
-		return comment.replaceAll("(\r\n|\n)", "").replaceAll("\\s+", " ").trim();
+		return comment.replaceAll("(\r\n|\n)", " ").replaceAll("\\s+", " ").trim();
 	}
 
 	private HashMap<String, String> getSeverityAndCommentFromFullComment(String comment) {
 		String severity = "";
 		String reviewComment = "";
 
-		Pattern criticalPattern = Pattern.compile(criticalRegExp);
 		Matcher criticalMatcher = criticalPattern.matcher(comment);
-
-		Pattern majorPattern = Pattern.compile(majorRegExp);
 		Matcher majorMatcher = majorPattern.matcher(comment);
-
-		Pattern defaultPattern = Pattern.compile(simpleRegExp);
 		Matcher defaultMatcher = defaultPattern.matcher(comment);
 
-		if (criticalMatcher.find()) {
-			severity = "CRI";
-			reviewComment = comment.substring(criticalMatcher.end());
-		} else if (majorMatcher.find()) {
-			severity = "MAJ";
-			reviewComment = comment.substring(majorMatcher.end());
-		} else if (defaultMatcher.find()) {
-			severity = "CRC";
-			reviewComment = comment.substring(defaultMatcher.end());
-		} else {
-			// nothing to do
+		try {
+			if (criticalMatcher.find()) {
+				severity = "CRI";
+				reviewComment = comment.substring(criticalMatcher.end());
+			} else if (majorMatcher.find()) {
+				severity = "MAJ";
+				reviewComment = comment.substring(majorMatcher.end());
+			} else if (defaultMatcher.find()) {
+				severity = "CRC";
+				reviewComment = comment.substring(defaultMatcher.end());
+			} else {
+				// nothing to do
+			}
+			HashMap<String, String> infoHashMap = new HashMap<String, String>();
+			infoHashMap.put("severity", severity);
+			infoHashMap.put("comment", reviewComment.trim());
+
+			return infoHashMap;
+		} catch (IllegalStateException e) {
+			throw new DexterRuntimeException(e.getMessage(), e);
 		}
-
-		HashMap<String, String> infoHashMap = new HashMap<String, String>();
-		infoHashMap.put("severity", severity);
-		infoHashMap.put("comment", reviewComment.trim());
-
-		return infoHashMap;
 	}
 
 	@Override
 	public boolean supportLanguage(LANGUAGE language) {
-		if (language == LANGUAGE.C || language == LANGUAGE.CPP || language == LANGUAGE.JAVA) {
-			return true;
-		}
-
-		return false;
+		// support all languages
+		return true;
 	}
 
 	@Override
 	public String[] getSupportingFileExtensions() {
-		return new String[] { "c", "cpp", "h", "hpp", "java" };
+		return new String[] { "c", "cpp", "h", "hpp", "cs", "java", "js", "css", "html" };
 	}
 
 	public ArrayList<DPRComment> getAllDPRCommentFromSourcecode(int[] offsets, CharSequence sourcecode) {
-		final String regExp = "(?:/\\*.*[w]*(DPR:)(?:[^*]|(?:\\*+[^*/]))*\\*+/)|(?://.*[w]*(DPR:).*)";
 		ArrayList<DPRComment> matchList = new ArrayList<>();
+		Matcher matcher = DPRPattern.matcher(sourcecode);
 
-		Pattern pattern = Pattern.compile(regExp);
-		Matcher matcher = pattern.matcher(sourcecode);
+		try {
+			while (matcher.find()) {
+				DPRComment comment = new DPRComment();
+				comment.setStartLine(getLineFromOffset(offsets, matcher.start()));
+				comment.setEndLine(getLineFromOffset(offsets, matcher.end()));
+				comment.setFullComment(getFullCommentWithoutLineSeparator(matcher.group()));
 
-		while (matcher.find()) {
-			DPRComment comment = new DPRComment();
-			comment.setStartLine(getLineFromOffset(offsets, matcher.start()));
-			comment.setEndLine(getLineFromOffset(offsets, matcher.end()));
-			comment.setFullComment(getFullCommentWithoutLineSeparator(matcher.group()));
+				HashMap<String, String> infoHashMap = getSeverityAndCommentFromFullComment(comment.getFullComment());
+				comment.setSeverity(infoHashMap.get("severity"));
+				comment.setReviewComment(infoHashMap.get("comment"));
 
-			HashMap<String, String> infoHashMap = getSeverityAndCommentFromFullComment(comment.getFullComment());
-			comment.setSeverity(infoHashMap.get("severity"));
-			comment.setReviewComment(infoHashMap.get("comment"));
-
-			matchList.add(comment);
+				matchList.add(comment);
+			}
+			return matchList;
+		} catch (IllegalStateException | IndexOutOfBoundsException e) {
+			throw new DexterRuntimeException(e.getMessage(), e);
 		}
-		return matchList;
 	}
 
 	protected int getLineFromOffset(int[] offsets, int offset) {

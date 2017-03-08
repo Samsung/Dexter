@@ -25,7 +25,7 @@
  */
 package com.samsung.sec.dexter.core.util;
 
-import com.samsung.sec.dexter.core.checker.CheckerConfig;
+import com.samsung.sec.dexter.core.checker.ICheckerConfig;
 import com.samsung.sec.dexter.core.config.DefectGroup;
 import com.samsung.sec.dexter.core.config.DexterCode;
 import com.samsung.sec.dexter.core.config.IDexterStandaloneListener;
@@ -192,7 +192,7 @@ public interface IDexterClient extends IDexterStandaloneListener {
 
     public String getDexterPluginUpdateUrl();
 
-    public CheckerConfig getDexterPluginChecker(IDexterPlugin plugin, String pluginName);
+    public ICheckerConfig getDexterPluginChecker(IDexterPlugin plugin, String pluginName);
 
     String getDexterCodeMetricsUrl();
 

@@ -37,6 +37,7 @@ import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.ITestHandlerAtTheEndOfHandleAnalysisResult;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.checker.IChecker;
+import com.samsung.sec.dexter.core.checker.ICheckerConfig;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 
@@ -60,7 +61,7 @@ public class DexterOpensourcePluginTest {
         DexterOpensourcePlugin plugin = new DexterOpensourcePlugin();
         plugin.init();
 
-        CheckerConfig config = plugin.getCheckerConfig();
+        ICheckerConfig config = plugin.getCheckerConfig();
         assertEquals(13, config.getCheckerList().size());
         assertEquals("dexter-opensource", config.getToolName());
 

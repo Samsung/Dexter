@@ -25,24 +25,29 @@ public class DexterPeerReviewPlugInTest {
 	}
 
 	@Test
-	public void supportLanguage_supportC() {
-		assertEquals(true, peerReviewPlugIn.supportLanguage(LANGUAGE.C));
-	}
-	
-	@Test
-	public void supportLanguage_supportCPP() {
-		assertEquals(true, peerReviewPlugIn.supportLanguage(LANGUAGE.CPP));
-	}
-	
-	@Test
-	public void supportLanguage_supportJAVA() {
-		assertEquals(true, peerReviewPlugIn.supportLanguage(LANGUAGE.JAVA));
-	}
-	
-	@Test
-	public void supportLanguage_dontSupportJAVASCRIPT() {
-		assertEquals(false, peerReviewPlugIn.supportLanguage(LANGUAGE.JAVASCRIPT));
-	}
+ 	public void supportLanguage_supportC() {
+ 		assertEquals(true, peerReviewPlugIn.supportLanguage(LANGUAGE.C));
+ 	}
+ 	
+ 	@Test
+ 	public void supportLanguage_supportCPP() {
+ 		assertEquals(true, peerReviewPlugIn.supportLanguage(LANGUAGE.CPP));
+ 	}
+ 	
+ 	@Test
+ 	public void supportLanguage_supportJAVA() {
+ 		assertEquals(true, peerReviewPlugIn.supportLanguage(LANGUAGE.JAVA));
+ 	}
+ 	
+ 	@Test
+ 	public void supportLanguage_dontSupportJAVASCRIPT() {
+  		assertEquals(true, peerReviewPlugIn.supportLanguage(LANGUAGE.JAVASCRIPT));
+  	}
+
+ 	@Test
+ 	public void supportLanguage_dontSupportCSHARP() {
+  		assertEquals(true, peerReviewPlugIn.supportLanguage(LANGUAGE.C_SHARP));
+  	}
 
 	private AnalysisConfig createTestConfig() {
         IAnalysisEntityFactory configFactory = new AnalysisEntityFactory();
@@ -63,9 +68,9 @@ public class DexterPeerReviewPlugInTest {
 		String sourcecode = "abcdef /* DPR: include 하지 마세요\r\n* MULTI_CASE-1\r\n*/";
 		int[] offsets = plugin.makeOffsetArray(sourcecode);
 		
-		String expectedFullComment = "/* DPR: include 하지 마세요* MULTI_CASE-1*/";
+		String expectedFullComment = "/* DPR: include 하지 마세요 * MULTI_CASE-1 */";
 		String expectedSeverity = "CRC";
-		String expectedComment = "include 하지 마세요* MULTI_CASE-1*/";
+		String expectedComment = "include 하지 마세요 * MULTI_CASE-1 */";
 		
 		
 		// when
@@ -89,9 +94,9 @@ public class DexterPeerReviewPlugInTest {
 		String sourcecode = "abcdef /* DPR: [CRI] include 하지 마세요\r\n* MULTI_CASE-1\r\n*/";
 		int[] offsets = plugin.makeOffsetArray(sourcecode);
 		
-		String expectedFullComment = "/* DPR: [CRI] include 하지 마세요* MULTI_CASE-1*/";
+		String expectedFullComment = "/* DPR: [CRI] include 하지 마세요 * MULTI_CASE-1 */";
 		String expectedSeverity = "CRI";
-		String expectedComment = "include 하지 마세요* MULTI_CASE-1*/";
+		String expectedComment = "include 하지 마세요 * MULTI_CASE-1 */";
 		
 		
 		// when
@@ -115,9 +120,9 @@ public class DexterPeerReviewPlugInTest {
 		String sourcecode = "abcdef /* DPR: [CRI] \r\ninclude 하지 마세요\r\n* MULTI_CASE-1\r\n*/";
 		int[] offsets = plugin.makeOffsetArray(sourcecode);
 		
-		String expectedFullComment = "/* DPR: [CRI] include 하지 마세요* MULTI_CASE-1*/";
+		String expectedFullComment = "/* DPR: [CRI] include 하지 마세요 * MULTI_CASE-1 */";
 		String expectedSeverity = "CRI";
-		String expectedComment = "include 하지 마세요* MULTI_CASE-1*/";
+		String expectedComment = "include 하지 마세요 * MULTI_CASE-1 */";
 		
 		
 		// when
