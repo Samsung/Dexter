@@ -28,6 +28,7 @@ package com.samsung.sec.dexter.executor.cli;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
+import com.samsung.sec.dexter.core.checker.ICheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.exception.InvalidArgumentRuntimeException;
@@ -400,7 +401,7 @@ public class DexterCLIOption implements IDexterCLIOption {
 
     @Override
     public void checkCheckerEnablenessByCliOption(final IDexterPlugin plugin) {
-        CheckerConfig checkerConfig = plugin.getCheckerConfig();
+        ICheckerConfig checkerConfig = plugin.getCheckerConfig();
         checkerConfig.disableAllCheckers();
         PluginDescription description = plugin.getDexterPluginDescription();
 

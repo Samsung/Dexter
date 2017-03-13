@@ -32,6 +32,7 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.checker.IChecker;
+import com.samsung.sec.dexter.core.checker.ICheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.defect.Defect;
@@ -54,7 +55,7 @@ import net.xeoh.plugins.base.annotations.PluginImplementation;
 
 @PluginImplementation
 public class DexterOpensourcePlugin implements IDexterPlugin {
-	protected CheckerConfig checkerConfig = new CheckerConfig(DexterOpensourcePlugin.PLUGIN_NAME,
+	protected ICheckerConfig checkerConfig = new CheckerConfig(DexterOpensourcePlugin.PLUGIN_NAME,
             DexterConfig.LANGUAGE.ALL);
     
     public final static String PLUGIN_NAME = "dexter-opensource";
@@ -106,12 +107,12 @@ public class DexterOpensourcePlugin implements IDexterPlugin {
     }
 
     @Override
-    public void setCheckerConfig(CheckerConfig cc) {
+    public void setCheckerConfig(ICheckerConfig cc) {
         this.checkerConfig = cc;
     }
 
     @Override
-    public CheckerConfig getCheckerConfig() {
+    public ICheckerConfig getCheckerConfig() {
         return this.checkerConfig;
     }
 

@@ -30,6 +30,7 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
+import com.samsung.sec.dexter.core.checker.ICheckerConfig;
 import com.samsung.sec.dexter.core.config.DefectGroup;
 import com.samsung.sec.dexter.core.config.DexterCode;
 import com.samsung.sec.dexter.core.config.DexterConfig;
@@ -839,7 +840,7 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
         this.webResource = webResource;
     }
 
-    public CheckerConfig getDexterPluginChecker(IDexterPlugin plugin, String pluginName) {
+    public ICheckerConfig getDexterPluginChecker(IDexterPlugin plugin, String pluginName) {
         try {
             String text = webResource.postText(
                     DexterConfig.GET_DEXTER_PLUGIN_CHECKER_JSON_FILE + "/" + pluginName,
@@ -849,7 +850,7 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
                 CheckerConfig cc = gson.fromJson(text, CheckerConfig.class);
                 return cc;
             } else {
-                CheckerConfig cc = plugin.getCheckerConfig();
+                ICheckerConfig cc = plugin.getCheckerConfig();
                 return cc;
             }
         } catch (DexterRuntimeException e) {

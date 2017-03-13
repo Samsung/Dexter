@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Dexter Peer Review
 Bundle-SymbolicName: dexter-peer-review;singleton:=true
 Bundle-Version: 0.10.6
-Bundle-Activator: dexter_peer_review.Activator
+Bundle-Activator: com.samsung.sec.dexter.peerreview.DexterPeerReviewActivator
 Require-Bundle: org.eclipse.core.runtime,
  dexter-core;bundle-version="0.10.6",
  dexter-executor;bundle-version="0.10.6"
