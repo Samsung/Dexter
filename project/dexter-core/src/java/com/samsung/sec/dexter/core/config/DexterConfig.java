@@ -36,8 +36,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -191,8 +193,10 @@ public class DexterConfig {
     public static final String DPR_REG_EXP = "(?:/\\*.*[w]*(DPR:)(?:[^*]|(?:\\*+[^*/]))*\\*+/)|(?://.*[w]*(DPR:).*)";
 	public static final String CRITICAL_REG_EXP = "(?i).*\\[.*cri.*\\] | (?i).*\\[.*critical.*\\]";
 	public static final String MAJOR_REG_EXP = "(?i).*\\[.*maj.*\\] | (?i).*\\[.*major.*\\]";
-	public static final String SIMPLE_REG_EXP = ".*(DPR:)";
-
+	public static final String TOTAL_SEVERITY_REG_EXP = "(?i).*\\[cri]|(?i).*\\[critical]|(?i).*\\[maj]|(?i).*\\[major]|(?i).*\\[crc]";
+	public static final String SIMPLE_DPR_COMMENT_REG_EXP = ".*(DPR:)";
+	public static final String SEVERITY_REG_EXP = "\\[(.*?)]";
+	
     public static enum RunMode {
         CLI, ECLIPSE, DAEMON, INTELLIJ, NETBEANS, SOURCE_INSIGHT
     }

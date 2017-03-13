@@ -29,6 +29,11 @@ project/dexter-cppcheck/dist/
 project/dexter-cppcheck/temp/
 project/dexter-findbugs/bin/
 project/dexter-findbugs/dist/
+project/dexter-findbugs/log/
+project/dexter-peer-review/bin/
+project/dexter-peer-review/log/
+project/dexter-peer-review/dist/
+project/dexter-peer-review/temp/
 project/dexter-server/node_modules/
 project/dexter-server/public/plugin/
 project/dexter-server/**/*.log

@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,7 +67,8 @@ public class DexterPeerReviewPlugin implements IDexterPlugin {
 
 	private IAnalysisEntityFactory analysisEntityFactory = new AnalysisEntityFactory();
 
-	public Pattern DPRPattern, criticalPattern, majorPattern, defaultPattern;
+	public Pattern DPRPattern, defaultPattern, totalSeverityPattern, severityPattern;
+	public Map<String, String> DPRHashMap = new HashMap<String, String>();
 
 	public DexterPeerReviewPlugin() {
 		init();
@@ -75,13 +77,22 @@ public class DexterPeerReviewPlugin implements IDexterPlugin {
 	@Override
 	public void init() {
 		initPattern();
+		initSeverityHashMap();
+	}
+
+	protected void initSeverityHashMap() {
+		DPRHashMap.put("cri", "CRI");
+		DPRHashMap.put("critical", "CRI");
+		DPRHashMap.put("maj", "MAJ");
+		DPRHashMap.put("major", "MAJ");
+		DPRHashMap.put("crc", "CRC");
 	}
 
 	protected void initPattern() {
 		DPRPattern = Pattern.compile(DexterConfig.DPR_REG_EXP);
-		criticalPattern = Pattern.compile(DexterConfig.CRITICAL_REG_EXP);
-		majorPattern = Pattern.compile(DexterConfig.MAJOR_REG_EXP);
-		defaultPattern = Pattern.compile(DexterConfig.SIMPLE_REG_EXP);
+		totalSeverityPattern = Pattern.compile(DexterConfig.TOTAL_SEVERITY_REG_EXP);
+		severityPattern = Pattern.compile(DexterConfig.SEVERITY_REG_EXP);
+		defaultPattern = Pattern.compile(DexterConfig.SIMPLE_DPR_COMMENT_REG_EXP);
 	}
 
 	@Override
@@ -205,33 +216,42 @@ public class DexterPeerReviewPlugin implements IDexterPlugin {
 		return comment.replaceAll("(\r\n|\n)", " ").replaceAll("\\s+", " ").trim();
 	}
 
-	private HashMap<String, String> getSeverityAndCommentFromFullComment(String comment) {
-		String severity = "";
-		String reviewComment = "";
-
-		Matcher criticalMatcher = criticalPattern.matcher(comment);
-		Matcher majorMatcher = majorPattern.matcher(comment);
+	protected Map<String, String> getDPRCommentMetadata(String comment) {
+		Matcher severityMatcher = severityPattern.matcher(comment);
 		Matcher defaultMatcher = defaultPattern.matcher(comment);
-
+		Map<String, String> infoHashMap = new HashMap<String, String>();
 		try {
-			if (criticalMatcher.find()) {
-				severity = "CRI";
-				reviewComment = comment.substring(criticalMatcher.end());
-			} else if (majorMatcher.find()) {
-				severity = "MAJ";
-				reviewComment = comment.substring(majorMatcher.end());
+			if (severityMatcher.find()) {
+				infoHashMap = getCommentMeta(comment);
 			} else if (defaultMatcher.find()) {
-				severity = "CRC";
-				reviewComment = comment.substring(defaultMatcher.end());
+				infoHashMap.put("severity", "CRC");
+				infoHashMap.put("comment", comment.substring(defaultMatcher.end()).trim());
 			} else {
-				// nothing to do
+				// nothing to do: It may be not DPR Comment.
 			}
-			HashMap<String, String> infoHashMap = new HashMap<String, String>();
-			infoHashMap.put("severity", severity);
-			infoHashMap.put("comment", reviewComment.trim());
-
 			return infoHashMap;
 		} catch (IllegalStateException e) {
+			throw new DexterRuntimeException(e.getMessage(), e);
+		}
+	}
+
+	protected String getSeverityFromMap(String severity) {
+		if (DPRHashMap.containsKey(severity)) {
+			return DPRHashMap.get(severity);
+		}
+		return "CRC";
+	}
+
+	protected Map<String, String> getCommentMeta(String comment) {
+		Map<String, String> infoHashMap = new HashMap<String, String>();
+		Matcher matcher = severityPattern.matcher(comment);
+		try {
+			if (matcher.find()) {
+				infoHashMap.put("severity", getSeverityFromMap(matcher.group(1).toLowerCase()));
+				infoHashMap.put("comment", comment.substring(matcher.end()).trim());
+			}
+			return infoHashMap;
+		} catch (IllegalStateException | IndexOutOfBoundsException e) {
 			throw new DexterRuntimeException(e.getMessage(), e);
 		}
 	}
@@ -258,7 +278,7 @@ public class DexterPeerReviewPlugin implements IDexterPlugin {
 				comment.setEndLine(getLineFromOffset(offsets, matcher.end()));
 				comment.setFullComment(getFullCommentWithoutLineSeparator(matcher.group()));
 
-				HashMap<String, String> infoHashMap = getSeverityAndCommentFromFullComment(comment.getFullComment());
+				Map<String, String> infoHashMap = getDPRCommentMetadata(comment.getFullComment());
 				comment.setSeverity(infoHashMap.get("severity"));
 				comment.setReviewComment(infoHashMap.get("comment"));
 

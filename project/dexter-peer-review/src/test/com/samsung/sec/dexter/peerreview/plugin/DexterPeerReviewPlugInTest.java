@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -284,7 +285,7 @@ public class DexterPeerReviewPlugInTest {
 		DexterPeerReviewPlugin plugin = new DexterPeerReviewPlugin();
 		
 		// given
-		String sourcecode = "abcdef /* DPR: include 하지 마세요\r\n* MULTI_CASE-1\r\n*/";;
+		String sourcecode = "abcdef /* DPR: include 하지 마세요\r\n* MULTI_CASE-1\r\n*/";
 		int[] offsets = plugin.makeOffsetArray(sourcecode);
 
 		// when
@@ -301,4 +302,92 @@ public class DexterPeerReviewPlugInTest {
 		assertEquals(3, line3_start);
 		assertEquals(3, line3_end);
 	}
+	
+	@Test
+	public void test_getSeverityAndCommentFromFullComment_basic_success(){
+		DexterPeerReviewPlugin plugin = new DexterPeerReviewPlugin();
+		
+		// given
+		String sourcecode = "asdfasdf /* DPR: sdf  * MULTI_CASE-2 */\r\nasdfasfd //      DPR:      asdfasdfa";
+		int[] offsets = plugin.makeOffsetArray(sourcecode);
+		
+		String expectedFullComment1 = "/* DPR: sdf * MULTI_CASE-2 */";
+		String expectedFullComment2 = "// DPR: asdfasdfa";
+		String expectedSeverity = "CRC";
+		String expectedComment1 = "sdf * MULTI_CASE-2 */";
+		String expectedComment2 = "asdfasdfa";
+		
+		// when
+		ArrayList<DPRComment> result = plugin.getAllDPRCommentFromSourcecode(offsets, sourcecode);
+		
+		// then
+		assertEquals(2, result.size());	
+		DPRComment comment = result.get(0);
+		assertEquals(1, comment.getStartLine());
+		assertEquals(1, comment.getEndLine());
+		assertEquals(expectedSeverity,comment.getSeverity());
+		assertEquals(expectedFullComment1, comment.getFullComment());
+		assertEquals(expectedComment1, comment.getReviewComment());
+		
+		comment = result.get(1);
+		assertEquals(2, comment.getStartLine());
+		assertEquals(2, comment.getEndLine());
+		assertEquals(expectedSeverity,comment.getSeverity());
+		assertEquals(expectedFullComment2, comment.getFullComment());
+		assertEquals(expectedComment2, comment.getReviewComment());
+	}
+	
+	@Test
+	public void test_getCommentMeta_basic_success_for_critical(){
+		DexterPeerReviewPlugin plugin = new DexterPeerReviewPlugin();
+		
+		//given
+		String comment="// DPR: [Cri] 라이브러리 또는 알고리즘을 검색하세요";
+		
+		String exptectedSeverity = "CRI";
+		String expectedComment ="라이브러리 또는 알고리즘을 검색하세요";
+		
+		//when
+		Map<String, String> commentMap = plugin.getCommentMeta(comment);
+		
+		//then
+		assertEquals(exptectedSeverity, commentMap.get("severity"));
+		assertEquals(expectedComment, commentMap.get("comment"));
+	}
+	
+	@Test
+	public void test_getCommentMeta_basic_success_for_major(){
+		DexterPeerReviewPlugin plugin = new DexterPeerReviewPlugin();
+		
+		//given
+		String comment="/* DPR: [maj] 필요없는 주석은 지워주세요 20170331 */";
+		
+		String exptectedSeverity = "MAJ";
+		String expectedComment ="필요없는 주석은 지워주세요 20170331 */";
+		
+		//when
+		Map<String, String> commentMap = plugin.getCommentMeta(comment);
+		
+		//then
+		assertEquals(exptectedSeverity, commentMap.get("severity"));
+		assertEquals(expectedComment, commentMap.get("comment"));
+	}
+	
+	@Test
+	public void test_getCommentMeta_basic_success_for_CRC(){
+		DexterPeerReviewPlugin plugin = new DexterPeerReviewPlugin();
+		
+		//given
+		String comment="/* DPR: [cRC] 필요없는 주석은 삭제하세요 */";
+		
+		String expectedSeverity = "CRC";
+		String expectedComment ="필요없는 주석은 삭제하세요 */";
+		
+		//when
+		Map<String, String> commentMap = plugin.getCommentMeta(comment);
+		
+		//then
+		assertEquals(expectedSeverity, commentMap.get("severity"));
+		assertEquals(expectedComment, commentMap.get("comment"));
+	}	
 }
