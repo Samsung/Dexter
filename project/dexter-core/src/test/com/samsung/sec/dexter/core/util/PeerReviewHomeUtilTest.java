@@ -37,8 +37,8 @@ public class PeerReviewHomeUtilTest {
 	
 	private PeerReviewHomeJson createTestJsonString() {
 		DexterServerConfig config = new DexterServerConfig("testId", "testPw", "127.0.0.1", 8080);
-		PeerReviewHome firstHome = new PeerReviewHome(null, "testProject", "/test", true);
-		PeerReviewHome secondHome = new PeerReviewHome(null, "testProject2", "/test2", true);
+		PeerReviewHome firstHome = new PeerReviewHome(config, "testProject", "/test", true);
+		PeerReviewHome secondHome = new PeerReviewHome(config, "testProject2", "/test2", false);
 		List<PeerReviewHome> homeList = new ArrayList<PeerReviewHome>();
 		homeList.add(firstHome);
 		homeList.add(secondHome);

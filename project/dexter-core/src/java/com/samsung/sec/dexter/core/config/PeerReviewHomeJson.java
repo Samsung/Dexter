@@ -31,5 +31,28 @@ public class PeerReviewHomeJson {
 	public void setHomeList(List<PeerReviewHome> homeList) {
 		this.homeList = homeList;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj == null)
+			return false; 
+		
+		if (this.getClass() != obj.getClass()) 
+			return false;
+		
+		if (this == obj) 
+			return true;
+
+		PeerReviewHomeJson that = (PeerReviewHomeJson)obj;
+		
+		return isSameObject(this.serverConfig, that.serverConfig) &&
+				isSameObject(this.homeList, that.homeList);
+
+	}
+	
+	private boolean isSameObject(Object src, Object dest) {
+		return src == null ? dest == null : src.equals(dest);
+	}
+
 	
 }

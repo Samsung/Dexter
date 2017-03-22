@@ -34,6 +34,7 @@ import java.util.concurrent.Executors;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.log4j.Logger;
 
+import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.config.*;
 import com.samsung.sec.dexter.core.config.DexterConfig.RunMode;
@@ -43,6 +44,7 @@ import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
 import com.samsung.sec.dexter.core.util.EmptyDexterClient;
 import com.samsung.sec.dexter.core.util.FileUtil;
 import com.samsung.sec.dexter.core.util.IDexterClient;
+import com.samsung.sec.dexter.core.util.PeerReviewHomeUtil;
 import com.samsung.sec.dexter.executor.CLIPluginInitializer;
 import com.samsung.sec.dexter.executor.DexterAnalyzer;
 import com.samsung.sec.dexter.executor.cli.CLIDexterPluginManager;
@@ -109,7 +111,10 @@ public class PeerReviewMain {
 								cliLog,  
 								DexterAnalyzer.getInstance(), 
 								pluginManager,
-								new AnalysisEntityFactory())));
+								new AnalysisEntityFactory())),
+				new PeerReviewHomeUtil(new Gson()));
+		
+		
 	}
 	
 	private static IDexterPluginManager loadDexterPlugins(final IDexterClient client, final IDexterCLIOption cliOption) {
