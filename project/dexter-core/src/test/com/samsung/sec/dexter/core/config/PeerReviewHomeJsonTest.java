@@ -50,6 +50,23 @@ public class PeerReviewHomeJsonTest {
 		// then
 		assertEquals(homeList, homeJson.getHomeList());
 	}
+	
+	@Test
+	public void equals_givenSameContents_returnTrue() {
+		// given
+		PeerReviewHomeJson homeJson1 = createTestHomeJson();
+		PeerReviewHomeJson homeJson2 = createTestHomeJson();
+		
+		// when & then
+		assertTrue(homeJson1.equals(homeJson2));
+	}
+
+	private PeerReviewHomeJson createTestHomeJson() {
+		DexterServerConfig serverConfig = createTestServerConfig();
+		List<PeerReviewHome> homeList = createTestHomeList(serverConfig);
+		
+		return new PeerReviewHomeJson(serverConfig, homeList);
+	}
 
 	private List<PeerReviewHome> createTestHomeList(DexterServerConfig serverConfig) {
 		List<PeerReviewHome> homeList = new ArrayList<PeerReviewHome>();

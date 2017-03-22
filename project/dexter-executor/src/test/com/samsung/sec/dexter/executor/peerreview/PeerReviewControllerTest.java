@@ -5,6 +5,8 @@ import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -17,14 +19,17 @@ import com.google.common.collect.Lists;
 import com.google.common.io.CharSink;
 import com.google.common.io.Files;
 import com.samsung.sec.dexter.core.config.PeerReviewHome;
+import com.samsung.sec.dexter.core.config.PeerReviewHomeJson;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterServerConfig;
+import com.samsung.sec.dexter.core.util.PeerReviewHomeUtil;
 import com.samsung.sec.dexter.executor.peerreview.PeerReviewController;
 import com.samsung.sec.dexter.executor.peerreview.PeerReviewHomeMonitor;
 
 public class PeerReviewControllerTest {
 	PeerReviewHomeMonitor peerReviewHomeMonitor;
 	PeerReviewController peerReviewController;
+	PeerReviewHomeUtil peerReivewHomeUtil;
 	
 	@Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
@@ -32,7 +37,8 @@ public class PeerReviewControllerTest {
 	@Before
 	public void setUp() throws Exception {
 		peerReviewHomeMonitor = mock(PeerReviewHomeMonitor.class);
-		peerReviewController = new PeerReviewController(peerReviewHomeMonitor);
+		peerReivewHomeUtil = mock(PeerReviewHomeUtil.class);
+		peerReviewController = new PeerReviewController(peerReviewHomeMonitor, peerReivewHomeUtil);
 	}
 
 	@Test
@@ -42,19 +48,27 @@ public class PeerReviewControllerTest {
 	
 	@Test
 	public void testUpdate_verifyHomeSize() throws IOException {
-		File jsonFile = makeTestPeerReviewJson();
+		// given
+		File jsonFile = makeTestPeerReviewJsonFile();
+		when(peerReivewHomeUtil.loadJson(any(Reader.class))).thenReturn(makeTestHomeJson());
 		
+		// when
 		peerReviewController.update(jsonFile);
 		
+		// then
 		assertEquals(2, peerReviewController.getPeerReviewHomeList().size());
 	}
 	
 	@Test
 	public void testUpdate_verifyFirstHome() throws IOException {
-		File jsonFile = makeTestPeerReviewJson();
+		// given
+		File jsonFile = makeTestPeerReviewJsonFile();
+		when(peerReivewHomeUtil.loadJson(any(Reader.class))).thenReturn(makeTestHomeJson());
 		
+		// when
 		peerReviewController.update(jsonFile);
 		
+		// then
 		PeerReviewHome home = peerReviewController.getPeerReviewHomeList().get(0);
 		assertEquals("testProject", home.getProjectName());
 		assertEquals("/test", home.getSourceDir());
@@ -64,10 +78,14 @@ public class PeerReviewControllerTest {
 	
 	@Test
 	public void testUpdate_verifySecondHome() throws IOException {
-		File jsonFile = makeTestPeerReviewJson();
+		// given
+		File jsonFile = makeTestPeerReviewJsonFile();
+		when(peerReivewHomeUtil.loadJson(any(Reader.class))).thenReturn(makeTestHomeJson());
 		
+		// when
 		peerReviewController.update(jsonFile);
 		
+		// then
 		PeerReviewHome home = peerReviewController.getPeerReviewHomeList().get(1);
 		assertEquals("testProject2", home.getProjectName());
 		assertEquals("/test2", home.getSourceDir());
@@ -77,10 +95,14 @@ public class PeerReviewControllerTest {
 	
 	@Test
 	public void testUpdate_verifyDexterServerConfig() throws IOException {
-		File jsonFile = makeTestPeerReviewJson();
+		// given
+		File jsonFile = makeTestPeerReviewJsonFile();
+		when(peerReivewHomeUtil.loadJson(any(Reader.class))).thenReturn(makeTestHomeJson());
 		
+		// when
 		peerReviewController.update(jsonFile);
 		
+		// then
 		DexterServerConfig config = peerReviewController.getPeerReviewHomeList().get(0).getDexterServerConfig();
 		assertEquals("127.0.0.1", config.getHostname());
 		assertEquals(8080, config.getPort());
@@ -88,96 +110,29 @@ public class PeerReviewControllerTest {
 		assertEquals("testPw", config.getUserPwd());
 	}
 	
-	@Test(expected = DexterRuntimeException.class)
-	public void testUpdate_throwExceptionIfEmptyServerInfo() throws IOException {
-		File jsonFile = makeTestPeerReviewJsonWithEmptyServer();
-		
-		peerReviewController.update(jsonFile);
-	}
-	
-	@Test(expected = DexterRuntimeException.class)
-	public void testUpdate_throwExceptionIfEmptyHome() throws IOException {
-		File jsonFile = makeTestPeerReviewJsonWithEmptyHome();
-		
-		peerReviewController.update(jsonFile);
-	}
-	
 	@Test
 	public void testUpdate_restartHomeMonitor() throws IOException {
-		File jsonFile = makeTestPeerReviewJson();
+		// given
+		File jsonFile = makeTestPeerReviewJsonFile();
+		when(peerReivewHomeUtil.loadJson(any(Reader.class))).thenReturn(makeTestHomeJson());
 		
+		// when
 		peerReviewController.update(jsonFile);
 		
+		// then
 		verify(peerReviewHomeMonitor).restart(eq(peerReviewController.getPeerReviewHomeList()));
 	}
 	
-	private File makeTestPeerReviewJson() throws IOException {
-		File jsonFile = temporaryFolder.newFile("peerReview.json");
-		List<String> contents = Lists.newArrayList(
-				"{",
-				"  \"server\" : {",
-				"  \"ip\" : \"127.0.0.1\",",
-				"  \"port\" : \"8080\",",
-				"  \"id\" : \"testId\",",
-				"  \"pw\" : \"testPw\"",
-				"  },",
-				"  \"home\" : [{",
-				"    \"projectName\" : \"testProject\",",
-				"    \"sourceDir\": \"/test\",",
-				"    \"active\" : \"on\"",
-				"  }, {",
-				"    \"projectName\" : \"testProject2\",",
-				"    \"sourceDir\": \"/test2\",",
-				"    \"active\" : \"off\"",
-				"  }]",
-				"}");
+	private PeerReviewHomeJson makeTestHomeJson() {
+		DexterServerConfig serverConfig = new DexterServerConfig("testId", "testPw", "127.0.0.1", 8080);
+		List<PeerReviewHome> homeList = new ArrayList<>();
+		homeList.add(new PeerReviewHome(serverConfig, "testProject", "/test", true));
+		homeList.add(new PeerReviewHome(serverConfig, "testProject2", "/test2", false));
 		
-		CharSink sink = Files.asCharSink(jsonFile, Charsets.UTF_8);
-	    sink.writeLines(contents, "\n");
-		
-	    return jsonFile;
+		return new PeerReviewHomeJson(serverConfig, homeList);
 	}
 	
-	private File makeTestPeerReviewJsonWithEmptyServer() throws IOException {
-		File jsonFile = temporaryFolder.newFile("peerReview.json");
-		List<String> contents = Lists.newArrayList(
-				"{",
-				"  \"server\" : {",
-				"  },",
-				"  \"home\" : [{",
-				"    \"projectName\" : \"testProject\",",
-				"    \"sourceDir\": \"/test\",",
-				"    \"active\" : \"on\"",
-				"  }, {",
-				"    \"projectName\" : \"testProject2\",",
-				"    \"sourceDir\": \"/test2\",",
-				"    \"active\" : \"off\"",
-				"  }]",
-				"}");
-		
-		CharSink sink = Files.asCharSink(jsonFile, Charsets.UTF_8);
-	    sink.writeLines(contents, "\n");
-		
-	    return jsonFile;
+	private File makeTestPeerReviewJsonFile() throws IOException {
+		return temporaryFolder.newFile("peerReview.json");
 	}
-	
-	private File makeTestPeerReviewJsonWithEmptyHome() throws IOException {
-		File jsonFile = temporaryFolder.newFile("peerReview.json");
-		List<String> contents = Lists.newArrayList(
-				"{",
-				"  \"server\" : {",
-				"  \"ip\" : \"127.0.0.1\",",
-				"  \"port\" : \"8080\",",
-				"  \"id\" : \"testId\",",
-				"  \"pw\" : \"testPw\"",
-				"  },",
-				"  \"home\" : []",
-				"}");
-		
-		CharSink sink = Files.asCharSink(jsonFile, Charsets.UTF_8);
-	    sink.writeLines(contents, "\n");
-		
-	    return jsonFile;
-	}
-
 }
