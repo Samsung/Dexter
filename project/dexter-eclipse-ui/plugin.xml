@@ -95,7 +95,49 @@
             commandId="dexter-eclipse-ui.commands.loginCommand"
             contextId="org.eclipse.ui.contexts.window"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M3+L">
+      </key>
+      <key
+            commandId="dexter-eclipse-ui.commands.OpenDexterWeb"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M3+W">
+      </key>
+      <key
+            commandId="dexter-eclipse-ui.commands.OpenDexterDashboard"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M3+D">
+      </key>
+      <key
+            commandId="dexter-eclipse-ui.commands.DexterAnalysis"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M3+A">
+      </key>
+      <key
+            commandId="dexter-eclipse-ui.commands.OpenAnalysisLogView"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M3+V">
+      </key>
+      <key
+            commandId="dexter-eclipse-ui.commands.OpenDexterCodeMetrics"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M3+M">
+      </key>
+      <key
+            commandId="dexter-eclipse-ui.commands.OpenDexterFunctionMetrics"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M3+F">
+      </key>
+      <key
+            commandId="dexter-eclipse-ui.commands.OpenPlatzView"
+            contextId="org.eclipse.ui.contexts.window"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M3+P">
       </key>
    </extension>
    <extension

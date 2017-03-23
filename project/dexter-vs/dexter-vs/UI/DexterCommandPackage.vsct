@@ -239,7 +239,16 @@
     <VisibilityItem guid="guidDexterCommandPackageCmdSet" id="DexterToolbar" context="UICONTEXT_NoSolution" />
     <VisibilityItem guid="guidDexterCommandPackageCmdSet" id="DexterToolbar" context="UICONTEXT_SolutionExists" />
   </VisibilityConstraints>
-  
+
+  <KeyBindings>
+    <KeyBinding guid="guidDexterCommandPackageCmdSet" id="DexterDashboardCommand" editor="guidVSStd97" key1="D" mod1="Control Shift" key2="D" />
+    <KeyBinding guid="guidDexterCommandPackageCmdSet" id="DexterSettingsCommand" editor="guidVSStd97" key1="D" mod1="Control Shift" key2="E" />
+    <KeyBinding guid="guidDexterCommandPackageCmdSet" id="DexterCancelCommand" editor="guidVSStd97" key1="D" mod1="Control Shift" key2="C" />
+    <KeyBinding guid="guidDexterCommandPackageCmdSet" id="DexterSolutionAnalysisCommand" editor="guidVSStd97" key1="D" mod1="Control Shift" key2="O"/>
+    <KeyBinding guid="guidDexterCommandPackageCmdSet" id="DexterProjectAnalysisCommand" editor="guidVSStd97" key1="D" mod1="Control Shift" key2="P"/>
+    <KeyBinding guid="guidDexterCommandPackageCmdSet" id="DexterFileAnalysisCommand" editor="guidVSStd97" key1="D" mod1="Control Shift" key2="F"/>
+  </KeyBindings>
+
   <Symbols>
     <!-- This is the package guid. -->
     <GuidSymbol name="guidDexterCommandPackage" value="{0a9fa7af-84c6-4922-8734-38772fcd67b1}" />
