@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -134,5 +135,22 @@ public class PeerReviewControllerTest {
 	
 	private File makeTestPeerReviewJsonFile() throws IOException {
 		return temporaryFolder.newFile("peerReview.json");
+	}
+	
+	@Test
+	public void createHomeJsonConfigFile_callSaveJson() {
+		// given
+		Writer writer = mock(Writer.class);
+		PeerReviewHomeJson homeJson = mock(PeerReviewHomeJson.class);
+		
+		try {
+			// when
+			peerReviewController.createHomeJsonConfigFile(writer, homeJson);
+			
+			// then
+			verify(peerReivewHomeUtil).saveJson(writer, homeJson);
+		} catch (IOException e) {
+			fail();
+		}
 	}
 }

@@ -46,17 +46,33 @@ public class DexterServerConfig {
 	public String getHostname() {
 		return hostname;
 	}
+	
+	public void setHostname(String hostname) {
+		this.hostname = hostname;
+	}
 
 	public int getPort() {
 		return port;
+	}
+	
+	public void setPort(int port) {
+		this.port = port;
 	}
 
 	public String getUserId() {
 		return userId;
 	}
+	
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 
 	public String getUserPwd() {
 		return userPwd;
+	}
+	
+	public void setUserPwd(String userPwd) {
+		this.userPwd = userPwd;
 	}
 	
 	public String getServiceUrl(String serviceUrl) {

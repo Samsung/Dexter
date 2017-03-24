@@ -7,10 +7,10 @@ import com.samsung.sec.dexter.core.util.DexterUtil;
 import com.samsung.sec.dexter.core.util.FileUtil;
 
 public class PeerReviewConfigFile extends DexterConfigFile {
-	private FileUtil fileService;
+	private FileUtil fileUtil;
 	
-	public PeerReviewConfigFile(FileUtil fileService) {
-		this.fileService = fileService;
+	public PeerReviewConfigFile(FileUtil fileUtil) {
+		this.fileUtil = fileUtil;
 	}
 	
 	protected void checkDexterConfigMap(final Map<String, Object> map) {
@@ -26,7 +26,7 @@ public class PeerReviewConfigFile extends DexterConfigFile {
     
     @Override
     public void setDexterHome(String dexterHome) {
-        if (fileService.exists(dexterHome) == false)
+        if (fileUtil.exists(dexterHome) == false)
             throw new DexterRuntimeException("there is no dexter home folder : " + dexterHome);
 
         this.dexterHome = dexterHome;

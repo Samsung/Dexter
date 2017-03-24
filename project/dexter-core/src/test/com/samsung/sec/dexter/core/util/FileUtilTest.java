@@ -5,21 +5,24 @@ import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.file.Files;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 
-public class FileServiceTest {
-	FileUtil fileService;
+public class FileUtilTest {
+	FileUtil fileUtil;
 	
 	@Rule
 	public final TemporaryFolder tempFolder = new TemporaryFolder();
 
 	@Before
 	public void setUp() throws Exception {
-		fileService = new FileUtil();
+		fileUtil = new FileUtil();
 	}
 
 	@Test
@@ -28,7 +31,7 @@ public class FileServiceTest {
 		File homeFolder = tempFolder.newFolder("dexterHome");
 		
 		// when
-		boolean result = fileService.exists(homeFolder.getPath());
+		boolean result = fileUtil.exists(homeFolder.getPath());
 		
 		// then
 		assertEquals(true, result);
@@ -37,10 +40,23 @@ public class FileServiceTest {
 	@Test
 	public void exists_returnFalseIfFileNotExistsInThePath() throws IOException {
 		// when
-		boolean result = fileService.exists("./t/e/s/t/nonExistFolder");
+		boolean result = fileUtil.exists("./t/e/s/t/nonExistFolder");
 		
 		// then
 		assertEquals(false, result);
+	}
+	
+	@Test
+	public void writeToFile_writeFile() throws IOException {
+		// given
+		StringWriter strWriter = new StringWriter();
+		String msg = "This is a test file.";
+		
+		// when
+		fileUtil.write(strWriter, msg);
+		
+		// then
+		assertEquals(msg, strWriter.toString());
 	}
 
 }
