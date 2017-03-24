@@ -3,6 +3,7 @@ package com.samsung.sec.dexter.executor.peerreview;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -63,5 +64,9 @@ public class PeerReviewController {
 	
 	public List<PeerReviewHome> getPeerReviewHomeList() {
 		return peerReviewHomeList;
+	}
+
+	public void createHomeJsonConfigFile(Writer writer, PeerReviewHomeJson homeJson) throws IOException {
+		homeUtil.saveJson(writer, homeJson);
 	}
 }

@@ -2,8 +2,10 @@ package com.samsung.sec.dexter.core.util;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +28,7 @@ public class PeerReviewHomeUtilTest {
 	public void loadJson_GivenAReader_loadPeerRevieHomeJson() {
 		// given
 		Reader reader = createTestJsonStringReader();
-		PeerReviewHomeJson testJson = createTestJsonString();
+		PeerReviewHomeJson testJson = createTestPeerReviewHomeJson();
 		
 		// when
 		PeerReviewHomeJson homeJson = util.loadJson(reader);
@@ -35,7 +37,7 @@ public class PeerReviewHomeUtilTest {
 		assertEquals(testJson, homeJson);
 	}
 	
-	private PeerReviewHomeJson createTestJsonString() {
+	private PeerReviewHomeJson createTestPeerReviewHomeJson() {
 		DexterServerConfig config = new DexterServerConfig("testId", "testPw", "127.0.0.1", 8080);
 		PeerReviewHome firstHome = new PeerReviewHome(config, "testProject", "/test", true);
 		PeerReviewHome secondHome = new PeerReviewHome(config, "testProject2", "/test2", false);
@@ -47,26 +49,45 @@ public class PeerReviewHomeUtilTest {
 	}
 
 	private Reader createTestJsonStringReader() {
-		String jsonString =
-				"{" +
-				"  \"server\" : {"	+
-				"  \"ip\" : \"127.0.0.1\"," +
-				"  \"port\" : 8080," +
-				"  \"id\" : \"testId\"," +
-				"  \"pw\" : \"testPw\"" +
-				"  }," +
-				"  \"home\" : [{" +
-				"    \"projectName\" : \"testProject\"," +
-				"    \"sourceDir\": \"/test\"," +
-				"    \"active\" : true" +
-				"  }, {" +
-				"    \"projectName\" : \"testProject2\"," +
-				"    \"sourceDir\": \"/test2\"," +
-				"    \"active\" : false" +
-				"  }]" +
-				"}";
+		String jsonString = getTestPeerReviewHomeJsonString();
 		
 	    return new StringReader(jsonString);
 	}
 
+	private String getTestPeerReviewHomeJsonString() {
+		return "{" +
+		"  \"server\" : {"	+
+		"  \"ip\" : \"127.0.0.1\"," +
+		"  \"port\" : 8080," +
+		"  \"id\" : \"testId\"," +
+		"  \"pw\" : \"testPw\"" +
+		"  }," +
+		"  \"home\" : [{" +
+		"    \"projectName\" : \"testProject\"," +
+		"    \"sourceDir\": \"/test\"," +
+		"    \"active\" : true" +
+		"  }, {" +
+		"    \"projectName\" : \"testProject2\"," +
+		"    \"sourceDir\": \"/test2\"," +
+		"    \"active\" : false" +
+		"  }]" +
+		"}";
+	}
+
+	@Test
+	public void saveJson_writeJsonStringToFile() {
+		// given
+		StringWriter strWriter = new StringWriter();
+		PeerReviewHomeJson testJson = createTestPeerReviewHomeJson();
+		
+		// when
+		try {
+			util.saveJson(strWriter, testJson);
+		} catch (IOException e) {
+			fail();
+		}
+		
+		// then
+		assertEquals(getTestPeerReviewHomeJsonString().replaceAll("\\s", ""), strWriter.toString());
+	}
 }

@@ -1,6 +1,9 @@
 package com.samsung.sec.dexter.executor.peerreview;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -10,6 +13,7 @@ import org.apache.log4j.Logger;
 
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.IDexterHomeListener;
+import com.samsung.sec.dexter.core.config.PeerReviewHomeJson;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 
 public class PeerReviewConfigJob implements Runnable, IDexterHomeListener {
@@ -17,6 +21,7 @@ public class PeerReviewConfigJob implements Runnable, IDexterHomeListener {
 	private final DexterConfig dexterConfig;
 	private final PeerReviewController peerReviewController;
 	private final ScheduledExecutorService scheduler;
+	private final IPeerReviewHomeJsonScanner homeJsonScanner;
 	private ScheduledFuture<?> configJobFuture;
 	private File configFile;
 	private long configFileSyncTime;
@@ -25,10 +30,11 @@ public class PeerReviewConfigJob implements Runnable, IDexterHomeListener {
 	private final static String DEFAULT_CONFIG_DIR = "/cfg/";
 	private final static String DEFAULT_CONFIG_NAME = "peerReview.json";
 	
-	public PeerReviewConfigJob(DexterConfig dexterConfig, PeerReviewController peerReviewController, ScheduledExecutorService scheduler) {
+	public PeerReviewConfigJob(DexterConfig dexterConfig, PeerReviewController peerReviewController, ScheduledExecutorService scheduler, IPeerReviewHomeJsonScanner homeJsonScanner) {
 		this.dexterConfig = dexterConfig;
 		this.peerReviewController = peerReviewController;
 		this.scheduler = scheduler;
+		this.homeJsonScanner = homeJsonScanner;
 		
 		configJobFuture = null;
 		configFile = null;
@@ -86,14 +92,22 @@ public class PeerReviewConfigJob implements Runnable, IDexterHomeListener {
 		configJobFuture.cancel(false);
 	}
 	
-	private void setConfigFile() {
+	public void setConfigFile() {
 		String dexterHome = dexterConfig.getDexterHome();
 		if (dexterHome == null) 
 			throw new DexterRuntimeException("Dexter home is null");
 			
 		configFile = new File(dexterHome + DEFAULT_CONFIG_DIR + DEFAULT_CONFIG_NAME);
-		if (!configFile.exists())
-			throw new DexterRuntimeException("Peer-review config file doesn't exist : " + configFile.getPath());
+		if (!configFile.exists()) {
+			try {
+				BufferedWriter writer = new BufferedWriter(new FileWriter(configFile));
+				PeerReviewHomeJson homeJson = homeJsonScanner.getPeerReviewHomeJsonFromUser();
+				
+				peerReviewController.createHomeJsonConfigFile(writer, homeJson);
+			} catch (IOException e) {
+				throw new DexterRuntimeException("Can't create peer-reivew home config file");
+			}
+		}
 		
 		this.configFileSyncTime = 0;
 	}
@@ -111,6 +125,10 @@ public class PeerReviewConfigJob implements Runnable, IDexterHomeListener {
 		cancelScheduler();
 		setConfigFile();
 		startScheduler();
+	}
+
+	public IPeerReviewHomeJsonScanner getHomeJsonScanner() {
+		return homeJsonScanner;
 	}
 
 	

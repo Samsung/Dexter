@@ -35,6 +35,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.config.*;
 import com.samsung.sec.dexter.core.config.DexterConfig.RunMode;
@@ -78,17 +79,20 @@ public class PeerReviewMain {
 		try {
 			IDexterCLIOption cliOption = new DexterCLIOption(args, new HelpFormatter());
 			IDexterPluginManager pluginManager = loadDexterPlugins(new EmptyDexterClient(), cliOption);
+			FileUtil fileUtil = new FileUtil();
 			PeerReviewMain peerReviewMain;
 			
 			peerReviewMain = new PeerReviewMain(
 					DexterConfig.getInstance(),
 					cliOption,
-					new PeerReviewConfigFile(new FileUtil()),
+					new PeerReviewConfigFile(fileUtil),
 					new PeerReviewConfigJob(
 							DexterConfig.getInstance(), 
 							createPeerReviewController(cliOption, pluginManager),
-							Executors.newScheduledThreadPool(1)),
-					pluginManager);
+							Executors.newScheduledThreadPool(1),
+							new PeerReviewHomeJsonCLI(cliOption, fileUtil)),
+					pluginManager
+					);
 			
 			peerReviewMain.initDexterConfig();
 			peerReviewMain.startConfigJob();
@@ -112,7 +116,7 @@ public class PeerReviewMain {
 								DexterAnalyzer.getInstance(), 
 								pluginManager,
 								new AnalysisEntityFactory())),
-				new PeerReviewHomeUtil(new Gson()));
+				new PeerReviewHomeUtil(new GsonBuilder().setPrettyPrinting().create()));
 		
 		
 	}
@@ -139,9 +143,8 @@ public class PeerReviewMain {
 		dexterConfig.createInitialFolderAndFiles();
 		
 	}
-
+	
 	public IDexterCLIOption getCliOption() {
 		return cliOption;
 	}
-
 }

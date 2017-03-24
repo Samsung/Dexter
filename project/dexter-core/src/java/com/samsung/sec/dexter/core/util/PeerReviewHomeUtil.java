@@ -1,6 +1,9 @@
 package com.samsung.sec.dexter.core.util;
 
+import java.io.IOException;
 import java.io.Reader;
+import java.io.StringWriter;
+import java.io.Writer;
 
 import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.config.PeerReviewHome;
@@ -26,6 +29,12 @@ public class PeerReviewHomeUtil {
 		for (PeerReviewHome home : homeJson.getHomeList()) {
 			home.setDexterServerConfig(serverConfig);
 		}
+	}
+
+	public void saveJson(Writer writer, PeerReviewHomeJson testJson) throws IOException {
+		String jsonStr = gson.toJson(testJson);
+		writer.write(jsonStr);
+		writer.flush();
 	}
 	
 }

@@ -37,7 +37,7 @@ public class PeerReviewMainTest {
 		
 		peerReviewMain = new PeerReviewMain(dexterConfig, cliOption, dexterConfigFile, configJob, pluginManager);
 	}
-	  
+	
 	@Test
 	public void testInitDexterConfig_setRunModeToCLI() {
 		peerReviewMain.initDexterConfig();
