@@ -12,7 +12,7 @@ public class HomeJsonCLIServerCheckState implements IHomeJsonCLIState {
 		System.out.print("Connecting server...");
 		
 		if (dexterClient.isServerAlive("test")) {
-			System.out.println("\rCompleted.");
+			System.out.println("\rCompleted to connect server.");
 			homeJsonCLI.setState(new HomeJsonCLIHomeState());
 		} else {
 			System.out.println("\rCan't connect server (" + 
