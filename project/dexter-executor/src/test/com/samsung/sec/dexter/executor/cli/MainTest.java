@@ -163,35 +163,16 @@ public class MainTest {
 
     @Test
     public void test_createDexterClient_shouldeturn_empty_object_when_standalone_mode() {
-        String id = "user";
-        String password = "password";
-        String[] args = { "-u", id, "-p", password, "-f", "./src/test/dexter_conf_java.json" };
+        String[] args = { "-s", "-f", "./src/test/dexter_conf_java.json" };
 
         Main cliMain = new Main();
         IDexterCLIOption cliOption = new DexterCLIOption(args, new HelpFormatter());
         DexterConfig.getInstance().addSupprotingFileExtensions(new String[] { "java" });
-        final IDexterConfigFile configFile = cliMain.createDexterConfigFile(cliOption);
 
-        assertNotNull(configFile);
-        assertTrue(configFile instanceof DexterConfigFile);
+        IDexterClient client = cliMain.createDexterClient(cliOption);
 
-        assertEquals("./src/test/dexter-home", configFile.getDexterHome());
-        assertEquals("123.123.123.123", configFile.getDexterServerIp());
-        assertEquals(4982, configFile.getDexterServerPort());
-        assertEquals("ProjectName", configFile.getProjectName());
-        assertEquals("./src/test/myproject/", configFile.getProjectFullPath());
-        assertTrue(configFile.getSourceDirList().size() == 1);
-        assertEquals("./src/test", configFile.getSourceDirList().get(0));
-        assertTrue(configFile.getHeaderDirList().size() == 0);
-        assertEquals("UTF-8", configFile.getSourceEncoding());
-        assertTrue(configFile.getLibDirList().size() == 1);
-        assertEquals("./lib", configFile.getLibDirList().get(0));
-        assertEquals("./bin", configFile.getBinDir());
-        assertEquals("FILE", configFile.getType().toString());
-        assertEquals("com.samsung.sec.dexter.executor.cli", configFile.getModulePath());
-        assertTrue(configFile.getFileNameList().size() == 1);
-        assertEquals("MainTest.java", configFile.getFileNameList().get(0));
-        assertEquals("MainTest.java", configFile.getFirstFileName());
+        assertNotNull(client);
+        assertTrue(client instanceof EmptyDexterClient);
     }
 
     @Test
