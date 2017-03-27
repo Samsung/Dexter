@@ -299,7 +299,7 @@ public class DexterPeerReviewPlugin implements IDexterPlugin {
 		int high = offsets.length - 1;
 
 		while ((low <= high)) {
-			mid = ((low + high) / 2);
+			mid = ((low + high) >>> 1);
 			if (offsets[mid] == offset) {
 				flag = true;
 				index = mid;
