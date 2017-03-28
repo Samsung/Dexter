@@ -48,11 +48,13 @@ import com.samsung.sec.dexter.core.util.IDexterClient;
 import com.samsung.sec.dexter.core.util.PeerReviewHomeUtil;
 import com.samsung.sec.dexter.executor.CLIPluginInitializer;
 import com.samsung.sec.dexter.executor.DexterAnalyzer;
+import com.samsung.sec.dexter.executor.cli.AccountService;
 import com.samsung.sec.dexter.executor.cli.CLIDexterPluginManager;
 import com.samsung.sec.dexter.executor.cli.CLILog;
 import com.samsung.sec.dexter.executor.cli.DexterCLIOption;
 import com.samsung.sec.dexter.executor.cli.ICLILog;
 import com.samsung.sec.dexter.executor.cli.IDexterCLIOption;
+import com.samsung.sec.dexter.executor.cli.IDexterCLIOption.CommandMode;
 import com.samsung.sec.dexter.executor.peerreview.PeerReviewConfigJob;
 import com.samsung.sec.dexter.executor.peerreview.PeerReviewController;
 import com.samsung.sec.dexter.executor.peerreview.PeerReviewHomeMonitor;
@@ -65,14 +67,16 @@ public class PeerReviewMain {
 	private final PeerReviewConfigJob configJob;
 	private final DexterConfig dexterConfig;
 	private final IDexterPluginManager pluginManager;
+	private final AccountService accountService;
 
 	public PeerReviewMain(DexterConfig dexterConfig, IDexterCLIOption cliOption, IDexterConfigFile dexterConfigFile, 
-			PeerReviewConfigJob configJob, IDexterPluginManager pluginManager) {
+			PeerReviewConfigJob configJob, IDexterPluginManager pluginManager, AccountService accountService) {
 		this.dexterConfig = dexterConfig;
 		this.cliOption = cliOption;
 		this.dexterConfigFile = dexterConfigFile;
 		this.configJob = configJob;
 		this.pluginManager = pluginManager;
+		this.accountService = accountService;
 	}
 
 	public static void main(String[] args) {
@@ -91,11 +95,11 @@ public class PeerReviewMain {
 							createPeerReviewController(cliOption, pluginManager),
 							Executors.newScheduledThreadPool(1),
 							new PeerReviewHomeJsonCLI(cliOption, fileUtil)),
-					pluginManager
+					pluginManager,
+					new AccountService(cliLog)
 					);
 			
-			peerReviewMain.initDexterConfig();
-			peerReviewMain.startConfigJob();
+			peerReviewMain.doMain();
 			
 		} catch (IOException | InterruptedException | ExecutionException e) {
 			log.error(e.getMessage(), e);
@@ -146,5 +150,19 @@ public class PeerReviewMain {
 	
 	public IDexterCLIOption getCliOption() {
 		return cliOption;
+	}
+
+	public AccountService getAccountService() {
+		return accountService;
+	}
+
+	public void doMain() throws InterruptedException, ExecutionException {
+		if (cliOption.getCommandMode() == CommandMode.CREATE_ACCOUNT) {
+			accountService.createAccount(cliOption);
+		} else {
+			initDexterConfig();
+			startConfigJob();			
+		}
+		
 	}
 }

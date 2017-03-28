@@ -13,7 +13,9 @@ import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.IDexterConfigFile;
 import com.samsung.sec.dexter.core.config.DexterConfig.RunMode;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
+import com.samsung.sec.dexter.executor.cli.AccountService;
 import com.samsung.sec.dexter.executor.cli.IDexterCLIOption;
+import com.samsung.sec.dexter.executor.cli.IDexterCLIOption.CommandMode;
 import com.samsung.sec.dexter.executor.peerreview.PeerReviewConfigJob;
 import com.samsung.sec.dexter.executor.peerreview.cli.PeerReviewMain;
 
@@ -24,6 +26,7 @@ public class PeerReviewMainTest {
 	PeerReviewConfigJob configJob;
 	PeerReviewMain peerReviewMain;
 	IDexterPluginManager pluginManager;
+	AccountService accountService;
 	
 	@Before
 	public void setUp() {
@@ -32,10 +35,12 @@ public class PeerReviewMainTest {
 		configJob = mock(PeerReviewConfigJob.class);
 		dexterConfigFile = mock(IDexterConfigFile.class);
 		pluginManager = mock(IDexterPluginManager.class);
+		accountService = mock(AccountService.class);
 		
 		when(cliOption.getConfigFilePath()).thenReturn("./");
 		
-		peerReviewMain = new PeerReviewMain(dexterConfig, cliOption, dexterConfigFile, configJob, pluginManager);
+		peerReviewMain = new PeerReviewMain(dexterConfig, cliOption, dexterConfigFile, 
+			configJob, pluginManager, accountService);
 	}
 	
 	@Test
@@ -66,5 +71,35 @@ public class PeerReviewMainTest {
 		peerReviewMain.startConfigJob();
 		
 		verify(configJob).start();
+	}
+	
+	@Test
+	public void init_setAccountService() {
+		// then
+		assertEquals(accountService, peerReviewMain.getAccountService());
+	}
+	
+	@Test
+	public void doMain_callCreateAccount_IfCreateAccountMode() throws InterruptedException, ExecutionException {
+		// given
+		when(cliOption.getCommandMode()).thenReturn(CommandMode.CREATE_ACCOUNT);
+		
+		// when
+		peerReviewMain.doMain();
+		
+		// then
+		verify(accountService).createAccount(eq(cliOption));
+	}
+	
+	@Test
+	public void doMain_doNotCallCreateAccount_IfNotCreateAccountMode() throws InterruptedException, ExecutionException {
+		// given
+		when(cliOption.getCommandMode()).thenReturn(CommandMode.STATIC_ANALYSIS);
+		
+		// when
+		peerReviewMain.doMain();
+		
+		// then
+		verify(accountService, never()).createAccount(eq(cliOption));
 	}
 }

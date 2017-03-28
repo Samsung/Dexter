@@ -55,15 +55,16 @@ import com.samsung.sec.dexter.executor.CLIPluginInitializer;
 import com.samsung.sec.dexter.executor.DexterAnalyzer;
 
 public class Main {
-    private ICLILog cliLog = new CLILog(System.out);
+    private static ICLILog cliLog = new CLILog(System.out);
     private DexterConfig config = DexterConfig.getInstance();
     private List<String> sourceFileFullPathList = new ArrayList<String>();
     private final static Logger log = Logger.getLogger(Main.class);
+    private AccountService accountService;
 
     private int totalSourceFileNumber = 0;
 
     public static void main(String[] args) {
-        Main cliMain = new Main();
+        Main cliMain = new Main(new AccountService(cliLog));
 
         try {
             final IDexterCLIOption cliOption = new DexterCLIOption(args, new HelpFormatter());
@@ -88,37 +89,17 @@ public class Main {
         }
     }
 
-    public Main() {
+    protected IDexterClient createDexterClient(IDexterCLIOption cliOption) {
+		return accountService.createDexterClient(cliOption);
+	}
+
+	public void createAccount(IDexterCLIOption cliOption) {
+		accountService.createAccount(cliOption);		
+	}
+
+	public Main(AccountService accountService) {
+    	this.accountService = accountService;
         DexterConfig.getInstance().setRunMode(RunMode.CLI);
-    }
-
-    public void createAccount(final IDexterCLIOption cliOption) {
-        final IDexterClient client = createDexterClient(cliOption);
-        final IAccountHandler accountHandler = createAccountHandler(client, cliOption);
-        accountHandler.createAccount(cliOption.getUserId(), cliOption.getUserPassword());
-    }
-
-    protected IAccountHandler createAccountHandler(final IDexterClient client, final IDexterCLIOption cliOption) {
-        if (cliOption.isStandAloneMode()) {
-            return new EmptyAccountHandler();
-        } else {
-            return new AccountHandler(client, cliLog);
-        }
-    }
-
-    protected IDexterClient createDexterClient(final IDexterCLIOption cliOption) {
-        if (cliOption.isStandAloneMode()) {
-            return new EmptyDexterClient();
-        } else {
-        	IDexterWebResource webResource = new JerseyDexterWebResource(
-        			new DexterServerConfig(
-        					cliOption.getUserId(), 
-	    					cliOption.getUserPassword(),
-	    					cliOption.getServerHostIp(), 
-	    					cliOption.getServerPort()));
-        	
-            return new DexterClient(webResource);
-        }
     }
 
     public void analyze(final IDexterCLIOption cliOption, final IDexterConfigFile configFile,
@@ -153,7 +134,11 @@ public class Main {
         }
     }
 
-    protected IDexterPluginManager loadDexterPlugins(final IDexterClient client, final IDexterCLIOption cliOption) {
+    protected IAccountHandler createAccountHandler(IDexterClient client, IDexterCLIOption cliOption) {
+		return accountService.createAccountHandler(client, cliOption);
+	}
+
+	protected IDexterPluginManager loadDexterPlugins(final IDexterClient client, final IDexterCLIOption cliOption) {
         IDexterPluginInitializer initializer = new CLIPluginInitializer(cliLog);
         IDexterPluginManager pluginManager = new CLIDexterPluginManager(initializer, client, cliLog, cliOption);
         pluginManager.initDexterPlugins();
