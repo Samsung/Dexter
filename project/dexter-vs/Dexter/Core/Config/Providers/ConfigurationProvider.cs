@@ -1,4 +1,6 @@
-﻿namespace Dexter.Config.Providers
+﻿using Dexter.Common.Config;
+
+namespace Dexter.Config.Providers
 {
     /// <summary>
     /// Provides configuration object for Dexter based on info providers

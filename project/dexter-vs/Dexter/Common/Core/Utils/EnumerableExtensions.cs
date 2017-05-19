@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Dexter.Utils
+namespace Dexter.Common.Utils
 {
     /// <summary>
     /// Extension methods for enumerables 

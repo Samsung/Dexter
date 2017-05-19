@@ -1,5 +1,5 @@
 ﻿using Dexter.Defects;
-using Dexter.Utils;
+using Dexter.Common.Utils;
 using Microsoft.VisualStudio.Shell;
 using System;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net;
+using Dexter.Common.Config;
 
 namespace Dexter.Config.Validation
 {

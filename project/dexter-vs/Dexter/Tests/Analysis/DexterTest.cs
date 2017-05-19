@@ -1,7 +1,7 @@
 ﻿using System;
 using NUnit.Framework;
 using Dexter.Defects;
-using Dexter.Config;
+using Dexter.Common.Config;
 using Dexter.Analysis;
 
 namespace Dexter.Tests.Analysis

@@ -4,6 +4,7 @@
   <PropertyGroup>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <UseCodebase>true</UseCodebase>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -47,9 +48,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Analysis\Dexter.cs" />
-    <Compile Include="Config\Configuration.cs" />
-    <Compile Include="Config\DexterInfo.cs" />
-    <Compile Include="Config\ProjectInfo.cs" />
     <Compile Include="Config\Providers\ConfigurationProvider.cs" />
     <Compile Include="Config\Providers\FileInfoProvider.cs" />
     <Compile Include="Config\Providers\IConfigurationProvider.cs" />
@@ -91,8 +89,6 @@
     </Compile>
     <Compile Include="UI\Tasks\DexterTaskProvider.cs" />
     <Compile Include="UI\Tasks\NavigateTaskEventHandler.cs" />
-    <Compile Include="Utils\EnumerableExtensions.cs" />
-    <Compile Include="Utils\PathUtils.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -191,7 +187,11 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PeerReview\Core\Dexter.PeerReview.Core\Dexter.PeerReview.Core.csproj">
+    <ProjectReference Include="..\Common\Core\Dexter.Common.Core.csproj">
+      <Project>{320cee90-f7bd-43a4-bd23-9227cc1e214c}</Project>
+      <Name>Dexter.Common.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PeerReview\Core\Dexter.PeerReview.Core.csproj">
       <Project>{53B1E9FC-0631-4CF4-AC44-1C626EFCA155}</Project>
       <Name>Dexter.PeerReview.Core</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>

@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.IO;
 
-namespace Dexter.Config
+namespace Dexter.Common.Config
 {
     /// <summary>
     /// Information about Dexter 

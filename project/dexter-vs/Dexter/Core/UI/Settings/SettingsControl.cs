@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using Dexter.Config;
+using Dexter.Common.Config;
 using Dexter.Config.Providers;
 using Dexter.Config.Validation;
 

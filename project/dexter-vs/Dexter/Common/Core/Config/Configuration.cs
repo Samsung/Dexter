@@ -1,9 +1,9 @@
-﻿using Dexter.Utils;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using Dexter.Common.Utils;
 
-namespace Dexter.Config
+namespace Dexter.Common.Config
 {
     /// <summary>
     /// Dexter configuration

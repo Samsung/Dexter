@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dexter.Common.Config;
 
 namespace Dexter.Config.Providers
 {

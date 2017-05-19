@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dexter.Utils
+namespace Dexter.Common.Utils
 {
     /// <summary>
     /// Path utilities
