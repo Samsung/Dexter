@@ -11,10 +11,10 @@ using EnvDTE;
 using System.Diagnostics;
 using System.Windows.Forms;
 using Dexter.UI.Tasks;
-using Dexter.Config;
+using Dexter.Common.Config;
 using Dexter.Defects;
 using Dexter.Analysis;
-using Configuration = Dexter.Config.Configuration;
+using Configuration = Dexter.Common.Config.Configuration;
 using Dexter.Config.Validation;
 using Dexter.Config.Providers;
 

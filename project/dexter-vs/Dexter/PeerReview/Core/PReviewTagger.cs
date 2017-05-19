@@ -28,7 +28,7 @@ namespace Dexter.PeerReview
         {
             get
             {
-                return comments;
+                return comments; 
             }
         }
 

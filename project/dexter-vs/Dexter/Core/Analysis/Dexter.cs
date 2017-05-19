@@ -1,4 +1,4 @@
-﻿using Dexter.Config;
+﻿using Dexter.Common.Config;
 using Dexter.Defects;
 using System;
 using System.Diagnostics;

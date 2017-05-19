@@ -1,4 +1,4 @@
-﻿using Dexter.Utils;
+﻿using Dexter.Common.Utils;
 using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;

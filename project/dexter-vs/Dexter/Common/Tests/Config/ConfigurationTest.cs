@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
-using Dexter.Config;
+using Dexter.Common.Config;
 
 namespace Dexter.Tests.Config
 {

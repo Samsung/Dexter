@@ -1,7 +1,8 @@
 ﻿using NUnit.Framework;
 using System.IO;
+using Dexter.Common.Utils;
 
-namespace Dexter.Utils
+namespace Dexter.Common.Tests.Utils
 {
     [TestFixture]
     class PathUtilsTest

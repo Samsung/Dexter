@@ -1,6 +1,7 @@
 ﻿using EnvDTE;
 using System;
 using System.IO;
+using Dexter.Common.Config;
 
 namespace Dexter.Config.Providers
 {
