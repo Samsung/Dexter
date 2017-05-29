@@ -4,6 +4,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dexter.Core", "Dexter\Core\Dexter.Core.csproj", "{F46F8A70-C08C-4FB3-A18D-E0FEC18A0BA3}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8EDF4429-251A-416D-BB68-93F227191BCF} = {8EDF4429-251A-416D-BB68-93F227191BCF}
+		{1BD4C82E-620F-405F-8F97-B23249EA852A} = {1BD4C82E-620F-405F-8F97-B23249EA852A}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dexter.Tests", "Dexter\Tests\Dexter.Tests.csproj", "{7DF75ADC-0C42-4935-AAF2-CDA44BEE97D4}"
 EndProject

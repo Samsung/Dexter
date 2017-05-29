@@ -48,14 +48,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Analysis\Dexter.cs" />
-    <Compile Include="Config\Providers\ConfigurationProvider.cs" />
-    <Compile Include="Config\Providers\FileInfoProvider.cs" />
-    <Compile Include="Config\Providers\IConfigurationProvider.cs" />
-    <Compile Include="Config\Providers\IDexterInfoProvider.cs" />
-    <Compile Include="Config\Providers\IProjectInfoProvider.cs" />
-    <Compile Include="Config\Providers\ProjectInfoProvider.cs" />
-    <Compile Include="Config\Providers\SettingsStoreDexterInfoProvider.cs" />
-    <Compile Include="Config\Providers\SolutionInfoProvider.cs" />
     <Compile Include="Config\Validation\DexterInfoValidator.cs" />
     <Compile Include="Config\Validation\ProjectInfoValidator.cs" />
     <Compile Include="Defects\Defect.cs" />
@@ -96,6 +88,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Key.snk" />
     <None Include="packages.config" />
     <None Include="source.extension.vsixmanifest">

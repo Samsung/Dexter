@@ -1,0 +1,55 @@
+﻿using System;
+using System.Threading.Tasks;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using Dexter.Common.Config;
+using Dexter.Common.Config.Providers;
+
+namespace Dexter.Common.Client
+{
+    public interface IHttpClient
+    {
+        Task<HttpResponseMessage> GetAsync(string requestUri);
+        Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T value);
+    }
+
+    public class DexterHttpClientWrapper : IHttpClient
+    {
+        private static string APPLICATION_TYPE_JSON = "application/json";
+        private IDexterInfoProvider dexterInfoProvider;
+        private HttpClient httpClient;
+
+
+        public DexterHttpClientWrapper(IDexterInfoProvider dexterInfoProvider)
+        {
+            httpClient = new HttpClient();
+            this.dexterInfoProvider = dexterInfoProvider;
+        }
+
+        public Task<HttpResponseMessage> GetAsync(string requestUri)
+        {
+            setRequestHeader();
+            return httpClient.GetAsync(requestUri);
+        }
+
+        private void setRequestHeader()
+        {
+            var dexterInfo = dexterInfoProvider.Load();
+
+            httpClient.BaseAddress = new Uri($"http://{dexterInfo.dexterServerIp}:{dexterInfo.dexterServerPort}");
+            httpClient.DefaultRequestHeaders.Accept.Clear();
+            var credentials = Convert.ToBase64String(Encoding.ASCII.GetBytes(
+                $"{dexterInfo.userName}:{dexterInfo.userPassword}"));
+
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", credentials);
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue(APPLICATION_TYPE_JSON));
+        }
+
+        public Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T value)
+        {
+            setRequestHeader();
+            return httpClient.PostAsJsonAsync(requestUri, value);
+        }
+    }
+}

@@ -1,11 +1,11 @@
 ﻿using Dexter.Common.Config;
 
-namespace Dexter.Config.Providers
+namespace Dexter.Common.Config.Providers
 {
     /// <summary>
     /// Provides ProjectInfo 
     /// </summary>
-    internal interface IProjectInfoProvider
+    public interface IProjectInfoProvider
     {
         /// <summary>
         /// Loads new ProjectInfo

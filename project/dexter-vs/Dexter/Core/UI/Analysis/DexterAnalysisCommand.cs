@@ -16,7 +16,7 @@ using Dexter.Defects;
 using Dexter.Analysis;
 using Configuration = Dexter.Common.Config.Configuration;
 using Dexter.Config.Validation;
-using Dexter.Config.Providers;
+using Dexter.Common.Config.Providers;
 
 namespace Dexter.UI.Analysis
 {

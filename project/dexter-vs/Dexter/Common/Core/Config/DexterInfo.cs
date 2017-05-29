@@ -39,6 +39,11 @@ namespace Dexter.Common.Config
         public bool standalone { get; set; }
 
         /// <summary>
+        ///  Whether Dexter home is enabled (Dexter home is available for only c/c++ analysis)
+        /// </summary>
+        public bool IsDexterHomeEnabled { get; set; }
+
+        /// <summary>
         /// Default path to dexter executable: dexterHome + "\bin\dexter-executor.jar"
         /// </summary>
         [JsonIgnore]
@@ -67,6 +72,7 @@ namespace Dexter.Common.Config
             userName = "";
             userPassword = "";
             standalone = true;
+            IsDexterHomeEnabled = false;
         }
 
         /// <summary>
@@ -96,7 +102,8 @@ namespace Dexter.Common.Config
                 dexterServerPort = int.Parse(configuration.dexterServerPort),
                 userName = configuration.userName,
                 userPassword = configuration.userPassword,
-                standalone = configuration.standalone
+                standalone = configuration.standalone,
+                IsDexterHomeEnabled = configuration.IsDexterHomeEnabled
             };
         }
     }

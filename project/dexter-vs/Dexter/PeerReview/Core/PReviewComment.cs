@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.Text;
 
 namespace Dexter.PeerReview
 {
-    class PReviewComment
+    public class PReviewComment
     {
         public SnapshotSpan Span { get; set; }
     }

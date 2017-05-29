@@ -1,4 +1,4 @@
-﻿using Dexter.Config.Providers;
+﻿using Dexter.Common.Config.Providers;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;

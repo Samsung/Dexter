@@ -7,12 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Dexter.Common.Config;
 
-namespace Dexter.Config.Providers
+namespace Dexter.Common.Config.Providers
 {
     /// <summary>
     /// Uses Visual Studio Settings Store for storing dexter info 
     /// </summary>
-    internal class SettingsStoreDexterInfoProvider : IDexterInfoProvider
+    public class SettingsStoreDexterInfoProvider : IDexterInfoProvider
     {
         /// <summary>
         /// Settigns store
@@ -50,7 +50,8 @@ namespace Dexter.Config.Providers
                     dexterServerPort = settingsStore.GetInt32(DexterStoreName, "dexterServerPort"),
                     userName = settingsStore.GetString(DexterStoreName, "userName"),
                     userPassword = settingsStore.GetString(DexterStoreName, "userPassword"),
-                    standalone = settingsStore.GetBoolean(DexterStoreName, "standalone")
+                    standalone = settingsStore.GetBoolean(DexterStoreName, "standalone"),
+                    IsDexterHomeEnabled = settingsStore.GetBoolean(DexterStoreName, "isDexterHomeEnabled"),
                 };
             }
             
@@ -73,6 +74,7 @@ namespace Dexter.Config.Providers
             settingsStore.SetString(DexterStoreName, "userName", dexterInfo.userName);
             settingsStore.SetString(DexterStoreName, "userPassword", dexterInfo.userPassword);
             settingsStore.SetBoolean(DexterStoreName, "standalone", dexterInfo.standalone);
+            settingsStore.SetBoolean(DexterStoreName, "isDexterHomeEnabled", dexterInfo.IsDexterHomeEnabled);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Dexter.Common.Config;
-using Dexter.Config.Providers;
+using Dexter.Common.Config.Providers;
 using Microsoft.VisualStudio.Shell;
 using System;
 

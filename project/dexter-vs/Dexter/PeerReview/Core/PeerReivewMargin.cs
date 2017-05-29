@@ -43,9 +43,15 @@ namespace Dexter.PeerReview
 
         public IList<PReviewComment> getPReviewComments()
         {
-            var commentGetter = (ICommentsOwner<PReviewComment>)
-                textView.TextBuffer.Properties.GetProperty(PReviewConstants.COMMENT_OWNER);
-            return commentGetter.Comments;
+            try
+            {
+                var commentGetter = (ICommentsOwner<PReviewComment>)
+                    textView.TextBuffer.Properties.GetProperty(PReviewConstants.COMMENT_OWNER);
+                return commentGetter.Comments;
+            } catch (KeyNotFoundException)
+            {
+                return new List<PReviewComment>();
+            }
         }
 
         protected override void OnRender(DrawingContext drawingContext)
