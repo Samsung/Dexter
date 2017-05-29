@@ -1,11 +1,11 @@
 ﻿using Dexter.Common.Config;
 
-namespace Dexter.Config.Providers
+namespace Dexter.Common.Config.Providers
 {
     /// <summary>
     /// Provides configuration object for Dexter based on info providers
     /// </summary>
-    internal class ConfigurationProvider : IConfigurationProvider
+    public class ConfigurationProvider : IConfigurationProvider
     {
         /// <summary>
         /// ProjectInfo provider

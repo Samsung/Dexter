@@ -6,6 +6,8 @@ using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
+using Dexter.Common.Client;
+using Dexter.PeerReview.Utils;
 
 namespace Dexter.PeerReview
 {
@@ -25,7 +27,10 @@ namespace Dexter.PeerReview
             }
 
             Func<ITagger<T>> sc = delegate () {
-                return new PReviewTagger(buffer) as ITagger<T>;
+                ITextDocument document = null;
+                buffer.Properties.TryGetProperty(typeof(ITextDocument), out document);
+
+                return new PReviewTagger(buffer, document, DexterClient.Instance, PReviewService.Instance) as ITagger<T>;
             };
             return buffer.Properties.GetOrCreateSingletonProperty<ITagger<T>>(sc);
         }

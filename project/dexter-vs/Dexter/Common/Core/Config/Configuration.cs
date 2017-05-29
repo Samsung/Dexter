@@ -117,6 +117,12 @@ namespace Dexter.Common.Config
         }
 
         /// <summary>
+        /// Whether Dexter home is enabled (Dexter home is available for only c/c++ analysis)
+        /// </summary>
+        [JsonIgnore]
+        public bool IsDexterHomeEnabled { get; set; }
+
+        /// <summary>
         /// Creates new instance of Configuration with default values
         /// </summary>
         public Configuration() : this(new ProjectInfo(), new DexterInfo())
@@ -147,6 +153,7 @@ namespace Dexter.Common.Config
             userName = dexterInfo.userName;
             userPassword = dexterInfo.userPassword;
             standalone = dexterInfo.standalone;
+            IsDexterHomeEnabled = dexterInfo.IsDexterHomeEnabled;
         }
 
 

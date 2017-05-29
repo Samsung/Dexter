@@ -1,11 +1,11 @@
 ﻿using Dexter.Common.Config;
 
-namespace Dexter.Config.Providers
+namespace Dexter.Common.Config.Providers
 {
     /// <summary>
     /// Provides Dexter configuration
     /// </summary>
-    internal interface IConfigurationProvider
+    public interface IConfigurationProvider
     {
         /// <summary>
         /// Loads new Configuration object

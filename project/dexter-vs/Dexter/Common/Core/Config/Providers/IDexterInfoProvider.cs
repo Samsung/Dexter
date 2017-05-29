@@ -1,6 +1,6 @@
 ﻿using Dexter.Common.Config;
 
-namespace Dexter.Config.Providers
+namespace Dexter.Common.Config.Providers
 {
     /// <summary>
     /// Provides DexterInfo 

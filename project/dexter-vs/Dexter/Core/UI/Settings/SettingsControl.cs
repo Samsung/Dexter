@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Windows.Forms;
 using Dexter.Common.Config;
-using Dexter.Config.Providers;
+using Dexter.Common.Config.Providers;
 using Dexter.Config.Validation;
 
 namespace Dexter.UI.Settings
@@ -44,6 +44,14 @@ namespace Dexter.UI.Settings
             serverIndicator.Visible = !standaloneAnalysis;
             userIndicator.Visible = !standaloneAnalysis;
             testConnectionButton.Enabled = !standaloneAnalysis;
+        }
+
+        private void enableDexterHomeCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            var isDexterHomeEnabled = enableDexterHomeCheckBox.Checked;
+            dexterPathTextBox.Enabled = isDexterHomeEnabled;
+            dexterPathButton.Enabled = isDexterHomeEnabled;
+            dexterPathIndicator.Visible = isDexterHomeEnabled;
         }
 
         private void dexterPathTextBox_Validating(object sender, CancelEventArgs e)
@@ -105,7 +113,8 @@ namespace Dexter.UI.Settings
                 dexterServerPort = uriCreated ? serverAddress.Port : 0,
                 userName = username,
                 userPassword = password,
-                standalone = standaloneCheckBox.Checked
+                standalone = standaloneCheckBox.Checked,
+                IsDexterHomeEnabled = enableDexterHomeCheckBox.Checked
             };
         }
 
@@ -118,7 +127,7 @@ namespace Dexter.UI.Settings
             string result;
             DexterInfo dexterInfo = GetDexterInfoFromSettings();
 
-            if (!validator.ValidateDexterPath(dexterInfo))
+            if (enableDexterHomeCheckBox.Checked && !validator.ValidateDexterPath(dexterInfo))
             {
                 MessageBox.Show("Dexter wasn't found in given path. You cannot perform analysis until you set a proper path.", "Dexter error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;

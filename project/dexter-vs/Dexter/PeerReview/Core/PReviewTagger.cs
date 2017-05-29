@@ -7,6 +7,8 @@ using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
+using Dexter.Common.Client;
+using Dexter.PeerReview.Utils;
 
 namespace Dexter.PeerReview
 {
@@ -21,7 +23,10 @@ namespace Dexter.PeerReview
     public class PReviewTagger : ITagger<PReviewTag>, ICommentsOwner<PReviewComment>
     {
         private ITextBuffer textBuffer;
+        private ITextDocument textDocument;
         private IList<PReviewComment> comments;
+        private IDexterClient dexterClient;
+        private IPReviewService reviewService;
         private const string COMMENT_DELIMITER = "dpr:";
 
         IList<PReviewComment> ICommentsOwner<PReviewComment>.Comments
@@ -32,13 +37,26 @@ namespace Dexter.PeerReview
             }
         }
 
-        public PReviewTagger(ITextBuffer textBuffer)
+        public PReviewTagger(ITextBuffer textBuffer, ITextDocument document, IDexterClient dexterClient, IPReviewService reviewService)
         {
+            this.reviewService = reviewService;
+            this.dexterClient = dexterClient;
             this.textBuffer = textBuffer;
             this.textBuffer.Changed += TextBufferChanged;
             this.textBuffer.Properties.AddProperty(PReviewConstants.COMMENT_OWNER, this);
 
+            textDocument = document;
+            textDocument.FileActionOccurred += FileActionOccurred;
+
             ParsePReviewComments();
+        }
+
+        private void FileActionOccurred(object sender, TextDocumentFileActionEventArgs e)
+        {
+            if (e.FileActionType == FileActionTypes.ContentSavedToDisk)
+            {
+                dexterClient.SendAnalysisResult(reviewService.ConvertToDexterResult(textDocument, comments));
+            }
         }
 
         private void TextBufferChanged(object sender, TextContentChangedEventArgs e)

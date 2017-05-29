@@ -3,13 +3,13 @@ using System;
 using System.IO;
 using Dexter.Common.Config;
 
-namespace Dexter.Config.Providers
+namespace Dexter.Common.Config.Providers
 {
     /// <summary>
     /// Provides project info based on user preferences.
     /// Sets analysis scope to currently opened file.  
     /// </summary>
-    internal class FileInfoProvider : IProjectInfoProvider
+    public class FileInfoProvider : IProjectInfoProvider
     {
         /// <summary>
         /// DTE object

@@ -9,10 +9,14 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Dexter.UI.Settings;
-using Dexter.Config.Providers;
+using Dexter.Common.Config.Providers;
 using Dexter.UI.Dashboard;
 using Dexter.UI.Analysis;
+using Dexter.Common.Utils;
+using Dexter.Common.Client;
+using Dexter.PeerReview.Utils;
 using System.Collections.Generic;
 
 namespace Dexter.UI
@@ -128,8 +132,45 @@ namespace Dexter.UI
 
             SettingsPage settingsPage = (SettingsPage)GetDialogPage(typeof(SettingsPage));
             settingsPage.SettingsChanged += onSettingsChanged;
+
+            RegisterSolutionManager();
+            InitDexterClient(dexterInfoProvider);
+            CreatePReviewService();
                        
             base.Initialize();
+        }
+
+        private void CreatePReviewService()
+        {
+            PReviewService.Instance = new PReviewService(new DexterTextService());
+        }
+
+        private void InitDexterClient(IDexterInfoProvider dexterInfoProvider)
+        {
+            DexterClient.Instance = new DexterClient(new DexterHttpClientWrapper(dexterInfoProvider));
+        }
+
+        private void RegisterSolutionManager()
+        {
+            DexterSolutionManager dexterSolutionManager = new DexterSolutionManager();
+            DexterSolutionManager.Instance = dexterSolutionManager;
+            uint eventCookie;
+
+            var solutionService = GetService(typeof(SVsSolution)) as IVsSolution;
+            solutionService.AdviseSolutionEvents(dexterSolutionManager, out eventCookie);
+            dexterSolutionManager.eventCookie = eventCookie;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
+            UnregisterSolutionManager();
+        }
+
+        private void UnregisterSolutionManager()
+        {
+            var solutionService = GetService(typeof(SVsSolution)) as IVsSolution;
+            solutionService.UnadviseSolutionEvents(DexterSolutionManager.Instance.eventCookie);
         }
 
         private void onAnalysisStarted(object sender, EventArgs args)
