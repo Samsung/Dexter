@@ -11,6 +11,8 @@ namespace Dexter.Common.Tests.Utils
         /// Directory in AppData should exist
         /// </summary>
         [Test]
+
+        
         public void TestAppDataPath()
         {
             string path = PathUtils.GetAppDataPath("test.txt");

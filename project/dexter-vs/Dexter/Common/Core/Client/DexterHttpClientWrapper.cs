@@ -18,22 +18,20 @@ namespace Dexter.Common.Client
     {
         private static string APPLICATION_TYPE_JSON = "application/json";
         private IDexterInfoProvider dexterInfoProvider;
-        private HttpClient httpClient;
-
 
         public DexterHttpClientWrapper(IDexterInfoProvider dexterInfoProvider)
         {
-            httpClient = new HttpClient();
             this.dexterInfoProvider = dexterInfoProvider;
         }
 
         public Task<HttpResponseMessage> GetAsync(string requestUri)
         {
-            setRequestHeader();
+            HttpClient httpClient = new HttpClient();
+            setRequestHeader(httpClient);
             return httpClient.GetAsync(requestUri);
         }
 
-        private void setRequestHeader()
+        private void setRequestHeader(HttpClient httpClient)
         {
             var dexterInfo = dexterInfoProvider.Load();
 
@@ -48,7 +46,8 @@ namespace Dexter.Common.Client
 
         public Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T value)
         {
-            setRequestHeader();
+            HttpClient httpClient = new HttpClient();
+            setRequestHeader(httpClient);
             return httpClient.PostAsJsonAsync(requestUri, value);
         }
     }

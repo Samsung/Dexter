@@ -16,7 +16,7 @@ namespace Dexter.Common.Client
     {
         private IHttpClient httpClient;
         private static IDexterClient instance;
-        private static readonly string POST_ANALYSIS_RESULT_V3 = "/api/v3/csharp/analysis/result";
+        private static readonly string POST_ANALYSIS_RESULT_V3 = "/api/v3/analysis/result";
 
         public static IDexterClient Instance
         {
