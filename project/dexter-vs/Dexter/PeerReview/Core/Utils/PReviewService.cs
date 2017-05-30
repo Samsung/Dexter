@@ -108,7 +108,7 @@ namespace Dexter.PeerReview.Utils
             else if (commentText.Contains("[CRC]"))
                 return "CRC";
             else
-                return "";
+                return "MAJ";
         }
 
         private string getCommentMessage(string commentText)

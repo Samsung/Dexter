@@ -150,7 +150,25 @@ namespace Dexter.PeerReview.Utils.Tests
         }
 
         [Test()]
-        public void ConvertToDexterResult_setEmptyMessage()
+        public void ConvertToDexterResult_setMAJSererity_IfSererityIsOmitted()
+        {
+            // given
+            textDocumentMock.Setup(document => document.FilePath).Returns("c://test.cs");
+            textServiceMock.Setup(service => service.getText(It.IsAny<SnapshotSpan>()))
+                .Returns("// DPR: test message");
+            var comments = createTestComments();
+
+            // when
+            var result = reviewService.ConvertToDexterResult(textDocumentMock.Object, comments);
+
+            // then
+            var defect = result.DefectList[0];
+            Assert.AreEqual("MAJ", defect.SeverityCode);
+            Assert.AreEqual("DPR_MAJ", defect.CheckerCode);
+        }
+
+        [Test()]
+        public void ConvertToDexterResult_setEmptyDefectMessage()
         {
             // given
             textDocumentMock.Setup(document => document.FilePath).Returns("c://test.cs");
