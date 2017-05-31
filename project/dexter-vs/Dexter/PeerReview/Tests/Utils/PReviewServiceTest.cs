@@ -32,7 +32,7 @@ namespace Dexter.PeerReview.Utils.Tests
         }
 
         [Test()]
-        public void ConvertToDexterResult_setValidFileVariable()
+        public void ConvertToDexterResult_setValidFileName()
         {
             // given
             var fileName = "testFile.cs";
@@ -44,8 +44,24 @@ namespace Dexter.PeerReview.Utils.Tests
             var result = reviewService.ConvertToDexterResult(textDocumentMock.Object, comments);
 
             // then
-            Assert.AreEqual(filePath, result.FullFilePath);
             Assert.AreEqual(fileName, result.FileName);
+        }
+
+        [Test()]
+        public void ConvertToDexterResult_BackSlashsShouldbeConvertedToSlashs_GivenFileFullPath()
+        {
+            // given
+            var fileName = "testFile.cs";
+            var filePath = "c:\\test\\" + fileName;
+            var convertedFilePath = "c:/test/" + fileName;
+            textDocumentMock.Setup(document => document.FilePath).Returns(filePath);
+            var comments = createTestComments();
+
+            // when
+            var result = reviewService.ConvertToDexterResult(textDocumentMock.Object, comments);
+
+            // then
+            Assert.AreEqual(convertedFilePath, result.FullFilePath);
         }
 
         [Test()]

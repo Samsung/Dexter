@@ -55,8 +55,10 @@ namespace Dexter.Common.Client
 
         public async Task SendAnalysisResult(DexterResult result)
         {
-            HttpResponseMessage response = await httpClient.PostAsJsonAsync(POST_ANALYSIS_RESULT_V3,
-                       new ResultJsonFormat { Result = result});
+            var dexterResultString = JsonConvert.SerializeObject(result);
+
+            HttpResponseMessage response = await httpClient.PostAsync(POST_ANALYSIS_RESULT_V3,
+                       JsonConvert.SerializeObject(new ResultJsonFormat { Result = dexterResultString }));
 
             if (!response.IsSuccessStatusCode.Equals(true))
             {
@@ -67,8 +69,8 @@ namespace Dexter.Common.Client
 
     public class ResultJsonFormat
     {
-        [JsonProperty("result")]
-        public DexterResult Result { get; set; }
+        [JsonProperty(PropertyName = "result")]
+        public string Result { get; set; }
     }
     public class SourceCodeJsonFormat
     {

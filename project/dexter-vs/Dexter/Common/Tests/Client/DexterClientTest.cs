@@ -22,7 +22,7 @@ namespace Dexter.Common.Client.Tests
         public void SetUp()
         {
             httpClientMock = new Mock<IHttpClient>(MockBehavior.Strict);
-            httpClientMock.Setup(http => http.PostAsJsonAsync(It.IsAny<string>(), It.IsAny<ResultJsonFormat>()))
+            httpClientMock.Setup(http => http.PostAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
 
             client = new DexterClient(httpClientMock.Object);
@@ -40,7 +40,7 @@ namespace Dexter.Common.Client.Tests
         }
 
         [Test]
-        public void SendAnalysisResult_callPostAsJsonAsync()
+        public void SendAnalysisResult_callPostAsync()
         {
             // given
             var dexterResult = new DexterResult();
@@ -49,8 +49,8 @@ namespace Dexter.Common.Client.Tests
             client.SendAnalysisResult(dexterResult).Wait();
 
             // then
-            httpClientMock.Verify(http => http.PostAsJsonAsync(It.IsAny<string>(), 
-                It.Is<ResultJsonFormat>(f => f.Result.Equals(dexterResult))));
+            httpClientMock.Verify(http => http.PostAsync(It.IsAny<string>(),
+                It.IsAny<string>()));
         }
     }
 }

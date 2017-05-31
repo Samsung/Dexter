@@ -49,11 +49,16 @@ namespace Dexter.PeerReview.Utils
 
             return  new DexterResult()
             {
-                FullFilePath = textDocument.FilePath,
+                FullFilePath = convertFileDelimiterForDexterServer(textDocument.FilePath),
                 FileName = fileName,
                 DefectCount = comments.Count,
                 DefectList = ConvertToDefectList(fileName, comments)
             };
+        }
+
+        private string convertFileDelimiterForDexterServer(string filePath)
+        {
+            return filePath.Replace(@"\", "/");
         }
 
         private IList<DexterDefect> ConvertToDefectList(string fileName, IList<PReviewComment> comments)
