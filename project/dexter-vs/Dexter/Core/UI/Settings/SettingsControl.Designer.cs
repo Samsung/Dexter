@@ -33,29 +33,29 @@ namespace Dexter.UI.Settings
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsControl));
             this.serverSettingsGroupBox = new System.Windows.Forms.GroupBox();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.userNameTextBox = new Dexter.UI.Settings.PlaceholderTextBox();
+            this.userPasswordTextBox = new Dexter.UI.Settings.PlaceholderTextBox();
             this.userNameLabel = new System.Windows.Forms.Label();
             this.userPasswordLabel = new System.Windows.Forms.Label();
             this.connectionStatusLabel = new System.Windows.Forms.Label();
             this.testConnectionButton = new System.Windows.Forms.Button();
             this.standaloneCheckBox = new System.Windows.Forms.CheckBox();
-            this.serverLabel = new System.Windows.Forms.Label();
-            this.dexterSettingsGroupBox = new System.Windows.Forms.GroupBox();
-            this.enableDexterHomeCheckBox = new System.Windows.Forms.CheckBox();
-            this.dexterPathButton = new System.Windows.Forms.Button();
-            this.dexterPathLabel = new System.Windows.Forms.Label();
-            this.dexterPathIndicator = new Dexter.UI.Settings.ValidationPicture();
-            this.dexterPathTextBox = new Dexter.UI.Settings.PlaceholderTextBox();
-            this.userNameTextBox = new Dexter.UI.Settings.PlaceholderTextBox();
-            this.userPasswordTextBox = new Dexter.UI.Settings.PlaceholderTextBox();
             this.userIndicator = new Dexter.UI.Settings.ValidationPicture();
             this.serverIndicator = new Dexter.UI.Settings.ValidationPicture();
+            this.serverLabel = new System.Windows.Forms.Label();
             this.serverTextBox = new Dexter.UI.Settings.PlaceholderTextBox();
+            this.dexterSettingsGroupBox = new System.Windows.Forms.GroupBox();
+            this.enableDexterHomeCheckBox = new System.Windows.Forms.CheckBox();
+            this.dexterPathIndicator = new Dexter.UI.Settings.ValidationPicture();
+            this.dexterPathButton = new System.Windows.Forms.Button();
+            this.dexterPathLabel = new System.Windows.Forms.Label();
+            this.dexterPathTextBox = new Dexter.UI.Settings.PlaceholderTextBox();
             this.serverSettingsGroupBox.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
-            this.dexterSettingsGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dexterPathIndicator)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.userIndicator)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.serverIndicator)).BeginInit();
+            this.dexterSettingsGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dexterPathIndicator)).BeginInit();
             this.SuspendLayout();
             // 
             // serverSettingsGroupBox
@@ -97,145 +97,6 @@ namespace Dexter.UI.Settings
             this.tableLayoutPanel1.Size = new System.Drawing.Size(509, 38);
             this.tableLayoutPanel1.TabIndex = 4;
             // 
-            // userNameLabel
-            // 
-            this.userNameLabel.AutoSize = true;
-            this.userNameLabel.Location = new System.Drawing.Point(3, 0);
-            this.userNameLabel.Name = "userNameLabel";
-            this.userNameLabel.Size = new System.Drawing.Size(67, 11);
-            this.userNameLabel.TabIndex = 11;
-            this.userNameLabel.Text = "User name";
-            // 
-            // userPasswordLabel
-            // 
-            this.userPasswordLabel.AutoSize = true;
-            this.userPasswordLabel.Location = new System.Drawing.Point(257, 0);
-            this.userPasswordLabel.Name = "userPasswordLabel";
-            this.userPasswordLabel.Size = new System.Drawing.Size(91, 11);
-            this.userPasswordLabel.TabIndex = 13;
-            this.userPasswordLabel.Text = "User password";
-            // 
-            // connectionStatusLabel
-            // 
-            this.connectionStatusLabel.AutoSize = true;
-            this.connectionStatusLabel.Location = new System.Drawing.Point(126, 138);
-            this.connectionStatusLabel.Name = "connectionStatusLabel";
-            this.connectionStatusLabel.Size = new System.Drawing.Size(0, 12);
-            this.connectionStatusLabel.TabIndex = 17;
-            // 
-            // testConnectionButton
-            // 
-            this.testConnectionButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.testConnectionButton.Location = new System.Drawing.Point(8, 105);
-            this.testConnectionButton.Name = "testConnectionButton";
-            this.testConnectionButton.Size = new System.Drawing.Size(108, 22);
-            this.testConnectionButton.TabIndex = 16;
-            this.testConnectionButton.Text = "Test connection";
-            this.testConnectionButton.UseVisualStyleBackColor = true;
-            this.testConnectionButton.Click += new System.EventHandler(this.testConnectionButton_Click);
-            // 
-            // standaloneCheckBox
-            // 
-            this.standaloneCheckBox.AutoSize = true;
-            this.standaloneCheckBox.Location = new System.Drawing.Point(9, 133);
-            this.standaloneCheckBox.Name = "standaloneCheckBox";
-            this.standaloneCheckBox.Size = new System.Drawing.Size(139, 16);
-            this.standaloneCheckBox.TabIndex = 15;
-            this.standaloneCheckBox.Text = "Standalone analysis";
-            this.standaloneCheckBox.UseVisualStyleBackColor = true;
-            this.standaloneCheckBox.CheckedChanged += new System.EventHandler(this.standaloneCheckBox_CheckedChanged);
-            // 
-            // serverLabel
-            // 
-            this.serverLabel.AutoSize = true;
-            this.serverLabel.Location = new System.Drawing.Point(6, 16);
-            this.serverLabel.Name = "serverLabel";
-            this.serverLabel.Size = new System.Drawing.Size(135, 12);
-            this.serverLabel.TabIndex = 7;
-            this.serverLabel.Text = "Dexter Server address:";
-            // 
-            // dexterSettingsGroupBox
-            // 
-            this.dexterSettingsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dexterSettingsGroupBox.Controls.Add(this.enableDexterHomeCheckBox);
-            this.dexterSettingsGroupBox.Controls.Add(this.dexterPathIndicator);
-            this.dexterSettingsGroupBox.Controls.Add(this.dexterPathButton);
-            this.dexterSettingsGroupBox.Controls.Add(this.dexterPathLabel);
-            this.dexterSettingsGroupBox.Controls.Add(this.dexterPathTextBox);
-            this.dexterSettingsGroupBox.Location = new System.Drawing.Point(3, 0);
-            this.dexterSettingsGroupBox.Name = "dexterSettingsGroupBox";
-            this.dexterSettingsGroupBox.Size = new System.Drawing.Size(561, 87);
-            this.dexterSettingsGroupBox.TabIndex = 0;
-            this.dexterSettingsGroupBox.TabStop = false;
-            this.dexterSettingsGroupBox.Text = "Dexter Settings";
-            // 
-            // enableDexterHomeCheckBox
-            // 
-            this.enableDexterHomeCheckBox.AutoSize = true;
-            this.enableDexterHomeCheckBox.Location = new System.Drawing.Point(9, 20);
-            this.enableDexterHomeCheckBox.Name = "enableDexterHomeCheckBox";
-            this.enableDexterHomeCheckBox.Size = new System.Drawing.Size(264, 16);
-            this.enableDexterHomeCheckBox.TabIndex = 6;
-            this.enableDexterHomeCheckBox.Text = "Enable dexter home  (Only C/C++ project)";
-            this.enableDexterHomeCheckBox.UseVisualStyleBackColor = true;
-            this.enableDexterHomeCheckBox.CheckedChanged += new System.EventHandler(this.enableDexterHomeCheckBox_CheckedChanged);
-            // 
-            // dexterPathButton
-            // 
-            this.dexterPathButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.dexterPathButton.Enabled = false;
-            this.dexterPathButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.dexterPathButton.Location = new System.Drawing.Point(479, 49);
-            this.dexterPathButton.Name = "dexterPathButton";
-            this.dexterPathButton.Size = new System.Drawing.Size(40, 22);
-            this.dexterPathButton.TabIndex = 4;
-            this.dexterPathButton.Text = "...";
-            this.dexterPathButton.UseVisualStyleBackColor = true;
-            this.dexterPathButton.Click += new System.EventHandler(this.dexterPathButton_Click);
-            // 
-            // dexterPathLabel
-            // 
-            this.dexterPathLabel.AutoSize = true;
-            this.dexterPathLabel.Location = new System.Drawing.Point(7, 38);
-            this.dexterPathLabel.Name = "dexterPathLabel";
-            this.dexterPathLabel.Size = new System.Drawing.Size(105, 12);
-            this.dexterPathLabel.TabIndex = 1;
-            this.dexterPathLabel.Text = "Dexter home path";
-            // 
-            // dexterPathIndicator
-            // 
-            this.dexterPathIndicator.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.dexterPathIndicator.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.dexterPathIndicator.Location = new System.Drawing.Point(526, 49);
-            this.dexterPathIndicator.Name = "dexterPathIndicator";
-            this.dexterPathIndicator.Size = new System.Drawing.Size(28, 22);
-            this.dexterPathIndicator.TabIndex = 5;
-            this.dexterPathIndicator.TabStop = false;
-            this.dexterPathIndicator.Valid = false;
-            this.dexterPathIndicator.ValidImage = ((System.Drawing.Image)(resources.GetObject("dexterPathIndicator.ValidImage")));
-            this.dexterPathIndicator.Visible = false;
-            this.dexterPathIndicator.WrongImage = ((System.Drawing.Image)(resources.GetObject("dexterPathIndicator.WrongImage")));
-            // 
-            // dexterPathTextBox
-            // 
-            this.dexterPathTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dexterPathTextBox.Enabled = false;
-            this.dexterPathTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.dexterPathTextBox.ForeColor = System.Drawing.SystemColors.InactiveCaption;
-            this.dexterPathTextBox.Location = new System.Drawing.Point(10, 52);
-            this.dexterPathTextBox.Name = "dexterPathTextBox";
-            this.dexterPathTextBox.PlaceholderColor = System.Drawing.SystemColors.InactiveCaption;
-            this.dexterPathTextBox.PlaceholderFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.dexterPathTextBox.PlaceholderText = "e.g. D:\\Dexter";
-            this.dexterPathTextBox.Size = new System.Drawing.Size(461, 20);
-            this.dexterPathTextBox.TabIndex = 0;
-            this.dexterPathTextBox.Text = "e.g. D:\\Dexter";
-            this.dexterPathTextBox.WordWrap = false;
-            this.dexterPathTextBox.TextChanged += new System.EventHandler(this.dexterPathTextBox_TextChanged);
-            this.dexterPathTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.dexterPathTextBox_Validating);
-            // 
             // userNameTextBox
             // 
             this.userNameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -271,6 +132,54 @@ namespace Dexter.UI.Settings
             this.userPasswordTextBox.Text = "e.g. myPassword";
             this.userPasswordTextBox.WordWrap = false;
             // 
+            // userNameLabel
+            // 
+            this.userNameLabel.AutoSize = true;
+            this.userNameLabel.Location = new System.Drawing.Point(3, 0);
+            this.userNameLabel.Name = "userNameLabel";
+            this.userNameLabel.Size = new System.Drawing.Size(67, 11);
+            this.userNameLabel.TabIndex = 11;
+            this.userNameLabel.Text = "User name";
+            // 
+            // userPasswordLabel
+            // 
+            this.userPasswordLabel.AutoSize = true;
+            this.userPasswordLabel.Location = new System.Drawing.Point(257, 0);
+            this.userPasswordLabel.Name = "userPasswordLabel";
+            this.userPasswordLabel.Size = new System.Drawing.Size(91, 11);
+            this.userPasswordLabel.TabIndex = 13;
+            this.userPasswordLabel.Text = "User password";
+            // 
+            // connectionStatusLabel
+            // 
+            this.connectionStatusLabel.AutoSize = true;
+            this.connectionStatusLabel.Location = new System.Drawing.Point(142, 111);
+            this.connectionStatusLabel.Name = "connectionStatusLabel";
+            this.connectionStatusLabel.Size = new System.Drawing.Size(0, 12);
+            this.connectionStatusLabel.TabIndex = 17;
+            // 
+            // testConnectionButton
+            // 
+            this.testConnectionButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.testConnectionButton.Location = new System.Drawing.Point(9, 105);
+            this.testConnectionButton.Name = "testConnectionButton";
+            this.testConnectionButton.Size = new System.Drawing.Size(108, 22);
+            this.testConnectionButton.TabIndex = 16;
+            this.testConnectionButton.Text = "Test connection";
+            this.testConnectionButton.UseVisualStyleBackColor = true;
+            this.testConnectionButton.Click += new System.EventHandler(this.testConnectionButton_Click);
+            // 
+            // standaloneCheckBox
+            // 
+            this.standaloneCheckBox.AutoSize = true;
+            this.standaloneCheckBox.Location = new System.Drawing.Point(9, 133);
+            this.standaloneCheckBox.Name = "standaloneCheckBox";
+            this.standaloneCheckBox.Size = new System.Drawing.Size(139, 16);
+            this.standaloneCheckBox.TabIndex = 15;
+            this.standaloneCheckBox.Text = "Standalone analysis";
+            this.standaloneCheckBox.UseVisualStyleBackColor = true;
+            this.standaloneCheckBox.CheckedChanged += new System.EventHandler(this.standaloneCheckBox_CheckedChanged);
+            // 
             // userIndicator
             // 
             this.userIndicator.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -297,6 +206,15 @@ namespace Dexter.UI.Settings
             this.serverIndicator.ValidImage = ((System.Drawing.Image)(resources.GetObject("serverIndicator.ValidImage")));
             this.serverIndicator.WrongImage = ((System.Drawing.Image)(resources.GetObject("serverIndicator.WrongImage")));
             // 
+            // serverLabel
+            // 
+            this.serverLabel.AutoSize = true;
+            this.serverLabel.Location = new System.Drawing.Point(6, 16);
+            this.serverLabel.Name = "serverLabel";
+            this.serverLabel.Size = new System.Drawing.Size(135, 12);
+            this.serverLabel.TabIndex = 7;
+            this.serverLabel.Text = "Dexter Server address:";
+            // 
             // serverTextBox
             // 
             this.serverTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -313,6 +231,88 @@ namespace Dexter.UI.Settings
             this.serverTextBox.Text = "e.g. http://127.0.0.2:8081";
             this.serverTextBox.WordWrap = false;
             // 
+            // dexterSettingsGroupBox
+            // 
+            this.dexterSettingsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dexterSettingsGroupBox.Controls.Add(this.enableDexterHomeCheckBox);
+            this.dexterSettingsGroupBox.Controls.Add(this.dexterPathIndicator);
+            this.dexterSettingsGroupBox.Controls.Add(this.dexterPathButton);
+            this.dexterSettingsGroupBox.Controls.Add(this.dexterPathLabel);
+            this.dexterSettingsGroupBox.Controls.Add(this.dexterPathTextBox);
+            this.dexterSettingsGroupBox.Location = new System.Drawing.Point(3, 0);
+            this.dexterSettingsGroupBox.Name = "dexterSettingsGroupBox";
+            this.dexterSettingsGroupBox.Size = new System.Drawing.Size(561, 87);
+            this.dexterSettingsGroupBox.TabIndex = 0;
+            this.dexterSettingsGroupBox.TabStop = false;
+            this.dexterSettingsGroupBox.Text = "Dexter Settings";
+            // 
+            // enableDexterHomeCheckBox
+            // 
+            this.enableDexterHomeCheckBox.AutoSize = true;
+            this.enableDexterHomeCheckBox.Location = new System.Drawing.Point(9, 20);
+            this.enableDexterHomeCheckBox.Name = "enableDexterHomeCheckBox";
+            this.enableDexterHomeCheckBox.Size = new System.Drawing.Size(264, 16);
+            this.enableDexterHomeCheckBox.TabIndex = 6;
+            this.enableDexterHomeCheckBox.Text = "Enable dexter home  (Only C/C++ project)";
+            this.enableDexterHomeCheckBox.UseVisualStyleBackColor = true;
+            this.enableDexterHomeCheckBox.CheckedChanged += new System.EventHandler(this.enableDexterHomeCheckBox_CheckedChanged);
+            // 
+            // dexterPathIndicator
+            // 
+            this.dexterPathIndicator.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.dexterPathIndicator.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.dexterPathIndicator.Location = new System.Drawing.Point(526, 49);
+            this.dexterPathIndicator.Name = "dexterPathIndicator";
+            this.dexterPathIndicator.Size = new System.Drawing.Size(28, 22);
+            this.dexterPathIndicator.TabIndex = 5;
+            this.dexterPathIndicator.TabStop = false;
+            this.dexterPathIndicator.Valid = false;
+            this.dexterPathIndicator.ValidImage = ((System.Drawing.Image)(resources.GetObject("dexterPathIndicator.ValidImage")));
+            this.dexterPathIndicator.Visible = false;
+            this.dexterPathIndicator.WrongImage = ((System.Drawing.Image)(resources.GetObject("dexterPathIndicator.WrongImage")));
+            // 
+            // dexterPathButton
+            // 
+            this.dexterPathButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.dexterPathButton.Enabled = false;
+            this.dexterPathButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.dexterPathButton.Location = new System.Drawing.Point(479, 49);
+            this.dexterPathButton.Name = "dexterPathButton";
+            this.dexterPathButton.Size = new System.Drawing.Size(40, 22);
+            this.dexterPathButton.TabIndex = 4;
+            this.dexterPathButton.Text = "...";
+            this.dexterPathButton.UseVisualStyleBackColor = true;
+            this.dexterPathButton.Click += new System.EventHandler(this.dexterPathButton_Click);
+            // 
+            // dexterPathLabel
+            // 
+            this.dexterPathLabel.AutoSize = true;
+            this.dexterPathLabel.Location = new System.Drawing.Point(7, 38);
+            this.dexterPathLabel.Name = "dexterPathLabel";
+            this.dexterPathLabel.Size = new System.Drawing.Size(105, 12);
+            this.dexterPathLabel.TabIndex = 1;
+            this.dexterPathLabel.Text = "Dexter home path";
+            // 
+            // dexterPathTextBox
+            // 
+            this.dexterPathTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dexterPathTextBox.Enabled = false;
+            this.dexterPathTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.dexterPathTextBox.ForeColor = System.Drawing.SystemColors.InactiveCaption;
+            this.dexterPathTextBox.Location = new System.Drawing.Point(10, 52);
+            this.dexterPathTextBox.Name = "dexterPathTextBox";
+            this.dexterPathTextBox.PlaceholderColor = System.Drawing.SystemColors.InactiveCaption;
+            this.dexterPathTextBox.PlaceholderFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.dexterPathTextBox.PlaceholderText = "e.g. D:\\Dexter";
+            this.dexterPathTextBox.Size = new System.Drawing.Size(461, 20);
+            this.dexterPathTextBox.TabIndex = 0;
+            this.dexterPathTextBox.Text = "e.g. D:\\Dexter";
+            this.dexterPathTextBox.WordWrap = false;
+            this.dexterPathTextBox.TextChanged += new System.EventHandler(this.dexterPathTextBox_TextChanged);
+            this.dexterPathTextBox.Validating += new System.ComponentModel.CancelEventHandler(this.dexterPathTextBox_Validating);
+            // 
             // SettingsControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -325,11 +325,11 @@ namespace Dexter.UI.Settings
             this.serverSettingsGroupBox.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.userIndicator)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.serverIndicator)).EndInit();
             this.dexterSettingsGroupBox.ResumeLayout(false);
             this.dexterSettingsGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dexterPathIndicator)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.userIndicator)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.serverIndicator)).EndInit();
             this.ResumeLayout(false);
 
         }
