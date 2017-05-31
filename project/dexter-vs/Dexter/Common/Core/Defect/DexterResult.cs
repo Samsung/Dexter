@@ -21,6 +21,16 @@ namespace Dexter.Common.Defect
         public int DefectCount { get; set; }
         [JsonProperty("defectList")]
         public IList<DexterDefect> DefectList { get; set; }
+
+        public DexterResult()
+        {
+            SnapshotId = "";
+            FileName = "";
+            FullFilePath = "";
+            GroupId = "";
+            DefectCount = 0;
+            DefectList = null;
+        }
     }
 
     public class DexterDefect
@@ -51,6 +61,22 @@ namespace Dexter.Common.Defect
         public string FileStatus { get; set; }
         [JsonProperty("modulePath")]
         public string ModulePath { get; set; }
+
+        public DexterDefect()
+        {
+            Message = "";
+            SeverityCode = "";
+            CategoryName = "";
+            AnalysisType = "";
+            CheckerCode = "";
+            ClassName = "";
+            MethodName = "";
+            ToolName = "";
+            Language = "";
+            FileName = "";
+            FileStatus = "";
+            ModulePath = "";
+        }
     }
 
     public class DexterOccurence
@@ -73,5 +99,14 @@ namespace Dexter.Common.Defect
         public string FieldName { get; set; }
         [JsonProperty("message")]
         public string Message { get; set; }
+
+        public DexterOccurence()
+        {
+            Code = "";
+            VariableName = "";
+            StringValue = "";
+            FieldName = "";
+            Message = "";
+        }
     }
 }
