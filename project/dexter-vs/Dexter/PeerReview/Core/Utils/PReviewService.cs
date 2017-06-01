@@ -52,7 +52,7 @@ namespace Dexter.PeerReview.Utils
                 FullFilePath = convertFileDelimiterForDexterServer(textDocument.FilePath),
                 FileName = fileName,
                 DefectCount = comments.Count,
-                DefectList = ConvertToDefectList(fileName, comments)
+                DefectList = ConvertToDefectList(textDocument.FilePath, comments)
             };
         }
 
@@ -61,31 +61,51 @@ namespace Dexter.PeerReview.Utils
             return filePath.Replace(@"\", "/");
         }
 
-        private IList<DexterDefect> ConvertToDefectList(string fileName, IList<PReviewComment> comments)
+        private IList<DexterDefect> ConvertToDefectList(string filePath, IList<PReviewComment> comments)
         {
-            var defects = new List<DexterDefect>();
+            var defectTable = new Dictionary<string, DexterDefect>();
 
             foreach (var comment in comments)
             {
                 var commentText = textService.getText(comment.Span);
                 var serverityCode = getServerityCode(commentText);
-                var defect = new DexterDefect()
-                {
-                    CategoryName = "PeerReview",
-                    AnalysisType = "FILE",
-                    Language = "C_SHARP",
-                    ToolName = "dexter-peerreview",
-                    FileName = fileName,
-                    SeverityCode = serverityCode,
-                    CheckerCode = "DPR_" + serverityCode,
-                    Message = "",
-                    Occurences = createDexterOccurences(comment)
-                };
+                var checkerCode = "DPR_" + serverityCode;
+                var uniqueDefectKey = getUniqueDefectKey(checkerCode, filePath);
+                var occurences = createDexterOccurences(comment);
+                var fileName = Path.GetFileName(filePath);
+                var directoryName = Path.GetDirectoryName(filePath);
+                DexterDefect defect;
 
-                defects.Add(defect);
+                if (defectTable.TryGetValue(uniqueDefectKey, out defect))
+                {
+                    defect.Occurences = defect.Occurences.Concat(occurences).ToList();
+                }
+                else
+                {
+                    defect = new DexterDefect()
+                    {
+                        CategoryName = "PeerReview",
+                        AnalysisType = "FILE",
+                        Language = "C_SHARP",
+                        ToolName = "dexter-peerreview",
+                        FileName = fileName,
+                        ModulePath = convertFileDelimiterForDexterServer(directoryName),
+                        SeverityCode = serverityCode,
+                        CheckerCode = "DPR_" + serverityCode,
+                        Message = "",
+                        Occurences = occurences
+                    };
+
+                    defectTable.Add(uniqueDefectKey, defect);
+                }
             }
 
-            return defects;
+            return defectTable.Values.ToList();
+        }
+
+        private string getUniqueDefectKey(string checkerCode, string serverityCode)
+        {
+            return checkerCode + " " + serverityCode;
         }
 
         private IList<DexterOccurence> createDexterOccurences(PReviewComment comment)

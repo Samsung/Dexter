@@ -37,7 +37,8 @@ namespace Dexter.PeerReview
             }
         }
 
-        public PReviewTagger(ITextBuffer textBuffer, ITextDocument document, IDexterClient dexterClient, IPReviewService reviewService)
+        public PReviewTagger(ITextBuffer textBuffer, ITextDocument document, IDexterClient dexterClient, 
+            IPReviewService reviewService)
         {
             this.reviewService = reviewService;
             this.dexterClient = dexterClient;
