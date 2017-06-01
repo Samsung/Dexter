@@ -9,14 +9,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using Dexter.Common.Defect;
+using Dexter.Common.Config.Providers;
 
 namespace Dexter.Common.Client
 {
     public class DexterClient : IDexterClient
     {
-        private IHttpClient httpClient;
-        private static IDexterClient instance;
-        private static readonly string POST_ANALYSIS_RESULT_V3 = "/api/v3/analysis/result";
+        IHttpClient httpClient;
+        IDexterInfoProvider dexterInfoProvider;
+        static IDexterClient instance;
+        static readonly string POST_ANALYSIS_RESULT_V3 = "/api/v3/analysis/result";
 
         public static IDexterClient Instance
         {
@@ -33,9 +35,10 @@ namespace Dexter.Common.Client
             }
         }
 
-        public DexterClient(IHttpClient httpClient)
+        public DexterClient(IHttpClient httpClient, IDexterInfoProvider dexterInfoProvider)
         {
             this.httpClient = httpClient;
+            this.dexterInfoProvider = dexterInfoProvider;
         }
 
         public string SourceCode(string modulePath, string fileName)
@@ -64,6 +67,11 @@ namespace Dexter.Common.Client
             {
                 Debug.WriteLine(response, "Failed to SendAnalysisResult");
             }
+        }
+
+        public bool IsStandAloneMode()
+        {
+            return dexterInfoProvider.Load().standalone;
         }
     }
 

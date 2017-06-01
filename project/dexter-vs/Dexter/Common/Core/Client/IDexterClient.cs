@@ -9,6 +9,7 @@ namespace Dexter.Common.Client
 {
     public interface IDexterClient
     {
+        bool IsStandAloneMode();
         string SourceCode(string modulePath, string fileName);
         Task SendAnalysisResult(string result);
         Task SendAnalysisResult(DexterResult result);

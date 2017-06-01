@@ -56,6 +56,9 @@ namespace Dexter.PeerReview
         {
             if (e.FileActionType == FileActionTypes.ContentSavedToDisk)
             {
+                if (dexterClient.IsStandAloneMode())
+                    return;
+
                 dexterClient.SendAnalysisResult(reviewService.ConvertToDexterResult(textDocument, comments));
             }
         }
