@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Moq;
 using System.Net;
 using System.Net.Http;
+using Dexter.Common.Config.Providers;
+using Dexter.Common.Config;
 
 namespace Dexter.Common.Client.Tests
 {
@@ -16,16 +18,18 @@ namespace Dexter.Common.Client.Tests
     public class DexterClientTest
     {
         Mock<IHttpClient> httpClientMock;
+        Mock<IDexterInfoProvider> dexterInfoProviderMock;
         DexterClient client;
 
         [SetUp]
         public void SetUp()
         {
             httpClientMock = new Mock<IHttpClient>(MockBehavior.Strict);
+            dexterInfoProviderMock = new Mock<IDexterInfoProvider>();
             httpClientMock.Setup(http => http.PostAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
 
-            client = new DexterClient(httpClientMock.Object);
+            client = new DexterClient(httpClientMock.Object, dexterInfoProviderMock.Object);
         }
 
         [Test()]
@@ -51,6 +55,23 @@ namespace Dexter.Common.Client.Tests
             // then
             httpClientMock.Verify(http => http.PostAsync(It.IsAny<string>(),
                 It.IsAny<string>()));
+        }
+
+        [Test]
+        public void IsStandAloneMode_returnStandAlonValueOfDexterInfo()
+        {
+            // given
+            var dexterInfo = new DexterInfo()
+            {
+                standalone = true
+            };
+            dexterInfoProviderMock.Setup(provider => provider.Load()).Returns(dexterInfo);
+
+            // when
+            var isStandAlone = client.IsStandAloneMode();
+
+            // then
+            Assert.AreEqual(true, isStandAlone);
         }
     }
 }

@@ -147,7 +147,9 @@ namespace Dexter.UI
 
         private void InitDexterClient(IDexterInfoProvider dexterInfoProvider)
         {
-            DexterClient.Instance = new DexterClient(new DexterHttpClientWrapper(dexterInfoProvider));
+            DexterClient.Instance = new DexterClient(
+                new DexterHttpClientWrapper(dexterInfoProvider),
+                dexterInfoProvider);
         }
 
         private void RegisterSolutionManager()
