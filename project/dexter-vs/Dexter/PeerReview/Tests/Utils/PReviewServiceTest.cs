@@ -79,7 +79,7 @@ namespace Dexter.PeerReview.Utils.Tests
         }
 
         [Test()]
-        public void ConvertToDexterResult_setValidDefectList()
+        public void ConvertToDexterResult_setValidDefectList_GivenCommentsWithSameCheckerCodeAndFileName()
         {
             // given
             textDocumentMock.Setup(document => document.FilePath).Returns("c://test.cs");
@@ -89,7 +89,22 @@ namespace Dexter.PeerReview.Utils.Tests
             var result = reviewService.ConvertToDexterResult(textDocumentMock.Object, comments);
 
             // then
-            Assert.AreEqual(2, result.DefectList.Count);
+            Assert.AreEqual(1, result.DefectList.Count);
+        }
+
+        [Test()]
+        public void ConvertToDexterResult_setValidOccurenceCount_GivenCommentsWithSameCheckerCodeAndFileName()
+        {
+            // given
+            textDocumentMock.Setup(document => document.FilePath).Returns("c://test.cs");
+            var comments = createTestComments();
+
+            // when
+            var result = reviewService.ConvertToDexterResult(textDocumentMock.Object, comments);
+
+            // then
+            var occurences = result.DefectList[0].Occurences;
+            Assert.AreEqual(2, occurences.Count);
         }
 
         [Test()]
@@ -201,7 +216,7 @@ namespace Dexter.PeerReview.Utils.Tests
         }
 
         [Test()]
-        public void ConvertToDexterResult_DefectHasOneOccurence()
+        public void ConvertToDexterResult_DefectHasOccurences_IfFilePathAndCheckerCodeAreSame()
         {
             // given
             textDocumentMock.Setup(document => document.FilePath).Returns("c://test.cs");
@@ -215,7 +230,7 @@ namespace Dexter.PeerReview.Utils.Tests
             // then
             var ocurrences = result.DefectList[0].Occurences;
             Assert.NotNull(ocurrences);
-            Assert.AreEqual(1, ocurrences.Count);
+            Assert.AreEqual(2, ocurrences.Count);
         }
 
         [Test()]
