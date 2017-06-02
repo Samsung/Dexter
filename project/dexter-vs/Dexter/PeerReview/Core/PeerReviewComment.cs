@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.Text;
 
 namespace Dexter.PeerReview
 {
-    public static class PReviewConstants
+    public class PeerReviewComment
     {
-        public static readonly string COMMENT_OWNER = "ICommentOwner";
+        public SnapshotSpan Span { get; set; }
     }
 }

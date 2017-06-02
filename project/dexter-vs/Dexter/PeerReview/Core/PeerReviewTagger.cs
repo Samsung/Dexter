@@ -20,16 +20,16 @@ namespace Dexter.PeerReview
     {
     }
 
-    public class PReviewTagger : ITagger<PReviewTag>, ICommentsOwner<PReviewComment>
+    public class PeerReviewTagger : ITagger<PReviewTag>, ICommentsOwner<PeerReviewComment>
     {
         private ITextBuffer textBuffer;
         private ITextDocument textDocument;
-        private IList<PReviewComment> comments;
+        private IList<PeerReviewComment> comments;
         private IDexterClient dexterClient;
         private IPReviewService reviewService;
         private const string COMMENT_DELIMITER = "dpr:";
 
-        IList<PReviewComment> ICommentsOwner<PReviewComment>.Comments
+        IList<PeerReviewComment> ICommentsOwner<PeerReviewComment>.Comments
         {
             get
             {
@@ -37,14 +37,14 @@ namespace Dexter.PeerReview
             }
         }
 
-        public PReviewTagger(ITextBuffer textBuffer, ITextDocument document, IDexterClient dexterClient, 
+        public PeerReviewTagger(ITextBuffer textBuffer, ITextDocument document, IDexterClient dexterClient, 
             IPReviewService reviewService)
         {
             this.reviewService = reviewService;
             this.dexterClient = dexterClient;
             this.textBuffer = textBuffer;
             this.textBuffer.Changed += TextBufferChanged;
-            this.textBuffer.Properties.AddProperty(PReviewConstants.COMMENT_OWNER, this);
+            this.textBuffer.Properties.AddProperty(PeerReviewConstants.COMMENT_OWNER, this);
 
             textDocument = document;
             textDocument.FileActionOccurred += FileActionOccurred;
@@ -70,7 +70,7 @@ namespace Dexter.PeerReview
 
         private void ParsePReviewComments()
         {
-            comments = new List<PReviewComment>();
+            comments = new List<PeerReviewComment>();
             
             foreach (var line in textBuffer.CurrentSnapshot.Lines)
             {
@@ -79,7 +79,7 @@ namespace Dexter.PeerReview
 
                 if (commentStart >= 0)
                 {
-                    comments.Add(new PReviewComment()
+                    comments.Add(new PeerReviewComment()
                     {
                         Span = new SnapshotSpan(line.Start + commentStart, line.End)
                     });
