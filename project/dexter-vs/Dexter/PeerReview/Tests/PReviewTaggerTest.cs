@@ -22,7 +22,7 @@ namespace Dexter.PeerReview.Tests
         Mock<IPReviewService> reviewServiceMock;
         Mock<IDexterClient> dexterClientMock;
         PropertyCollection properties;
-        PReviewTagger tagger;
+        PeerReviewTagger tagger;
 
         const string VALID_COMMENT = "// DPR: test";
 
@@ -41,7 +41,7 @@ namespace Dexter.PeerReview.Tests
             textBufferMock.Setup(buffer => buffer.CurrentSnapshot).Returns(textSnapshotMock.Object);
             textSnapshotMock.Setup(snapshot => snapshot.Length).Returns(10);
             textSnapshotMock.Setup(snapshot => snapshot.Lines).Returns(createTestSnapshotLines());
-            tagger = new PReviewTagger(textBufferMock.Object, textDocumentMock.Object, 
+            tagger = new PeerReviewTagger(textBufferMock.Object, textDocumentMock.Object, 
                 dexterClientMock.Object, reviewServiceMock.Object);
         }
 
@@ -70,17 +70,17 @@ namespace Dexter.PeerReview.Tests
         public void Constructor_AddCommentOwnerToTextBufferProperties()
         {
             // then
-            Assert.AreEqual(tagger, properties.GetProperty(PReviewConstants.COMMENT_OWNER));
+            Assert.AreEqual(tagger, properties.GetProperty(PeerReviewConstants.COMMENT_OWNER));
         }
 
         [Test]
         public void FileActionOccurred_sendReviewCommentsToServer_OnFileSavedEvent()
         {
             // given 
-            var comments = new List<PReviewComment>();
-            comments.Add(new PReviewComment());
+            var comments = new List<PeerReviewComment>();
+            comments.Add(new PeerReviewComment());
             reviewServiceMock.Setup(service => service.ConvertToDexterResult(
-                It.IsAny<ITextDocument>(), It.IsAny<IList<PReviewComment>>())).Returns(new DexterResult());
+                It.IsAny<ITextDocument>(), It.IsAny<IList<PeerReviewComment>>())).Returns(new DexterResult());
 
             // when
             textDocumentMock.Raise(doc => doc.FileActionOccurred += null,
@@ -94,10 +94,10 @@ namespace Dexter.PeerReview.Tests
         public void FileActionOccurred_doNotSendReviewCommentsToServer_OnFileSavedEvent_IfStandAloneMode()
         {
             // given 
-            var comments = new List<PReviewComment>();
-            comments.Add(new PReviewComment());
+            var comments = new List<PeerReviewComment>();
+            comments.Add(new PeerReviewComment());
             reviewServiceMock.Setup(service => service.ConvertToDexterResult(
-                It.IsAny<ITextDocument>(), It.IsAny<IList<PReviewComment>>())).Returns(new DexterResult());
+                It.IsAny<ITextDocument>(), It.IsAny<IList<PeerReviewComment>>())).Returns(new DexterResult());
             dexterClientMock.Setup(client => client.IsStandAloneMode()).Returns(true);
 
             // when

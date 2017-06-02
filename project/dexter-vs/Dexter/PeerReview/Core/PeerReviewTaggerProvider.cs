@@ -14,7 +14,7 @@ namespace Dexter.PeerReview
     [Export(typeof(ITaggerProvider))]
     [ContentType("code")]
     [TagType(typeof(PReviewTag))]
-    public class PReviewTaggerProvider : ITaggerProvider
+    public class PeerReviewTaggerProvider : ITaggerProvider
     {
         [Import]
         public IClassifierAggregatorService AggregatorService;
@@ -30,7 +30,7 @@ namespace Dexter.PeerReview
                 ITextDocument document = null;
                 buffer.Properties.TryGetProperty(typeof(ITextDocument), out document);
 
-                return new PReviewTagger(buffer, document, DexterClient.Instance, PReviewService.Instance) as ITagger<T>;
+                return new PeerReviewTagger(buffer, document, DexterClient.Instance, PeerReviewService.Instance) as ITagger<T>;
             };
             return buffer.Properties.GetOrCreateSingletonProperty<ITagger<T>>(sc);
         }

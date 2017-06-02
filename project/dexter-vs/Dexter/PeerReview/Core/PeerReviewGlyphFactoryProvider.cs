@@ -17,11 +17,11 @@ namespace Dexter.PeerReview
     [Order(After = Priority.Default)]
     [ContentType("code")]
     [TagType(typeof(PReviewTag))]
-    internal sealed class PReviewGlyphFactoryProvider : IGlyphFactoryProvider
+    internal sealed class PeerReviewGlyphFactoryProvider : IGlyphFactoryProvider
     {
         public IGlyphFactory GetGlyphFactory(IWpfTextView view, IWpfTextViewMargin margin)
         {
-            return new PReviewGlyphFactory();
+            return new PeerReviewGlyphFactory();
         }
     }
 }

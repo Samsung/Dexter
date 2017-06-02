@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PeerReview", "PeerReview", 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dexter", "Dexter", "{841818A4-2849-4ABF-8E08-84C6369D5ACA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dexter.PeerReivew.Tests", "Dexter\PeerReview\Tests\Dexter.PeerReivew.Tests.csproj", "{1BD4C82E-620F-405F-8F97-B23249EA852A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dexter.PeerReview.Tests", "Dexter\PeerReview\Tests\Dexter.PeerReview.Tests.csproj", "{1BD4C82E-620F-405F-8F97-B23249EA852A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{B76947EF-95D1-45C9-8472-BA12BF7D11FE}"
 EndProject

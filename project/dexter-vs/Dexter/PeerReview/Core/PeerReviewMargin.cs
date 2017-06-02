@@ -41,16 +41,16 @@ namespace Dexter.PeerReview
             InvalidateVisual();
         }
 
-        public IList<PReviewComment> getPReviewComments()
+        public IList<PeerReviewComment> getPReviewComments()
         {
             try
             {
-                var commentGetter = (ICommentsOwner<PReviewComment>)
-                    textView.TextBuffer.Properties.GetProperty(PReviewConstants.COMMENT_OWNER);
+                var commentGetter = (ICommentsOwner<PeerReviewComment>)
+                    textView.TextBuffer.Properties.GetProperty(PeerReviewConstants.COMMENT_OWNER);
                 return commentGetter.Comments;
             } catch (KeyNotFoundException)
             {
-                return new List<PReviewComment>();
+                return new List<PeerReviewComment>();
             }
         }
 

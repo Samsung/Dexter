@@ -16,7 +16,7 @@ namespace Dexter.PeerReview.Tests.Utils
     [TestFixture()]
     public class PReviewServiceTest
     {
-        PReviewService reviewService;
+        PeerReviewService reviewService;
         Mock<ITextDocument> textDocumentMock;
         Mock<IDexterTextService> textServiceMock;
 
@@ -28,7 +28,7 @@ namespace Dexter.PeerReview.Tests.Utils
             textServiceMock.Setup(service => service.getStartLineNumber(It.IsAny<SnapshotSpan>())).Returns(1);
             textServiceMock.Setup(service => service.getEndLineNumber(It.IsAny<SnapshotSpan>())).Returns(1);
             textDocumentMock = new Mock<ITextDocument>(MockBehavior.Strict);
-            reviewService = new PReviewService(textServiceMock.Object);
+            reviewService = new PeerReviewService(textServiceMock.Object);
         }
 
         [Test()]
@@ -269,18 +269,18 @@ namespace Dexter.PeerReview.Tests.Utils
             Assert.AreEqual(1, ocurrence.EndLine);
         }
 
-        private IList<PReviewComment> createTestComments()
+        private IList<PeerReviewComment> createTestComments()
         {
-            var comments = new List<PReviewComment>();
+            var comments = new List<PeerReviewComment>();
 
             comments.Add(createTestOneComment());
             comments.Add(createTestOneComment());
             return comments;
         }
 
-        private PReviewComment createTestOneComment()
+        private PeerReviewComment createTestOneComment()
         {
-            return new PReviewComment()
+            return new PeerReviewComment()
             {
                 Span = new SnapshotSpan()
             };

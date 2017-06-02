@@ -13,10 +13,10 @@ namespace Dexter.PeerReview.Utils
 {
     public interface IPReviewService
     {
-        DexterResult ConvertToDexterResult(ITextDocument textDocument, IList<PReviewComment> comments);
+        DexterResult ConvertToDexterResult(ITextDocument textDocument, IList<PeerReviewComment> comments);
     }
 
-    public class PReviewService : IPReviewService
+    public class PeerReviewService : IPReviewService
     {
         IDexterTextService textService;
 
@@ -38,12 +38,12 @@ namespace Dexter.PeerReview.Utils
             }
         }
 
-        public PReviewService(IDexterTextService textService)
+        public PeerReviewService(IDexterTextService textService)
         {
             this.textService = textService;
         }
 
-        public DexterResult ConvertToDexterResult(ITextDocument textDocument, IList<PReviewComment> comments)
+        public DexterResult ConvertToDexterResult(ITextDocument textDocument, IList<PeerReviewComment> comments)
         {
             string fileName = Path.GetFileName(textDocument.FilePath);
 
@@ -61,7 +61,7 @@ namespace Dexter.PeerReview.Utils
             return filePath.Replace(@"\", "/");
         }
 
-        private IList<DexterDefect> ConvertToDefectList(string filePath, IList<PReviewComment> comments)
+        private IList<DexterDefect> ConvertToDefectList(string filePath, IList<PeerReviewComment> comments)
         {
             var defectTable = new Dictionary<string, DexterDefect>();
 
@@ -108,7 +108,7 @@ namespace Dexter.PeerReview.Utils
             return checkerCode + " " + serverityCode;
         }
 
-        private IList<DexterOccurence> createDexterOccurences(PReviewComment comment)
+        private IList<DexterOccurence> createDexterOccurences(PeerReviewComment comment)
         {
             var commentText = textService.getText(comment.Span);
             var occurences = new List<DexterOccurence>();

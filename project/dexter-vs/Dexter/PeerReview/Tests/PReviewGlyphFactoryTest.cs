@@ -18,7 +18,7 @@ namespace Dexter.PeerReview.Tests
         [SetUp]
         public void SetUp()
         {
-            glyphFactory = new PReviewGlyphFactory();
+            glyphFactory = new PeerReviewGlyphFactory();
         }
 
         [Test]

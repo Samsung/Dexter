@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.Utilities;
 
 namespace Dexter.PeerReview
 {
-    public class PReviewGlyphFactory : IGlyphFactory
+    public class PeerReviewGlyphFactory : IGlyphFactory
     {
         const double m_glyphSize = 14.0;
 

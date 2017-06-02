@@ -142,7 +142,7 @@ namespace Dexter.UI
 
         private void CreatePReviewService()
         {
-            PReviewService.Instance = new PReviewService(new DexterTextService());
+            PeerReviewService.Instance = new PeerReviewService(new DexterTextService());
         }
 
         private void InitDexterClient(IDexterInfoProvider dexterInfoProvider)
