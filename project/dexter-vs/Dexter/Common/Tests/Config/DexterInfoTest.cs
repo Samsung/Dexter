@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Dexter.Common.Config.Tests
+namespace Dexter.Common.Tests.Config
 {
     [TestFixture()]
     public class DexterInfoTest

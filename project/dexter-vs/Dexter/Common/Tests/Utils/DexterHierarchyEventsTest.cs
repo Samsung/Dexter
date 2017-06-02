@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio;
 
-namespace Dexter.Common.Utils.Tests
+namespace Dexter.Common.Tests.Utils
 {
     [TestFixture()]
     public class DexterHierarchyEventsTest

@@ -2,7 +2,7 @@
 using System;
 using Dexter.Common.Config;
 
-namespace Dexter.Tests.Config
+namespace Dexter.Common.Tests.Config
 {
     [TestFixture]
     public class ConfigurationTest
