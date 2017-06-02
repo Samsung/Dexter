@@ -9,6 +9,9 @@ using Microsoft.VisualStudio;
 
 namespace Dexter.Common.Utils
 {
+    /// <summary>
+    /// Manages VS soultions and packages information/events
+    /// </summary>
     public class DexterSolutionManager : IVsSolutionEvents
     {
         static DexterSolutionManager instace;

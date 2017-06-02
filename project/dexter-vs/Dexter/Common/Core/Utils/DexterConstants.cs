@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Dexter.Common.Utils
 {
+    /// <summary>
+    /// Provides constant values for Dexter
+    /// </summary>
     static public class DexterConstants
     {
         static public readonly int TRUE = 1;

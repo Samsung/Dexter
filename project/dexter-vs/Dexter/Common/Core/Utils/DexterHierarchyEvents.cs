@@ -9,6 +9,9 @@ using Microsoft.VisualStudio;
 
 namespace Dexter.Common.Utils
 {
+    /// <summary>
+    /// Implements IVsHiereachyEvents to get all file lists of projects
+    /// </summary>
     public class DexterHierarchyEvents : IVsHierarchyEvents
     {
         public DexterHierarchyEvents()

@@ -9,13 +9,37 @@ using Newtonsoft.Json;
 
 namespace Dexter.Common.Client
 {
+    /// <summary>
+    /// Comunicates with the dexter server
+    /// </summary>
     public interface IHttpClient
     {
+        /// <summary>
+        /// Sends GET request to the dexter server
+        /// </summary>
+        /// <param name="requestUri">dexter server URI</param>
+        /// <returns>Http response</returns>
         Task<HttpResponseMessage> GetAsync(string requestUri);
+        /// <summary>
+        /// Sends POST request to the dexter server
+        /// </summary>
+        /// <typeparam name="T">Object type to send</typeparam>
+        /// <param name="requestUri">dexter server URI</param>
+        /// <param name="value">Object instance to send</param>
+        /// <returns>Http response</returns>
         Task<HttpResponseMessage> PostAsJsonAsync<T>(string requestUri, T value);
+        /// <summary>
+        /// Sends POST request to the dexter server
+        /// </summary>
+        /// <param name="requestUri">dexter server URI</param>
+        /// <param name="content">JSON string to send</param>
+        /// <returns>Http response</returns>
         Task<HttpResponseMessage> PostAsync(string requestUri, string content);
     }
 
+    /// <summary>
+    /// Comunicates with the dexter server
+    /// </summary>
     public class DexterHttpClientWrapper : IHttpClient
     {
         private static string APPLICATION_TYPE_JSON = "application/json";

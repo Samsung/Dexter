@@ -4,6 +4,9 @@ using Microsoft.VisualStudio.Utilities;
 
 namespace Dexter.PeerReview
 {
+    /// <summary>
+    /// Provides a instance of PeerReivewMargin
+    /// </summary>
     [Export(typeof(IWpfTextViewMarginProvider))]
     [Name("PReviewMargin")]
     [Order(After = PredefinedMarginNames.OverviewChangeTracking, Before = PredefinedMarginNames.OverviewMark)]
@@ -14,7 +17,7 @@ namespace Dexter.PeerReview
     {
         public IWpfTextViewMargin CreateMargin(IWpfTextViewHost wpfTextViewHost, IWpfTextViewMargin marginContainer)
         {
-            return new PReviewMargin(wpfTextViewHost.TextView, marginContainer as IVerticalScrollBar);
+            return new PeerReviewMargin(wpfTextViewHost.TextView, marginContainer as IVerticalScrollBar);
         }
     }
 }

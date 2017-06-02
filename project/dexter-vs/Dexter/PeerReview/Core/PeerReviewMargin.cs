@@ -7,9 +7,9 @@ using System.Collections.Generic;
 namespace Dexter.PeerReview
 {
     /// <summary>
-    /// Margin's canvas and visual definition including both size and content
+    /// Provides the visual of margin markes for peer review comments
     /// </summary>
-    internal class PReviewMargin : FrameworkElement, IWpfTextViewMargin
+    internal class PeerReviewMargin : FrameworkElement, IWpfTextViewMargin
     {
         /// <summary>
         /// Margin name.
@@ -28,7 +28,7 @@ namespace Dexter.PeerReview
         private const double markThickness = 4.5;
         private Brush markBrush = new SolidColorBrush(Colors.Purple);
 
-        public PReviewMargin(IWpfTextView textView, IVerticalScrollBar scrollBar)
+        public PeerReviewMargin(IWpfTextView textView, IVerticalScrollBar scrollBar)
         {
             this.textView = textView;
             this.textView.LayoutChanged += OnLayoutChanged;
@@ -41,6 +41,10 @@ namespace Dexter.PeerReview
             InvalidateVisual();
         }
 
+        /// <summary>
+        /// Provides peer review comment list
+        /// </summary>
+        /// <returns></returns>
         public IList<PeerReviewComment> getPReviewComments()
         {
             try
@@ -142,7 +146,7 @@ namespace Dexter.PeerReview
         /// <exception cref="ArgumentNullException"><paramref name="marginName"/> is null.</exception>
         public ITextViewMargin GetTextViewMargin(string marginName)
         {
-            return string.Equals(marginName, PReviewMargin.MarginName, StringComparison.OrdinalIgnoreCase) ? this : null;
+            return string.Equals(marginName, PeerReviewMargin.MarginName, StringComparison.OrdinalIgnoreCase) ? this : null;
         }
 
         /// <summary>

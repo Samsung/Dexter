@@ -7,8 +7,14 @@ using Microsoft.VisualStudio.Text;
 
 namespace Dexter.PeerReview
 {
+    /// <summary>
+    /// Presents a review comment
+    /// </summary>
     public class PeerReviewComment
     {
+        /// <summary>
+        /// Span contains a review comment
+        /// </summary>
         public SnapshotSpan Span { get; set; }
     }
 }

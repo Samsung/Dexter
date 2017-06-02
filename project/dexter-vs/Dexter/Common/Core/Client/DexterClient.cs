@@ -13,6 +13,9 @@ using Dexter.Common.Config.Providers;
 
 namespace Dexter.Common.Client
 {
+    /// <summary>
+    /// Communicates with the dexter server
+    /// </summary>
     public class DexterClient : IDexterClient
     {
         IHttpClient httpClient;
@@ -20,6 +23,9 @@ namespace Dexter.Common.Client
         static IDexterClient instance;
         static readonly string POST_ANALYSIS_RESULT_V3 = "/api/v3/analysis/result";
 
+        /// <summary>
+        /// get/set a singleton instance of IDexterClient
+        /// </summary>
         public static IDexterClient Instance
         {
             get
@@ -56,6 +62,10 @@ namespace Dexter.Common.Client
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Sends dexter defects to the dexter server
+        /// </summary>
+        /// <param name="result">Container of dexter defects</param>
         public async Task SendAnalysisResult(DexterResult result)
         {
             var dexterResultString = JsonConvert.SerializeObject(result);
@@ -69,17 +79,27 @@ namespace Dexter.Common.Client
             }
         }
 
+        /// <summary>
+        /// Returns whether stand-alone mode is checked
+        /// </summary>
         public bool IsStandAloneMode()
         {
             return dexterInfoProvider.Load().standalone;
         }
     }
 
+    /// <summary>
+    /// JSON Container of dexter defects
+    /// </summary>
     public class ResultJsonFormat
     {
         [JsonProperty(PropertyName = "result")]
         public string Result { get; set; }
     }
+
+    /// <summary>
+    /// JSON Container of source codes
+    /// </summary>
     public class SourceCodeJsonFormat
     {
         [JsonProperty("snapshotId")]
