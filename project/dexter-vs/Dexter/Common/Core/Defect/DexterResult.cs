@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Dexter.Common.Defect
 {
+    /// <summary>
+    /// Container of dexter defects for one file
+    /// </summary>
     public class DexterResult
     {
         [JsonProperty("snapshotId")]
@@ -33,6 +36,9 @@ namespace Dexter.Common.Defect
         }
     }
 
+    /// <summary>
+    /// Provides dexter defect information
+    /// </summary>
     public class DexterDefect
     {
         [JsonProperty("message")]
@@ -79,6 +85,9 @@ namespace Dexter.Common.Defect
         }
     }
 
+    /// <summary>
+    /// Provides defect occurence information
+    /// </summary>
     public class DexterOccurence
     {
         [JsonProperty("code")]

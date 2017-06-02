@@ -11,11 +11,23 @@ using Dexter.Common.Utils;
 
 namespace Dexter.PeerReview.Utils
 {
+    /// <summary>
+    /// Implements service functions for PeerReivew
+    /// </summary>
     public interface IPReviewService
     {
+        /// <summary>
+        /// Converts peer review comments into dexter defects
+        /// </summary>
+        /// <param name="textDocument">TextDocument contains review comments</param>
+        /// <param name="comments">Peer review comments</param>
+        /// <returns>Dexter defects</returns>
         DexterResult ConvertToDexterResult(ITextDocument textDocument, IList<PeerReviewComment> comments);
     }
 
+    /// <summary>
+    /// Implements service functions for PeerReivew
+    /// </summary>
     public class PeerReviewService : IPReviewService
     {
         IDexterTextService textService;

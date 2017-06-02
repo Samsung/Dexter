@@ -12,6 +12,9 @@ using Microsoft.VisualStudio.Utilities;
 
 namespace Dexter.PeerReview
 {
+    /// <summary>
+    /// Provides factory function for PeerReivewGlyphFactory
+    /// </summary>
     [Export(typeof(IGlyphFactoryProvider))]
     [Name("PReviewGlyph")]
     [Order(After = Priority.Default)]
@@ -19,6 +22,9 @@ namespace Dexter.PeerReview
     [TagType(typeof(PReviewTag))]
     internal sealed class PeerReviewGlyphFactoryProvider : IGlyphFactoryProvider
     {
+        /// <summary>
+        /// Provides a instance of PeerReivewGlyphFactory
+        /// </summary>
         public IGlyphFactory GetGlyphFactory(IWpfTextView view, IWpfTextViewMargin margin)
         {
             return new PeerReviewGlyphFactory();

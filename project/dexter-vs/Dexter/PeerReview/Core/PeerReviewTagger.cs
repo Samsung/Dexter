@@ -12,14 +12,23 @@ using Dexter.PeerReview.Utils;
 
 namespace Dexter.PeerReview
 {
+    /// <summary>
+    /// Provides peer review comments list
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public interface ICommentsOwner<T>
     {
         IList<T> Comments { get; }
     }
+
     public class PReviewTag : IGlyphTag
     {
     }
 
+
+    /// <summary>
+    /// Tags peer reivew comments as the type PeerReivewTag
+    /// </summary>
     public class PeerReviewTagger : ITagger<PReviewTag>, ICommentsOwner<PeerReviewComment>
     {
         private ITextBuffer textBuffer;
@@ -37,6 +46,9 @@ namespace Dexter.PeerReview
             }
         }
 
+        /// <summary>
+        /// Initializes variables and parses peer review comments for the text buffer
+        /// </summary>
         public PeerReviewTagger(ITextBuffer textBuffer, ITextDocument document, IDexterClient dexterClient, 
             IPReviewService reviewService)
         {

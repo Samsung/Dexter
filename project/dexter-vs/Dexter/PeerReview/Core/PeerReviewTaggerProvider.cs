@@ -11,6 +11,9 @@ using Dexter.PeerReview.Utils;
 
 namespace Dexter.PeerReview
 {
+    /// <summary>
+    /// Creates a instance of PeerReviewTagger for given text buffer
+    /// </summary>
     [Export(typeof(ITaggerProvider))]
     [ContentType("code")]
     [TagType(typeof(PReviewTag))]
