@@ -12,7 +12,7 @@ using System.Net.Http;
 using Dexter.Common.Config.Providers;
 using Dexter.Common.Config;
 
-namespace Dexter.Common.Client.Tests
+namespace Dexter.Common.Tests.Client
 {
     [TestFixture()]
     public class DexterClientTest

@@ -2,8 +2,9 @@
 using System;
 using System.Xml;
 using System.Xml.Serialization;
+using Dexter.Defects;
 
-namespace Dexter.Defects
+namespace Dexter.Tests.Defects
 {
     [TestFixture]
     public class ResultTest

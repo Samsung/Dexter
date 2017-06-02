@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
+using Dexter.Common.Utils;
 
-namespace Dexter.Common.Utils
+namespace Dexter.Common.Tests.Utils
 {
 
     [TestFixture]

@@ -11,7 +11,7 @@ using Microsoft.VisualStudio.Text;
 using Moq;
 using Dexter.Common.Utils;
 
-namespace Dexter.PeerReview.Utils.Tests
+namespace Dexter.PeerReview.Tests.Utils
 {
     [TestFixture()]
     public class PReviewServiceTest
