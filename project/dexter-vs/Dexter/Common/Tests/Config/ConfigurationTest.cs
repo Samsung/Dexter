@@ -45,14 +45,5 @@ namespace Dexter.Common.Tests.Config
 
             Assert.AreEqual("TestPath", loadedConfig.dexterHome); 
         }
-
-        /// <summary>
-        /// Dexter should be found in proper path
-        /// </summary>
-        [Test]
-        public void TestDexterFound()
-        {
-            Assert.IsTrue(configuration.IsDexterFound);
-        }
     }
 }
