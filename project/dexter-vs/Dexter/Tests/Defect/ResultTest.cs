@@ -13,7 +13,7 @@ namespace Dexter.Tests.Defects
         /// Tests deserialization of Result class from XML
         /// </summary>
         [Test]
-        public void TestResultDeserialization()
+        public void Deserialize_result_isNotEmpty()
         {
             XmlSerializer serializer = new XmlSerializer(typeof(Result));
             Result result;

@@ -30,7 +30,7 @@ namespace Dexter.Common.Tests.Config
         /// Configuration should be properly saved and loaded from file
         /// </summary>
         [Test]
-        public void TestSaveLoad()
+        public void Load_configurationIsLoadedProperly()
         {
             Configuration config = new Configuration()
             {
