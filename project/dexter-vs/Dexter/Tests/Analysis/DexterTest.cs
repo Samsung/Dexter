@@ -50,7 +50,7 @@ namespace Dexter.Tests.Analysis
         /// Analysis should gather list of defects 
         /// </summary>
         [Test]
-        public void TestAnalysis()
+        public void Analyse_returnNotEmpty()
         {
             Result result = dexter.Analyse();
             Assert.IsNotNull(result);
@@ -62,7 +62,7 @@ namespace Dexter.Tests.Analysis
         /// Dexter should inform about produced output
         /// </summary>
         [Test]
-        public void TestStandardOuputput()
+        public void Analyse_callOutputDataReceived()
         {
             var dataReceived = false;
             dexter.OutputDataReceived += (s, e) => { Console.WriteLine(e.Data); dataReceived = true; };
@@ -74,7 +74,7 @@ namespace Dexter.Tests.Analysis
         /// Dexter should inform about produced errors
         /// </summary>
         [Test]
-        public void TestErrorOuputput()
+        public void Analyse_callErrorDataReceived()
         {
             var dataReceived = false;
             dexter.ErrorDataReceived += (s, e) => { Console.WriteLine(e.Data); dataReceived = true; };

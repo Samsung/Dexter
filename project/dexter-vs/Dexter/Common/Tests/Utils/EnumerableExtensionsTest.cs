@@ -11,7 +11,7 @@ namespace Dexter.Common.Tests.Utils
         /// Enumerable should return empty collection instead of null
         /// </summary>
         [Test]
-        public void TestOrEmptyIfNull()
+        public void OrEmptyIfNull_isNotNull()
         {
             object[] array = null;
 
