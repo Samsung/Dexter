@@ -49,7 +49,7 @@ namespace Dexter.Tests.Analysis
         /// <summary>
         /// Analysis should gather list of defects 
         /// </summary>
-        [Test]
+        [Test, Explicit]
         public void Analyse_returnNotEmpty()
         {
             Result result = dexter.Analyse();
@@ -61,7 +61,7 @@ namespace Dexter.Tests.Analysis
         /// <summary>
         /// Dexter should inform about produced output
         /// </summary>
-        [Test]
+        [Test, Explicit]
         public void Analyse_callOutputDataReceived()
         {
             var dataReceived = false;
@@ -73,7 +73,7 @@ namespace Dexter.Tests.Analysis
         /// <summary>
         /// Dexter should inform about produced errors
         /// </summary>
-        [Test]
+        [Test, Explicit]
         public void Analyse_callErrorDataReceived()
         {
             var dataReceived = false;
