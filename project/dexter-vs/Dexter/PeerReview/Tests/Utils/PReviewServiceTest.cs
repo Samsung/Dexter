@@ -299,6 +299,22 @@ namespace Dexter.PeerReview.Tests.Utils
             Assert.AreEqual("test message", message);
         }
 
+        [Test]
+        public void getCommentMessage_returnValidMessage_GivenSnapshotSpanWithoutServerity()
+        {
+            // given
+            var span = new SnapshotSpan();
+            textServiceMock.Setup(service => service.getText(It.IsAny<SnapshotSpan>()))
+                .Returns("// DPR: test message");
+
+            // when
+            var message = reviewService.getCommentMessage(span);
+
+            // then
+            Assert.AreEqual("test message", message);
+        }
+
+
         private IList<PeerReviewSnapshotComment> createTestComments()
         {
             var comments = new List<PeerReviewSnapshotComment>();
