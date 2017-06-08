@@ -49,7 +49,7 @@ function setFalseAlarmVersionFromDB() {
             logging.error('cannot set the shared data version of False Alarm, because result value is ' + result);
         }
     });
-};
+}
 
 exports.getFalseAlarmVersion = function(req, res){
     res.send({status:'ok', version: _sharedDataVersion.falseAlarm});
@@ -64,7 +64,7 @@ function sleep(seconds, callback){
             callback();
         }
     }, seconds * 1000);
-};
+}
 
 function sleepEx(ms){
     "use strict";
@@ -72,7 +72,7 @@ function sleepEx(ms){
     var now = new Date().getTime();
     while(new Date().getTime() < now + ms){
     }
-};
+}
 
 exports.getProjectDefectStatus = function (req, res){
     var statusCode = req.query.statusCode;
@@ -1577,10 +1577,13 @@ exports.addV3 = function(req, res) {
         return ;
     }
 
-    var defectJson = req.body.result;
-
     // 1. verify result
-    var defectObject = JSONbig.parse(defectJson);
+    var defectObject;
+    if(typeof req.body.result == "object"){
+        defectObject = req.body.result;
+    } else {
+        defectObject = JSONbig.parse(req.body.result);
+    }
 
     if(defectObject === undefined){
         res.send({status:"fail", errorMessage: "Invalid Data"});
@@ -1607,10 +1610,14 @@ exports.addV3 = function(req, res) {
     // log
     makeAnalysisLogV3(defectList, params);
 
-    addCodeMetrics(params.fileName, params.modulePath, params.userNo, params.snapshotId, codeMetrics);
+    if(codeMetrics) {
+        addCodeMetrics(params.fileName, params.modulePath, params.userNo, params.snapshotId, codeMetrics);
+    }
 
-    for(var i=0;i<functionMetrics.length;i++){
-        addFunctionMetrics(params.fileName, params.modulePath, params.userNo, params.snapshotId, functionMetrics[i]);
+    if(functionMetrics) {
+        functionMetrics.forEach((metric)=> {
+            addFunctionMetrics(params.fileName, params.modulePath, params.userNo, params.snapshotId,metric);
+        });
     }
 
     addSnapshot(params.snapshotId, params.groupId, params.userNo);
@@ -2974,7 +2981,7 @@ exports.getDefectListInSnapshot = function (req, res){
 		return;
     }
 
-    sql = "SELECT "
+    var sql = "SELECT "
         + "snapshotId, did, toolName, language, checkerCode, fileName, ifnull(modulePath,'') as modulePath , ifnull(className,'') as className ,"
         + "ifnull(methodName,'') as methodName, severityCode, statusCode, message, createdDateTime, modifiedDateTime, creatorNo, modifierNo,"
         + "(select count(B.startLine) from SnapshotOccurenceMap B where B.did = A.did and snapshotId = "+ database.toSqlValue(req.query.snapshotId)+ ") as occurenceCount,"
