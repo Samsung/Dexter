@@ -1,85 +1,209 @@
-adminSEApp.controller('adminSECtrl', function($scope, $http, $location ,$routeParams, $log) {
-    "use strict";
+"use strict";
+adminSEApp.controller('adminSECtrl', function ($scope, $http, $location, $routeParams, $log) {
+    const NONE_MODULE_PATH = 'undefined';
 
-    $('select').on('select2:select', function (event) {
+    $('.did-select').on('select2:select', function (event) {
+        addDidList(event);
+        changeSelectedDidCount();
+    });
+
+    $('.module-select').on('select2:select', function (event) {
         addModulePathList(event);
         changeSelectedModuleCount();
     });
 
-    $('select').on('select2:unselect', function (event) {
+    $('.did-select').on('select2:unselect', function (event) {
+        removeDidList(event);
+        changeSelectedDidCount();
+    });
+
+    $('.module-select').on('select2:unselect', function (event) {
         removeModulePathList(event);
         changeSelectedModuleCount();
     });
 
-    function changeSelectedModuleCount(){
-        var count = $scope.selectedModulePathList.length;
-        $("#removeModuleCount").html(parseInt(count));
-        if(count > 0) {
+    function changeSelectedModuleCount() {
+        const count = $scope.selectedModulePathList.length;
+        $("#removeModuleCount").html(count);
+        if (count > 0) {
             $("#isModuleSelected").removeClass("fa fa-folder").addClass("fa fa-folder-open");
-        }else{
+        } else {
             $("#isModuleSelected").removeClass("fa fa-folder-open").addClass("fa fa-folder");
         }
     }
 
-    function addModulePathList(event){
-        if (!event) { return; }
-        JSON.stringify(event.params, function (key, value) {
-            $scope.selectedModulePathList.push(value.data.id);
-        });
+    function changeSelectedDidCount() {
+        const count = $scope.selectedDidList.length;
+        $("#removeDidCount").html(count);
+        if (count > 0) {
+            $("#isDidSelected").removeClass("fa fa-minus-square").addClass("fa fa-bug");
+        } else {
+            $("#isDidSelected").removeClass("fa fa-bug").addClass("fa fa-minus-square");
+        }
     }
 
-    function removeModulePathList(event){
-        if (!event) { return; }
+    function addModulePathList(event) {
+        if (!event)
+            return;
 
-        JSON.stringify(event.params, function (key, value) {
-            $scope.selectedModulePathList.pop(value.data.id);
-        });
+        $scope.selectedModulePathList.push(event.params.data.id);
     }
 
-    var init = function(){
+    function removeModulePathList(event) {
+        if (!event)
+            return;
+
+        $scope.selectedModulePathList.pop(event.params.data.id);
+    }
+
+    function addDidList(event) {
+        if (!event)
+            return;
+
+        $scope.selectedDidList.push(event.params.data.id);
+    }
+
+    function removeDidList(event) {
+        if (!event)
+            return;
+
+        $scope.selectedDidList.pop(event.params.data.id);
+    }
+
+
+    var init = function () {
+        showLoadingImage();
         $scope.modulePathList = [];
         $scope.selectedModulePathList = [];
-        $(".select2").select2({});
-        $('select').trigger('change.select2'); // Notify only Select2 of changes
+
+        $scope.didList = [];
+        $scope.selectedDidList = [];
+
+        $(".did-select").select2({});
+        $('select').trigger('change.did-select'); // Notify only Select2 of changes
+
+        $(".module-select").select2({});
+        $('select').trigger('change.module-select'); // Notify only Select2 of changes
+        hideLoadingImage();
     };
 
     init();
 
-    var getModulePathListUrl ='/api/v2/module-path-list';
-    $http.get(getModulePathListUrl, {
-    }).then(function(result){
-        if(isHttpResultOK(result)){
+    function showLoadingImage() {
+        angular.element('#showLoading').show();
+    }
+
+    function hideLoadingImage() {
+        angular.element('#showLoading').hide();
+    }
+
+    $scope.getDidList = function () {
+        showLoadingImage();
+        const getModulePathListUrl = '/api/v3/did-list';
+
+        $http.get(getModulePathListUrl, {}).then((result) => {
+            hideLoadingImage();
+
+            if (!isHttpResultOK(result)) {
+                alert("Error occured while updating the didList, please contact to SE admin.");
+                return;
+            }
+
+            $scope.didList = [];
+            angular.forEach(result.data.rows, (index) => {
+                $scope.didList.push(index.did);
+            });
+
+            $(".did-select").select2({
+                data: $scope.didList
+            });
+
+        }, function (results) {
+            hideLoadingImage();
+            $log.error('Error code:' + results.status + ';');
+        });
+    };
+
+    $scope.getModulePathList = function () {
+        showLoadingImage();
+        const getModulePathListUrl = '/api/v2/module-path-list';
+
+        $http.get(getModulePathListUrl, {}).then(function (result) {
+            hideLoadingImage();
+
+            if (!isHttpResultOK(result)) {
+                alert("An error has occured while updating the didList, please contact to SE admin.");
+                return;
+            }
+
             $scope.modulePathList = [];
-            angular.forEach(result.data.rows, function(index){
+            angular.forEach(result.data.rows, function (index) {
                 $scope.modulePathList.push(index.modulePath);
             });
+            $scope.modulePathList.push(NONE_MODULE_PATH);
 
-            $(".select2").select2({
-                data : $scope.modulePathList
+            $(".module-select").select2({
+                data: $scope.modulePathList
             });
-        }
-    }, function(results){
-        $log.error('Error code:' + results.status+';');
-    });
 
 
+        }, function (results) {
+            hideLoadingImage();
+            $log.error('Error code:' + results.status + ';');
+        });
+    };
 
-    $scope.deleteModulePathList = function(){
+    $scope.deleteModulePathList = function () {
         alert("Defect can not restore if defect is once deleted in modulePath that you selected.");
+        showLoadingImage();
         var deleteModulePathListUrl = '/api/v2/module-path-list';
         $http.delete(deleteModulePathListUrl, {
-            params : {
+            params: {
                 "modulePathList": $scope.selectedModulePathList.toString(),
-                "modulePathListLength" : $scope.selectedModulePathList.length
+                "modulePathListLength": $scope.selectedModulePathList.length
             }
-        }).then(function(result){
-            if(isHttpResultOK(result)){
-                alert("Your selected module path data has been wiped.");
-                location.reload(true);
+        }).then((result) => {
+            hideLoadingImage();
+
+            if (!isHttpResultOK(result)) {
+                alert("Error occured while updating the modulePathList, please contact to SE admin.");
+                return;
             }
-        }, function(result){
+
+            alert("Your removal request is completed.");
+            location.reload(true);
+
+        }, function (result) {
+            hideLoadingImage();
             alert("The Delete request failed, please contact to SE admin.");
-            $log.error('Error code:' + result.status+';');
+            $log.error(`Error code: ${result.status}`);
         });
+    };
+
+    $scope.deleteDidList = function () {
+        alert("Defect can not restore if defect is once deleted that you selected.");
+        showLoadingImage();
+        var deleteDidListUrl = '/api/v3/did-list';
+        $http.delete(deleteDidListUrl, {
+            params: {
+                "didList": $scope.selectedDidList.toString(),
+                "didListLength": $scope.selectedDidList.length
+            }
+        }).then((result)=> {
+            hideLoadingImage();
+
+            if (!isHttpResultOK(result)) {
+                alert("Error occured while updating the modulePathList, please contact to SE admin.");
+                return;
+            }
+
+            alert("Your removal request is completed.");
+            location.reload(true);
+
+        }, (result)=> {
+            hideLoadingImage();
+            alert("The Delete request failed, please contact to SE admin.");
+            $log.error(`Error code: ${result.status}`);
+        })
     }
 });

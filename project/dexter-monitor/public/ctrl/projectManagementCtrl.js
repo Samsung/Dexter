@@ -25,11 +25,109 @@
  */
 "use strict";
 
-monitorApp.controller("ProjectManagementCtrl", function($scope) {
+monitorApp.controller("ProjectManagementCtrl", function($scope, $mdDialog, $log, $location, $sce, ProjectService) {
 
     initialize();
 
     function initialize() {
     }
+		$scope.$watch('newProject', function(newProject){
+			$scope.status =  $sce.trustAsHtml('Server will be created at <a href="' + newProject.hostIp + ":" + newProject.portNumber + "/#/\">" + newProject.hostIp + ":" + newProject.portNumber + "</a>");
+		},true);
+	
+		$scope.languages = ["CPP", "JAVA"];
+		$scope.newProject = {hostIp: $location.host(), portNumber:""};
+					
+		$scope.showCreateProjectDialog = function(ev) {
+						
+			$mdDialog.show({
+			controller: "ProjectManagementCtrl",
+			  templateUrl: '/view/createServerDialog.html',
+			  parent: angular.element(document.querySelector('#popupContainer')),
+			  targetEvent: ev,
+			  clickOutsideToClose:true
+			});
+		};
+		
+		$scope.createServer = function(newProject) {
+			$scope.clearValidationError();
+			validateProjectData(newProject).then(
+			(errorMessage) => {
+				if (errorMessage) {
+					$scope.validationError = errorMessage;
+					$log.error($scope.validationError);
+					return;
+				}  
+				$scope.status =  $sce.trustAsHtml("Creating new server...");
 
+				ProjectService.createProject(newProject).then (function(result) {
+					if (result.data.status=='ok') {
+						$scope.status =  $sce.trustAsHtml('Server created at <a href="' + newProject.hostIp + ":" + newProject.portNumber + "/#/\">" + newProject.hostIp + ":" + newProject.portNumber + "</a> !");					
+					} else {
+						$scope.status =  $sce.trustAsHtml("Server creation failed!");
+						$scope.validationError = result.data.errorMessage;
+					}
+				});			
+			});						
+		};
+		
+		$scope.clearValidationError = function() {
+			$scope.validationError = ""
+		}
+		
+		function validateProjectData(newProject) {
+
+			let validationResult = validateCompletness(newProject) || validateProjectName(newProject);
+			
+			if (validationResult) {
+				return Promise.resolve(validationResult);
+			} else {
+				return validateProjectNameUsage(newProject).then ( function(validationResult) {
+					if (validationResult) {
+						return validationResult;
+					} else {
+						return validatePortNumberUsage(newProject);
+					}
+				});
+			}
+		}
+		
+		function validateCompletness(newProject) {
+			if (!newProject.projectName) {
+				return "Project name must not empty";
+			} else if (!newProject.portNumber) {
+				return "Port number must not empty";
+			} else if (!newProject.language) {
+				return "Project language must not empty";
+			} else if (!newProject.adminName) {
+				return "Administrator name must not empty";
+			} else if (!newProject.adminPassword) {
+				return "Administrator password must not empty";
+			} 
+		}
+		
+		function validateProjectName(newProject) {
+			let projectName = newProject.projectName;
+			if (!(projectName.match(/^[a-z0-9_]+$/i))) {
+				return 'Project name can contain only numbers and letters';
+			}
+		}
+		
+		function validateProjectNameUsage(newProject) {
+			return ProjectService.isProjectNameUsed(newProject.projectName).then ( function(used) {
+				if (used) {
+					return "Project Name is already in use";
+				}
+			});
+		}
+		
+		function validatePortNumberUsage(newProject) {
+			return ProjectService.isPortNumberUsed(newProject.portNumber).then ( function(used) {
+				if (used) {
+					return "Port Number is already in use";
+				}
+			});
+		}
+
+		
 });

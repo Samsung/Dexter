@@ -317,6 +317,7 @@ namespace Dexter.UI.Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.Controls.Add(this.dexterSettingsGroupBox);
             this.Controls.Add(this.serverSettingsGroupBox);
             this.Name = "SettingsControl";

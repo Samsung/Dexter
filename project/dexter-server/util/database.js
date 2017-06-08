@@ -31,7 +31,6 @@ var util = require('./dexter-util');
 var Q = require('q');
 var _databasePool;
 
-
 exports.init = function(){
     setRunOptionsImmutable();
     initDatabase();
@@ -41,11 +40,8 @@ function setRunOptionsImmutable(){
     Object.freeze(global.runOptions);
 }
 
-exports.getProjectName = function(req, res){
-    res.send({
-        status : "ok",
-        projectName :  global.runOptions.databaseName
-    });
+exports.getProjectName = function (req, res) {
+    res.send({status: "ok", projectName: global.runOptions.databaseName});
 };
 
 exports.deleteDexterDatabase = function(){
@@ -209,30 +205,34 @@ exports.exec = function (sql, callback){
     });
 };
 
-exports.execV2 = function (sql, args){
+exports.execV2 = function (sql, args) {
     var deferred = Q.defer();
-    _databasePool.getConnection(function(err, connection){
-        if(err){
+
+    _databasePool.getConnection(function (err, connection) {
+        if (err) {
             logging.error(err.message);
             deferred.reject(new Error());
-        } else {
-            if(connection.isClosed){
-                var con_err = {message : "Invalid DB Connection : closed"};
-                logging.error(con_err.message);
-                deferred.reject(new Error(con_err));
-            } else {
-                logging.debug(sql);
-                var query = connection.query(sql, args, function(err, rows){
-                    connection.release();
-                    if(err){
-                        logging.error(err.message);
-                        deferred.reject(new Error(err));
-                    } else {
-                        deferred.resolve(rows);
-                    }
-                })
-            }
+            return;
         }
+
+        if (connection.isClosed) {
+            var con_err = {message: "Invalid DB Connection : closed"};
+            logging.error(con_err.message);
+            deferred.reject(new Error(con_err));
+            return;
+        }
+
+        logging.info(sql);
+        var query = connection.query(sql, args, function (err, rows) {
+            connection.release();
+            if (err) {
+                logging.error(err.message);
+                deferred.reject(new Error(err));
+                return;
+            }
+
+            deferred.resolve(rows);
+        })
     });
     return deferred.promise;
 };
@@ -290,6 +290,14 @@ exports.compareEqual = function(value){
         return " is null ";
     } else {
         return " = '" + value + "'";
+    }
+};
+
+exports.compareEqualWithEscape = function(value){
+    if(value == undefined || value =='undefined' || value == 'null' || value == null || value == ''){
+        return " is null ";
+    } else {
+        return " = " + mysql.escape(value) ;
     }
 };
 

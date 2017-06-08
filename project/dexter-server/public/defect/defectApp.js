@@ -29,18 +29,14 @@ defectApp.config(function($routeProvider){
 
 defectApp.factory(
     "_",
-    function( $window ){
+    function( $window ) {
         var _ = $window._;
         delete ( $window._ );
         // YOU CAN Added CUSTOM LODASH METHODS ----
 
-
-        // Return the [formerly global] reference so that it can be ingected
-        // into other aspects of the AngularJS application.
         return ( _ );
-
     }
-
 );
+
 angular.element(document).ready(function() {
 });

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,22 +8,30 @@
 <div class="wrapper">
     <div class="box box-default">
         <div class="box-header with-border">
-            <h3 class="box-title">Remove Module Path For SE</h3>
+            <h3 class="box-title">Remove Module Path(s) For SE</h3>
 
             <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
             </div>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
             <div class="row">
+
+
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Multi select the Module Path(s) which you want to remove defect</label>
-                        <select id="removeModulePath" class="form-control select2" multiple="multiple" data-placeholder="Select a modulePath" style="width: 100%;" >
+                        <select id="removeModulePath" class="form-control module-select" multiple="multiple"
+                                data-placeholder="Click 'Get Module' button and Select ModulePath(s)" style="width: 100%;">
                         </select>
                     </div>
                 </div>
+
+                <a class="btn btn-app" ng-click="getModulePathList()">
+                    <i id="isGetModuleButtonSelected" class="fa fa-cloud-download"></i> Get Module
+                </a>
 
                 <a class="btn btn-app" ng-click="deleteModulePathList()">
                     <span id="removeModuleCount" class="badge bg-teal">0</span>
@@ -39,5 +46,41 @@
     <!-- /.box -->
 
 
+    <div class="box box-default">
+        <div class="box-header with-border">
+            <h3 class="box-title">Remove Defect(s) For SE</h3>
+
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Multi select the Did(s) which you want to remove</label>
+                        <select id="removeDid" class="form-control did-select" multiple="multiple"
+                                data-placeholder="Click 'Get Did List' button and Select Did(s)" style="width: 100%;">
+                        </select>
+                    </div>
+                </div>
+
+                <a class="btn btn-app" ng-click="getDidList()">
+                    <i id="isGetDidButtonSelected" class="fa fa-cloud-download"></i> Get Did List
+                </a>
+
+                <a class="btn btn-app" ng-click="deleteDidList()">
+                    <span id="removeDidCount" class="badge bg-teal">0</span>
+                    <i id="isDidSelected" class="fa fa-minus-square"></i> Remove
+                </a>
+                <!-- /.col -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
 
 </div>

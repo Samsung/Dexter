@@ -26,216 +26,320 @@
 "use strict";
 var database = require("../util/database");
 var logging = require('../util/logging');
-var _ = require('lodash');
 var dutil = require('../util/dexter-util');
+const mysql = require("mysql");
+const _ = require('lodash');
 const Q = require('q');
+const Promise = require('bluebird');
 
-exports.getModulePathList = function(req, res){
-    var sql = "SELECT modulePath FROM Defect group by modulePath order by modulePath";
+const CODE_METRICS_DB_NAME = `CodeMetrics`;
+const FUNCTION_METRICS_DB_NAME = `FunctionMetrics`;
+const DEFECT_DB_NAME = `Defect`;
+const OCCURENCE_DB_NAME = `Occurence`;
+const SNAPSHOT_DEFECT_MAP_DB_NAME = `SnapshotDefectMap`;
+const SNAPSHOT_OCCURENCE_MAP_DB_NAME = `SnapshotOccurenceMap`;
+const SOURCE_CODE_MAP_DB_NAME = `SourceCodeMap`;
+
+exports.getDidList = function (req, res) {
+    var sql = `SELECT did From ${DEFECT_DB_NAME}`;
 
     database.execV2(sql)
-        .then(function(rows) {
-            res.send({status:'ok', rows: rows} );
+        .then((rows) => {
+            rows = _.orderBy(rows, ['did'], ['asc']);
+            res.send({status: 'ok', rows: rows});
         })
-        .catch(function(err) {
-            logging.error(err);
-            res.send({status:"fail", errorMessage: err.message});
+        .catch(error => {
+            logging.error(error);
+            res.send({status: "fail", errorMessage: error.message});
         });
 };
 
-function deleteCodeMetricsFromDB(modulePathList){
-    const deferred = Q.defer();
-    var sql = "delete from CodeMetrics";
-
-    _.forEach(modulePathList, function(modulePath, idx){
-        if(idx == 0){
-            sql += " Where modulePath = " +  database.toSqlValue(modulePath);
-        }else {
-            sql += " or modulePath = " + database.toSqlValue(modulePath);
-        }
-    });
+exports.getModulePathList = function (req, res) {
+    var sql = `SELECT modulePath FROM ${DEFECT_DB_NAME} group by modulePath order by modulePath`;
 
     database.execV2(sql)
-        .then(function() {
-            deferred.resolve(modulePathList);
+        .then((rows) => {
+            res.send({status: 'ok', rows: rows});
         })
-        .catch(function(err) {
-            deferred.reject(err);
+        .catch(error => {
+            logging.error(error);
+            res.send({status: "fail", errorMessage: error.message});
         });
+};
 
-    return deferred.promise;
-
-}
-
-function deleteFunctionMetricFromDB(modulePathList){
-    const deferred = Q.defer();
-    var sql = "delete from FunctionMetrics";
-    _.forEach(modulePathList, function(modulePath, idx){
-        if(idx === 0){
-            sql += " Where modulePath = " +  database.toSqlValue(modulePath);
-        }else {
-            sql += " or modulePath = " + database.toSqlValue(modulePath);
-        }
-    });
-
-    database.execV2(sql)
-        .then(function() {
-            deferred.resolve(modulePathList);
-        })
-        .catch(function(err) {
-            deferred.reject(err);
-        });
-    return deferred.promise;
-}
-
-function deleteSourceCodeMapFromDB(modulePathList){
-    const deferred = Q.defer();
-    var sql = "delete from SourceCodeMap";
-    _.forEach(modulePathList, function(modulePath, idx){
-        if(idx === 0){
-            sql += " Where modulePath = " +  database.toSqlValue(modulePath);
-        }else {
-            sql += " or modulePath = " + database.toSqlValue(modulePath);
-        }
-    });
-    database.execV2(sql)
-        .then(function() {
-            deferred.resolve(modulePathList);
-        })
-        .catch(function(err) {
-            deferred.reject(err);
-        });
-
-    return deferred.promise;
-}
-
-function deleteSnapshotDefectMapFromDB(modulePathList){
-    const deferred = Q.defer();
-    var sql = "delete from SnapshotDefectMap";
-    _.forEach(modulePathList, function(modulePath, idx){
-        if(idx ==0){
-            sql += " Where modulePath = " +  database.toSqlValue(modulePath);
-        }else {
-            sql += " or modulePath = " + database.toSqlValue(modulePath);
-        }
-    });
-
-    database.execV2(sql)
-        .then(function() {
-            deferred.resolve(modulePathList);
-        })
-        .catch(function(err) {
-            deferred.reject(err);
-        });
-
-    return deferred.promise;
-}
-
-function deleteSnapshotOccurenceMapForDid(didList){
-    var promises = [];
-
-    didList.forEach( did =>{
-        promises.push(new Promise ((resolve, reject) =>{
-            const sql = `DELETE from SnapshotOccurenceMap where did=${did.did}`;
-            database.execV2(sql)
-                .then(function(){
-                    resolve();
-                })
-                .catch(function(err) {
-                    reject(err);
-                });
-
-        }))
-
-    });
-
-    return Promise.all(promises)
+function deleteSnapshotOccurence(did) {
+    const sql = `DELETE FROM ${SNAPSHOT_OCCURENCE_MAP_DB_NAME} WHERE did=${mysql.escape(did)}`;
+    return database.execV2(sql)
         .then(() => {
-            return "SUCCESS";
+            return Promise.resolve();
         })
-        .catch((err) =>{
-            logging.error(err);
-            return [];
+        .catch((error) => {
+            return Promise.reject(`[deleteSnapshotOccurence]: ${error}`);
         });
-
 }
 
-function deleteSnapshotOccurenceMapFromDB(modulePathList){
-    const deferred = Q.defer();
-    var sql = `SELECT did FROM Defect `;
+function deleteOccurence() {
+    const sql = `DELETE FROM ${OCCURENCE_DB_NAME} WHERE did=${mysql.escape(did)}`;
+    return database.execV2(sql)
+        .then(() => {
+            return Promise.resolve()
+        })
+        .catch((error) => {
+            return Promise.reject(`[deleteOccurence]: ${error}`);
+        });
+}
 
-    _.forEach(modulePathList, function(modulePath, idx){
-        if(idx == 0){
-            sql += " Where modulePath = " +  database.toSqlValue(modulePath);
-        }else {
-            sql += " or modulePath = " + database.toSqlValue(modulePath);
-        }
+function makeDidList(result) {
+    var didList = [];
+
+    _.forEach(result, rows => {
+        didList.push(rows.did);
     });
 
+    return Promise.resolve(_.uniq(didList));
+}
 
-    database.execV2(sql)
-        .then(function(result) {
-            deleteSnapshotOccurenceMapForDid(result)
-            .then(function(){
-                    deferred.resolve(modulePathList);
+function deleteSnapshotOccurenceMapFromDB(modulePathList) {
+    const baseSql = `SELECT did FROM ${SNAPSHOT_DEFECT_MAP_DB_NAME} `;
+    const sql = makeDeleteSql(baseSql, modulePathList);
+
+    return database.execV2(sql)
+        .then((result)=> {
+            if (result.length === 0) {
+                logging.info("There is no defect information in 'SnapshotDefectMap' table.");
+                return Promise.resolve(modulePathList);
+            }
+
+            return makeDidList(result)
+                .then(deleteSnapshotOccurenceMapForDid)
+                .then(() => {
+                    return Promise.resolve(modulePathList);
                 });
         })
-        .catch(function(err) {
-            deferred.reject(err);
+        .catch(error => {
+            return Promise.reject(`[deleteSnapshotOccurenceMapFromDB]: ${error}`);
         });
-
-    return deferred.promise;
 }
 
+function deleteOccurenceMapFromDB(modulePathList) {
+    const baseSql = `SELECT did FROM ${DEFECT_DB_NAME} `;
+    const sql = makeDeleteSql(baseSql, modulePathList);
+    return database.execV2(sql)
+        .then((result)=> {
+            if (result.length === 0) {
+                logging.info("There is no defect information in 'Defect' table.");
+                return Promise.resolve(modulePathList);
+            }
 
-function deleteDefectFromDB(modulePathList){
-    const deferred = Q.defer();
+            return makeDidList(result)
+                .then(deleteOccurenceMapForDid)
+                .then(() => {
+                    return Promise.resolve(modulePathList);
+                });
+        })
+        .catch(error => {
+            return Promise.reject(`[deleteOccurenceMapFromDB]: ${error}`);
+        });
+}
 
-    var sql = "delete from Defect";
-    _.forEach(modulePathList, function(modulePath, idx){
-        if(idx == 0){
-            sql += " Where modulePath = " +  database.toSqlValue(modulePath);
-        }else {
-            sql += " or modulePath = " + database.toSqlValue(modulePath);
+function deleteDefectFromDB(modulePathList) {
+    return deleteFromDBForModulePathList(DEFECT_DB_NAME, modulePathList)
+        .then(()=> {
+            return Promise.resolve(modulePathList);
+        })
+        .catch(error => {
+            return Promise.reject(`[deleteDefectFromDB]: ${error}`);
+        });
+}
+
+function deleteSnapshotDefectMapFromDB(modulePathList) {
+    return deleteFromDBForModulePathList(SNAPSHOT_DEFECT_MAP_DB_NAME, modulePathList)
+        .then(()=> {
+            return Promise.resolve(modulePathList);
+        })
+        .catch(error => {
+            return Promise.reject(`[deleteSnapshotDefectMapFromDB]: ${error}`);
+        });
+}
+
+function deleteSourceCodeMapFromDB(modulePathList) {
+    return deleteFromDBForModulePathList(SOURCE_CODE_MAP_DB_NAME, modulePathList)
+        .then(()=> {
+            return Promise.resolve(modulePathList);
+        })
+        .catch(error => {
+            return Promise.reject(`[deleteSourceCodeMapFromDB]: ${error}`);
+        });
+}
+
+function deleteFunctionMetricFromDB(modulePathList) {
+    return deleteFromDBForModulePathList(FUNCTION_METRICS_DB_NAME, modulePathList)
+        .then(()=> {
+            return Promise.resolve(modulePathList);
+        })
+        .catch(error => {
+            return Promise.reject(`[deleteFunctionMetricFromDB]: ${error}`);
+        });
+}
+
+function deleteCodeMetricsFromDB(modulePathList) {
+    return deleteFromDBForModulePathList(CODE_METRICS_DB_NAME, modulePathList)
+        .then(()=> {
+            return Promise.resolve(modulePathList);
+        })
+        .catch(error => {
+            return Promise.reject(`[deleteCodeMetricsFromDB]: ${error}`);
+        });
+}
+
+function deleteFromDBForModulePathList(databaseName, modulePathList) {
+    const baseSql = `DELETE FROM ${databaseName} `;
+    const sql = makeDeleteSql(baseSql, modulePathList);
+    return database.execV2(sql)
+        .then(() => {
+            return Promise.resolve(modulePathList);
+        })
+        .catch(error => {
+            return Promise.reject(`[deleteFromDBForModulePathList]: ${error}`);
+        });
+}
+
+function makeDeleteSql(baseSql, modulePathList) {
+    var sql = baseSql;
+
+    _.forEach(modulePathList, (modulePath, idx) => {
+        if (idx == 0) {
+            sql += " WHERE modulePath " + database.compareEqualWithEscape(modulePath);
+        } else {
+            sql += " OR modulePath " + database.compareEqualWithEscape(modulePath);
         }
     });
 
-    database.execV2(sql)
-        .then(function() {
-            deferred.resolve(modulePathList);
-        })
-        .catch(function(err) {
-            deferred.reject(err);
-        });
-
-    return deferred.promise;
+    return sql;
 }
 
-exports.deleteModulePathList = function(req, res){
-    let modulePathList =[];
-    if(_.has(req,"query.modulePathList") && req.query.modulePathList) {
-        if(req.query.modulePathListLength < 0 ){
-            res.send({status:"fail", errorMessage: "Please selected module Path"});
-        }
-        var temp = req.query.modulePathList;
-        if( typeof temp === "string" ){
-            modulePathList = temp.split(',');
-        }else{
-            res.send({status:"fail", errorMessage: "'modulePathList' must be String"});
-        }
-
-        deleteCodeMetricsFromDB(modulePathList)
-            .then(deleteFunctionMetricFromDB)
-            .then(deleteSourceCodeMapFromDB)
-            .then(deleteSnapshotDefectMapFromDB)
-            .then(deleteSnapshotOccurenceMapFromDB)
-            .then(deleteDefectFromDB)
-            .then(function(){
-                res.send({status:'ok'});
-            })
-            .catch(function(err) {
-                logging.info(`catch` + err.toString());
-            });
-
+exports.deleteModulePathList = function (req, res) {
+    if (!(_.has(req, "query.modulePathList") && req.query.modulePathList)) {
+        res.send({status: "fail", errorMessage: "Please selected module Path"});
+        return;
     }
+
+    if (req.query.modulePathListLength < 0) {
+        res.send({status: "fail", errorMessage: "Please selected module Path"});
+        return;
+    }
+
+    if (typeof req.query.modulePathList !== "string") {
+        res.send({status: "fail", errorMessage: "'modulePathList' must be String"});
+        return;
+    }
+
+    var modulePathList = req.query.modulePathList.split(',');
+
+    deleteCodeMetricsFromDB(modulePathList)
+        .then(deleteFunctionMetricFromDB)
+        .then(deleteSourceCodeMapFromDB)
+        .then(deleteSnapshotOccurenceMapFromDB)
+        .then(deleteSnapshotDefectMapFromDB)
+        .then(deleteOccurenceMapFromDB)
+        .then(deleteDefectFromDB)
+        .then(() => {
+            res.send({status: 'ok'});
+        })
+        .catch(error => {
+            logging.info(`[ERROR][CATCH]: ${error}`);
+            res.send({status: "fail", errorMessage: "The Delete request failed, please contact to SE admin."});
+        });
 };
+
+exports.deleteDidList = function (req, res) {
+    if (!(_.has(req, "query.didList") && req.query.didList)) {
+        res.send({status: "fail", errorMessage: "Please selected did list"});
+        return;
+    }
+
+    if (req.query.didListLength < 0) {
+        res.send({status: "fail", errorMessage: "Please selected did"});
+        return;
+    }
+
+
+    if (typeof req.query.didList !== "string") {
+        res.send({status: "fail", errorMessage: "'didList' must be String"});
+        return;
+    }
+
+    var didList = req.query.didList.split(',');
+
+    deleteSnapshotOccurenceMapForDid(didList)
+        .then(deleteSnapshotDefectMapFromDBForDid)
+        .then(deleteOccurenceMapForDid)
+        .then(deleteDefectFromDBForDid)
+        .then(()=> {
+            res.send({status: 'ok'});
+        })
+        .catch(error => {
+            logging.info(`[ERROR][CATCH]: ${error}`);
+            res.send({status: "fail", errorMessage: "The Delete request failed, please contact to SE admin."});
+        });
+};
+
+function deleteSnapshotOccurenceMapForDid(didList) {
+    return deleteFromDBForDidList(SNAPSHOT_OCCURENCE_MAP_DB_NAME, didList)
+        .then(()=> {
+            return Promise.resolve(didList);
+        })
+        .catch(error => {
+            return Promise.reject(error);
+        });
+}
+
+function deleteSnapshotDefectMapFromDBForDid(didList) {
+    return deleteFromDBForDidList(SNAPSHOT_DEFECT_MAP_DB_NAME, didList)
+        .then(()=> {
+            return Promise.resolve(didList);
+        })
+        .catch(error => {
+            return Promise.reject(error);
+        });
+}
+
+function deleteOccurenceMapForDid(didList) {
+    return deleteFromDBForDidList(OCCURENCE_DB_NAME, didList)
+        .then(()=> {
+            return Promise.resolve(didList);
+        })
+        .catch(error => {
+            return Promise.reject(error);
+        });
+}
+
+function deleteDefectFromDBForDid(didList) {
+    return deleteFromDBForDidList(DEFECT_DB_NAME, didList)
+        .then(()=> {
+            return Promise.resolve(didList);
+        })
+        .catch(error => {
+            return Promise.reject(error);
+        });
+}
+
+function deleteFromDBForDidList(databaseName, didList) {
+    var sql = `DELETE FROM ${databaseName} `;
+
+    _.forEach(didList, (did, idx) => {
+        if (idx === 0) {
+            sql += " WHERE did " + database.compareEqualWithEscape(did);
+        } else {
+            sql += " OR did " + database.compareEqualWithEscape(did);
+        }
+    });
+
+    return database.execV2(sql)
+        .then(() => {
+            return Promise.resolve(didList);
+        })
+        .catch(error => {
+            return Promise.reject(error);
+        });
+}

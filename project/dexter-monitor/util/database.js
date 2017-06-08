@@ -71,7 +71,8 @@ function initDbPool(){
         password: _runOptions.databasePassword,
         database : _runOptions.databaseName,
 		connectionLimit: 20,
-		waitForConnections: true
+		waitForConnections: true,
+		multipleStatements:true
         /*connectTimeout: 10000 */
     });
 

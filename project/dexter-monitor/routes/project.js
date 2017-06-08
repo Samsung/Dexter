@@ -34,6 +34,10 @@ const database = require("../util/database");
 const route = require('./route');
 const user = require('./user');
 const server = require('./server');
+const fs = require('fs');
+const os = require('os');
+const exec = require('child_process').exec;
+const path = require('path');
 
 exports.getProjectList = function(req, res) {
     const sql = "SELECT projectName, projectType, groupName, language   "+
@@ -70,6 +74,69 @@ exports.saveSnapshotSummary = function() {
             log.error(err);
         })
 };
+
+exports.createProject = function(req, res) {
+
+	Promise.resolve(req.body.project)
+	.then(createDexterServerDatabase)
+	.then(insertDexterMonitorEntry)
+	.then((project) => {
+		startDexterServer(project);
+		
+		//wait for the dexter server to start
+		setTimeout( () => {
+			log.info('Dexter Server instance created at:' + project.hostIp + ":" + project.portNumber );
+			res.send({status:"ok"});
+		}, 5000);
+    })
+	 .catch((err) => {
+        log.error(`Failed to create Dexter Server instance : ${err.message}`);
+        res.send({status:"fail", errorMessage: err.message});
+    });
+}
+
+function createDexterServerDatabase(project) {
+	const sql = `CREATE DATABASE ${project.projectName}; USE ${project.projectName};`+
+			    fs.readFileSync(`${global.config.dexterServerPath}/config/ddl.sql`).toString()+
+			    `USE ${global.config.database.name};`;
+	return database.exec(sql).then(() => project);
+}
+
+function insertDexterMonitorEntry(project) {
+	const sql = `INSERT INTO ProjectInfo (projectName, pid, requester, administrator, portNumber, createdDateTime, language, hostIP, projectYear, emailingWhenServerDead, groupName, dbName) VALUES (?,?,?,?,?, now(), ?, ?, YEAR(now()), 'Y', '',?)`;
+	const args  = [project.projectName, project.projectName, project.adminName, project.adminName, project.portNumber, project.language, project.hostIp, project.projectName];
+	return database.exec(sql, args).then(() => project);
+}
+
+function startDexterServer(project) {
+	const npmInstallCmd = `npm install`;
+	const nodeCmd = `node server.js -database.name=${project.projectName} -p=${project.portNumber} -database.host=${global.config.database.host} -database.user=${global.config.database.user} -database.password=${global.config.database.password}`;
+	var dexterServerPath = path.resolve(global.config.dexterServerPath);
+	log.info("Starting new Dexter Server instance");
+	var child;
+        if (os.type()=="Linux") {
+		const supervisordEntry = `\n[program:dexter-${project.projectName}] \n` +
+					`command=` + nodeCmd + `\n` +
+					`directory=` + dexterServerPath;
+		const supervisordConfPath = '/etc/supervisord.conf';
+                try {
+		   // if supervisord is installed, dexter server will be managed by it
+		   fs.accessSync(supervisordConfPath);
+                   fs.appendFileSync(supervisordConfPath,supervisordEntry);
+		   const cmd = "supervisorctl update";
+		   child = exec(cmd); 
+		   log.info("Added Supervisor entry");
+                } catch(err) {
+		   // if no supervisord is installed, the normal node process is run
+                   const cmd = npmInstallCmd + ' && ' + nodeCmd;	
+	           child = exec(cmd, {cwd: dexterServerPath});
+                }
+	} else {
+		const cmd = 'start cmd /k' + '\"' + npmInstallCmd + ' && ' + nodeCmd + '\"';
+	    child = exec(cmd, {cwd: dexterServerPath, detached:true});
+	}
+	child.on('error', function( err ){ throw err });
+}
 
 function insertSnapshotSummaryToDatabase(summary) {
     const year = moment().get('year');
