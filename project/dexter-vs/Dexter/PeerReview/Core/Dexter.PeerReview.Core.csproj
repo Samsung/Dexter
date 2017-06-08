@@ -57,6 +57,7 @@
     <Compile Include="PeerReviewComment.cs" />
     <Compile Include="PeerReviewGlyphFactory.cs" />
     <Compile Include="PeerReviewGlyphFactoryProvider.cs" />
+    <Compile Include="PeerReviewSnapshotComment.cs" />
     <Compile Include="PeerReviewTagger.cs" />
     <Compile Include="PeerReviewTaggerProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

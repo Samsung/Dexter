@@ -45,16 +45,16 @@ namespace Dexter.PeerReview
         /// Provides peer review comment list
         /// </summary>
         /// <returns></returns>
-        public IList<PeerReviewComment> getPReviewComments()
+        public IList<PeerReviewSnapshotComment> getPReviewComments()
         {
             try
             {
-                var commentGetter = (ICommentsOwner<PeerReviewComment>)
+                var commentGetter = (ICommentsOwner<PeerReviewSnapshotComment>)
                     textView.TextBuffer.Properties.GetProperty(PeerReviewConstants.COMMENT_OWNER);
                 return commentGetter.Comments;
             } catch (KeyNotFoundException)
             {
-                return new List<PeerReviewComment>();
+                return new List<PeerReviewSnapshotComment>();
             }
         }
 
@@ -65,7 +65,7 @@ namespace Dexter.PeerReview
 
             foreach (var comment in getPReviewComments())
             {
-                double y = scrollBar.GetYCoordinateOfBufferPosition(comment.Span.Start);
+                double y = scrollBar.GetYCoordinateOfBufferPosition(comment.SnapShotSpan.Start);
                 this.DrawMark(drawingContext, markBrush, y);
             }
         }
