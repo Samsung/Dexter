@@ -39,7 +39,7 @@ namespace Dexter.PeerReview
         private IDexterInfoProvider dexterInfoProvider;
         private IPeerReviewService reviewService;
 
-        private const string COMMENT_DELIMITER = "dpr:";
+        private const string COMMENT_DELIMITER = "// dpr:";
 
         IList<PeerReviewSnapshotComment> ICommentsOwner<PeerReviewSnapshotComment>.Comments
         {

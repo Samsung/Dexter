@@ -174,7 +174,7 @@ namespace Dexter.PeerReview.Utils
 
         private string getCommentMessage(string commentText)
         {
-            string commentPrefix = @"//\sDPR:\s(\[CRI\]|\[MAJ\]|\[CRC\])";
+            string commentPrefix = @"//\sDPR:\s*(\[CRI\]|\[MAJ\]|\[CRC\])?";
             Regex rx = new Regex(commentPrefix, RegexOptions.IgnoreCase);
 
             return rx.Replace(commentText, "").Trim();
