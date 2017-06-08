@@ -1582,7 +1582,12 @@ exports.addV3 = function(req, res) {
     if(typeof req.body.result == "object"){
         defectObject = req.body.result;
     } else {
-        defectObject = JSONbig.parse(req.body.result);
+        try {
+            defectObject = JSONbig.parse(req.body.result);
+        } catch(e) {
+            res.send({status:"fail", errorMessage: "Invalid JsonString Data" });
+            return ;
+        }
     }
 
     if(defectObject === undefined){
