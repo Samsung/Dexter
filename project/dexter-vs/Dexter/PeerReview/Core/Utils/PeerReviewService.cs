@@ -14,7 +14,7 @@ namespace Dexter.PeerReview.Utils
     /// <summary>
     /// Implements service functions for PeerReivew
     /// </summary>
-    public interface IPReviewService
+    public interface IPeerReviewService
     {
         /// <summary>
         /// Converts peer review comments into dexter defects
@@ -22,19 +22,43 @@ namespace Dexter.PeerReview.Utils
         /// <param name="textDocument">TextDocument contains review comments</param>
         /// <param name="comments">Peer review comments</param>
         /// <returns>Dexter defects</returns>
-        DexterResult ConvertToDexterResult(ITextDocument textDocument, IList<PeerReviewComment> comments);
+        DexterResult ConvertToDexterResult(ITextDocument textDocument, IList<PeerReviewSnapshotComment> comments);
+        /// <summary>
+        /// Gets start line of SnapshotSpan
+        /// </summary>
+        /// <param name="span">snapshotSapn contains review comment</param>
+        /// <returns>Start line of snapshotSpan</returns>
+        int getStartLineNumber(SnapshotSpan span);
+        /// <summary>
+        /// Gets end line of SnapshotSpan
+        /// </summary>
+        /// <param name="span">snapshotSapn contains review comment</param>
+        /// <returns>End line of snapshotSpan</returns>
+        int getEndLineNumber(SnapshotSpan span);
+        /// <summary>
+        /// Gets serverity codes from comment text in SnapshotSpan
+        /// </summary>
+        /// <param name="span">SnapshotSpan contains review comment</param>
+        /// <returns>Serverity code</returns>
+        string getServerity(SnapshotSpan span);
+        /// <summary>
+        /// Gets comment message filtered by a serverity code
+        /// </summary>
+        /// <param name="span">SnapshotSpan contains review comment</param>
+        /// <returns>Comment message</returns>
+        string getCommentMessage(SnapshotSpan span);
     }
 
     /// <summary>
     /// Implements service functions for PeerReivew
     /// </summary>
-    public class PeerReviewService : IPReviewService
+    public class PeerReviewService : IPeerReviewService
     {
         IDexterTextService textService;
 
-        static IPReviewService instace;
+        static IPeerReviewService instace;
 
-        static public IPReviewService Instance
+        static public IPeerReviewService Instance
         {
             get
             {
@@ -55,7 +79,7 @@ namespace Dexter.PeerReview.Utils
             this.textService = textService;
         }
 
-        public DexterResult ConvertToDexterResult(ITextDocument textDocument, IList<PeerReviewComment> comments)
+        public DexterResult ConvertToDexterResult(ITextDocument textDocument, IList<PeerReviewSnapshotComment> comments)
         {
             string fileName = Path.GetFileName(textDocument.FilePath);
 
@@ -73,13 +97,13 @@ namespace Dexter.PeerReview.Utils
             return filePath.Replace(@"\", "/");
         }
 
-        private IList<DexterDefect> ConvertToDefectList(string filePath, IList<PeerReviewComment> comments)
+        private IList<DexterDefect> ConvertToDefectList(string filePath, IList<PeerReviewSnapshotComment> comments)
         {
             var defectTable = new Dictionary<string, DexterDefect>();
 
             foreach (var comment in comments)
             {
-                var commentText = textService.getText(comment.Span);
+                var commentText = textService.getText(comment.SnapShotSpan);
                 var serverityCode = getServerityCode(commentText);
                 var checkerCode = "DPR_" + serverityCode;
                 var uniqueDefectKey = getUniqueDefectKey(checkerCode, filePath);
@@ -120,17 +144,17 @@ namespace Dexter.PeerReview.Utils
             return checkerCode + " " + serverityCode;
         }
 
-        private IList<DexterOccurence> createDexterOccurences(PeerReviewComment comment)
+        private IList<DexterOccurence> createDexterOccurences(PeerReviewSnapshotComment comment)
         {
-            var commentText = textService.getText(comment.Span);
+            var commentText = textService.getText(comment.SnapShotSpan);
             var occurences = new List<DexterOccurence>();
 
             occurences.Add(new DexterOccurence()
             {
                 StringValue = "DPR",
                 Message = getCommentMessage(commentText),
-                StartLine = textService.getStartLineNumber(comment.Span),
-                EndLine = textService.getEndLineNumber(comment.Span)
+                StartLine = textService.getStartLineNumber(comment.SnapShotSpan),
+                EndLine = textService.getEndLineNumber(comment.SnapShotSpan)
             });
 
             return occurences;
@@ -154,6 +178,28 @@ namespace Dexter.PeerReview.Utils
             Regex rx = new Regex(commentPrefix, RegexOptions.IgnoreCase);
 
             return rx.Replace(commentText, "").Trim();
+        }
+
+        public int getStartLineNumber(SnapshotSpan span)
+        {
+            return textService.getStartLineNumber(span);
+        }
+
+        public int getEndLineNumber(SnapshotSpan span)
+        {
+            return textService.getEndLineNumber(span);
+        }
+
+        public string getServerity(SnapshotSpan span)
+        {
+            var text = textService.getText(span);
+            return getServerityCode(text);
+        }
+
+        public string getCommentMessage(SnapshotSpan span)
+        {
+            var text = textService.getText(span);
+            return getCommentMessage(text);
         }
     }
 }

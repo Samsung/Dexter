@@ -269,21 +269,48 @@ namespace Dexter.PeerReview.Tests.Utils
             Assert.AreEqual(1, ocurrence.EndLine);
         }
 
-        private IList<PeerReviewComment> createTestComments()
+        [Test]
+        public void getServerity_returnValidServerity_GivenSnapshotSpan()
         {
-            var comments = new List<PeerReviewComment>();
+            // given
+            var span = new SnapshotSpan();
+            textServiceMock.Setup(service => service.getText(It.IsAny<SnapshotSpan>()))
+                .Returns("// DPR: [CRI] test message");
+
+            // when
+            var serverity = reviewService.getServerity(span);
+
+            // then
+            Assert.AreEqual("CRI", serverity);
+        }
+
+        [Test]
+        public void getCommentMessage_returnValidMessage_GivenSnapshotSpan()
+        {
+            // given
+            var span = new SnapshotSpan();
+            textServiceMock.Setup(service => service.getText(It.IsAny<SnapshotSpan>()))
+                .Returns("// DPR: [CRI] test message");
+
+            // when
+            var message = reviewService.getCommentMessage(span);
+
+            // then
+            Assert.AreEqual("test message", message);
+        }
+
+        private IList<PeerReviewSnapshotComment> createTestComments()
+        {
+            var comments = new List<PeerReviewSnapshotComment>();
 
             comments.Add(createTestOneComment());
             comments.Add(createTestOneComment());
             return comments;
         }
 
-        private PeerReviewComment createTestOneComment()
+        private PeerReviewSnapshotComment createTestOneComment()
         {
-            return new PeerReviewComment()
-            {
-                Span = new SnapshotSpan()
-            };
+            return new PeerReviewSnapshotComment(reviewService, new SnapshotSpan());
         }
     }
 }
