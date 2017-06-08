@@ -85,7 +85,6 @@ namespace Dexter.Common.Utils
         {
             Debug.WriteLine("OnQueryCloseProject");
 
-            pfCancel = DexterConstants.FALSE;
             return VSConstants.S_OK;
         }
 
@@ -93,15 +92,12 @@ namespace Dexter.Common.Utils
         {
             Debug.WriteLine("OnQueryCloseProject");
 
-            pfCancel = DexterConstants.FALSE;
             return VSConstants.S_OK;
         }
 
         public int OnQueryUnloadProject(IVsHierarchy pRealHierarchy, ref int pfCancel)
         {
             Debug.WriteLine("OnQueryUnloadProject");
-
-            pfCancel = DexterConstants.FALSE;
             return VSConstants.S_OK;
         }
     }
