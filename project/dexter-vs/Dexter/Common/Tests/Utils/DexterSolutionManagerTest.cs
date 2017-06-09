@@ -6,18 +6,28 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio;
 using Dexter.Common.Utils;
+using Moq;
 
 namespace Dexter.Common.Tests.Utils
 {
     [TestFixture]
     public class DexterSolutionManagerTest
     {
+        Mock<IDexterHierarchyService> hierarchyServiceMock; 
         DexterSolutionManager manager;
+        IList<string> testFilePaths;
 
         [SetUp]
         public void Setup()
         {
-            manager = new DexterSolutionManager();
+            hierarchyServiceMock = new Mock<IDexterHierarchyService>();
+            manager = new DexterSolutionManager(hierarchyServiceMock.Object);
+
+            testFilePaths = new List<string>()
+            {
+                "c:\\test1.cs", "c:\\test2.cs"
+            };
+            hierarchyServiceMock.Setup(service => service.getAllSourceFilePaths(null)).Returns(testFilePaths);
         }
 
         [Test]
@@ -72,6 +82,64 @@ namespace Dexter.Common.Tests.Utils
 
             // then
             Assert.AreEqual(VSConstants.S_OK, result);
+        }
+
+        [Test]
+        public void OnAfterOpenProject_raiseSourceFileEvent()
+        {
+            // given 
+            var isEventRaised = false;
+            manager.SourceFilesChanged += (s, e) => isEventRaised = true;
+
+            // when
+            int result = manager.OnAfterOpenProject(null, 0);
+
+            // then
+            Assert.AreEqual(true, isEventRaised);
+        }
+
+        [Test]
+        public void OnAfterOpenProject_raiseSourceFileEvent_WithValidFilePaths()
+        {
+            // given 
+            IList<string> passedFilePaths = null;
+            manager.SourceFilesChanged += (s, e) => passedFilePaths = e.FilePaths;
+
+            // when
+            int result = manager.OnAfterOpenProject(null, 0);
+
+            // then
+            Assert.AreEqual(testFilePaths, passedFilePaths);
+        }
+
+        [Test]
+        public void OnAfterOpenProject_raiseSourceFileEvent_WithTrueAddedFlag()
+        {
+            // given 
+            bool isAddedFlag = false;
+            manager.SourceFilesChanged += (s, e) => isAddedFlag = e.IsAdded;
+
+            // when
+            int result = manager.OnAfterOpenProject(null, 0);
+
+            // then
+            Assert.AreEqual(true, isAddedFlag);
+        }
+
+        [Test]
+        public void OnAfterOpenProject_doNotRaiseSourceFileEvent_GivenNoSourceFile()
+        {
+            // given 
+            IList<string> emptyFilePaths = new List<string>();
+            hierarchyServiceMock.Setup(service => service.getAllSourceFilePaths(null)).Returns(emptyFilePaths);
+            var isEventRaised = false;
+            manager.SourceFilesChanged += (s, e) => isEventRaised = true;
+
+            // when
+            int result = manager.OnAfterOpenProject(null, 0);
+
+            // then
+            Assert.AreEqual(false, isEventRaised);
         }
 
         [Test]

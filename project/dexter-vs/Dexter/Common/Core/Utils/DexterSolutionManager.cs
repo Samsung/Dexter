@@ -1,20 +1,66 @@
 ﻿using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using System.Diagnostics;
 using Microsoft.VisualStudio;
 
 namespace Dexter.Common.Utils
 {
     /// <summary>
+    /// EventArgs for SourceFileChanged event
+    /// </summary>
+    public class SourceFileEventArgs : EventArgs
+    {
+        private bool isAdded;
+        private IList<string> filePaths;
+
+        /// <summary>
+        /// Creates an instance of SourceFileEventArgs
+        /// </summary>
+        /// <param name="filePaths">Path list of changed files</param>
+        /// <param name="isAdded">Whether files are added or not</param>
+        public SourceFileEventArgs(IList<string> filePaths, bool isAdded)
+        {
+            this.filePaths = filePaths;
+            this.isAdded = isAdded;
+        }
+
+        /// <summary>
+        /// Path list of changed files
+        /// </summary>
+        public IList<string> FilePaths
+        {
+            get { return filePaths; }
+        }
+
+        /// <summary>
+        /// Whether files are added or not
+        /// </summary>
+        public bool IsAdded
+        {
+            get { return isAdded; }
+        }   
+    }
+
+    /// <summary>
     /// Manages VS soultions and packages information/events
     /// </summary>
     public class DexterSolutionManager : IVsSolutionEvents
     {
         static DexterSolutionManager instace;
+        IDexterHierarchyService hierarchyService;
+
+        public event EventHandler<SourceFileEventArgs> SourceFilesChanged;
+
+        public DexterSolutionManager(IDexterHierarchyService hierarchyService)
+        {
+            this.hierarchyService = hierarchyService;
+        }
 
         static public DexterSolutionManager Instance
         {
@@ -51,10 +97,21 @@ namespace Dexter.Common.Utils
         {
             Debug.WriteLine("OnAfterOpenProject");
 
+            IList<string> sourceFilePaths = hierarchyService.getAllSourceFilePaths(pHierarchy);
+            if (sourceFilePaths.Count > 0)
+            {
+                RaiseSourceFilesChanged(new SourceFileEventArgs(sourceFilePaths, true));
+            }
+            
             //uint cookie;
             //pHierarchy.AdviseHierarchyEvents(new DexterHierarchyEvents(), out cookie);
 
             return VSConstants.S_OK;
+        }
+
+        private void RaiseSourceFilesChanged(SourceFileEventArgs eventArgs)
+        {
+            SourceFilesChanged?.Invoke(this, eventArgs);
         }
 
         public int OnAfterOpenSolution(object pUnkReserved, int fNewSolution)
