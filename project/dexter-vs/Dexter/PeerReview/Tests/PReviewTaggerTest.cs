@@ -48,7 +48,8 @@ namespace Dexter.PeerReview.Tests
             textBufferMock.Setup(buffer => buffer.CurrentSnapshot).Returns(textSnapshotMock.Object);
             textSnapshotMock.Setup(snapshot => snapshot.Length).Returns(10);
             textSnapshotMock.Setup(snapshot => snapshot.Lines).Returns(createTestSnapshotLines());
-                        
+            textDocumentMock.Setup(document => document.FilePath).Returns("c:\\test.cs");
+
             tagger = new PeerReviewTagger(textBufferMock.Object, textDocumentMock.Object, 
                 dexterClientMock.Object, reviewServiceMock.Object, dexterInfoProviderMock.Object);
         }

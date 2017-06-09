@@ -28,7 +28,8 @@ namespace Dexter.PeerReview
         /// </summary>
         /// <param name="reviewService">Peer review service for interface with snapshotSpan</param>
         /// <param name="snapshotSpan">SnapshotSpan contains review comment</param>
-        public PeerReviewSnapshotComment(IPeerReviewService reviewService, SnapshotSpan snapshotSpan)
+        /// <param name="filePath">Path of file contains review comment</param>
+        public PeerReviewSnapshotComment(IPeerReviewService reviewService, SnapshotSpan snapshotSpan, string filePath)
         {
             this.snapshotSpan = snapshotSpan;
             Span = snapshotSpan;
@@ -36,6 +37,7 @@ namespace Dexter.PeerReview
             EndLine = reviewService.getEndLineNumber(snapshotSpan);
             Serverity = reviewService.getServerity(snapshotSpan);
             Message = reviewService.getCommentMessage(snapshotSpan);
+            FilePath = filePath;
         }
     }
 }

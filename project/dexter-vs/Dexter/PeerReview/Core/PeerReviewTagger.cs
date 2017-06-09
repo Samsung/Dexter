@@ -96,7 +96,7 @@ namespace Dexter.PeerReview
                 if (commentStart >= 0)
                 {
                     comments.Add(new PeerReviewSnapshotComment(
-                        reviewService, new SnapshotSpan(line.Start + commentStart, line.End)));
+                        reviewService, new SnapshotSpan(line.Start + commentStart, line.End), textDocument.FilePath));
                 }
             } 
 

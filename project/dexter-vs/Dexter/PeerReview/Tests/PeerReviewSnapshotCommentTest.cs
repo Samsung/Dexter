@@ -16,9 +16,11 @@ namespace Dexter.PeerReview.Tests
     {
         Mock<IPeerReviewService> reviewServiceMock;
         Mock<ITextSnapshot> textSnapshotMock;
+        string testFilePath;
 
         [SetUp]
         public void SetUp() {
+            testFilePath = "c:\\test.cs";
             reviewServiceMock = new Mock<IPeerReviewService>();
             textSnapshotMock = new Mock<ITextSnapshot>(MockBehavior.Strict);
             textSnapshotMock.Setup(snapshot => snapshot.Length).Returns(30);
@@ -33,7 +35,7 @@ namespace Dexter.PeerReview.Tests
             var snapshotSpan = new SnapshotSpan(textSnapshotMock.Object, span);
 
             // when
-            var comment = new PeerReviewSnapshotComment(reviewServiceMock.Object, snapshotSpan);
+            var comment = new PeerReviewSnapshotComment(reviewServiceMock.Object, snapshotSpan, testFilePath);
 
             // then
             Assert.AreEqual(snapshotSpan, comment.SnapShotSpan);
@@ -47,7 +49,7 @@ namespace Dexter.PeerReview.Tests
             var snapshotSpan = new SnapshotSpan(textSnapshotMock.Object, span);
 
             // when
-            var comment = new PeerReviewSnapshotComment(reviewServiceMock.Object, snapshotSpan);
+            var comment = new PeerReviewSnapshotComment(reviewServiceMock.Object, snapshotSpan, testFilePath);
 
             // then
             Assert.AreEqual(span, comment.Span);
@@ -63,7 +65,7 @@ namespace Dexter.PeerReview.Tests
             reviewServiceMock.Setup(service => service.getEndLineNumber(It.IsAny<SnapshotSpan>())).Returns(10);
 
             // when
-            var comment = new PeerReviewSnapshotComment(reviewServiceMock.Object, snapshotSpan);
+            var comment = new PeerReviewSnapshotComment(reviewServiceMock.Object, snapshotSpan, testFilePath);
 
             // then
             Assert.AreEqual(5, comment.StartLine);
@@ -79,7 +81,7 @@ namespace Dexter.PeerReview.Tests
             reviewServiceMock.Setup(service => service.getServerity(It.IsAny<SnapshotSpan>())).Returns("MAJ");
 
             // when
-            var comment = new PeerReviewSnapshotComment(reviewServiceMock.Object, snapshotSpan);
+            var comment = new PeerReviewSnapshotComment(reviewServiceMock.Object, snapshotSpan, testFilePath);
 
             // then
             Assert.AreEqual("MAJ", comment.Serverity);
@@ -94,10 +96,25 @@ namespace Dexter.PeerReview.Tests
             reviewServiceMock.Setup(service => service.getCommentMessage(It.IsAny<SnapshotSpan>())).Returns("test message");
 
             // when
-            var comment = new PeerReviewSnapshotComment(reviewServiceMock.Object, snapshotSpan);
+            var comment = new PeerReviewSnapshotComment(reviewServiceMock.Object, snapshotSpan, testFilePath);
 
             // then
             Assert.AreEqual("test message", comment.Message);
+        }
+
+        [Test()]
+        public void PeerReviewSnapshotComment_setValidFilePath_GivenFilePath()
+        {
+            // given
+            var span = new Span();
+            var snapshotSpan = new SnapshotSpan(textSnapshotMock.Object, span);
+            reviewServiceMock.Setup(service => service.getCommentMessage(It.IsAny<SnapshotSpan>())).Returns("test message");
+
+            // when
+            var comment = new PeerReviewSnapshotComment(reviewServiceMock.Object, snapshotSpan, testFilePath);
+
+            // then
+            Assert.AreEqual(testFilePath, comment.FilePath);
         }
     }
 }
