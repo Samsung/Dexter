@@ -133,21 +133,21 @@ namespace Dexter.UI
             SettingsPage settingsPage = (SettingsPage)GetDialogPage(typeof(SettingsPage));
             settingsPage.SettingsChanged += onSettingsChanged;
 
+            CreateAllServices();
             RegisterSolutionManager();
-
-            CreatePReviewService();
                        
             base.Initialize();
         }
 
-        private void CreatePReviewService()
+        private void CreateAllServices()
         {
+            DexterHierarchyService.Instance = new DexterHierarchyService();
             PeerReviewService.Instance = new PeerReviewService(new DexterTextService());
         }
 
         private void RegisterSolutionManager()
         {
-            DexterSolutionManager dexterSolutionManager = new DexterSolutionManager();
+            var dexterSolutionManager = new DexterSolutionManager(DexterHierarchyService.Instance);
             DexterSolutionManager.Instance = dexterSolutionManager;
             uint eventCookie;
 
