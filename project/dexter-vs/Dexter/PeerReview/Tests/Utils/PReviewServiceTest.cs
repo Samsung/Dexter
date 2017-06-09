@@ -326,7 +326,7 @@ namespace Dexter.PeerReview.Tests.Utils
 
         private PeerReviewSnapshotComment createTestOneComment()
         {
-            return new PeerReviewSnapshotComment(reviewService, new SnapshotSpan());
+            return new PeerReviewSnapshotComment(reviewService, new SnapshotSpan(), "c:\\test.cs");
         }
     }
 }

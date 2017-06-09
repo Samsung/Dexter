@@ -37,5 +37,10 @@ namespace Dexter.PeerReview
         /// Text message of review comment 
         /// </summary>
         public string Message { get; set; }
+
+        /// <summary>
+        /// File path contains review comment
+        /// </summary>
+        public string FilePath { get; set; }
     }
 }
