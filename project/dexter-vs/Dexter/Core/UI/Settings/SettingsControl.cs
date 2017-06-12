@@ -45,6 +45,7 @@ namespace Dexter.UI.Settings
             serverIndicator.Visible = !standaloneAnalysis;
             userIndicator.Visible = !standaloneAnalysis;
             testConnectionButton.Enabled = !standaloneAnalysis;
+            clearConnectionIndicators();
         }
 
         private void enableDexterHomeCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -82,6 +83,13 @@ namespace Dexter.UI.Settings
             userIndicator.Valid = userValid;
             connectionStatusLabel.Text = message;
         }
+        
+        private void clearConnectionIndicators()
+        {
+            serverIndicator.BackgroundImage = null;
+            userIndicator.BackgroundImage = null;
+            connectionStatusLabel.Text = "";
+        }            
 
         private void dexterPathButton_Click(object sender, EventArgs e)
         {
@@ -188,6 +196,11 @@ namespace Dexter.UI.Settings
             standaloneCheckBox.Checked = dexterInfo.standalone;
 
             return dexterInfo;
+        }
+
+        private void connectionTextBoxes_TextChanged(object sender, EventArgs e)
+        {
+            clearConnectionIndicators();
         }
     }
 }
