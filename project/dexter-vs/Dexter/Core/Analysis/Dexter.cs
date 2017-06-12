@@ -57,21 +57,12 @@ namespace Dexter.Analysis
         public Result Analyse()
         {
             CreateDexterProcess();
-
-            using (dexterProcess)
-            {
-                dexterProcess.Start();
-                dexterProcess.BeginErrorReadLine();
-                dexterProcess.BeginOutputReadLine();
-                dexterProcess.WaitForExit();
-            }
-            Result result = GetAnalysisResult();
-
-            return result;
+            StartDexterProcess();
+            return GetAnalysisResult();
         }
 
         /// <summary>
-        /// Cancels current analysis
+        /// Cancels current dexter process
         /// </summary>
         public void Cancel()
         {
@@ -82,18 +73,32 @@ namespace Dexter.Analysis
         }
 
         /// <summary>
+        /// Attempts to create new user account using credentials provided in configuration
+        /// </summary>
+        public void CreateUser()
+        {
+            CreateDexterProcess(true);
+            StartDexterProcess();
+        }
+
+        /// <summary>
         /// Creates (but doesn't start) new Dexter process
         /// </summary>
-        private void CreateDexterProcess()
+        /// <param name="createUser">if true, this process will create new user account</param>
+        private void CreateDexterProcess(bool createUser = false)
         {
             string configFlag = File.Exists(Configuration.DefaultConfigurationPath) ? " -f " + Configuration.DefaultConfigurationPath : "";
-            string credentialsParams = configuration.standalone ? " -s " : " -u " + configuration.userName + " -p " + configuration.userPassword;
-                 
+            string createUserFlag = createUser ? " -c " : "";
+            string createXmlResultFlag = " -x ";
+            string credentialsParams = (configuration.standalone && !createUser) 
+                ? " -s " 
+                : " -u " + configuration.userName + " -p " + configuration.userPassword + " -h " + configuration.dexterServerIp + " -o " + configuration.dexterServerPort;
+                
             dexterProcess = new Process();
             dexterProcess.StartInfo = new ProcessStartInfo()
             {
                 FileName = "java.exe",
-                Arguments = "-jar " + configuration.DexterExecutorPath + " -x " + configFlag + credentialsParams,
+                Arguments = "-jar " + configuration.DexterExecutorPath + createUserFlag + createXmlResultFlag + configFlag + credentialsParams,
                 WorkingDirectory = Path.GetDirectoryName(configuration.DexterExecutorPath),
                 CreateNoWindow = true,
                 UseShellExecute = false,
@@ -104,6 +109,20 @@ namespace Dexter.Analysis
             dexterProcess.OutputDataReceived += OutputDataReceived;
             dexterProcess.ErrorDataReceived += ErrorDataReceived;
             dexterProcess.Disposed += (s,e) => dexterProcess = null;
+        }
+
+        /// <summary>
+        /// Starts dexter process
+        /// </summary>
+        private void StartDexterProcess()
+        {
+            using (dexterProcess)
+            {
+                dexterProcess.Start();
+                dexterProcess.BeginErrorReadLine();
+                dexterProcess.BeginOutputReadLine();
+                dexterProcess.WaitForExit();
+            }
         }
 
         /// <summary>
