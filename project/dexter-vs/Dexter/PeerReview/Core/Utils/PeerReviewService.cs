@@ -41,12 +41,14 @@ namespace Dexter.PeerReview.Utils
         /// <param name="span">SnapshotSpan contains review comment</param>
         /// <returns>Serverity code</returns>
         string getServerity(SnapshotSpan span);
+        string getServerity(string commentText);
         /// <summary>
         /// Gets comment message filtered by a serverity code
         /// </summary>
         /// <param name="span">SnapshotSpan contains review comment</param>
         /// <returns>Comment message</returns>
         string getCommentMessage(SnapshotSpan span);
+        string getCommentMessage(string commentText);
     }
 
     /// <summary>
@@ -152,7 +154,7 @@ namespace Dexter.PeerReview.Utils
             occurences.Add(new DexterOccurence()
             {
                 StringValue = "DPR",
-                Message = getCommentMessage(commentText),
+                Message = getCommentMessageInternal(commentText),
                 StartLine = textService.getStartLineNumber(comment.SnapShotSpan),
                 EndLine = textService.getEndLineNumber(comment.SnapShotSpan)
             });
@@ -172,7 +174,7 @@ namespace Dexter.PeerReview.Utils
                 return "MAJ";
         }
 
-        private string getCommentMessage(string commentText)
+        private string getCommentMessageInternal(string commentText)
         {
             string commentPrefix = @"//\sDPR:\s*(\[CRI\]|\[MAJ\]|\[CRC\])?";
             Regex rx = new Regex(commentPrefix, RegexOptions.IgnoreCase);
@@ -199,7 +201,17 @@ namespace Dexter.PeerReview.Utils
         public string getCommentMessage(SnapshotSpan span)
         {
             var text = textService.getText(span);
-            return getCommentMessage(text);
+            return getCommentMessageInternal(text);
+        }
+
+        public string getServerity(string commentText)
+        {
+            return getServerityCode(commentText);
+        }
+
+        public string getCommentMessage(string commentText)
+        {
+            return getCommentMessageInternal(commentText);
         }
     }
 }
