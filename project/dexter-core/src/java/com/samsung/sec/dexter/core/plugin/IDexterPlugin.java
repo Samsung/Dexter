@@ -30,6 +30,7 @@ import net.xeoh.plugins.base.Plugin;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
+import com.samsung.sec.dexter.core.checker.ICheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.exception.DexterException;
 
@@ -72,13 +73,13 @@ public interface IDexterPlugin extends Plugin{
 	 * set the default checkers' configuration.
 	 * @param cc 
 	 */
-	public void setCheckerConfig(CheckerConfig cc);
+	public void setCheckerConfig(ICheckerConfig cc);
 	
 	/**
 	 * @return return current CheckerConfig object
 	 * @throws DexterException 
 	 */
-	public CheckerConfig getCheckerConfig();
+	public ICheckerConfig getCheckerConfig();
 	
 	/**
 	 * run the static analysis with the plug-in

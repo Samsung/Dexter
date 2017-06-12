@@ -33,6 +33,7 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.checker.IChecker;
+import com.samsung.sec.dexter.core.checker.ICheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterUtil;
@@ -58,7 +59,7 @@ public class FindBugsWrapper {
     private static DetectorFactoryCollection DETECTOR_FACTORY_COLLECTION = DetectorFactoryCollection.instance();
     private static UserPreferences PREFERENCES = UserPreferences.createDefaultUserPreferences();
 
-    private CheckerConfig checkerConfig = new CheckerConfig(FindbugsDexterPlugin.PLUGIN_NAME,
+    private ICheckerConfig checkerConfig = new CheckerConfig(FindbugsDexterPlugin.PLUGIN_NAME,
             DexterConfig.LANGUAGE.JAVA);
 
     private Project project = new Project();
@@ -221,7 +222,7 @@ public class FindBugsWrapper {
     /**
      * @return CheckerConfig
      */
-    public CheckerConfig getCheckerConfig() {
+    public ICheckerConfig getCheckerConfig() {
         if (this.checkerConfig == null) {
             initCheckerConfig();
         }
@@ -230,7 +231,7 @@ public class FindBugsWrapper {
         }
     }
 
-    public void setCheckerConfig(CheckerConfig checkerConfig) {
+    public void setCheckerConfig(ICheckerConfig checkerConfig) {
         this.checkerConfig = checkerConfig;
     }
 }

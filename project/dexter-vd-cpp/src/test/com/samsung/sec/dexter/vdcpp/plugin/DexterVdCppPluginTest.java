@@ -9,8 +9,8 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResultChangeHandlerForUT;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.ITestHandlerAtTheEndOfHandleAnalysisResult;
-import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.checker.IChecker;
+import com.samsung.sec.dexter.core.checker.ICheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.defect.Occurence;
@@ -34,25 +34,24 @@ public class DexterVdCppPluginTest {
     }
 
     @Test
-    public void test_const_naming_checker_config() {
+    public void test_usleep_checker_config() {
         DexterVdCppPlugin plugin = new DexterVdCppPlugin();
         plugin.init();
 
-        CheckerConfig config = plugin.getCheckerConfig();
+        ICheckerConfig config = plugin.getCheckerConfig();
         //assertEquals(5, config.getCheckerList().size());
         assertEquals("dexter-vd-cpp", config.getToolName());
 
-        IChecker firstChecker = config.getCheckerList().iterator().next();
-        assertEquals("CRC", firstChecker.getCategoryName());
-        assertEquals("CONST_NAMING", firstChecker.getCode());
-        assertEquals(0, firstChecker.getCwe());
+        IChecker usleepChecker = config.getChecker("USLEEP");
+        assertEquals("Market Issue", usleepChecker.getCategoryName());
+        assertEquals("USLEEP", usleepChecker.getCode());
+        assertEquals(0, usleepChecker.getCwe());
         //assertTrue(firstChecker.isActive());
-        assertEquals("CRC", firstChecker.getSeverityCode());
-        assertEquals("BOTH", firstChecker.getType());
-        assertEquals("0.10.0", firstChecker.getVersion().toString());
-        assertEquals("The name of a const variable should be consist of Upper alphabet, underline, or number.",
-                firstChecker.getDescription());
-        assertEquals("[A-Z][0-9_A-Z]+", firstChecker.getProperty("RegExp"));
+        assertEquals("CRI", usleepChecker.getSeverityCode());
+        assertEquals("BOTH", usleepChecker.getType());
+        assertEquals("0.10.6", usleepChecker.getVersion().toString());
+        assertEquals("usleep(useconds_t usec) function can affect system performance, if usec parameter set too shortly. VD recommend that you use more than 10000 ms of usleep function.",
+                usleepChecker.getDescription());
     }
 
     @Test
@@ -65,7 +64,7 @@ public class DexterVdCppPluginTest {
         assertEquals("Samsung Electroincs", desc.get3rdPartyName());
         assertEquals(DexterConfig.LANGUAGE.CPP, desc.getLanguage());
         assertEquals("dexter-vd-cpp", desc.getPluginName());
-        assertEquals("0.10.0", desc.getVersion().toString());
+        assertEquals("0.10.6", desc.getVersion().toString());
     }
 
     @Test
@@ -73,8 +72,8 @@ public class DexterVdCppPluginTest {
         DexterVdCppPlugin plugin = new DexterVdCppPlugin();
         plugin.init();
 
-        ICheckerLogic checkerLogic = plugin.getCheckerLogic("CONST_NAMING");
-        assertEquals("com.samsung.sec.dexter.vdcpp.checkerlogic.ConstNamingCheckerLogic",
+        ICheckerLogic checkerLogic = plugin.getCheckerLogic("USLEEP");
+        assertEquals("com.samsung.sec.dexter.vdcpp.checkerlogic.USleepCheckerLogic",
                 checkerLogic.getClass().getName());
     }
 
@@ -536,6 +535,7 @@ public class DexterVdCppPluginTest {
         config.setProjectName("DefectiveProject");
         config.setSourceFileFullPath(sourceFileFullPath);
         config.setProjectFullPath(projectFullPath);
+        config.setAnalysisType(DexterConfig.AnalysisType.PROJECT);
         config.addSourceBaseDirList(sourceDir);
         config.generateFileNameWithSourceFileFullPath();
         config.generateModulePath();

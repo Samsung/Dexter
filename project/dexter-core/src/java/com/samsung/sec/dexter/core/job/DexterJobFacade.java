@@ -27,6 +27,7 @@
 package com.samsung.sec.dexter.core.job;
 
 import com.samsung.sec.dexter.core.config.IDexterStandaloneListener;
+import com.samsung.sec.dexter.core.util.DexterServerConfig;
 import com.samsung.sec.dexter.core.util.IDexterClient;
 import com.samsung.sec.dexter.util.ThreadUtil;
 
@@ -184,7 +185,7 @@ public class DexterJobFacade implements IDexterStandaloneListener {
     }
 
     @Override
-    public void handleWhenNotStandaloneMode() {
+    public void handleWhenNotStandaloneMode(DexterServerConfig serverConfig) {
         resumeDexterServerJobs();
     }
 }

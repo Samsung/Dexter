@@ -25,24 +25,6 @@
  */
 package com.samsung.sec.dexter.eclipse.ui;
 
-import com.google.common.base.Strings;
-import com.samsung.sec.dexter.core.config.DexterConfig;
-import com.samsung.sec.dexter.core.config.IDexterStandaloneListener;
-import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
-import com.samsung.sec.dexter.core.job.DexterJobFacade;
-import com.samsung.sec.dexter.core.plugin.BaseDexterPluginManager;
-import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
-import com.samsung.sec.dexter.core.plugin.IDexterPluginInitializer;
-import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
-import com.samsung.sec.dexter.core.util.DexterClient;
-import com.samsung.sec.dexter.core.util.DexterUtil;
-import com.samsung.sec.dexter.core.util.EmptyDexterClient;
-import com.samsung.sec.dexter.core.util.IDexterClient;
-import com.samsung.sec.dexter.core.util.IDexterLoginInfoListener;
-import com.samsung.sec.dexter.eclipse.ui.login.LoginDialog;
-import com.samsung.sec.dexter.eclipse.ui.util.EclipseLog;
-import com.samsung.sec.dexter.executor.DexterExecutorActivator;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -59,6 +41,27 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+
+import com.google.common.base.Strings;
+import com.samsung.sec.dexter.core.config.DexterConfig;
+import com.samsung.sec.dexter.core.config.IDexterStandaloneListener;
+import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.job.DexterJobFacade;
+import com.samsung.sec.dexter.core.plugin.BaseDexterPluginManager;
+import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
+import com.samsung.sec.dexter.core.plugin.IDexterPluginInitializer;
+import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
+import com.samsung.sec.dexter.core.util.DexterClient;
+import com.samsung.sec.dexter.core.util.DexterServerConfig;
+import com.samsung.sec.dexter.core.util.DexterUtil;
+import com.samsung.sec.dexter.core.util.EmptyDexterClient;
+import com.samsung.sec.dexter.core.util.IDexterClient;
+import com.samsung.sec.dexter.core.util.IDexterLoginInfoListener;
+import com.samsung.sec.dexter.core.util.IDexterWebResource;
+import com.samsung.sec.dexter.core.util.JerseyDexterWebResource;
+import com.samsung.sec.dexter.eclipse.ui.login.LoginDialog;
+import com.samsung.sec.dexter.eclipse.ui.util.EclipseLog;
+import com.samsung.sec.dexter.executor.DexterExecutorActivator;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -141,7 +144,8 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
             return;
         }
 
-        client = new DexterClient.DexterClientBuilder(id, pwd).dexterServerAddress(serverAddress).build();
+        IDexterWebResource webResource = new JerseyDexterWebResource(new DexterServerConfig(id, pwd, serverAddress));
+        client = new DexterClient(webResource);
         client.login();
     }
 
@@ -346,7 +350,7 @@ public class DexterUIActivator extends AbstractUIPlugin implements IDexterPlugin
     }
 
     @Override
-    public void handleWhenNotStandaloneMode() {
+    public void handleWhenNotStandaloneMode(DexterServerConfig serverConfig) {
         startJobs();
     }
 

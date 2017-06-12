@@ -30,6 +30,7 @@ import com.google.gson.Gson;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
+import com.samsung.sec.dexter.core.checker.ICheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterUtil;
@@ -48,7 +49,7 @@ import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
 
 public class CppcheckWrapper {
-    protected CheckerConfig checkerConfig = new CheckerConfig(CppcheckDexterPlugin.PLUGIN_NAME,
+    protected ICheckerConfig checkerConfig = new CheckerConfig(CppcheckDexterPlugin.PLUGIN_NAME,
             DexterConfig.LANGUAGE.CPP);
     protected AnalysisConfig config;
     protected String baseCommandString = "";
@@ -122,7 +123,7 @@ public class CppcheckWrapper {
     /**
      * @return CheckerConfig
      */
-    public CheckerConfig getCheckerConfig() {
+    public ICheckerConfig getCheckerConfig() {
         if (checkerConfig == null) {
             initCheckerConfig();
         }
@@ -252,7 +253,7 @@ public class CppcheckWrapper {
         this.config = config;
     }
 
-    public void setCheckerConfig(final CheckerConfig checkerConfig) {
+    public void setCheckerConfig(final ICheckerConfig checkerConfig) {
         this.checkerConfig = checkerConfig;
     }
 

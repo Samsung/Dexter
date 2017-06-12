@@ -26,47 +26,65 @@
 package com.samsung.sec.dexter.executor.cli;
 
 import static org.junit.Assert.assertEquals;
+
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.mock;
+
+import org.apache.commons.cli.HelpFormatter;
 
 import com.samsung.sec.dexter.core.config.DexterConfig;
-import com.samsung.sec.dexter.core.config.DexterConfigFile;
 import com.samsung.sec.dexter.core.config.IDexterConfigFile;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.exception.InvalidArgumentRuntimeException;
 import com.samsung.sec.dexter.core.util.DexterClient;
 import com.samsung.sec.dexter.core.util.EmptyDexterClient;
 import com.samsung.sec.dexter.core.util.IDexterClient;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 public class MainTest {
+	Main cliMain;
+	AccountService accountService;
+	AccountService accountServiceSpy;
+	
+	@Before
+	public void setUp() throws Exception {
+		accountService  = new AccountService(mock(ICLILog.class));
+		accountServiceSpy = spy(accountService);
+		cliMain = new Main(accountServiceSpy);
+	}
+	
     @Test
     public void test_constructor_empty_args() {
         String[] args = {};
         try {
-            Main cliMain = new Main();
-            new DexterCLIOption(args);
+            createTestCLIOption(args);
             assertNotNull(cliMain.getCLILog());
             fail();
-        } catch (DexterRuntimeException e) {
+        } catch (InvalidArgumentRuntimeException e) {
             assertTrue(e.getMessage().startsWith("You missed option(s) :  -u -p"));
         }
     }
+
+	private IDexterCLIOption createTestCLIOption(String[] args) {
+		return new DexterCLIOption(args, new HelpFormatter());
+	}
 
     @Test
     public void test_createAccount_invalid_args_only_c_option() {
         String[] args = { "-c" };
         try {
-            Main cliMain = new Main();
-            new DexterCLIOption(args);
+            createTestCLIOption(args);
             assertNotNull(cliMain.getCLILog());
             fail();
-        } catch (DexterRuntimeException e) {
+        } catch (InvalidArgumentRuntimeException e) {
             assertTrue(e.getMessage().startsWith("You missed option(s) :  -h -o -u -p"));
         }
     }
@@ -75,11 +93,10 @@ public class MainTest {
     public void test_createAccount_invalid_args_without_host_and_port() {
         String[] args = { "-c", "-u", "user", "-p", "password" };
         try {
-            Main cliMain = new Main();
-            new DexterCLIOption(args);
+            createTestCLIOption(args);
             assertNotNull(cliMain.getCLILog());
             fail();
-        } catch (DexterRuntimeException e) {
+        } catch (InvalidArgumentRuntimeException e) {
             assertTrue(e.getMessage().startsWith("You missed option(s) :  -h -o"));
         }
     }
@@ -88,11 +105,10 @@ public class MainTest {
     public void test_createAccount_invalid_args_without_port() {
         String[] args = { "-c", "-u", "user", "-p", "password", "-h", "100.100.100.100" };
         try {
-            Main cliMain = new Main();
-            new DexterCLIOption(args);
+            createTestCLIOption(args);
             assertNotNull(cliMain.getCLILog());
             fail();
-        } catch (DexterRuntimeException e) {
+        } catch (InvalidArgumentRuntimeException e) {
             assertTrue(e.getMessage().startsWith("You missed option(s) :  -o"));
         }
     }
@@ -106,34 +122,31 @@ public class MainTest {
 
         String[] args = { "-c", "-u", id, "-p", password, "-h", ip, "-o", "" + port };
 
-        Main cliMain = new Main();
-        Main spyMain = spy(cliMain);
-        IDexterCLIOption cliOption = new DexterCLIOption(args);
-        IDexterClient client = new EmptyDexterClient();
-        when(spyMain.createDexterClient(cliOption)).thenReturn(client);
+        IDexterCLIOption cliOption = createTestCLIOption(args);
+        IDexterClient client = new EmptyDexterClient();        
+        when(accountServiceSpy.createDexterClient(cliOption)).thenReturn(client);
 
-        spyMain.createAccount(cliOption);
+        cliMain.createAccount(cliOption);
 
-        verify(spyMain).createAccount(cliOption);
-        verify(spyMain).createDexterClient(cliOption);
-        verify(spyMain).createAccountHandler(client, cliOption);
+        verify(accountServiceSpy).createAccount(cliOption);
+        verify(accountServiceSpy).createDexterClient(cliOption);
+        verify(accountServiceSpy).createAccountHandler(client, cliOption);
 
         assertTrue(cliOption.getCommandMode() == IDexterCLIOption.CommandMode.CREATE_ACCOUNT);
         assertEquals(id, cliOption.getUserId());
         assertEquals(password, cliOption.getUserPassword());
         assertEquals(ip, cliOption.getServerHostIp());
         assertEquals(port, cliOption.getServerPort());
-        assertNotNull(spyMain.createAccountHandler(client, cliOption));
-        assertNotNull(spyMain.createAccountHandler(client, cliOption));
-        assertTrue(spyMain.createAccountHandler(client, cliOption) instanceof AccountHandler);
+        assertNotNull(cliMain.createAccountHandler(client, cliOption));
+        assertNotNull(cliMain.createAccountHandler(client, cliOption));
+        assertTrue(cliMain.createAccountHandler(client, cliOption) instanceof AccountHandler);
     }
 
     @Test
     public void test_createAccountHandler_should_return_empty_object_when_standalone_mode() {
         String[] args = { "-s", "-f", "./src/test/dexter_conf_java.json" };
 
-        Main cliMain = new Main();
-        IDexterCLIOption cliOption = new DexterCLIOption(args);
+        IDexterCLIOption cliOption = createTestCLIOption(args);
         IDexterClient client = new EmptyDexterClient();
 
         IAccountHandler accountHandler = cliMain.createAccountHandler(client, cliOption);
@@ -148,8 +161,7 @@ public class MainTest {
         String password = "password";
         String[] args = { "-u", id, "-p", password, "-f", "./src/test/dexter_conf_java.json" };
 
-        Main cliMain = new Main();
-        IDexterCLIOption cliOption = new DexterCLIOption(args);
+        IDexterCLIOption cliOption = createTestCLIOption(args);
         IDexterClient client = new EmptyDexterClient();
 
         IAccountHandler accountHandler = cliMain.createAccountHandler(client, cliOption);
@@ -159,36 +171,16 @@ public class MainTest {
     }
 
     @Test
-    public void test_createDexterClient_should_return_empty_object_when_standalone_mode() {
-        String id = "user";
-        String password = "password";
-        String[] args = { "-u", id, "-p", password, "-f", "./src/test/dexter_conf_java.json" };
+    public void test_createDexterClient_shouldeturn_empty_object_when_standalone_mode() {
+        String[] args = { "-s", "-f", "./src/test/dexter_conf_java.json" };
 
-        Main cliMain = new Main();
-        IDexterCLIOption cliOption = new DexterCLIOption(args);
+        IDexterCLIOption cliOption = createTestCLIOption(args);
         DexterConfig.getInstance().addSupprotingFileExtensions(new String[] { "java" });
-        final IDexterConfigFile configFile = cliMain.createDexterConfigFile(cliOption);
 
-        assertNotNull(configFile);
-        assertTrue(configFile instanceof DexterConfigFile);
+        IDexterClient client = cliMain.createDexterClient(cliOption);
 
-        assertEquals("./src/test/dexter-home", configFile.getDexterHome());
-        assertEquals("123.123.123.123", configFile.getDexterServerIp());
-        assertEquals(4982, configFile.getDexterServerPort());
-        assertEquals("ProjectName", configFile.getProjectName());
-        assertEquals("./src/test/myproject/", configFile.getProjectFullPath());
-        assertTrue(configFile.getSourceDirList().size() == 1);
-        assertEquals("./src/test", configFile.getSourceDirList().get(0));
-        assertTrue(configFile.getHeaderDirList().size() == 0);
-        assertEquals("UTF-8", configFile.getSourceEncoding());
-        assertTrue(configFile.getLibDirList().size() == 1);
-        assertEquals("./lib", configFile.getLibDirList().get(0));
-        assertEquals("./bin", configFile.getBinDir());
-        assertEquals("FILE", configFile.getType().toString());
-        assertEquals("com.samsung.sec.dexter.executor.cli", configFile.getModulePath());
-        assertTrue(configFile.getFileNameList().size() == 1);
-        assertEquals("MainTest.java", configFile.getFileNameList().get(0));
-        assertEquals("MainTest.java", configFile.getFirstFileName());
+        assertNotNull(client);
+        assertTrue(client instanceof EmptyDexterClient);
     }
 
     @Test
@@ -197,8 +189,7 @@ public class MainTest {
         String password = "password";
         String[] args = { "-u", id, "-p", password, "-f", "./src/test/dexter_conf_java.json" };
 
-        Main cliMain = new Main();
-        IDexterCLIOption cliOption = new DexterCLIOption(args);
+        IDexterCLIOption cliOption = createTestCLIOption(args);
         DexterConfig.getInstance().addSupprotingFileExtensions(new String[] { "java" });
 
         IDexterClient client = cliMain.createDexterClient(cliOption);
@@ -211,8 +202,7 @@ public class MainTest {
     public void test_createDexterConfigFile_should_return_valid_object() {
         String[] args = { "-s", "-f", "./src/test/dexter_conf_java.json" };
 
-        Main cliMain = new Main();
-        IDexterCLIOption cliOption = new DexterCLIOption(args);
+        IDexterCLIOption cliOption = createTestCLIOption(args);
         DexterConfig.getInstance().addSupprotingFileExtensions(new String[] { "java" });
 
         IDexterClient client = cliMain.createDexterClient(cliOption);
@@ -231,12 +221,11 @@ public class MainTest {
         String[] args = { "-u", id, "-p", password, "-h", ip, "-o", "" + port, "-s" };
 
         try {
-            Main cliMain = new Main();
-            IDexterCLIOption cliOption = new DexterCLIOption(args);
+            IDexterCLIOption cliOption = createTestCLIOption(args);
             IDexterClient client = new EmptyDexterClient();
             cliMain.createAccountHandler(client, cliOption);
             fail();
-        } catch (DexterRuntimeException e) {
+        } catch (InvalidArgumentRuntimeException e) {
             assertTrue(e.getMessage().startsWith("you cannot use option '-s' and with '-u'"));
         }
 
@@ -252,9 +241,9 @@ public class MainTest {
         String[] args = { "-u", id, "-p", password, "-h", ip, "-o", "" + port };
 
         try {
-            Main spyMain = spy(Main.class);
+            Main spyMain = spy(cliMain);
 
-            IDexterCLIOption cliOption = new DexterCLIOption(args);
+            IDexterCLIOption cliOption = createTestCLIOption(args);
             final IDexterConfigFile configFile = spyMain.createDexterConfigFile(cliOption);
             IDexterClient client = new EmptyDexterClient();
             when(spyMain.createDexterClient(cliOption)).thenReturn(client);
@@ -276,9 +265,9 @@ public class MainTest {
         String[] args = { "-u", id, "-p", password, "-h", ip, "-o", "" + port, "-f", "./dexter_conf_java1.json" };
 
         try {
-            Main spyMain = spy(Main.class);
+            Main spyMain = spy(cliMain);
 
-            IDexterCLIOption cliOption = new DexterCLIOption(args);
+            IDexterCLIOption cliOption = createTestCLIOption(args);
             final IDexterConfigFile configFile = spyMain.createDexterConfigFile(cliOption);
             IDexterClient client = new EmptyDexterClient();
             when(spyMain.createDexterClient(cliOption)).thenReturn(client);
@@ -301,9 +290,9 @@ public class MainTest {
                 "./src/test/dexter_conf_java_invalid.json" };
 
         try {
-            Main spyMain = spy(Main.class);
+            Main spyMain = spy(cliMain);
 
-            IDexterCLIOption cliOption = new DexterCLIOption(args);
+            IDexterCLIOption cliOption = createTestCLIOption(args);
             final IDexterConfigFile configFile = spyMain.createDexterConfigFile(cliOption);
             IDexterClient client = Mockito.mock(IDexterClient.class);
             when(spyMain.createDexterClient(cliOption)).thenReturn(client);
