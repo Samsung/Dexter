@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using Dexter.Common.Config;
 using Dexter.Common.Config.Providers;
 using Dexter.Config.Validation;
+using Dexter.Analysis;
 
 namespace Dexter.UI.Settings
 {
@@ -143,9 +144,28 @@ namespace Dexter.UI.Settings
                 }
                 else if (!validator.ValidateUserCredentials(dexterInfo, out result))
                 {
-                    MessageBox.Show("Couldn't login to Dexter server. Setting analysis mode to standalone", "Dexter warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    standaloneCheckBox.Checked = true;
-                    dexterInfo.standalone = true;
+                    if (!string.IsNullOrWhiteSpace(dexterInfo.userName) && enableDexterHomeCheckBox.Checked)
+                    { 
+                        var dialogResult = MessageBox.Show(string.Format("Couldn't login to Dexter server. \nDo you want to create account for user {0}?", dexterInfo.userName), "Dexter warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                        if (dialogResult == DialogResult.Yes)
+                        {
+                            var dexter = new DexterLegacyAnalyzer(new Configuration(new ProjectInfo(), dexterInfo));
+                            dexter.CreateUser();
+                            MessageBox.Show(string.Format("Created new user {0}", dexterInfo.userName), "Dexter info");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Setting analysis mode to standalone", "Dexter warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            standaloneCheckBox.Checked = true;
+                            dexterInfo.standalone = true;
+                        }
+                    } 
+                    else
+                    {
+                        MessageBox.Show("Couldn't login to Dexter server. \nSetting analysis mode to standalone", "Dexter warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        standaloneCheckBox.Checked = true;
+                        dexterInfo.standalone = true;
+                    }
                 }
             }
             Save(dexterInfo);

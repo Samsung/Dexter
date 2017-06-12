@@ -25,6 +25,10 @@ namespace Dexter.Tests.Analysis
                 sourceDir = { AppDomain.CurrentDomain.BaseDirectory + "../../TestData/SampleCppProject/" },
                 headerDir = { AppDomain.CurrentDomain.BaseDirectory + "../../TestData/SampleCppProject/" },
                 projectFullPath = AppDomain.CurrentDomain.BaseDirectory + "../../TestData/SampleCppProject/",
+                userName = "testUser",
+                userPassword = "testPassword",
+                dexterServerIp = "0.0.0.0",
+                dexterServerPort = "0"
             };
 
             // If there are no Dexter binaries in TestData, we need to download them. It may take some time.
@@ -44,6 +48,8 @@ namespace Dexter.Tests.Analysis
             }
 
             dexter = new DexterLegacyAnalyzer(config);
+            dexter.OutputDataReceived += (s, e) => { Console.WriteLine(e.Data); };
+            dexter.ErrorDataReceived += (s, e) => { Console.Error.WriteLine(e.Data); };
         }
 
         /// <summary>
@@ -65,7 +71,7 @@ namespace Dexter.Tests.Analysis
         public void Analyse_callOutputDataReceived()
         {
             var dataReceived = false;
-            dexter.OutputDataReceived += (s, e) => { Console.WriteLine(e.Data); dataReceived = true; };
+            dexter.OutputDataReceived += (s, e) => dataReceived = true;
             dexter.Analyse();
             Assert.IsTrue(dataReceived);
         }
@@ -77,11 +83,22 @@ namespace Dexter.Tests.Analysis
         public void Analyse_callErrorDataReceived()
         {
             var dataReceived = false;
-            dexter.ErrorDataReceived += (s, e) => { Console.WriteLine(e.Data); dataReceived = true; };
+            dexter.ErrorDataReceived += (s, e) => dataReceived = true;
             dexter.Analyse();
             Assert.IsTrue(dataReceived);
         }
 
+        /// <summary>
+        /// Account creation should fail due to wrong host address
+        /// </summary>
+        [Test]
+        public void CreateUser_callErrorDataReceived()
+        {
+            var errorDataReceived = false;
+            dexter.ErrorDataReceived += (s, e) => errorDataReceived = true;
+            dexter.CreateUser();
+            Assert.IsTrue(errorDataReceived);
+        }
 
     }
 }
