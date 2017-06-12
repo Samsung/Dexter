@@ -12,5 +12,6 @@ namespace Dexter.PeerReview
     public static class PeerReviewConstants
     {
         public static readonly string COMMENT_OWNER = "ICommentOwner";
+        public static readonly string COMMENT_DELIMITER = "// dpr:";
     }
 }

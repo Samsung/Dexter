@@ -48,9 +48,20 @@ namespace Dexter.Common.Utils
     }
 
     /// <summary>
+    /// Provides interfaces for events of solution and project 
+    /// </summary>
+    public interface IDexterSolutionManager
+    {
+        /// <summary>
+        /// Provides file list changed event
+        /// </summary>
+        event EventHandler<SourceFileEventArgs> SourceFilesChanged;
+    }
+
+    /// <summary>
     /// Manages VS soultions and packages information/events
     /// </summary>
-    public class DexterSolutionManager : IVsSolutionEvents
+    public class DexterSolutionManager : IVsSolutionEvents, IDexterSolutionManager
     {
         static DexterSolutionManager instace;
         IDexterHierarchyService hierarchyService;
