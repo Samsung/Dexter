@@ -113,6 +113,7 @@ namespace Dexter.UI.Settings
             this.userNameTextBox.TabIndex = 10;
             this.userNameTextBox.Text = "e.g. JohnDoe";
             this.userNameTextBox.WordWrap = false;
+            this.userNameTextBox.TextChanged += new System.EventHandler(this.connectionTextBoxes_TextChanged);
             // 
             // userPasswordTextBox
             // 
@@ -131,6 +132,7 @@ namespace Dexter.UI.Settings
             this.userPasswordTextBox.TabIndex = 12;
             this.userPasswordTextBox.Text = "e.g. myPassword";
             this.userPasswordTextBox.WordWrap = false;
+            this.userPasswordTextBox.TextChanged += new System.EventHandler(this.connectionTextBoxes_TextChanged);
             // 
             // userNameLabel
             // 
@@ -230,6 +232,7 @@ namespace Dexter.UI.Settings
             this.serverTextBox.TabIndex = 6;
             this.serverTextBox.Text = "e.g. http://127.0.0.2:8081";
             this.serverTextBox.WordWrap = false;
+            this.serverTextBox.TextChanged += new System.EventHandler(this.connectionTextBoxes_TextChanged);
             // 
             // dexterSettingsGroupBox
             // 
