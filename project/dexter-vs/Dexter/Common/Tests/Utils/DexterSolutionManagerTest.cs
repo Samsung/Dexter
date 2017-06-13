@@ -163,6 +163,50 @@ namespace Dexter.Common.Tests.Utils
         }
 
         [Test]
+        public void OnBeforeCloseProject_raiseSourceFileEvent_WithValidFilePaths()
+        {
+            // given 
+            IList<string> passedFilePaths = null;
+            manager.SourceFilesChanged += (s, e) => passedFilePaths = e.FilePaths;
+
+            // when
+            int result = manager.OnBeforeCloseProject(null, 0);
+
+            // then
+            Assert.AreEqual(testFilePaths, passedFilePaths);
+        }
+
+        [Test]
+        public void OnBeforeCloseProject_raiseSourceFileEvent_WithTrueAddedFlag()
+        {
+            // given 
+            bool isAddedFlag = true;
+            manager.SourceFilesChanged += (s, e) => isAddedFlag = e.IsAdded;
+
+            // when
+            int result = manager.OnBeforeCloseProject(null, 0);
+
+            // then
+            Assert.AreEqual(false, isAddedFlag);
+        }
+
+        [Test]
+        public void OnBeforeCloseProject_doNotRaiseSourceFileEvent_GivenNoSourceFile()
+        {
+            // given 
+            IList<string> emptyFilePaths = new List<string>();
+            hierarchyServiceMock.Setup(service => service.getAllSourceFilePaths(null)).Returns(emptyFilePaths);
+            var isEventRaised = false;
+            manager.SourceFilesChanged += (s, e) => isEventRaised = true;
+
+            // when
+            int result = manager.OnBeforeCloseProject(null, 0);
+
+            // then
+            Assert.AreEqual(false, isEventRaised);
+        }
+
+        [Test]
         public void OnBeforeCloseSolution_returnOK()
         {
             // when

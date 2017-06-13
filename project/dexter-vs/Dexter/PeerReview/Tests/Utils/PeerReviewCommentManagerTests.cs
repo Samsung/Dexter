@@ -65,6 +65,23 @@ namespace Dexter.PeerReview.Tests.Utils
         }
 
         [Test()]
+        public void UpdateReviewComments_matchCountOfComments_GivenTwoFileAndThenOneFileDeleted()
+        {
+            // given
+            var addedFilePaths = new List<string>() { "c:\\test1.c", "c:\\test2.c" };
+            var deletedFilePaths = new List<string>() { "c:\\test1.c" };
+            var testFileContent = createTestFileContent();
+            fileServiceMock.Setup(service => service.ReadTextAsync(It.IsAny<string>())).ReturnsAsync(testFileContent);
+
+            // when
+            manager.UpdateReviewComments(addedFilePaths, true).Wait();
+            manager.UpdateReviewComments(deletedFilePaths, false).Wait();
+
+            // then
+            Assert.AreEqual(2, manager.Comments.Count);
+        }
+
+        [Test()]
         public void UpdateReviewComments_matchLineNumbersOfComments_GivenOneFile()
         {
             // given
