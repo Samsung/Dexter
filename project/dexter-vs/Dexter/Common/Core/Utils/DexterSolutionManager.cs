@@ -111,6 +111,7 @@ namespace Dexter.Common.Utils
             IList<string> sourceFilePaths = hierarchyService.getAllSourceFilePaths(pHierarchy);
             if (sourceFilePaths.Count > 0)
             {
+                Debug.WriteLine("Start RaiseSourceFilesChanged : " + sourceFilePaths.Count);
                 RaiseSourceFilesChanged(new SourceFileEventArgs(sourceFilePaths, true));
             }
             
@@ -134,6 +135,13 @@ namespace Dexter.Common.Utils
         public int OnBeforeCloseProject(IVsHierarchy pHierarchy, int fRemoved)
         {
             Debug.WriteLine("OnBeforeCloseProject");
+
+            IList<string> sourceFilePaths = hierarchyService.getAllSourceFilePaths(pHierarchy);
+            if (sourceFilePaths.Count > 0)
+            {
+                RaiseSourceFilesChanged(new SourceFileEventArgs(sourceFilePaths, false));
+            }
+
             return VSConstants.S_OK;
         }
 

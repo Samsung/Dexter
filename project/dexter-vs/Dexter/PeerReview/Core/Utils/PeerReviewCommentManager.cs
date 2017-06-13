@@ -8,6 +8,7 @@ using Dexter.Common.Utils;
 using System.IO;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio;
+using System.Diagnostics;
 
 namespace Dexter.PeerReview.Utils
 {
@@ -73,13 +74,19 @@ namespace Dexter.PeerReview.Utils
             {
                 IList<PeerReviewComment> addedComments = (await getAllReviewComments(filePaths)).ToList();
                 comments = comments.Concat(addedComments).ToList();
-                RefreshReviewTasks(comments);
             }
             else
             {
                 // TODO: filter out review comments of deleted file paths 
-                await new Task(() => { });
+                var filteredComments = from comment in comments
+                                       where !filePaths.Contains(comment.FilePath)
+                                       select comment;
+
+                comments = filteredComments.ToList();
             }
+
+            Debug.WriteLine("UpdateReviewComments: " + comments.Count);
+            RefreshReviewTasks(comments);
         }
 
         private void RefreshReviewTasks(IList<PeerReviewComment> comments)
