@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using Dexter.Common.Defect;
 using Dexter.Common.Config.Providers;
+using System.Web;
 
 namespace Dexter.Common.Client
 {
@@ -21,7 +22,8 @@ namespace Dexter.Common.Client
         IHttpClient httpClient;
         IDexterInfoProvider dexterInfoProvider;
         static IDexterClient instance;
-        static readonly string POST_ANALYSIS_RESULT_V3 = "/api/v3/analysis/result";
+        const string POST_ANALYSIS_RESULT_V3 = "/api/v3/analysis/result";
+        const string POST_ACCOUNT_ADD_V1 = "/api/v1/accounts/add";
 
         /// <summary>
         /// get/set a singleton instance of IDexterClient
@@ -78,6 +80,21 @@ namespace Dexter.Common.Client
                 Debug.WriteLine(response, "Failed to SendAnalysisResult");
             }
         }
+
+        public async Task AddAccount(string userName, string userPassword, bool isAdmin)
+        {
+            var queryParams = HttpUtility.ParseQueryString("");
+            queryParams.Add("userId", userName);
+            queryParams.Add("userId2", userPassword);
+            queryParams.Add("isAdmin", isAdmin.ToString());
+
+            HttpResponseMessage response = await httpClient.PostAsync($"{POST_ACCOUNT_ADD_V1}?{queryParams}","");
+
+            if (!response.IsSuccessStatusCode.Equals(true))
+            {
+                Debug.WriteLine(response, "Failed to add account!");
+            }
+        } 
 
         /// <summary>
         /// Returns whether stand-alone mode is checked

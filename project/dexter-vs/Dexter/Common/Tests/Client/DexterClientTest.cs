@@ -58,6 +58,17 @@ namespace Dexter.Common.Tests.Client
         }
 
         [Test]
+        public void AddAccount_callPostAsync()
+        {
+            // when
+            client.AddAccount("testUser", "testPassword", false).Wait();
+
+            // then
+            httpClientMock.Verify(http => http.PostAsync(It.IsAny<string>(),
+                It.IsAny<string>()));
+        }
+
+        [Test]
         public void IsStandAloneMode_returnStandAlonValueOfDexterInfo()
         {
             // given
