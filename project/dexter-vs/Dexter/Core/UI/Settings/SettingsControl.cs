@@ -5,6 +5,7 @@ using Dexter.Common.Config;
 using Dexter.Common.Config.Providers;
 using Dexter.Config.Validation;
 using Dexter.Analysis;
+using Dexter.Common.Client;
 
 namespace Dexter.UI.Settings
 {
@@ -45,6 +46,7 @@ namespace Dexter.UI.Settings
             serverIndicator.Visible = !standaloneAnalysis;
             userIndicator.Visible = !standaloneAnalysis;
             testConnectionButton.Enabled = !standaloneAnalysis;
+            createUserButton.Enabled = !standaloneAnalysis;
             clearConnectionIndicators();
         }
 
@@ -152,14 +154,12 @@ namespace Dexter.UI.Settings
                 }
                 else if (!validator.ValidateUserCredentials(dexterInfo, out result))
                 {
-                    if (!string.IsNullOrWhiteSpace(dexterInfo.userName) && enableDexterHomeCheckBox.Checked)
+                    if (!string.IsNullOrWhiteSpace(dexterInfo.userName))
                     { 
                         var dialogResult = MessageBox.Show(string.Format("Couldn't login to Dexter server. \nDo you want to create account for user {0}?", dexterInfo.userName), "Dexter warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                         if (dialogResult == DialogResult.Yes)
                         {
-                            var dexter = new DexterLegacyAnalyzer(new Configuration(new ProjectInfo(), dexterInfo));
-                            dexter.CreateUser();
-                            MessageBox.Show(string.Format("Created new user {0}", dexterInfo.userName), "Dexter info");
+                            createUser();
                         }
                         else
                         {
@@ -170,7 +170,7 @@ namespace Dexter.UI.Settings
                     } 
                     else
                     {
-                        MessageBox.Show("Couldn't login to Dexter server. \nSetting analysis mode to standalone", "Dexter warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        MessageBox.Show("Couldn't login to Dexter server: user name is empty. \nSetting analysis mode to standalone", "Dexter warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         standaloneCheckBox.Checked = true;
                         dexterInfo.standalone = true;
                     }
@@ -198,9 +198,42 @@ namespace Dexter.UI.Settings
             return dexterInfo;
         }
 
+        private void createUser()
+        {
+            // We need to save current url 
+            DexterInfo dexterInfo = GetDexterInfoFromSettings();
+            var result = "";
+
+            if (!validator.ValidateServerConnection(dexterInfo, out result))
+            {
+                MessageBox.Show("Couldn't connect to Dexter server. Setting analysis mode to standalone", "Dexter warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                standaloneCheckBox.Checked = true;
+                dexterInfo.standalone = true;
+                Save(dexterInfo);
+            }
+            else if (validator.ValidateUserCredentials(dexterInfo, out result))
+            {
+                MessageBox.Show($"Couldn't create user: user {dexterInfo.userName} already exists", "Dexter warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else
+            {
+                DexterClient.Instance = new DexterClient(new DexterHttpClientWrapper(dexterInfoProvider), dexterInfoProvider);
+                DexterClient.Instance.AddAccount(dexterInfo.userName, dexterInfo.userPassword, false);
+                MessageBox.Show(string.Format("Created new user {0}", dexterInfo.userName), "Dexter info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
         private void connectionTextBoxes_TextChanged(object sender, EventArgs e)
         {
             clearConnectionIndicators();
+
+            DexterInfo dexterInfo = GetDexterInfoFromSettings();
+            createUserButton.Enabled = ! string.IsNullOrWhiteSpace(dexterInfo.userName); 
+        }
+
+        private void createUserButton_Click(object sender, EventArgs e)
+        {
+            createUser();
         }
     }
 }
