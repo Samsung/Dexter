@@ -9,6 +9,8 @@ using Moq;
 using Dexter.Common.Client;
 using Dexter.PeerReview.Utils;
 using Dexter.Common.Defect;
+using Dexter.Common.Config.Providers;
+using Dexter.Common.Config;
 
 namespace Dexter.PeerReview.Tests
 {
@@ -21,6 +23,8 @@ namespace Dexter.PeerReview.Tests
         Mock<ITextDocument> textDocumentMock;
         Mock<IPReviewService> reviewServiceMock;
         Mock<IDexterClient> dexterClientMock;
+        Mock<IDexterInfoProvider> dexterInfoProviderMock;
+
         PropertyCollection properties;
         PeerReviewTagger tagger;
 
@@ -35,14 +39,16 @@ namespace Dexter.PeerReview.Tests
             textDocumentMock = new Mock<ITextDocument>(MockBehavior.Strict);
             reviewServiceMock = new Mock<IPReviewService>(MockBehavior.Strict);
             dexterClientMock = new Mock<IDexterClient>();
+            dexterInfoProviderMock = new Mock<IDexterInfoProvider>();
             properties = new PropertyCollection();
 
             textBufferMock.Setup(buffer => buffer.Properties).Returns(properties);
             textBufferMock.Setup(buffer => buffer.CurrentSnapshot).Returns(textSnapshotMock.Object);
             textSnapshotMock.Setup(snapshot => snapshot.Length).Returns(10);
             textSnapshotMock.Setup(snapshot => snapshot.Lines).Returns(createTestSnapshotLines());
+                        
             tagger = new PeerReviewTagger(textBufferMock.Object, textDocumentMock.Object, 
-                dexterClientMock.Object, reviewServiceMock.Object);
+                dexterClientMock.Object, reviewServiceMock.Object, dexterInfoProviderMock.Object);
         }
 
         private IEnumerable<ITextSnapshotLine> createTestSnapshotLines()
@@ -81,6 +87,7 @@ namespace Dexter.PeerReview.Tests
             comments.Add(new PeerReviewComment());
             reviewServiceMock.Setup(service => service.ConvertToDexterResult(
                 It.IsAny<ITextDocument>(), It.IsAny<IList<PeerReviewComment>>())).Returns(new DexterResult());
+            dexterInfoProviderMock.Setup(infoProvider => infoProvider.Load()).Returns(new DexterInfo() { standalone = false });
 
             // when
             textDocumentMock.Raise(doc => doc.FileActionOccurred += null,
@@ -98,7 +105,7 @@ namespace Dexter.PeerReview.Tests
             comments.Add(new PeerReviewComment());
             reviewServiceMock.Setup(service => service.ConvertToDexterResult(
                 It.IsAny<ITextDocument>(), It.IsAny<IList<PeerReviewComment>>())).Returns(new DexterResult());
-            dexterClientMock.Setup(client => client.IsStandAloneMode()).Returns(true);
+            dexterInfoProviderMock.Setup(infoProvider => infoProvider.Load()).Returns(new DexterInfo() { standalone = true });
 
             // when
             textDocumentMock.Raise(doc => doc.FileActionOccurred += null,

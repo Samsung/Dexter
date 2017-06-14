@@ -29,18 +29,7 @@ namespace Dexter.Common.Tests.Client
             httpClientMock.Setup(http => http.PostAsync(It.IsAny<string>(), It.IsAny<string>()))
                 .ReturnsAsync(new HttpResponseMessage(HttpStatusCode.OK));
 
-            client = new DexterClient(httpClientMock.Object, dexterInfoProviderMock.Object);
-        }
-
-        [Test()]
-        public void Instance_throwException_IfNoInstance()
-        {
-            // given
-            IDexterClient temp;
-            DexterClient.Instance = null;
-
-            // when & then
-            Assert.Throws<NullReferenceException>(() => { temp = DexterClient.Instance; });
+            client = new DexterClient(httpClientMock.Object);
         }
 
         [Test]
@@ -66,23 +55,6 @@ namespace Dexter.Common.Tests.Client
             // then
             httpClientMock.Verify(http => http.PostAsync(It.IsAny<string>(),
                 It.IsAny<string>()));
-        }
-
-        [Test]
-        public void IsStandAloneMode_returnStandAlonValueOfDexterInfo()
-        {
-            // given
-            var dexterInfo = new DexterInfo()
-            {
-                standalone = true
-            };
-            dexterInfoProviderMock.Setup(provider => provider.Load()).Returns(dexterInfo);
-
-            // when
-            var isStandAlone = client.IsStandAloneMode();
-
-            // then
-            Assert.AreEqual(true, isStandAlone);
         }
     }
 }

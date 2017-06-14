@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
 using Dexter.Common.Client;
 using Dexter.PeerReview.Utils;
+using Dexter.Common.Config.Providers;
 
 namespace Dexter.PeerReview
 {
@@ -35,6 +36,7 @@ namespace Dexter.PeerReview
         private ITextDocument textDocument;
         private IList<PeerReviewComment> comments;
         private IDexterClient dexterClient;
+        private IDexterInfoProvider dexterInfoProvider;
         private IPReviewService reviewService;
         private const string COMMENT_DELIMITER = "dpr:";
 
@@ -50,11 +52,12 @@ namespace Dexter.PeerReview
         /// Initializes variables and parses peer review comments for the text buffer
         /// </summary>
         public PeerReviewTagger(ITextBuffer textBuffer, ITextDocument document, IDexterClient dexterClient, 
-            IPReviewService reviewService)
+            IPReviewService reviewService, IDexterInfoProvider dexterInfoProvider)
         {
             this.reviewService = reviewService;
             this.dexterClient = dexterClient;
             this.textBuffer = textBuffer;
+            this.dexterInfoProvider = dexterInfoProvider;
             this.textBuffer.Changed += TextBufferChanged;
             this.textBuffer.Properties.AddProperty(PeerReviewConstants.COMMENT_OWNER, this);
 
@@ -68,7 +71,7 @@ namespace Dexter.PeerReview
         {
             if (e.FileActionType == FileActionTypes.ContentSavedToDisk)
             {
-                if (dexterClient.IsStandAloneMode())
+                if (dexterInfoProvider.Load().standalone)
                     return;
 
                 dexterClient.SendAnalysisResult(reviewService.ConvertToDexterResult(textDocument, comments));

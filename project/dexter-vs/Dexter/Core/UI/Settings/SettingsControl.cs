@@ -200,7 +200,6 @@ namespace Dexter.UI.Settings
 
         private void createUser()
         {
-            // We need to save current url 
             DexterInfo dexterInfo = GetDexterInfoFromSettings();
             var result = "";
 
@@ -217,9 +216,8 @@ namespace Dexter.UI.Settings
             }
             else
             {
-                DexterClient.Instance = new DexterClient(new DexterHttpClientWrapper(dexterInfoProvider), dexterInfoProvider);
-                DexterClient.Instance.AddAccount(dexterInfo.userName, dexterInfo.userPassword, false);
-                MessageBox.Show(string.Format("Created new user {0}", dexterInfo.userName), "Dexter info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                var dexterClient = new DexterClient(new DexterHttpClientWrapper(dexterInfoProvider));
+                dexterClient.AddAccount(dexterInfo.userName, dexterInfo.userPassword, false);
             }
         }
 
