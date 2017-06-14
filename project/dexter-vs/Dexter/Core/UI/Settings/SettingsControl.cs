@@ -154,7 +154,7 @@ namespace Dexter.UI.Settings
                 }
                 else if (!validator.ValidateUserCredentials(dexterInfo, out result))
                 {
-                    if (!string.IsNullOrWhiteSpace(dexterInfo.userName))
+                    if (!string.IsNullOrWhiteSpace(dexterInfo.userName) && !string.IsNullOrWhiteSpace(dexterInfo.userPassword))
                     { 
                         var dialogResult = MessageBox.Show(string.Format("Couldn't login to Dexter server. \nDo you want to create account for user {0}?", dexterInfo.userName), "Dexter warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                         if (dialogResult == DialogResult.Yes)
@@ -216,8 +216,23 @@ namespace Dexter.UI.Settings
             }
             else
             {
+                Save(dexterInfo);
                 var dexterClient = new DexterClient(new DexterHttpClientWrapper(dexterInfoProvider));
-                dexterClient.AddAccount(dexterInfo.userName, dexterInfo.userPassword, false);
+                var creationTask = dexterClient.AddAccount(dexterInfo.userName, dexterInfo.userPassword, false);
+
+                creationTask.ContinueWith(r =>
+                {
+                    var response = r.Result;
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        MessageBox.Show($"Created new user {dexterInfo.userName}", "Dexter info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Creating new user {dexterInfo.userName} failed: {response.Content}", "Dexter error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                });
             }
         }
 
@@ -226,7 +241,7 @@ namespace Dexter.UI.Settings
             clearConnectionIndicators();
 
             DexterInfo dexterInfo = GetDexterInfoFromSettings();
-            createUserButton.Enabled = ! string.IsNullOrWhiteSpace(dexterInfo.userName); 
+            createUserButton.Enabled = !string.IsNullOrWhiteSpace(dexterInfo.userName) && !string.IsNullOrWhiteSpace(dexterInfo.userPassword); 
         }
 
         private void createUserButton_Click(object sender, EventArgs e)
