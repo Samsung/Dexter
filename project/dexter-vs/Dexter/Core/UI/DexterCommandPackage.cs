@@ -134,7 +134,7 @@ namespace Dexter.UI
             settingsPage.SettingsChanged += onSettingsChanged;
 
             RegisterSolutionManager();
-            InitDexterClient(dexterInfoProvider);
+
             CreatePReviewService();
                        
             base.Initialize();
@@ -143,13 +143,6 @@ namespace Dexter.UI
         private void CreatePReviewService()
         {
             PeerReviewService.Instance = new PeerReviewService(new DexterTextService());
-        }
-
-        private void InitDexterClient(IDexterInfoProvider dexterInfoProvider)
-        {
-            DexterClient.Instance = new DexterClient(
-                new DexterHttpClientWrapper(dexterInfoProvider),
-                dexterInfoProvider);
         }
 
         private void RegisterSolutionManager()

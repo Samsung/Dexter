@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
 using Dexter.Common.Client;
 using Dexter.PeerReview.Utils;
+using Dexter.Common.Config.Providers;
 
 namespace Dexter.PeerReview
 {
@@ -22,6 +23,12 @@ namespace Dexter.PeerReview
         [Import]
         public IClassifierAggregatorService AggregatorService;
 
+        [Import]
+        IDexterClient dexterClient;
+
+        [Import]
+        IDexterInfoProvider dexterInfoProvider;
+
         public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag
         {
             if (buffer == null)
@@ -33,7 +40,7 @@ namespace Dexter.PeerReview
                 ITextDocument document = null;
                 buffer.Properties.TryGetProperty(typeof(ITextDocument), out document);
 
-                return new PeerReviewTagger(buffer, document, DexterClient.Instance, PeerReviewService.Instance) as ITagger<T>;
+                return new PeerReviewTagger(buffer, document, dexterClient, PeerReviewService.Instance, dexterInfoProvider) as ITagger<T>;
             };
             return buffer.Properties.GetOrCreateSingletonProperty<ITagger<T>>(sc);
         }
