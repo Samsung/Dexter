@@ -61,8 +61,8 @@ namespace Dexter.PeerReview.Tests
             // given
             var span = new Span();
             var snapshotSpan = new SnapshotSpan(textSnapshotMock.Object, span);
-            reviewServiceMock.Setup(service => service.getStartLineNumber(It.IsAny<SnapshotSpan>())).Returns(5);
-            reviewServiceMock.Setup(service => service.getEndLineNumber(It.IsAny<SnapshotSpan>())).Returns(10);
+            reviewServiceMock.Setup(service => service.GetStartLineNumber(It.IsAny<SnapshotSpan>())).Returns(5);
+            reviewServiceMock.Setup(service => service.GetEndLineNumber(It.IsAny<SnapshotSpan>())).Returns(10);
 
             // when
             var comment = new PeerReviewSnapshotComment(reviewServiceMock.Object, snapshotSpan, testFilePath);
@@ -78,7 +78,7 @@ namespace Dexter.PeerReview.Tests
             // given
             var span = new Span();
             var snapshotSpan = new SnapshotSpan(textSnapshotMock.Object, span);
-            reviewServiceMock.Setup(service => service.getServerity(It.IsAny<SnapshotSpan>())).Returns("MAJ");
+            reviewServiceMock.Setup(service => service.GetServerity(It.IsAny<SnapshotSpan>())).Returns("MAJ");
 
             // when
             var comment = new PeerReviewSnapshotComment(reviewServiceMock.Object, snapshotSpan, testFilePath);
@@ -93,7 +93,7 @@ namespace Dexter.PeerReview.Tests
             // given
             var span = new Span();
             var snapshotSpan = new SnapshotSpan(textSnapshotMock.Object, span);
-            reviewServiceMock.Setup(service => service.getCommentMessage(It.IsAny<SnapshotSpan>())).Returns("test message");
+            reviewServiceMock.Setup(service => service.GetCommentMessage(It.IsAny<SnapshotSpan>())).Returns("test message");
 
             // when
             var comment = new PeerReviewSnapshotComment(reviewServiceMock.Object, snapshotSpan, testFilePath);
@@ -108,13 +108,28 @@ namespace Dexter.PeerReview.Tests
             // given
             var span = new Span();
             var snapshotSpan = new SnapshotSpan(textSnapshotMock.Object, span);
-            reviewServiceMock.Setup(service => service.getCommentMessage(It.IsAny<SnapshotSpan>())).Returns("test message");
+            reviewServiceMock.Setup(service => service.GetCommentMessage(It.IsAny<SnapshotSpan>())).Returns("test message");
 
             // when
             var comment = new PeerReviewSnapshotComment(reviewServiceMock.Object, snapshotSpan, testFilePath);
 
             // then
             Assert.AreEqual(testFilePath, comment.FilePath);
+        }
+
+        [Test()]
+        public void Equals_returnTrue_GivenCommentWithSameValues()
+        {
+            // given
+            var span = new Span();
+            var snapshotSpan = new SnapshotSpan(textSnapshotMock.Object, span);
+            reviewServiceMock.Setup(service => service.GetCommentMessage(It.IsAny<SnapshotSpan>())).Returns("test message");
+
+            var commentA = new PeerReviewSnapshotComment(reviewServiceMock.Object, snapshotSpan, testFilePath);
+            var commentB = new PeerReviewSnapshotComment(reviewServiceMock.Object, snapshotSpan, testFilePath);
+
+            // when & then
+            Assert.True(commentA.Equals(commentB));
         }
     }
 }

@@ -32,11 +32,11 @@ namespace Dexter.PeerReview
         public PeerReviewSnapshotComment(IPeerReviewService reviewService, SnapshotSpan snapshotSpan, string filePath)
         {
             this.snapshotSpan = snapshotSpan;
-            Span = snapshotSpan;
-            StartLine = reviewService.getStartLineNumber(snapshotSpan);
-            EndLine = reviewService.getEndLineNumber(snapshotSpan);
-            Serverity = reviewService.getServerity(snapshotSpan);
-            Message = reviewService.getCommentMessage(snapshotSpan);
+            Span = reviewService.GetLineSpan(snapshotSpan);
+            StartLine = reviewService.GetStartLineNumber(snapshotSpan);
+            EndLine = reviewService.GetEndLineNumber(snapshotSpan);
+            Serverity = reviewService.GetServerity(snapshotSpan);
+            Message = reviewService.GetCommentMessage(snapshotSpan);
             FilePath = filePath;
         }
     }

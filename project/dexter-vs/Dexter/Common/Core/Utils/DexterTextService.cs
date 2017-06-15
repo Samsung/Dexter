@@ -12,9 +12,10 @@ namespace Dexter.Common.Utils
     /// </summary>
     public interface IDexterTextService
     {
-        string getText(SnapshotSpan span);
-        int getStartLineNumber(SnapshotSpan span);
-        int getEndLineNumber(SnapshotSpan span);
+        string GetText(SnapshotSpan span);
+        int GetStartLineNumber(SnapshotSpan span);
+        int GetEndLineNumber(SnapshotSpan span);
+        Span GetLineSpan(SnapshotSpan snapshotSpan);
     }
 
     /// <summary>
@@ -25,15 +26,22 @@ namespace Dexter.Common.Utils
         /// <summary>
         /// Gets the end line number of SnapshotSpan
         /// </summary>
-        public int getEndLineNumber(SnapshotSpan span)
+        public int GetEndLineNumber(SnapshotSpan span)
         {
             return span.End.GetContainingLine().LineNumber;
+        }
+
+        public Span GetLineSpan(SnapshotSpan span)
+        {
+            int lineOffset = span.Start.GetContainingLine().Start;
+
+            return new Span(span.Start - lineOffset + 1, span.Length);
         }
 
         /// <summary>
         /// Gets the start line number of SnapshotSpan
         /// </summary>
-        public int getStartLineNumber(SnapshotSpan span)
+        public int GetStartLineNumber(SnapshotSpan span)
         {
             return span.Start.GetContainingLine().LineNumber;
         }
@@ -41,7 +49,7 @@ namespace Dexter.Common.Utils
         /// <summary>
         /// Gets text of SnapshotSpan
         /// </summary>
-        public string getText(SnapshotSpan span)
+        public string GetText(SnapshotSpan span)
         {
             return span.GetText();
         }
