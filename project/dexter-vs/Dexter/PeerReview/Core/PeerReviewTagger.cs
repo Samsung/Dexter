@@ -63,6 +63,7 @@ namespace Dexter.PeerReview
             textDocument = document;
             textDocument.FileActionOccurred += FileActionOccurred;
 
+            comments = new List<PeerReviewSnapshotComment>();
             ParsePReviewComments();
         }
 
@@ -79,13 +80,14 @@ namespace Dexter.PeerReview
 
         private void TextBufferChanged(object sender, TextContentChangedEventArgs e)
         {
-            ParsePReviewComments();
+             ParsePReviewComments();
         }
 
         private void ParsePReviewComments()
         {
+            var previousComments = comments;
             comments = new List<PeerReviewSnapshotComment>();
-            
+
             foreach (var line in textBuffer.CurrentSnapshot.Lines)
             {
                 string text = line.GetText().ToLower();
@@ -98,6 +100,28 @@ namespace Dexter.PeerReview
                 }
             } 
 
+            if (IsPReviewCommentsChanged(previousComments, comments))
+            {
+                Debug.WriteLine("Review comments changed");
+            }
+            else
+            {
+                Debug.WriteLine("Review comments have not changed");
+            }
+        }
+
+        private bool IsPReviewCommentsChanged(IList<PeerReviewSnapshotComment> previousComments, IList<PeerReviewSnapshotComment> currentComments)
+        {
+            if (previousComments.Count != currentComments.Count)
+                return true;
+
+            for (int i = 0; i < previousComments.Count; i++)
+            {
+                if (!previousComments[i].Equals(currentComments[i]))
+                    return true;
+            }
+
+            return false;
         }
 
         IEnumerable<ITagSpan<PReviewTag>> ITagger<PReviewTag>.GetTags(NormalizedSnapshotSpanCollection spans)

@@ -28,27 +28,29 @@ namespace Dexter.PeerReview.Utils
         /// </summary>
         /// <param name="span">snapshotSapn contains review comment</param>
         /// <returns>Start line of snapshotSpan</returns>
-        int getStartLineNumber(SnapshotSpan span);
+        int GetStartLineNumber(SnapshotSpan span);
+        Span GetLineSpan(SnapshotSpan snapshotSpan);
+
         /// <summary>
         /// Gets end line of SnapshotSpan
         /// </summary>
         /// <param name="span">snapshotSapn contains review comment</param>
         /// <returns>End line of snapshotSpan</returns>
-        int getEndLineNumber(SnapshotSpan span);
+        int GetEndLineNumber(SnapshotSpan span);
         /// <summary>
         /// Gets serverity codes from comment text in SnapshotSpan
         /// </summary>
         /// <param name="span">SnapshotSpan contains review comment</param>
         /// <returns>Serverity code</returns>
-        string getServerity(SnapshotSpan span);
-        string getServerity(string commentText);
+        string GetServerity(SnapshotSpan span);
+        string GetServerity(string commentText);
         /// <summary>
         /// Gets comment message filtered by a serverity code
         /// </summary>
         /// <param name="span">SnapshotSpan contains review comment</param>
         /// <returns>Comment message</returns>
-        string getCommentMessage(SnapshotSpan span);
-        string getCommentMessage(string commentText);
+        string GetCommentMessage(SnapshotSpan span);
+        string GetCommentMessage(string commentText);
     }
 
     /// <summary>
@@ -87,14 +89,14 @@ namespace Dexter.PeerReview.Utils
 
             return  new DexterResult()
             {
-                FullFilePath = convertFileDelimiterForDexterServer(textDocument.FilePath),
+                FullFilePath = ConvertFileDelimiterForDexterServer(textDocument.FilePath),
                 FileName = fileName,
                 DefectCount = comments.Count,
                 DefectList = ConvertToDefectList(textDocument.FilePath, comments)
             };
         }
 
-        private string convertFileDelimiterForDexterServer(string filePath)
+        private string ConvertFileDelimiterForDexterServer(string filePath)
         {
             return filePath.Replace(@"\", "/");
         }
@@ -105,11 +107,11 @@ namespace Dexter.PeerReview.Utils
 
             foreach (var comment in comments)
             {
-                var commentText = textService.getText(comment.SnapShotSpan);
-                var serverityCode = getServerityCode(commentText);
+                var commentText = textService.GetText(comment.SnapShotSpan);
+                var serverityCode = GetServerityCode(commentText);
                 var checkerCode = "DPR_" + serverityCode;
-                var uniqueDefectKey = getUniqueDefectKey(checkerCode, filePath);
-                var occurences = createDexterOccurences(comment);
+                var uniqueDefectKey = GetUniqueDefectKey(checkerCode, filePath);
+                var occurences = CreateDexterOccurences(comment);
                 var fileName = Path.GetFileName(filePath);
                 var directoryName = Path.GetDirectoryName(filePath);
                 DexterDefect defect;
@@ -127,7 +129,7 @@ namespace Dexter.PeerReview.Utils
                         Language = "C_SHARP",
                         ToolName = "dexter-peerreview",
                         FileName = fileName,
-                        ModulePath = convertFileDelimiterForDexterServer(directoryName),
+                        ModulePath = ConvertFileDelimiterForDexterServer(directoryName),
                         SeverityCode = serverityCode,
                         CheckerCode = "DPR_" + serverityCode,
                         Message = "",
@@ -141,28 +143,28 @@ namespace Dexter.PeerReview.Utils
             return defectTable.Values.ToList();
         }
 
-        private string getUniqueDefectKey(string checkerCode, string serverityCode)
+        private string GetUniqueDefectKey(string checkerCode, string serverityCode)
         {
             return checkerCode + " " + serverityCode;
         }
 
-        private IList<DexterOccurence> createDexterOccurences(PeerReviewSnapshotComment comment)
+        private IList<DexterOccurence> CreateDexterOccurences(PeerReviewSnapshotComment comment)
         {
-            var commentText = textService.getText(comment.SnapShotSpan);
+            var commentText = textService.GetText(comment.SnapShotSpan);
             var occurences = new List<DexterOccurence>();
 
             occurences.Add(new DexterOccurence()
             {
                 StringValue = "DPR",
-                Message = getCommentMessageInternal(commentText),
-                StartLine = textService.getStartLineNumber(comment.SnapShotSpan),
-                EndLine = textService.getEndLineNumber(comment.SnapShotSpan)
+                Message = GetCommentMessageInternal(commentText),
+                StartLine = textService.GetStartLineNumber(comment.SnapShotSpan),
+                EndLine = textService.GetEndLineNumber(comment.SnapShotSpan)
             });
 
             return occurences;
         }
 
-        private string getServerityCode(string commentText)
+        private string GetServerityCode(string commentText)
         {
             if (commentText.Contains("[MAJ]"))
                 return "MAJ";
@@ -174,7 +176,7 @@ namespace Dexter.PeerReview.Utils
                 return "MAJ";
         }
 
-        private string getCommentMessageInternal(string commentText)
+        private string GetCommentMessageInternal(string commentText)
         {
             string commentPrefix = @"//\sDPR:\s*(\[CRI\]|\[MAJ\]|\[CRC\])?";
             Regex rx = new Regex(commentPrefix, RegexOptions.IgnoreCase);
@@ -182,36 +184,41 @@ namespace Dexter.PeerReview.Utils
             return rx.Replace(commentText, "").Trim();
         }
 
-        public int getStartLineNumber(SnapshotSpan span)
+        public int GetStartLineNumber(SnapshotSpan span)
         {
-            return textService.getStartLineNumber(span);
+            return textService.GetStartLineNumber(span);
         }
 
-        public int getEndLineNumber(SnapshotSpan span)
+        public int GetEndLineNumber(SnapshotSpan span)
         {
-            return textService.getEndLineNumber(span);
+            return textService.GetEndLineNumber(span);
         }
 
-        public string getServerity(SnapshotSpan span)
+        public string GetServerity(SnapshotSpan span)
         {
-            var text = textService.getText(span);
-            return getServerityCode(text);
+            var text = textService.GetText(span);
+            return GetServerityCode(text);
         }
 
-        public string getCommentMessage(SnapshotSpan span)
+        public string GetCommentMessage(SnapshotSpan span)
         {
-            var text = textService.getText(span);
-            return getCommentMessageInternal(text);
+            var text = textService.GetText(span);
+            return GetCommentMessageInternal(text);
         }
 
-        public string getServerity(string commentText)
+        public string GetServerity(string commentText)
         {
-            return getServerityCode(commentText);
+            return GetServerityCode(commentText);
         }
 
-        public string getCommentMessage(string commentText)
+        public string GetCommentMessage(string commentText)
         {
-            return getCommentMessageInternal(commentText);
+            return GetCommentMessageInternal(commentText);
+        }
+
+        public Span GetLineSpan(SnapshotSpan snapshotSpan)
+        {
+            return textService.GetLineSpan(snapshotSpan);
         }
     }
 }

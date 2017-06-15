@@ -77,7 +77,6 @@ namespace Dexter.PeerReview.Utils
             }
             else
             {
-                // TODO: filter out review comments of deleted file paths 
                 var filteredComments = from comment in comments
                                        where !filePaths.Contains(comment.FilePath)
                                        select comment;
@@ -89,7 +88,7 @@ namespace Dexter.PeerReview.Utils
             RefreshReviewTasks(comments);
         }
 
-        private void RefreshReviewTasks(IList<PeerReviewComment> comments)
+        public void RefreshReviewTasks(IList<PeerReviewComment> comments)
         {
             taskProvider.Tasks.Clear();
 
@@ -157,8 +156,8 @@ namespace Dexter.PeerReview.Utils
                         {
                             StartLine = lineNum,
                             EndLine = lineNum,
-                            Serverity = reviewService.getServerity(commentText),
-                            Message = reviewService.getCommentMessage(commentText),
+                            Serverity = reviewService.GetServerity(commentText),
+                            Message = reviewService.GetCommentMessage(commentText),
                             FilePath = filePath,
                             Span = new Span(commentStart, commentText.Length)
                         };

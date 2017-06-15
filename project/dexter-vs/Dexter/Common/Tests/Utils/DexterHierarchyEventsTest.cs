@@ -21,12 +21,6 @@ namespace Dexter.Common.Tests.Utils
         }
 
         [Test()]
-        public void DexterHierarchyEvents_()
-        {
-            Assert.Pass();
-        }
-
-        [Test()]
         public void OnInvalidateIcon_returnOK()
         {
             // when

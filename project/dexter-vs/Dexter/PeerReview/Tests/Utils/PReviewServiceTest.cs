@@ -24,9 +24,9 @@ namespace Dexter.PeerReview.Tests.Utils
         public void SetUp()
         {
             textServiceMock = new Mock<IDexterTextService>(MockBehavior.Strict);
-            textServiceMock.Setup(service => service.getText(It.IsAny<SnapshotSpan>())).Returns("");
-            textServiceMock.Setup(service => service.getStartLineNumber(It.IsAny<SnapshotSpan>())).Returns(1);
-            textServiceMock.Setup(service => service.getEndLineNumber(It.IsAny<SnapshotSpan>())).Returns(1);
+            textServiceMock.Setup(service => service.GetText(It.IsAny<SnapshotSpan>())).Returns("");
+            textServiceMock.Setup(service => service.GetStartLineNumber(It.IsAny<SnapshotSpan>())).Returns(1);
+            textServiceMock.Setup(service => service.GetEndLineNumber(It.IsAny<SnapshotSpan>())).Returns(1);
             textDocumentMock = new Mock<ITextDocument>(MockBehavior.Strict);
             reviewService = new PeerReviewService(textServiceMock.Object);
         }
@@ -131,7 +131,7 @@ namespace Dexter.PeerReview.Tests.Utils
         {
             // given
             textDocumentMock.Setup(document => document.FilePath).Returns("c://test.cs");
-            textServiceMock.Setup(service => service.getText(It.IsAny<SnapshotSpan>()))
+            textServiceMock.Setup(service => service.GetText(It.IsAny<SnapshotSpan>()))
                 .Returns("// DPR: [MAJ] test message");
             var comments = createTestComments();
 
@@ -149,7 +149,7 @@ namespace Dexter.PeerReview.Tests.Utils
         {
             // given
             textDocumentMock.Setup(document => document.FilePath).Returns("c://test.cs");
-            textServiceMock.Setup(service => service.getText(It.IsAny<SnapshotSpan>()))
+            textServiceMock.Setup(service => service.GetText(It.IsAny<SnapshotSpan>()))
                 .Returns("// DPR: [CRI] test message");
             var comments = createTestComments();
 
@@ -167,7 +167,7 @@ namespace Dexter.PeerReview.Tests.Utils
         {
             // given
             textDocumentMock.Setup(document => document.FilePath).Returns("c://test.cs");
-            textServiceMock.Setup(service => service.getText(It.IsAny<SnapshotSpan>()))
+            textServiceMock.Setup(service => service.GetText(It.IsAny<SnapshotSpan>()))
                 .Returns("// DPR: [CRC] test message");
             var comments = createTestComments();
 
@@ -185,7 +185,7 @@ namespace Dexter.PeerReview.Tests.Utils
         {
             // given
             textDocumentMock.Setup(document => document.FilePath).Returns("c://test.cs");
-            textServiceMock.Setup(service => service.getText(It.IsAny<SnapshotSpan>()))
+            textServiceMock.Setup(service => service.GetText(It.IsAny<SnapshotSpan>()))
                 .Returns("// DPR: test message");
             var comments = createTestComments();
 
@@ -203,7 +203,7 @@ namespace Dexter.PeerReview.Tests.Utils
         {
             // given
             textDocumentMock.Setup(document => document.FilePath).Returns("c://test.cs");
-            textServiceMock.Setup(service => service.getText(It.IsAny<SnapshotSpan>()))
+            textServiceMock.Setup(service => service.GetText(It.IsAny<SnapshotSpan>()))
                 .Returns("// DPR: [CRC] test message");
             var comments = createTestComments();
 
@@ -220,7 +220,7 @@ namespace Dexter.PeerReview.Tests.Utils
         {
             // given
             textDocumentMock.Setup(document => document.FilePath).Returns("c://test.cs");
-            textServiceMock.Setup(service => service.getText(It.IsAny<SnapshotSpan>()))
+            textServiceMock.Setup(service => service.GetText(It.IsAny<SnapshotSpan>()))
                 .Returns("// DPR: [CRC] test message");
             var comments = createTestComments();
 
@@ -238,7 +238,7 @@ namespace Dexter.PeerReview.Tests.Utils
         {
             // given
             textDocumentMock.Setup(document => document.FilePath).Returns("c://test.cs");
-            textServiceMock.Setup(service => service.getText(It.IsAny<SnapshotSpan>()))
+            textServiceMock.Setup(service => service.GetText(It.IsAny<SnapshotSpan>()))
                 .Returns("// DPR: [CRC] test message");
             var comments = createTestComments();
 
@@ -256,7 +256,7 @@ namespace Dexter.PeerReview.Tests.Utils
         {
             // given
             textDocumentMock.Setup(document => document.FilePath).Returns("c://test.cs");
-            textServiceMock.Setup(service => service.getText(It.IsAny<SnapshotSpan>()))
+            textServiceMock.Setup(service => service.GetText(It.IsAny<SnapshotSpan>()))
                 .Returns("// DPR: [CRC] test message");
             var comments = createTestComments();
 
@@ -274,11 +274,11 @@ namespace Dexter.PeerReview.Tests.Utils
         {
             // given
             var span = new SnapshotSpan();
-            textServiceMock.Setup(service => service.getText(It.IsAny<SnapshotSpan>()))
+            textServiceMock.Setup(service => service.GetText(It.IsAny<SnapshotSpan>()))
                 .Returns("// DPR: [CRI] test message");
 
             // when
-            var serverity = reviewService.getServerity(span);
+            var serverity = reviewService.GetServerity(span);
 
             // then
             Assert.AreEqual("CRI", serverity);
@@ -289,11 +289,11 @@ namespace Dexter.PeerReview.Tests.Utils
         {
             // given
             var span = new SnapshotSpan();
-            textServiceMock.Setup(service => service.getText(It.IsAny<SnapshotSpan>()))
+            textServiceMock.Setup(service => service.GetText(It.IsAny<SnapshotSpan>()))
                 .Returns("// DPR: [CRI] test message");
 
             // when
-            var message = reviewService.getCommentMessage(span);
+            var message = reviewService.GetCommentMessage(span);
 
             // then
             Assert.AreEqual("test message", message);
@@ -304,11 +304,11 @@ namespace Dexter.PeerReview.Tests.Utils
         {
             // given
             var span = new SnapshotSpan();
-            textServiceMock.Setup(service => service.getText(It.IsAny<SnapshotSpan>()))
+            textServiceMock.Setup(service => service.GetText(It.IsAny<SnapshotSpan>()))
                 .Returns("// DPR: test message");
 
             // when
-            var message = reviewService.getCommentMessage(span);
+            var message = reviewService.GetCommentMessage(span);
 
             // then
             Assert.AreEqual("test message", message);
