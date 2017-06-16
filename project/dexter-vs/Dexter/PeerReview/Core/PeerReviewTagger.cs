@@ -10,6 +10,7 @@ using Microsoft.VisualStudio.Utilities;
 using Dexter.Common.Client;
 using Dexter.PeerReview.Utils;
 using Dexter.Common.Config.Providers;
+using System.Linq;
 
 namespace Dexter.PeerReview
 {
@@ -38,6 +39,7 @@ namespace Dexter.PeerReview
         private IDexterClient dexterClient;
         private IDexterInfoProvider dexterInfoProvider;
         private IPeerReviewService reviewService;
+        private IPeerReviewCommentManager commentManager;
 
         IList<PeerReviewSnapshotComment> ICommentsOwner<PeerReviewSnapshotComment>.Comments
         {
@@ -51,8 +53,10 @@ namespace Dexter.PeerReview
         /// Initializes variables and parses peer review comments for the text buffer
         /// </summary>
         public PeerReviewTagger(ITextBuffer textBuffer, ITextDocument document, IDexterClient dexterClient, 
-            IPeerReviewService reviewService, IDexterInfoProvider dexterInfoProvider)
+            IPeerReviewService reviewService, IDexterInfoProvider dexterInfoProvider, 
+            IPeerReviewCommentManager commentManager)
         {
+            this.commentManager = commentManager;
             this.reviewService = reviewService;
             this.dexterClient = dexterClient;
             this.textBuffer = textBuffer;
@@ -63,7 +67,6 @@ namespace Dexter.PeerReview
             textDocument = document;
             textDocument.FileActionOccurred += FileActionOccurred;
 
-            comments = new List<PeerReviewSnapshotComment>();
             ParsePReviewComments();
         }
 
@@ -103,15 +106,17 @@ namespace Dexter.PeerReview
             if (IsPReviewCommentsChanged(previousComments, comments))
             {
                 Debug.WriteLine("Review comments changed");
-            }
-            else
-            {
-                Debug.WriteLine("Review comments have not changed");
+                var baseComments = comments.Cast<PeerReviewComment>().ToList();
+
+                commentManager.UpdateReviewCommentOfOneDocument(textDocument.FilePath, baseComments);
             }
         }
 
         private bool IsPReviewCommentsChanged(IList<PeerReviewSnapshotComment> previousComments, IList<PeerReviewSnapshotComment> currentComments)
         {
+            if (previousComments == null)
+                return false;
+
             if (previousComments.Count != currentComments.Count)
                 return true;
 
@@ -131,7 +136,7 @@ namespace Dexter.PeerReview
 
             foreach (var comment in comments)
             {
-                if (comment.Span.Start >= startPoint && comment.Span.End <= endPoint)
+                if (comment.SnapShotSpan.Start >= startPoint && comment.SnapShotSpan.End <= endPoint)
                 {
                     yield return new TagSpan<PReviewTag>(comment.SnapShotSpan, new PReviewTag());
                 }

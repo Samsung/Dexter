@@ -60,13 +60,6 @@ namespace Dexter.PeerReview
         /// Shows provider'tasks
         /// </summary>
         void Show();
-        /// <summary>
-        /// Navigates from an task to an document in logicalView(text editor)
-        /// </summary>
-        /// <param name="task">Source task</param>
-        /// <param name="logicalView">Guid of test editor</param>
-        /// <returns>True if success</returns>
-        bool Navigate(Task task, Guid logicalView);
     }
 
     /// <summary>
@@ -90,11 +83,6 @@ namespace Dexter.PeerReview
             {
                 return tasks;
             }
-        }
-
-        public bool Navigate(Task task, Guid logicalView)
-        {
-            return taskProvider.Navigate(task, logicalView);
         }
 
         public void Show()

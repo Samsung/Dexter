@@ -19,6 +19,7 @@ namespace Dexter.PeerReview.Tests.Utils
         Mock<IDexterSolutionManager> solutionManagerMock;
         Mock<IPeerReviewTaskProviderWrapper> taskProviderMock;
         Mock<IPeerReviewTaskCollectionWrapper> taskCollectionMock;
+        Mock<IDexterDocumentService> documentServiceMock;
         PeerReviewCommentManager manager;
 
         [SetUp]
@@ -29,9 +30,10 @@ namespace Dexter.PeerReview.Tests.Utils
             solutionManagerMock = new Mock<IDexterSolutionManager>();
             taskProviderMock = new Mock<IPeerReviewTaskProviderWrapper>();
             taskCollectionMock = new Mock<IPeerReviewTaskCollectionWrapper>();
+            documentServiceMock = new Mock<IDexterDocumentService>();
             taskProviderMock.Setup(provider => provider.Tasks).Returns(taskCollectionMock.Object);
 
-            manager = new PeerReviewCommentManager(fileServiceMock.Object, reviewServiceMock.Object, solutionManagerMock.Object, taskProviderMock.Object);
+            manager = new PeerReviewCommentManager(fileServiceMock.Object, reviewServiceMock.Object, solutionManagerMock.Object, taskProviderMock.Object, documentServiceMock.Object);
         }
 
         [Test()]
@@ -148,8 +150,76 @@ namespace Dexter.PeerReview.Tests.Utils
 
             // then
             Assert.AreEqual("c:\\test1.c", resultTasks[0].Document);
-            Assert.AreEqual(4, resultTasks[0].Line);
+            Assert.AreEqual(4-1, resultTasks[0].Line);
             Assert.AreEqual(37, resultTasks[0].Column);
+        }
+
+        [Test]
+        public void UpdateReviewCommentOfOneDocument_updateValidCommentsOfDocument()
+        {
+            // given
+            var newComments = createTestComments("c:\\test1.c");
+            setCurrentTestComments();
+
+            // when
+            manager.UpdateReviewCommentOfOneDocument("c:\\test1.c", newComments);
+
+            // then
+            Assert.AreEqual(1, manager.Comments.Count);
+            Assert.AreEqual("new message", manager.Comments[0].Message);
+        }
+
+        [Test]
+        public void UpdateReviewCommentOfOneDocument_DoNotDeleteCommentsWithDifferentFilePath()
+        {
+            // given
+            var newComments = createTestComments("c:\\test2.c");
+            setCurrentTestComments();
+
+            // when
+            manager.UpdateReviewCommentOfOneDocument("c:\\test2.c", newComments);
+
+            // then
+            Assert.AreEqual(3, manager.Comments.Count);
+        }
+
+        [Test]
+        public void UpdateReviewCommentOfOneDocument_DeleteComments_GiventEmptyDocumentComments()
+        {
+            // given
+            var newComments = new List<PeerReviewComment>();
+            setCurrentTestComments();
+
+            // when
+            manager.UpdateReviewCommentOfOneDocument("c:\\test1.c", newComments);
+
+            // then
+            Assert.AreEqual(0, manager.Comments.Count);
+        }
+
+        private void setCurrentTestComments()
+        {
+            var testFilePaths = new List<string>() { "c:\\test1.c" };
+            var testFileContent = createTestFileContent();
+            fileServiceMock.Setup(service => service.ReadTextAsync("c:\\test1.c")).ReturnsAsync(testFileContent);
+            IList<Microsoft.VisualStudio.Shell.Task> resultTasks = new List<Microsoft.VisualStudio.Shell.Task>();
+            taskCollectionMock.Setup(tasks => tasks.Add(It.IsAny<Microsoft.VisualStudio.Shell.Task>()))
+                .Callback((Microsoft.VisualStudio.Shell.Task task) => resultTasks.Add(task));
+
+            manager.UpdateReviewComments(testFilePaths, true).Wait();
+        }
+
+        private IList<PeerReviewComment> createTestComments(string filePath)
+        {
+            return new List<PeerReviewComment>()
+            {
+                new PeerReviewComment()
+                {
+                    Serverity = "MAJ",
+                    Message = "new message",
+                    FilePath = filePath
+                }
+            };
         }
 
         private string createTestFileContent()

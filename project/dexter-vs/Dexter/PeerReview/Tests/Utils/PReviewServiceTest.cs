@@ -27,6 +27,7 @@ namespace Dexter.PeerReview.Tests.Utils
             textServiceMock.Setup(service => service.GetText(It.IsAny<SnapshotSpan>())).Returns("");
             textServiceMock.Setup(service => service.GetStartLineNumber(It.IsAny<SnapshotSpan>())).Returns(1);
             textServiceMock.Setup(service => service.GetEndLineNumber(It.IsAny<SnapshotSpan>())).Returns(1);
+            textServiceMock.Setup(service => service.GetLineSpan(It.IsAny<SnapshotSpan>())).Returns(new Span());
             textDocumentMock = new Mock<ITextDocument>(MockBehavior.Strict);
             reviewService = new PeerReviewService(textServiceMock.Object);
         }

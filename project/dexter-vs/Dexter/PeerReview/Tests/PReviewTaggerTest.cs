@@ -26,6 +26,7 @@ namespace Dexter.PeerReview.Tests
         Mock<IDexterClient> dexterClientMock;
         Mock<IDexterInfoProvider> dexterInfoProviderMock;
         Mock<IDexterTextService> textServiceMock;
+        Mock<IPeerReviewCommentManager> commentManagerMock;
         PropertyCollection properties;
         PeerReviewTagger tagger;
 
@@ -42,6 +43,8 @@ namespace Dexter.PeerReview.Tests
             dexterClientMock = new Mock<IDexterClient>();
             dexterInfoProviderMock = new Mock<IDexterInfoProvider>();
             textServiceMock = new Mock<IDexterTextService>();
+            commentManagerMock = new Mock<IPeerReviewCommentManager>();
+
             properties = new PropertyCollection();
 
             textBufferMock.Setup(buffer => buffer.Properties).Returns(properties);
@@ -51,7 +54,8 @@ namespace Dexter.PeerReview.Tests
             textDocumentMock.Setup(document => document.FilePath).Returns("c:\\test.cs");
 
             tagger = new PeerReviewTagger(textBufferMock.Object, textDocumentMock.Object, 
-                dexterClientMock.Object, reviewServiceMock.Object, dexterInfoProviderMock.Object);
+                dexterClientMock.Object, reviewServiceMock.Object, dexterInfoProviderMock.Object,
+                commentManagerMock.Object);
         }
 
         private IEnumerable<ITextSnapshotLine> createTestSnapshotLines()

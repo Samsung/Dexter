@@ -12,11 +12,26 @@ using System.Diagnostics;
 
 namespace Dexter.PeerReview.Utils
 {
+    /// <summary>
+    /// Manage comments of all source code within Visual Studio Solution
+    /// </summary>
     public interface IPeerReviewCommentManager
     {
+        /// <summary>
+        /// Comments of all source code within Visual Studio Solution
+        /// </summary>
         IList<PeerReviewComment> Comments { get; }
+        /// <summary>
+        /// Reflects the comments made in the peer review tagger.
+        /// </summary>
+        /// <param name="documentPath">Document path with comments</param>
+        /// <param name="documentComments">Commands that belong to the document</param>
+        void UpdateReviewCommentOfOneDocument(string documentPath, IList<PeerReviewComment> documentComments);
     }
 
+    /// <summary>
+    /// Implements the interface IPeerReviewCommentManager
+    /// </summary>
     public class PeerReviewCommentManager : IPeerReviewCommentManager
     {
         IList<PeerReviewComment> comments;
@@ -24,6 +39,7 @@ namespace Dexter.PeerReview.Utils
         IPeerReviewService reviewService;
         IDexterSolutionManager solutionManager;
         IPeerReviewTaskProviderWrapper taskProvider;
+        IDexterDocumentService documentService;
 
         static IPeerReviewCommentManager instace;
 
@@ -43,13 +59,13 @@ namespace Dexter.PeerReview.Utils
             }
         }
 
-        public PeerReviewCommentManager(IDexterFileService fileService, IPeerReviewService reviewService,
-            IDexterSolutionManager solutionManager, IPeerReviewTaskProviderWrapper taskProvider)
+        public PeerReviewCommentManager(IDexterFileService fileService, IPeerReviewService reviewService,IDexterSolutionManager solutionManager, IPeerReviewTaskProviderWrapper taskProvider, IDexterDocumentService documentService)
         {
             this.fileService = fileService;
             this.reviewService = reviewService;
             this.solutionManager = solutionManager;
             this.taskProvider = taskProvider;
+            this.documentService = documentService;
 
             this.solutionManager.SourceFilesChanged += OnSourceFilesChanged;
             comments = new List<PeerReviewComment>();
@@ -99,14 +115,18 @@ namespace Dexter.PeerReview.Utils
                     CanDelete = false,
                     Document = comment.FilePath,
                     Text = GetTaskMessage(comment),
-                    Line = comment.StartLine,
+                    Line = comment.StartLine - 1,
                     Column = comment.Span.Start + 1,
                     Category = Microsoft.VisualStudio.Shell.TaskCategory.Comments
                 };
 
                 task.Navigate += (s, e) => {
-                    taskProvider.Navigate((Microsoft.VisualStudio.Shell.Task)s, VSConstants.LOGVIEWID.Code_guid);
+                    var navigatedTask = (Microsoft.VisualStudio.Shell.Task)s;
+
+                    documentService.OpenDocument(navigatedTask.Document);
+                    documentService.MoveActivePoint(navigatedTask.Line, navigatedTask.Column);
                 };
+
                 taskProvider.Tasks.Add(task);
             }
 
@@ -164,6 +184,16 @@ namespace Dexter.PeerReview.Utils
                     };
                 }
             }
+        }
+
+        public void UpdateReviewCommentOfOneDocument(string documentPath, IList<PeerReviewComment> documentComments)
+        {
+            var tempComments = from comment in comments
+                               where !comment.FilePath.Equals(documentPath)
+                               select comment;
+
+            comments = tempComments.Concat(documentComments).ToList();
+            RefreshReviewTasks(comments);
         }
     }
 }

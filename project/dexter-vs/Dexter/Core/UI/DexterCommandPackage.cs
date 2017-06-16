@@ -145,7 +145,7 @@ namespace Dexter.UI
         {
             PeerReviewCommentManager.Instance = new PeerReviewCommentManager(
                 DexterFileService.Instance, PeerReviewService.Instance, DexterSolutionManager.Instance,
-                new PeerReviewTaskProviderWrapper(this));
+                new PeerReviewTaskProviderWrapper(this), new DexterDocumentService(this));
         }
 
         private void CreateAllServices()
