@@ -47,6 +47,7 @@ namespace Dexter.PeerReview.Tests
             // given
             var span = new Span(5, 20);
             var snapshotSpan = new SnapshotSpan(textSnapshotMock.Object, span);
+            reviewServiceMock.Setup(service => service.GetLineSpan(It.IsAny<SnapshotSpan>())).Returns(span);
 
             // when
             var comment = new PeerReviewSnapshotComment(reviewServiceMock.Object, snapshotSpan, testFilePath);

@@ -31,6 +31,11 @@ namespace Dexter.Common.Utils
             return span.End.GetContainingLine().LineNumber;
         }
 
+        /// <summary>
+        /// Convert SnapshotSpan to Span. However, the meaning of offset 0 is different.
+        /// </summary>
+        /// <param name="span">A snapshotSpan with a zero offset at the beginning of the document.</param>
+        /// <returns>The span at which the start of the line is 0 offset</returns>
         public Span GetLineSpan(SnapshotSpan span)
         {
             int lineOffset = span.Start.GetContainingLine().Start;
@@ -43,7 +48,7 @@ namespace Dexter.Common.Utils
         /// </summary>
         public int GetStartLineNumber(SnapshotSpan span)
         {
-            return span.Start.GetContainingLine().LineNumber;
+            return span.Start.GetContainingLine().LineNumber + 1;
         }
 
         /// <summary>
