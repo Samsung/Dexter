@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using Microsoft.VisualStudio.Text;
 using Dexter.Common.Defect;
 using Dexter.Common.Utils;
+using Dexter.Common.Client;
 
 namespace Dexter.PeerReview.Utils
 {
@@ -51,6 +52,13 @@ namespace Dexter.PeerReview.Utils
         /// <returns>Comment message</returns>
         string GetCommentMessage(SnapshotSpan span);
         string GetCommentMessage(string commentText);
+        /// <summary>
+        /// Converts the souce code information to the format for server transmission
+        /// </summary>
+        /// <param name="filePath">The path of the file to be transferred</param>
+        /// <param name="fileContent">The content of the file to be transferred</param>
+        /// <returns></returns>
+        SourceCodeJsonFormat ConverToSourceCodeJsonFormat(string filePath, string fileContent);
     }
 
     /// <summary>
@@ -219,6 +227,18 @@ namespace Dexter.PeerReview.Utils
         public Span GetLineSpan(SnapshotSpan snapshotSpan)
         {
             return textService.GetLineSpan(snapshotSpan);
+        }
+
+        public SourceCodeJsonFormat ConverToSourceCodeJsonFormat(string filePath, string fileContent)
+        {
+            return new SourceCodeJsonFormat()
+            {
+                SnapshotId = 0,
+                GroupId = 0,
+                ModulePath = ConvertFileDelimiterForDexterServer(Path.GetDirectoryName(filePath)),
+                FileName = Path.GetFileName(filePath),
+                SourceCode = fileContent
+            };
         }
     }
 }
