@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Dexter.Common.Defect;
 using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace Dexter.Common.Client
 {
@@ -26,5 +27,28 @@ namespace Dexter.Common.Client
         /// <param name="userPassword">User password to ocreate</param>
         /// <param name="isAdmin">True, if new user should have administrator rights</param>
         Task<HttpResponseMessage> AddAccount(string userName, string userPassword, bool isAdmin);
+        /// <summary>
+        /// Returns whether stand-alone mode is checked
+        /// </summary>
+        bool IsStandAloneMode();
+        Task SendAnalysisResult(string result);
+        Task SendSourceCode(SourceCodeJsonFormat source);
+    }
+
+    /// <summary>
+    /// JSON Container of source codes
+    /// </summary>
+    public class SourceCodeJsonFormat
+    {
+        [JsonProperty("snapshotId")]
+        public long SnapshotId { get; set; }
+        [JsonProperty("gouprId")]
+        public long GroupId { get; set; }
+        [JsonProperty("modulePath")]
+        public string ModulePath { get; set; }
+        [JsonProperty("fileName")]
+        public string FileName { get; set; }
+        [JsonProperty("sourceCode")]
+        public string SourceCode { get; set; }
     }
 }

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using Dexter.Common.Defect;
 using System.Web;
 using System.ComponentModel.Composition;
+using System;
 
 namespace Dexter.Common.Client
 {
@@ -21,6 +22,11 @@ namespace Dexter.Common.Client
         public DexterClient(IHttpClient httpClient)
         {
             this.httpClient = httpClient;
+        }
+
+        public Task SendSourceCode(SourceCodeJsonFormat source)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task<HttpResponseMessage> SendAnalysisResult(DexterResult result)
@@ -41,5 +47,4 @@ namespace Dexter.Common.Client
             return await httpClient.PostAsync($"{POST_ACCOUNT_ADD_V1}?{queryParams}","");
         } 
     }
-
 }
