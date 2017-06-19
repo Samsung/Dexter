@@ -315,6 +315,24 @@ namespace Dexter.PeerReview.Tests.Utils
             Assert.AreEqual("test message", message);
         }
 
+        [Test]
+        public void ConverToSourceCodeJsonFormat_JsonFormatHasValidValues()
+        {
+            // given
+            var filePath = "c:\\test\\source.cs";
+            var fileContent = "// DPR: empty message";
+
+            // when
+            var jsonFormat = reviewService.ConverToSourceCodeJsonFormat(filePath, fileContent);
+
+            // then
+            Assert.AreEqual(0, jsonFormat.SnapshotId);
+            Assert.AreEqual(0, jsonFormat.GroupId);
+            Assert.AreEqual("c:/test", jsonFormat.ModulePath);
+            Assert.AreEqual("source.cs", jsonFormat.FileName);
+            Assert.AreEqual(fileContent, jsonFormat.SourceCode);
+        }
+
 
         private IList<PeerReviewSnapshotComment> createTestComments()
         {

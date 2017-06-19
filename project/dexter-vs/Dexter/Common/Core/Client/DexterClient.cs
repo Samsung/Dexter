@@ -14,8 +14,9 @@ namespace Dexter.Common.Client
     /// </summary>
     public class DexterClient : IDexterClient
     {
-        private const string POST_ANALYSIS_RESULT_V3 = "/api/v3/analysis/result";
-        private const string POST_ACCOUNT_ADD_V1 = "/api/v1/accounts/add";
+        public static readonly string POST_ANALYSIS_RESULT_V3 = "/api/v3/analysis/result";
+        public static readonly string POST_SNAPSHOT_SOURCECODE = "/api/v1/analysis/snapshot/source";
+        public static readonly string POST_ACCOUNT_ADD_V1 = "/api/v1/accounts/add";
 
         private readonly IHttpClient httpClient;
 
@@ -24,9 +25,19 @@ namespace Dexter.Common.Client
             this.httpClient = httpClient;
         }
 
-        public Task SendSourceCode(SourceCodeJsonFormat source)
+        /// <summary>
+        /// Sends the source code with comments to the dexter server
+        /// </summary>
+        /// <param name="source">Source code with comments</param>
+        public async Task SendSourceCode(SourceCodeJsonFormat source)
         {
-            throw new NotImplementedException();
+            HttpResponseMessage response = await httpClient.PostAsync(POST_SNAPSHOT_SOURCECODE,
+                       JsonConvert.SerializeObject(source));
+
+            if (!response.IsSuccessStatusCode.Equals(true))
+            {
+                Debug.WriteLine(response, "Failed to SendSourceCode");
+            }
         }
 
         public async Task<HttpResponseMessage> SendAnalysisResult(DexterResult result)

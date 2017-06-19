@@ -42,7 +42,21 @@ namespace Dexter.Common.Tests.Client
             client.SendAnalysisResult(dexterResult).Wait();
 
             // then
-            httpClientMock.Verify(http => http.PostAsync(It.IsAny<string>(),
+            httpClientMock.Verify(http => http.PostAsync(DexterClient.POST_ANALYSIS_RESULT_V3,
+                It.IsAny<string>()));
+        }
+
+        [Test]
+        public void SendSourceCode_callPostAsync()
+        {
+            // given
+            var sourceJson = new SourceCodeJsonFormat();
+
+            // when
+            client.SendSourceCode(sourceJson).Wait();
+
+            // then
+            httpClientMock.Verify(http => http.PostAsync(DexterClient.POST_SNAPSHOT_SOURCECODE,
                 It.IsAny<string>()));
         }
 
