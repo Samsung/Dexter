@@ -321,6 +321,7 @@ namespace Dexter.PeerReview.Tests.Utils
             // given
             var filePath = "c:\\test\\source.cs";
             var fileContent = "// DPR: empty message";
+            textServiceMock.Setup(service => service.Base64Encoding(fileContent)).Returns("Base64 text");
 
             // when
             var jsonFormat = reviewService.ConverToSourceCodeJsonFormat(filePath, fileContent);
@@ -330,7 +331,7 @@ namespace Dexter.PeerReview.Tests.Utils
             Assert.AreEqual(0, jsonFormat.GroupId);
             Assert.AreEqual("c:/test", jsonFormat.ModulePath);
             Assert.AreEqual("source.cs", jsonFormat.FileName);
-            Assert.AreEqual(fileContent, jsonFormat.SourceCode);
+            Assert.AreEqual("Base64 text", jsonFormat.SourceCode);
         }
 
 

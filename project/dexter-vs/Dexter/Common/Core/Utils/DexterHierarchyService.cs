@@ -25,21 +25,28 @@ namespace Dexter.Common.Utils
 
     public class DexterHierarchyService : IDexterHierarchyService
     {
-        static IDexterHierarchyService instace;
+        static IDexterHierarchyService instance;
 
         static public IDexterHierarchyService Instance
         {
             get
             {
-                if (instace == null)
+                if (instance == null)
                 {
                     throw new ArgumentNullException("instance is null");
                 }
-                return instace;
+                return instance;
             }
             set
             {
-                instace = value;
+                if (instance == null)
+                {
+                    instance = value;
+                }
+                else
+                {
+                    throw new ArgumentException("Instance duplicate setting");
+                }
             }
         }
 

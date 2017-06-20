@@ -44,17 +44,6 @@ namespace Dexter.Common.Tests.Utils
         }
 
         [Test]
-        public void Instance_ThrowException_IfInstanceIsNull()
-        {
-            // given
-            DexterSolutionManager.Instance = null;
-
-            // when &  then
-            Assert.Throws(typeof(ArgumentNullException), 
-                delegate { var result = DexterSolutionManager.Instance; });
-        }
-
-        [Test]
         public void OnAfterCloseSolution_returnOK()
         {
             // when

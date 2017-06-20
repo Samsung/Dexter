@@ -68,21 +68,28 @@ namespace Dexter.PeerReview.Utils
     {
         IDexterTextService textService;
 
-        static IPeerReviewService instace;
+        static IPeerReviewService instance;
 
         static public IPeerReviewService Instance
         {
             get
             {
-                if (instace == null)
+                if (instance == null)
                 {
                     throw new ArgumentNullException("instance is null");
                 }
-                return instace;
+                return instance;
             }
             set
             {
-                instace = value;
+                if (instance == null)
+                {
+                    instance = value;
+                }
+                else
+                {
+                    throw new ArgumentException("Instance duplicate setting");
+                }
             }
         }
 
@@ -237,7 +244,7 @@ namespace Dexter.PeerReview.Utils
                 GroupId = 0,
                 ModulePath = ConvertFileDelimiterForDexterServer(Path.GetDirectoryName(filePath)),
                 FileName = Path.GetFileName(filePath),
-                SourceCode = fileContent
+                SourceCode = textService.Base64Encoding(fileContent)
             };
         }
     }

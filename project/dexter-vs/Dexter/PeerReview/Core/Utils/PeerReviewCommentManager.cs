@@ -41,21 +41,28 @@ namespace Dexter.PeerReview.Utils
         IPeerReviewTaskProviderWrapper taskProvider;
         IDexterDocumentService documentService;
 
-        static IPeerReviewCommentManager instace;
+        static IPeerReviewCommentManager instance;
 
         static public IPeerReviewCommentManager Instance
         {
             get
             {
-                if (instace == null)
+                if (instance == null)
                 {
                     throw new ArgumentNullException("instance is null");
                 }
-                return instace;
+                return instance;
             }
             set
             {
-                instace = value;
+                if (instance == null)
+                {
+                    instance = value;
+                }
+                else
+                {
+                    throw new ArgumentException("Instance duplicate setting");
+                }
             }
         }
 
