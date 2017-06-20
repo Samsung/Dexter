@@ -14,21 +14,28 @@ namespace Dexter.Common.Utils
 
     public class DexterFileService : IDexterFileService
     {
-        static IDexterFileService instace;
+        static IDexterFileService instance;
 
         static public IDexterFileService Instance
         {
             get
             {
-                if (instace == null)
+                if (instance == null)
                 {
                     throw new ArgumentNullException("instance is null");
                 }
-                return instace;
+                return instance;
             }
             set
             {
-                instace = value;
+                if (instance == null)
+                {
+                    instance = value;
+                }
+                else
+                {
+                    throw new ArgumentException("Instance duplicate setting");
+                }
             }
         }
 

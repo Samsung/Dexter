@@ -12,10 +12,30 @@ namespace Dexter.Common.Utils
     /// </summary>
     public interface IDexterTextService
     {
+        /// <summary>
+        /// Gets text of SnapshotSpan
+        /// </summary>
         string GetText(SnapshotSpan span);
+        /// <summary>
+        /// Gets the start line number of SnapshotSpan
+        /// </summary>
         int GetStartLineNumber(SnapshotSpan span);
+        /// <summary>
+        /// Gets the end line number of SnapshotSpan
+        /// </summary>
         int GetEndLineNumber(SnapshotSpan span);
+        /// <summary>
+        /// Convert SnapshotSpan to Span. However, the meaning of offset 0 is different.
+        /// </summary>
+        /// <param name="span">A snapshotSpan with a zero offset at the beginning of the document.</param>
+        /// <returns>The span at which the start of the line is 0 offset</returns>
         Span GetLineSpan(SnapshotSpan snapshotSpan);
+        /// <summary>
+        /// Encodings text to Base64
+        /// </summary>
+        /// <param name="text">Text to encode</param>
+        /// <returns>Base64-encoded text</returns>
+        string Base64Encoding(string text);
     }
 
     /// <summary>
@@ -23,19 +43,11 @@ namespace Dexter.Common.Utils
     /// </summary>
     public class DexterTextService : IDexterTextService
     {
-        /// <summary>
-        /// Gets the end line number of SnapshotSpan
-        /// </summary>
         public int GetEndLineNumber(SnapshotSpan span)
         {
             return span.End.GetContainingLine().LineNumber;
         }
 
-        /// <summary>
-        /// Convert SnapshotSpan to Span. However, the meaning of offset 0 is different.
-        /// </summary>
-        /// <param name="span">A snapshotSpan with a zero offset at the beginning of the document.</param>
-        /// <returns>The span at which the start of the line is 0 offset</returns>
         public Span GetLineSpan(SnapshotSpan span)
         {
             int lineOffset = span.Start.GetContainingLine().Start;
@@ -43,20 +55,20 @@ namespace Dexter.Common.Utils
             return new Span(span.Start - lineOffset + 1, span.Length);
         }
 
-        /// <summary>
-        /// Gets the start line number of SnapshotSpan
-        /// </summary>
         public int GetStartLineNumber(SnapshotSpan span)
         {
             return span.Start.GetContainingLine().LineNumber + 1;
         }
 
-        /// <summary>
-        /// Gets text of SnapshotSpan
-        /// </summary>
         public string GetText(SnapshotSpan span)
         {
             return span.GetText();
+        }
+
+        public string Base64Encoding(string text)
+        {
+            byte[] arr = Encoding.UTF8.GetBytes(text);
+            return System.Convert.ToBase64String(arr);
         }
     }
 }
