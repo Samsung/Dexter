@@ -24,10 +24,10 @@ namespace Dexter.PeerReview
         public IClassifierAggregatorService AggregatorService;
 
         [Import]
-        IDexterClient dexterClient;
+        public IDexterClient dexterClient;
 
         [Import]
-        IDexterInfoProvider dexterInfoProvider;
+        public IDexterInfoProvider dexterInfoProvider;
 
         public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag
         {

@@ -6,12 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dexter.Common.Config;
+using System.ComponentModel.Composition;
 
 namespace Dexter.Common.Config.Providers
 {
     /// <summary>
     /// Uses Visual Studio Settings Store for storing dexter info 
     /// </summary>
+    [Export(typeof(IDexterInfoProvider))]
     public class SettingsStoreDexterInfoProvider : IDexterInfoProvider
     {
         /// <summary>
