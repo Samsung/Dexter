@@ -11,7 +11,6 @@ namespace Dexter.Common.Client
     /// <summary>
     /// Communicates with the dexter server
     /// </summary>
-    [Export(typeof(IDexterClient))]
     public class DexterClient : IDexterClient
     {
         private const string POST_ANALYSIS_RESULT_V3 = "/api/v3/analysis/result";
