@@ -30,8 +30,6 @@ namespace Dexter.Common.Client
         /// <summary>
         /// Returns whether stand-alone mode is checked
         /// </summary>
-        bool IsStandAloneMode();
-        Task SendAnalysisResult(string result);
         Task SendSourceCode(SourceCodeJsonFormat source);
     }
 
