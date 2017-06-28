@@ -23,7 +23,6 @@ namespace Dexter.PeerReview.Tests
         Mock<ITextSnapshotLine> textSnapshotLineMock;
         Mock<ITextDocument> textDocumentMock;
         Mock<IPeerReviewService> reviewServiceMock;
-        Mock<IDexterClient> dexterClientMock;
         Mock<IDexterInfoProvider> dexterInfoProviderMock;
         Mock<IDexterTextService> textServiceMock;
         Mock<IPeerReviewCommentManager> commentManagerMock;
@@ -40,7 +39,6 @@ namespace Dexter.PeerReview.Tests
             textSnapshotLineMock = new Mock<ITextSnapshotLine>(MockBehavior.Strict);
             textDocumentMock = new Mock<ITextDocument>(MockBehavior.Strict);
             reviewServiceMock = new Mock<IPeerReviewService>();
-            dexterClientMock = new Mock<IDexterClient>();
             dexterInfoProviderMock = new Mock<IDexterInfoProvider>();
             textServiceMock = new Mock<IDexterTextService>();
             commentManagerMock = new Mock<IPeerReviewCommentManager>();
@@ -54,8 +52,7 @@ namespace Dexter.PeerReview.Tests
             textDocumentMock.Setup(document => document.FilePath).Returns("c:\\test.cs");
 
             tagger = new PeerReviewTagger(textBufferMock.Object, textDocumentMock.Object, 
-                dexterClientMock.Object, reviewServiceMock.Object, dexterInfoProviderMock.Object,
-                commentManagerMock.Object);
+                reviewServiceMock.Object, dexterInfoProviderMock.Object, commentManagerMock.Object);
         }
 
         private IEnumerable<ITextSnapshotLine> createTestSnapshotLines()
@@ -84,43 +81,6 @@ namespace Dexter.PeerReview.Tests
         {
             // then
             Assert.AreEqual(tagger, properties.GetProperty(PeerReviewConstants.COMMENT_OWNER));
-        }
-
-        [Test]
-        public void FileActionOccurred_sendReviewCommentsToServer_OnFileSavedEvent()
-        {
-            // given 
-            var comments = new List<PeerReviewComment>();
-            comments.Add(new PeerReviewComment());
-            reviewServiceMock.Setup(service => service.ConvertToDexterResult(
-                It.IsAny<ITextDocument>(), It.IsAny<IList<PeerReviewSnapshotComment>>())).Returns(new DexterResult());
-            dexterInfoProviderMock.Setup(infoProvider => infoProvider.Load()).Returns(new DexterInfo() { standalone = false });
-
-
-            // when
-            textDocumentMock.Raise(doc => doc.FileActionOccurred += null,
-                new TextDocumentFileActionEventArgs(@"c:\test.cs", new DateTime(), FileActionTypes.ContentSavedToDisk));
-
-            // then
-            dexterClientMock.Verify(client => client.SendAnalysisResult(It.IsAny<DexterResult>()));
-        }
-
-        [Test]
-        public void FileActionOccurred_doNotSendReviewCommentsToServer_OnFileSavedEvent_IfStandAloneMode()
-        {
-            // given 
-            var comments = new List<PeerReviewComment>();
-            comments.Add(new PeerReviewComment());
-            reviewServiceMock.Setup(service => service.ConvertToDexterResult(
-                It.IsAny<ITextDocument>(), It.IsAny<IList<PeerReviewSnapshotComment>>())).Returns(new DexterResult());
-            dexterInfoProviderMock.Setup(infoProvider => infoProvider.Load()).Returns(new DexterInfo() { standalone = true });
-
-            // when
-            textDocumentMock.Raise(doc => doc.FileActionOccurred += null,
-                new TextDocumentFileActionEventArgs(@"c:\test.cs", new DateTime(), FileActionTypes.ContentSavedToDisk));
-
-            // then
-            dexterClientMock.Verify(client => client.SendAnalysisResult(It.IsAny<DexterResult>()), Times.Never);
         }
 
         private NormalizedSnapshotSpanCollection createTestSnapshotSpansWithOnelineComment(string comment)

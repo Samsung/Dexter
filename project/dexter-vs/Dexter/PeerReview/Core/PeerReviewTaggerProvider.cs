@@ -33,13 +33,12 @@ namespace Dexter.PeerReview
             }
 
             var dexterInfoProvider = new SettingsStoreDexterInfoProvider(ServiceProvider);
-            var dexterClient = new DexterClient(new DexterHttpClientWrapper(dexterInfoProvider));
 
             Func<ITagger<T>> sc = delegate () {
                 ITextDocument document = null;
                 buffer.Properties.TryGetProperty(typeof(ITextDocument), out document);
 
-                return new PeerReviewTagger(buffer, document, dexterClient, PeerReviewService.Instance, dexterInfoProvider, PeerReviewCommentManager.Instance) as ITagger<T>;
+                return new PeerReviewTagger(buffer, document, PeerReviewService.Instance, dexterInfoProvider, PeerReviewCommentManager.Instance) as ITagger<T>;
             };
             return buffer.Properties.GetOrCreateSingletonProperty(sc);
         }

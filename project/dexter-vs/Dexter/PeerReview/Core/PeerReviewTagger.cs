@@ -11,6 +11,7 @@ using Dexter.Common.Client;
 using Dexter.PeerReview.Utils;
 using Dexter.Common.Config.Providers;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Dexter.PeerReview
 {
@@ -36,7 +37,6 @@ namespace Dexter.PeerReview
         private ITextBuffer textBuffer;
         private ITextDocument textDocument;
         private IList<PeerReviewSnapshotComment> comments;
-        private IDexterClient dexterClient;
         private IDexterInfoProvider dexterInfoProvider;
         private IPeerReviewService reviewService;
         private IPeerReviewCommentManager commentManager;
@@ -53,13 +53,12 @@ namespace Dexter.PeerReview
         /// <summary>
         /// Initializes variables and parses peer review comments for the text buffer
         /// </summary>
-        public PeerReviewTagger(ITextBuffer textBuffer, ITextDocument document, IDexterClient dexterClient, 
+        public PeerReviewTagger(ITextBuffer textBuffer, ITextDocument document, 
             IPeerReviewService reviewService, IDexterInfoProvider dexterInfoProvider, 
             IPeerReviewCommentManager commentManager)
         {
             this.commentManager = commentManager;
             this.reviewService = reviewService;
-            this.dexterClient = dexterClient;
             this.textBuffer = textBuffer;
             this.dexterInfoProvider = dexterInfoProvider;
             this.textBuffer.Changed += TextBufferChanged;
@@ -72,7 +71,7 @@ namespace Dexter.PeerReview
             ParsePReviewComments();
         }
 
-        private void FileActionOccurred(object sender, TextDocumentFileActionEventArgs e)
+        private async void FileActionOccurred(object sender, TextDocumentFileActionEventArgs e)
         {
             if (e.FileActionType == FileActionTypes.ContentSavedToDisk)
             {
@@ -81,12 +80,25 @@ namespace Dexter.PeerReview
 
                 if (isCommentDirty)
                 {
-                    dexterClient.SendAnalysisResult(reviewService.ConvertToDexterResult(textDocument, comments));
-                    dexterClient.SendSourceCode(reviewService.ConverToSourceCodeJsonFormat(
-                        textDocument.FilePath, textBuffer.CurrentSnapshot.GetText()));
+                    await SendAnalysisResult(textDocument, comments);
+                    //await SendSourceCode(textDocument.FilePath, textBuffer.CurrentSnapshot.GetText());
+
                     isCommentDirty = false;
                 }
             }
+        }
+
+        private async Task SendSourceCode(string filePath, string v)
+        {
+            var dexterClient = new DexterClient(new DexterHttpClientWrapper(dexterInfoProvider));
+            await dexterClient.SendSourceCode(reviewService.ConverToSourceCodeJsonFormat(
+                        textDocument.FilePath, textBuffer.CurrentSnapshot.GetText()));
+        }
+
+        private async Task SendAnalysisResult(ITextDocument textDocument, IList<PeerReviewSnapshotComment> comments)
+        {
+            var dexterClient = new DexterClient(new DexterHttpClientWrapper(dexterInfoProvider));
+            await dexterClient.SendAnalysisResult(reviewService.ConvertToDexterResult(textDocument, comments));
         }
 
         private void TextBufferChanged(object sender, TextContentChangedEventArgs e)
