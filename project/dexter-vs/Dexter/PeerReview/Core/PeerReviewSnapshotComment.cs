@@ -13,14 +13,13 @@ namespace Dexter.PeerReview
     /// </summary>
     public class PeerReviewSnapshotComment : PeerReviewComment
     {
-        SnapshotSpan snapshotSpan;
-        
         /// <summary>
         /// SnapshotSpan contains review comment
         /// </summary>
         public SnapshotSpan SnapShotSpan
         {
-            get { return snapshotSpan; }
+            get;
+            private set;
         }
 
         /// <summary>
@@ -31,7 +30,7 @@ namespace Dexter.PeerReview
         /// <param name="filePath">Path of file contains review comment</param>
         public PeerReviewSnapshotComment(IPeerReviewService reviewService, SnapshotSpan snapshotSpan, string filePath)
         {
-            this.snapshotSpan = snapshotSpan;
+            SnapShotSpan = snapshotSpan;
             Span = reviewService.GetLineSpan(snapshotSpan);
             StartLine = reviewService.GetStartLineNumber(snapshotSpan);
             EndLine = reviewService.GetEndLineNumber(snapshotSpan);
