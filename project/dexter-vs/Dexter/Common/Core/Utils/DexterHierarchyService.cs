@@ -25,31 +25,6 @@ namespace Dexter.Common.Utils
 
     public class DexterHierarchyService : IDexterHierarchyService
     {
-        static IDexterHierarchyService instance;
-
-        static public IDexterHierarchyService Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    throw new ArgumentNullException("instance is null");
-                }
-                return instance;
-            }
-            set
-            {
-                if (instance == null)
-                {
-                    instance = value;
-                }
-                else
-                {
-                    throw new ArgumentException("Instance duplicate setting");
-                }
-            }
-        }
-
         public IList<string> getAllSourceFilePaths(IVsHierarchy pHierarchy)
         {
             string projectPath = getProjectPath(pHierarchy);

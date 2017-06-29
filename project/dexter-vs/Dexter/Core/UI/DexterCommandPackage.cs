@@ -66,6 +66,8 @@ namespace Dexter.UI
         DashboardCommand dashboardToolbarCommand;
         CancelCommand cancelToolbarCommand;
 
+        DexterSolutionManager dexterSolutionManager;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DexterAnalysisCommand"/> class.
         /// </summary>
@@ -134,7 +136,8 @@ namespace Dexter.UI
             SettingsPage settingsPage = (SettingsPage)GetDialogPage(typeof(SettingsPage));
             settingsPage.SettingsChanged += onSettingsChanged;
 
-            CreateAllServices();
+            PeerReviewService.Instance = new PeerReviewService(new DexterTextService());
+
             RegisterSolutionManager();
             CreateReviewCommentManager();
                        
@@ -144,27 +147,18 @@ namespace Dexter.UI
         private void CreateReviewCommentManager()
         {
             PeerReviewCommentManager.Instance = new PeerReviewCommentManager(
-                DexterFileService.Instance, PeerReviewService.Instance, DexterSolutionManager.Instance,
+                new DexterFileService(), PeerReviewService.Instance, dexterSolutionManager,
                 new PeerReviewTaskProviderWrapper(this), new DexterDocumentService(this));
-        }
-
-        private void CreateAllServices()
-        {
-            DexterFileService.Instance = new DexterFileService();
-            DexterHierarchyService.Instance = new DexterHierarchyService();
-            PeerReviewService.Instance = new PeerReviewService(new DexterTextService());
-            
         }
 
         private void RegisterSolutionManager()
         {
-            var dexterSolutionManager = new DexterSolutionManager(DexterHierarchyService.Instance);
-            DexterSolutionManager.Instance = dexterSolutionManager;
-            uint eventCookie;
+            dexterSolutionManager = new DexterSolutionManager(new DexterHierarchyService());
 
+            uint eventCookie;
             var solutionService = GetService(typeof(SVsSolution)) as IVsSolution;
             solutionService.AdviseSolutionEvents(dexterSolutionManager, out eventCookie);
-            dexterSolutionManager.eventCookie = eventCookie;
+            dexterSolutionManager.EventCookie = eventCookie;
         }
 
         protected override void Dispose(bool disposing)
@@ -176,7 +170,7 @@ namespace Dexter.UI
         private void UnregisterSolutionManager()
         {
             var solutionService = GetService(typeof(SVsSolution)) as IVsSolution;
-            solutionService.UnadviseSolutionEvents(DexterSolutionManager.Instance.eventCookie);
+            solutionService.UnadviseSolutionEvents(dexterSolutionManager.EventCookie);
         }
 
         private void onAnalysisStarted(object sender, EventArgs args)
