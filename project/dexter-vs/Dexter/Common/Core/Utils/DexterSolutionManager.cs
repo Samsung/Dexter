@@ -62,7 +62,6 @@ namespace Dexter.Common.Utils
     /// </summary>
     public class DexterSolutionManager : IVsSolutionEvents, IDexterSolutionManager
     {
-        static DexterSolutionManager instance;
         IDexterHierarchyService hierarchyService;
 
         public event EventHandler<SourceFileEventArgs> SourceFilesChanged;
@@ -72,29 +71,7 @@ namespace Dexter.Common.Utils
             this.hierarchyService = hierarchyService;
         }
 
-        static public DexterSolutionManager Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    throw new ArgumentNullException("Instance is null");
-                }
-                return instance;
-            }
-            set
-            {
-                if (instance == null)
-                {
-                    instance = value;
-                } else
-                {
-                    throw new ArgumentException("Instance duplicate setting");
-                }    
-            }
-        }
-
-        public uint eventCookie { get; set; }
+        public uint EventCookie { get; set; }
 
 
         public int OnAfterCloseSolution(object pUnkReserved)

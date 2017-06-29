@@ -31,19 +31,6 @@ namespace Dexter.Common.Tests.Utils
         }
 
         [Test]
-        public void Instance_ReturnValidInstance()
-        {
-            // given
-            DexterSolutionManager.Instance = manager;
-
-            // when
-            var returnedManager = DexterSolutionManager.Instance;
-
-            // then
-            Assert.AreEqual(manager, returnedManager);
-        }
-
-        [Test]
         public void OnAfterCloseSolution_returnOK()
         {
             // when

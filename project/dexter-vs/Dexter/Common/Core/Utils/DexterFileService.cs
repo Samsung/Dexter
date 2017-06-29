@@ -14,31 +14,6 @@ namespace Dexter.Common.Utils
 
     public class DexterFileService : IDexterFileService
     {
-        static IDexterFileService instance;
-
-        static public IDexterFileService Instance
-        {
-            get
-            {
-                if (instance == null)
-                {
-                    throw new ArgumentNullException("instance is null");
-                }
-                return instance;
-            }
-            set
-            {
-                if (instance == null)
-                {
-                    instance = value;
-                }
-                else
-                {
-                    throw new ArgumentException("Instance duplicate setting");
-                }
-            }
-        }
-
         public async Task<string> ReadTextAsync(string filePath)
         {
             using (FileStream sourceStream = new FileStream(filePath,
