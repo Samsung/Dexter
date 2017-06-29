@@ -16,9 +16,6 @@ namespace Dexter.Common.Utils
     /// </summary>
     public class SourceFileEventArgs : EventArgs
     {
-        private bool isAdded;
-        private IList<string> filePaths;
-
         /// <summary>
         /// Creates an instance of SourceFileEventArgs
         /// </summary>
@@ -26,8 +23,8 @@ namespace Dexter.Common.Utils
         /// <param name="isAdded">Whether files are added or not</param>
         public SourceFileEventArgs(IList<string> filePaths, bool isAdded)
         {
-            this.filePaths = filePaths;
-            this.isAdded = isAdded;
+            FilePaths = filePaths;
+            IsAdded = isAdded;
         }
 
         /// <summary>
@@ -35,7 +32,8 @@ namespace Dexter.Common.Utils
         /// </summary>
         public IList<string> FilePaths
         {
-            get { return filePaths; }
+            get;
+            private set;
         }
 
         /// <summary>
@@ -43,7 +41,8 @@ namespace Dexter.Common.Utils
         /// </summary>
         public bool IsAdded
         {
-            get { return isAdded; }
+            get;
+            private set;
         }   
     }
 
