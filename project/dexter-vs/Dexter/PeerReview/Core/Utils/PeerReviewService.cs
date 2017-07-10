@@ -158,9 +158,9 @@ namespace Dexter.PeerReview.Utils
             return defectTable.Values.ToList();
         }
 
-        private string GetUniqueDefectKey(string checkerCode, string serverityCode)
+        private string GetUniqueDefectKey(string checkerCode, string filePath)
         {
-            return checkerCode + " " + serverityCode;
+            return checkerCode + " " + filePath;
         }
 
         private IList<DexterOccurence> CreateDexterOccurences(PeerReviewSnapshotComment comment)
