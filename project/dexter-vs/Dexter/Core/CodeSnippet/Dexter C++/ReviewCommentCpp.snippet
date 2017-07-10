@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CodeSnippets
+    xmlns="http://schemas.microsoft.com/VisualStudio/2005/CodeSnippet">
+  <CodeSnippet Format="1.0.0">
+    <Header>
+      <Title>Code Reivew Comment</Title>
+      <Shortcut>cr</Shortcut>
+      <Description>Inserts code review comment</Description>
+      <Author>SE</Author>
+      <SnippetTypes>
+        <SnippetType>Expansion</SnippetType>
+      </SnippetTypes>
+    </Header>
+    <Snippet>
+      <Declarations>
+        <Literal>
+          <ID>serverity</ID>
+          <ToolTip>Serverity(MAJ/CRI/CRC)</ToolTip>
+          <Default>MAJ</Default>
+        </Literal>
+        <Literal>
+          <ID>message</ID>
+          <ToolTip>review message</ToolTip>
+          <Default>Insert review message</Default>
+        </Literal>
+      </Declarations>
+      <Code Language="cpp">
+        <![CDATA[// DPR: [$serverity$] $message$]]>
+      </Code>
+    </Snippet>
+  </CodeSnippet>
+</CodeSnippets>
