@@ -81,7 +81,7 @@ namespace Dexter.PeerReview
                 if (isCommentDirty)
                 {
                     await SendAnalysisResult(textDocument, comments);
-                    //await SendSourceCode(textDocument.FilePath, textBuffer.CurrentSnapshot.GetText());
+                    await SendSourceCode(textDocument.FilePath, textBuffer.CurrentSnapshot.GetText());
 
                     isCommentDirty = false;
                 }
