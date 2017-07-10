@@ -134,6 +134,9 @@ namespace Dexter.PeerReview.Utils
                 if (defectTable.TryGetValue(uniqueDefectKey, out defect))
                 {
                     defect.Occurences = defect.Occurences.Concat(occurences).ToList();
+
+                    defectTable.Remove(uniqueDefectKey);
+                    defectTable.Add(uniqueDefectKey, defect);
                 }
                 else
                 {

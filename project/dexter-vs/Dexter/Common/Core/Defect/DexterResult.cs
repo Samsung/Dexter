@@ -10,7 +10,7 @@ namespace Dexter.Common.Defect
     /// <summary>
     /// Container of dexter defects for one file
     /// </summary>
-    public class DexterResult
+    public struct DexterResult
     {
         [JsonProperty("snapshotId")]
         public string SnapshotId { get; set; }
@@ -24,22 +24,12 @@ namespace Dexter.Common.Defect
         public int DefectCount { get; set; }
         [JsonProperty("defectList")]
         public IList<DexterDefect> DefectList { get; set; }
-
-        public DexterResult()
-        {
-            SnapshotId = "";
-            FileName = "";
-            FullFilePath = "";
-            GroupId = "";
-            DefectCount = 0;
-            DefectList = null;
-        }
     }
 
     /// <summary>
     /// Provides dexter defect information
     /// </summary>
-    public class DexterDefect
+    public struct DexterDefect
     {
         [JsonProperty("message")]
         public string Message { get; set; }
@@ -67,28 +57,12 @@ namespace Dexter.Common.Defect
         public string FileStatus { get; set; }
         [JsonProperty("modulePath")]
         public string ModulePath { get; set; }
-
-        public DexterDefect()
-        {
-            Message = "";
-            SeverityCode = "";
-            CategoryName = "";
-            AnalysisType = "";
-            CheckerCode = "";
-            ClassName = "";
-            MethodName = "";
-            ToolName = "";
-            Language = "";
-            FileName = "";
-            FileStatus = "";
-            ModulePath = "";
-        }
     }
 
     /// <summary>
     /// Provides defect occurence information
     /// </summary>
-    public class DexterOccurence
+    public struct DexterOccurence
     {
         [JsonProperty("code")]
         public string Code { get; set; }
@@ -108,14 +82,5 @@ namespace Dexter.Common.Defect
         public string FieldName { get; set; }
         [JsonProperty("message")]
         public string Message { get; set; }
-
-        public DexterOccurence()
-        {
-            Code = "";
-            VariableName = "";
-            StringValue = "";
-            FieldName = "";
-            Message = "";
-        }
     }
 }
