@@ -89,10 +89,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <Content Include="CodeSnippet\Dexter\ReviewComment.snippet">
+    <Content Include="CodeSnippet\Dexter Csharp\ReviewComment.snippet">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
       <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="CodeSnippet\Dexter C++\ReviewCommentCpp.snippet">
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Key.snk" />
     <None Include="packages.config" />
@@ -101,7 +105,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CodeSnippet\Dexter\DexterCodeSnippet.pkgdef">
+    <Content Include="CodeSnippet\DexterCodeSnippet.pkgdef">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
