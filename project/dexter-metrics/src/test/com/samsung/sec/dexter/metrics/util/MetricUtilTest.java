@@ -1,3 +1,29 @@
+/**
+ * Copyright (c) 2017 Samsung Electronics, Inc.,
+ * All rights reserved.
+ * 
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ * 
+ * * Redistributions of source code must retain the above copyright notice, this
+ * list of conditions and the following disclaimer.
+ * 
+ * * Redistributions in binary form must reproduce the above copyright notice,
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
 package com.samsung.sec.dexter.metrics.util;
 
 import static org.junit.Assert.assertEquals;
@@ -12,8 +38,7 @@ import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.metrics.util.MetricUtil;
 
 public class MetricUtilTest {
-	String TestFilePath1 = ".\\src\\test\\com\\samsung\\sec\\dexter\\metrics\\util\\Test_file_for_MetricUtilTest1.txt";
-	String TestFilePath2 = ".\\src\\test\\com\\samsung\\sec\\dexter\\metrics\\util\\Test_file_for_MetricUtilTest2.txt";
+	String TestFilePath = ".\\src\\test\\com\\samsung\\sec\\dexter\\metrics\\util\\TestFile1_For_MetricUtilTest.java";
 	
 	@Test
 	public void test() {
@@ -37,78 +62,61 @@ public class MetricUtilTest {
 	}
 	
 	@Test
-	public void MetricUtilTest_NonexistantFile() {
-		MetricUtil tester = new MetricUtil();
+	public void MetricUtilTest_ThrowsDexterRuntimeException_GivenNoneExistanceFile () {
 		int start = 0;
 		int end = 10;
-		DexterRuntimeException exception = null;
 		try {
-			tester.getFunctionLOCArray(".\\ThereIsNoSuchFile.nope", start, end);
+			MetricUtil.getFunctionLOCArray(".\\ThereIsNoSuchFile.no", start, end);
+			Assert.fail();
 		}
 		catch(DexterRuntimeException e) {
-			exception=e;
-			if(exception==null) {
-				Assert.fail();
-			}
+
+		}
+	}
+	
+	@Test
+	public void MetricUtilTest_ReturnsZero_GivenEmptyFileName () {
+		int start = 0;
+		int end = 10;
+		int loc;
+		try {
+			loc=MetricUtil.getFunctionLOCArray("", start, end);
+			assertEquals(0, loc);
+		}
+		catch(DexterRuntimeException e) {
+			Assert.fail();
 		}
 	}
 	
 	@Test
 	public void MetricUtilTest_EmptyFilePath() {
-		MetricUtil tester = new MetricUtil();
 		int start = 0;
 		int end = 10;
-		tester.getFunctionLOCArray("", start, end);
+		MetricUtil.getFunctionLOCArray("", start, end);
 	}
 	
 	@Test
-	public void MetricUtilTest_StartGreaterThanEnd() {
-		MetricUtil tester = new MetricUtil();
+	public void MetricUtilTest_ThrowsDexterRuntimeException_GivenStartGreaterThanEnd() {
 		int start = 4;
 		int end = 2;
-		tester.getFunctionLOCArray(TestFilePath1, start, end);
+		try {
+			MetricUtil.getFunctionLOCArray(TestFilePath, start, end);
+			Assert.fail();
+		}
+		catch(DexterRuntimeException e) {
+			assertEquals("cannot count line because end line "
+					+ "is smaller than start line number. "
+					+ "start:" + start + " end:" + end, e.getMessage());
+		}
 	}
 	
 	@Test
-	public void MetricUtilTest_StartNegative() {
-		MetricUtil tester = new MetricUtil();
-		int start = -10;
-		int end = 2;
-		tester.getFunctionLOCArray(TestFilePath1, start, end);
-	}
-	
-	@Test
-	public void MetricUtilTest_TooLargeEnd() {
-		MetricUtil tester = new MetricUtil();
+	public void MetricUtilTest_ReturnsProperLoc_GivenCorrectExample() {
 		int start = 0;
-		int end = 10000;
+		int end = 23;
 		int loc=0;
-		loc=tester.getFunctionLOCArray(TestFilePath1, start, end);
-		
-		assertEquals(loc, 7);
-	}
-	
-	@Test
-	public void MetricUtilTest_ProperExample1() {
-		MetricUtil tester = new MetricUtil();
-		int start = 2;
-		int end = 14;
-		int loc=0;
-		loc=tester.getFunctionLOCArray(TestFilePath1, start, end);
-		
-		assertEquals(loc, 6);
-	}
-	
-	@Test
-	public void MetricUtilTest_ProperExample2() {
-		MetricUtil tester = new MetricUtil();
-		int start = 0;
-		int end = 21;
-		int loc=0;
-		loc=tester.getFunctionLOCArray(TestFilePath2, start, end);
+		loc=MetricUtil.getFunctionLOCArray(TestFilePath, start, end);
 		
 		assertEquals(loc, 12);
 	}
-	
-	
 }
