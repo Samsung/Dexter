@@ -1,0 +1,1 @@
+This text file serves the purpose of making sure that there exist directory "TestDirectory_For_CodeMetricsGeneratorTest" needed for one of the tests int CodeMetricsGeneratorTest. Please do NOT delete it.
