@@ -53,10 +53,11 @@ namespace Dexter.UI.Tasks
             if (activeDocument == null || !PathUtils.AreEquals(activeDocument.FullName,task.Document))
             {
                 VsShellUtilities.OpenDocument(serviceProvider, task.Document);
+                activeDocument = dte.ActiveDocument;
             }
 
             TextSelection textSelection = activeDocument.Selection as TextSelection;
-            textSelection.MoveToLineAndOffset(task.Line, 1);
+            textSelection.MoveToLineAndOffset(task.Line + 1, 1);
         }
     }
 }
