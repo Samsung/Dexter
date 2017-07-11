@@ -1,0 +1,21 @@
+void main2(){
+
+int n=10;k=0;
+for(int i=0;i<n;i++){
+k=k+2;
+//
+}
+/*
+another comment
+very
+very
+very long comment
+*/
+this_is_also_not_a_comment/*but_wait();*/
+this_is_not_\_a_comment;
+/neither is this;
+/is this a comment?/
+********no
+}
+
+//last comment
