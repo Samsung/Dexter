@@ -135,9 +135,21 @@ namespace Dexter.UI.Analysis
                 dexter.OutputDataReceived += writeToOutputPane;
                 dexter.ErrorDataReceived += writeToOutputPane;
                 OnAnalysisStarted(EventArgs.Empty);
-                Result result = dexter.Analyse();
-                OnAnalysisFinished(EventArgs.Empty);
-                ReportResult(result);
+
+                try
+                {
+                    Result result = dexter.Analyse();
+                    ReportResult(result);
+                }
+                catch (Exception ex)
+                {
+                    outputPane.OutputString("Error during analysis: " + ex.Message);
+                }
+                finally
+                {
+                    OnAnalysisFinished(EventArgs.Empty);
+                }
+
             });
         }
 

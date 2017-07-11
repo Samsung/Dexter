@@ -48,12 +48,13 @@ namespace Dexter.Analysis
                 throw new FileNotFoundException("Cannot find dexter in specified path", configuration.DexterExecutorPath);
             configuration.Save();
         }
-        
+
         /// <summary>
         /// Performs analysis of files in given path
         /// </summary>
         /// <param name="path">path to analysed directory</param>
         /// <returns>List of found defects</returns>
+        /// <exception cref="XmlException">When result file cannot be parsed</exception>
         public Result Analyse()
         {
             CreateDexterProcess();
@@ -141,22 +142,11 @@ namespace Dexter.Analysis
                 return new Result();
             }
 
-            Result result;
             using (XmlReader reader = XmlReader.Create(resultFile))
             {
-                XmlSerializer serializer = new XmlSerializer(typeof(Result));
-
-                try
-                {
-                    result = (Result)serializer.Deserialize(reader);
-                }
-                catch (InvalidOperationException)
-                {
-                    result = new Result();
-                }  
+               XmlSerializer serializer = new XmlSerializer(typeof(Result));
+               return (Result)serializer.Deserialize(reader);
             }
-
-            return result;
         }
 
     }
