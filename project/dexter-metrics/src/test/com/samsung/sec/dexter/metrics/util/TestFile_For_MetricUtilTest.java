@@ -2,14 +2,14 @@ package com.samsung.sec.dexter.metrics.util;
 
 import javax.swing.text.StyledEditorKit.ForegroundAction;
 
-public class TestFile1_For_MetricUtilTest {
+public class TestFile_For_MetricUtilTest {
 	// comment
 	/**
 	 * another comment
 	 */
 	// here starts the code:
 
-	TestFile1_For_MetricUtilTest() {
+	TestFile_For_MetricUtilTest() {
 		int k = 5;
 		int n=1000;
 
