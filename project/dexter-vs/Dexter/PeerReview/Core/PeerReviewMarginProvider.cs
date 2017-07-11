@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.Utilities;
 namespace Dexter.PeerReview
 {
     /// <summary>
-    /// Provides a instance of PeerReivewMargin
+    /// Provides a instance of PeerReviewMargin
     /// </summary>
     [Export(typeof(IWpfTextViewMarginProvider))]
     [Name("PReviewMargin")]

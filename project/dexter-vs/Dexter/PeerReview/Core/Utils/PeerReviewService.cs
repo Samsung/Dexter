@@ -13,7 +13,7 @@ using Dexter.Common.Client;
 namespace Dexter.PeerReview.Utils
 {
     /// <summary>
-    /// Implements service functions for PeerReivew
+    /// Implements service functions for PeerReview
     /// </summary>
     public interface IPeerReviewService
     {
@@ -62,7 +62,7 @@ namespace Dexter.PeerReview.Utils
     }
 
     /// <summary>
-    /// Implements service functions for PeerReivew
+    /// Implements service functions for PeerReview
     /// </summary>
     public class PeerReviewService : IPeerReviewService
     {
