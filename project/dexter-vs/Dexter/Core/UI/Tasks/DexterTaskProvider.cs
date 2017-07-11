@@ -60,7 +60,7 @@ namespace Dexter.UI.Tasks
                 CanDelete = false,
                 Text = occurence.Message,
                 Document = fileName,
-                Line = int.Parse(occurence.StartLine)
+                Line = int.Parse(occurence.StartLine) - 1 //XXX There must be '- 1' because Dexter points to defect at one line ahead
             };
             defectTask.Navigate += navigateEventHandler;
             return defectTask;
