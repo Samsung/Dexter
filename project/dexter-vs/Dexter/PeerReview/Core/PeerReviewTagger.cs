@@ -30,7 +30,7 @@ namespace Dexter.PeerReview
 
 
     /// <summary>
-    /// Tags peer reivew comments as the type PeerReivewTag
+    /// Tags peer review comments as the type PeerReivewTag
     /// </summary>
     public class PeerReviewTagger : ITagger<PReviewTag>, ICommentsOwner<PeerReviewSnapshotComment>
     {
