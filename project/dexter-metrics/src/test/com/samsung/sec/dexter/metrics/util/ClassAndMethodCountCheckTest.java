@@ -33,7 +33,34 @@ import com.puppycrawl.tools.checkstyle.api.DetailAST;
 import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
 public class ClassAndMethodCountCheckTest {
-	
+	/*
+	@Test
+	public void visitTokenTest() {
+		ClassAndMethodCountCheck tester = new ClassAndMethodCountCheck();
+		DetailAST parent = new DetailAST();
+		DetailAST child1 = new DetailAST();
+		DetailAST child2 = new DetailAST();
+
+		// Parent is a CLASS_DEF, children are METHOD_DEF
+		parent.setType(TokenTypes.CLASS_DEF);
+		child1.setType(TokenTypes.METHOD_DEF);
+		child1.setType(TokenTypes.METHOD_DEF);
+
+		// Parent has two children (Class has two methods)
+		parent.addChild(child1);
+		parent.addChild(child2);
+
+		// Visiting the "family" (Class and its methods)
+		tester.visitToken(parent);
+		tester.visitToken(child1);
+		tester.visitToken(child2);
+		
+		//Here is the problem. I have no idea why "log()" is not even running...
+		tester.finishTree(null);
+		
+		return;
+	}
+	*/
 	@Test
 	public void getDefaultTokensTest_ReturnsProperIntArray() {
 		ClassAndMethodCountCheck tester = new ClassAndMethodCountCheck();
