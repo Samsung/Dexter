@@ -119,7 +119,7 @@ public class CodeMetricsGeneratorTest {
 		
 		CodeMetricsGenerator.getCodeMetrics(language, filePath, codeMetrics, functionMetrics, functionList);
 		
-		if(fileLength==log.length() || fileLastModifiedDate==log.lastModified()) {
+		if(fileLength>=log.length()) {
 			Assert.fail("Log was NOT modified by CodeMetricsGenerator");
 		}
 	}
@@ -128,12 +128,11 @@ public class CodeMetricsGeneratorTest {
 	public void getCodeMetricsTest_LogsAndReturns_GivenDirectoryPath() {
 		String filePath = TestDirectoryPath;
 		File log = new File(LogPath);
-		long fileLastModifiedDate = log.lastModified();
 		long fileLength = log.length();
 		
 		CodeMetricsGenerator.getCodeMetrics(language, filePath, codeMetrics, functionMetrics, functionList);
 		
-		if(fileLength==log.length() || fileLastModifiedDate==log.lastModified()) {
+		if(fileLength>=log.length()) {
 			Assert.fail("Log was NOT modified by CodeMetricsGenerator");
 		}
 	}
@@ -142,14 +141,14 @@ public class CodeMetricsGeneratorTest {
 	public void getCodeMetricsTest_LogsAndReturns_GivenTooLongFile() {
 		String filePath = TooLongTestFilePath;
 		File log = new File(LogPath);
-		long fileLastModifiedDate = log.lastModified();
 		long fileLength = log.length();
 		
 		CodeMetricsGenerator.getCodeMetrics(language, filePath, codeMetrics, functionMetrics, functionList);
 		
-		if(fileLength==log.length() || fileLastModifiedDate==log.lastModified()) {
+		if(fileLength>=log.length()) {
 			Assert.fail("Log was NOT modified by CodeMetricsGenerator");
 		}
+		
 	}
 	
 	@Test
