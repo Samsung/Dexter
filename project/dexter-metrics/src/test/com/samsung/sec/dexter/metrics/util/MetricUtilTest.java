@@ -38,7 +38,7 @@ import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.metrics.util.MetricUtil;
 
 public class MetricUtilTest {
-	String TestFilePath = ".\\src\\test\\com\\samsung\\sec\\dexter\\metrics\\util\\TestFile1_For_MetricUtilTest.java";
+	String TestFilePath = ".\\src\\test\\com\\samsung\\sec\\dexter\\metrics\\util\\TestFile_For_MetricUtilTest.java";
 	
 	@Test
 	public void test() {
