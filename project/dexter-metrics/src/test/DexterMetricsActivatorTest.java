@@ -34,14 +34,10 @@ import org.osgi.framework.*;
 public class DexterMetricsActivatorTest {
 
 	@Test
-	public void stopTest_ReturnsNullAndThrowsNoExceptions() {
+	public void stopTest_ReturnsNull() {
 		DexterMetricsActivator tester = new DexterMetricsActivator();
 		BundleContext bundleContext = null;
-		try {
-			tester.stop(bundleContext);
-			assertNull(DexterMetricsActivator.getContext());
-		} catch (Exception e) {
-			Assert.fail(e.getMessage());
-		}		
+		tester.stop(bundleContext);
+		assertNull(DexterMetricsActivator.getContext());	
 	}
 }
