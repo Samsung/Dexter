@@ -50,10 +50,9 @@ public class CodeMetricsGeneratorTest {
 	FunctionMetrics functionMetrics = null;
 	List<String> functionList = null;
 
-	String TestFilePath = ".\\src\\test\\com\\samsung\\sec\\dexter\\metrics\\TestFile_For_CodeMetricsGeneratorTest.txt";
-	String TestDirectoryPath = ".\\src\\test\\com\\samsung\\sec\\dexter\\metrics\\TestDirectory_For_CodeMetricsGeneratorTest";
-	String EmptyJavaTestFilePath = ".\\src\\test\\com\\samsung\\sec\\dexter\\metrics\\TestJavaFile_For_CodeMetricsGeneratorTest_Empty.java";
-	String TooLongTestFilePath = ".\\src\\test\\com\\samsung\\sec\\dexter\\metrics\\TestFile_For_CodeMetricsGeneratorTest_TooLong.txt";
+	String TestDirectoryPath = ".\\src\\sample\\TestDirectory_For_CodeMetricsGeneratorTest";
+	String EmptyJavaTestFilePath = ".\\src\\sample\\TestJavaFile_For_CodeMetricsGeneratorTest_Empty.java";
+	String TooLongTestFilePath = ".\\src\\sample\\TestFile_For_CodeMetricsGeneratorTest_TooLong.txt";
 	String LogPath = ".\\log\\dexter-core.log";
 	
 	private boolean isDefault(CodeMetrics codeMetrics) {
@@ -114,7 +113,6 @@ public class CodeMetricsGeneratorTest {
 	@Test
 	public void getCodeMetricsTest_LogsAndReturns_GivenNullFilePath() {
 		File log = new File(LogPath);
-		long fileLastModifiedDate = log.lastModified();
 		long fileLength = log.length();
 		
 		CodeMetricsGenerator.getCodeMetrics(language, filePath, codeMetrics, functionMetrics, functionList);
