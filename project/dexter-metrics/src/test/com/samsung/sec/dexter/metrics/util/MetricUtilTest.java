@@ -37,7 +37,7 @@ import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.metrics.util.MetricUtil;
 
 public class MetricUtilTest {
-	String TestFilePath = ".\\src\\test\\com\\samsung\\sec\\dexter\\metrics\\util\\TestFile_For_MetricUtilTest.java";
+	String TestFilePath = ".\\src\\sample\\TestFile_For_MetricUtilTest.java";
 	
 	@Test
 	public void test() {
@@ -112,9 +112,11 @@ public class MetricUtilTest {
 	@Test
 	public void MetricUtilTest_ReturnsProperLoc_GivenCorrectExample() {
 		int start = 0;
-		int end = 23;
+		int end = 48;
 		int loc=0;
 		loc=MetricUtil.getFunctionLOCArray(TestFilePath, start, end);
+		
+		System.out.println(loc);
 		
 		assertEquals(loc, 12);
 	}
