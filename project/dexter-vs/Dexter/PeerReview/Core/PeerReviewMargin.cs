@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media;
+using System.Diagnostics;
 using Microsoft.VisualStudio.Text.Editor;
 using System.Collections.Generic;
 
@@ -65,8 +66,14 @@ namespace Dexter.PeerReview
 
             foreach (var comment in getPReviewComments())
             {
-                double y = scrollBar.GetYCoordinateOfBufferPosition(comment.SnapShotSpan.Start);
-                this.DrawMark(drawingContext, markBrush, y);
+                try
+                {
+                    double y = scrollBar.GetYCoordinateOfBufferPosition(comment.SnapShotSpan.Start);
+                    this.DrawMark(drawingContext, markBrush, y);
+                } catch (ArgumentException)
+                {
+                    Debug.WriteLine("SnapShotSpan mismatch");
+                }
             }
         }
 
