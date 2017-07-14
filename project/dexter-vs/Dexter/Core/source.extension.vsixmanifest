@@ -25,6 +25,8 @@
     <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
     <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="Dexter.PeerReview.Core" Path="|Dexter.PeerReview.Core|" />
     <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="File" Path="CodeSnippet\DexterCodeSnippet.pkgdef" />
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="Dexter.Analyzer.Core" Path="|Dexter.Analyzer.Core|" />
+    <Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="Project" d:ProjectName="Dexter.Analyzer.Core" Path="|Dexter.Analyzer.Core|" />
   </Assets>
   <Prerequisites>
     <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,16.0)" />

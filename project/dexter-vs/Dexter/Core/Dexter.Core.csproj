@@ -200,6 +200,12 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Analyzer\Core\Dexter.Analyzer.Core.csproj">
+      <Project>{A1D050FB-699E-498B-9694-179A9CFE0B57}</Project>
+      <Name>Dexter.Analyzer.Core</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
     <ProjectReference Include="..\Common\Core\Dexter.Common.Core.csproj">
       <Project>{320cee90-f7bd-43a4-bd23-9227cc1e214c}</Project>
       <Name>Dexter.Common.Core</Name>
