@@ -79,7 +79,10 @@ public class CLIResultFile implements ICLIResultFile {
             for (Occurence o : defect.getOccurences()) {
                 m.append("\t\t\t<occurence startLine=\"").append(o.getStartLine()).append("\" ")
                         .append("endLine=\"").append(o.getEndLine()).append("\" ")
-                        .append(" message=\"").append(o.getMessage()).append("\" />\n");
+                        //The original line:
+                        //.append(" message1=\"").append(o.getMessage()).append("\" />\n");
+                        //My line:
+                        .append(" message=\"").append(o.getMessage().replace("\"", "&quot;")).append("\" />\n");
             }
             m.append("\t\t</defect>\n");
         }
