@@ -87,5 +87,59 @@ namespace Dexter.Analyzer {
                 return ResourceManager.GetString("AnalyzerTitle", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   API Type should has doxygen comment과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string NoCommentAnalyzerDescription {
+            get {
+                return ResourceManager.GetString("NoCommentAnalyzerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   API Type &apos;{0}&apos; has no doxygen comment과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string NoCommentAnalyzerMessageFormat {
+            get {
+                return ResourceManager.GetString("NoCommentAnalyzerMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   API type has no doxygen comment과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string NoCommentAnalyzerTitle {
+            get {
+                return ResourceManager.GetString("NoCommentAnalyzerTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   File should has doxygen comment과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string NoFileCommentAnalyzerDescription {
+            get {
+                return ResourceManager.GetString("NoFileCommentAnalyzerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   File &apos;{0}&apos; has no doxygen comment과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string NoFileCommentAnalyzerMessageFormat {
+            get {
+                return ResourceManager.GetString("NoFileCommentAnalyzerMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   File has no doxygen comment과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string NoFileCommentAnalyzerTitle {
+            get {
+                return ResourceManager.GetString("NoFileCommentAnalyzerTitle", resourceCulture);
+            }
+        }
     }
 }

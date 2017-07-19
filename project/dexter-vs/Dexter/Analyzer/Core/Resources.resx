@@ -129,4 +129,22 @@
     <value>Type name contains lowercase letters</value>
     <comment>The title of the diagnostic.</comment>
   </data>
+  <data name="NoCommentAnalyzerDescription" xml:space="preserve">
+    <value>API Type should has doxygen comment</value>
+  </data>
+  <data name="NoCommentAnalyzerMessageFormat" xml:space="preserve">
+    <value>API Type '{0}' has no doxygen comment</value>
+  </data>
+  <data name="NoCommentAnalyzerTitle" xml:space="preserve">
+    <value>API type has no doxygen comment</value>
+  </data>
+  <data name="NoFileCommentAnalyzerDescription" xml:space="preserve">
+    <value>File should has doxygen comment</value>
+  </data>
+  <data name="NoFileCommentAnalyzerMessageFormat" xml:space="preserve">
+    <value>File '{0}' has no doxygen comment</value>
+  </data>
+  <data name="NoFileCommentAnalyzerTitle" xml:space="preserve">
+    <value>File has no doxygen comment</value>
+  </data>
 </root>
