@@ -5,6 +5,7 @@ using System.Composition;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.IO;
 using System.Diagnostics;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeFixes;
@@ -17,14 +18,14 @@ using System.Text;
 
 namespace Dexter.Analyzer
 {
-    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(NoCommentCodeFixProvider)), Shared]
-    public class NoCommentCodeFixProvider : CodeFixProvider
+    [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(NoFileCommentFixProvider)), Shared]
+    public class NoFileCommentFixProvider : CodeFixProvider
     {
-        private const string title = "Add doxygen comment";
+        private const string title = "Add file doxygen comment";
 
         public sealed override ImmutableArray<string> FixableDiagnosticIds
         {
-            get { return ImmutableArray.Create(NoCommentAnalyzer.DiagnosticId); }
+            get { return ImmutableArray.Create(NoFileCommentAnalyzer.DiagnosticId); }
         }
 
         public sealed override FixAllProvider GetFixAllProvider()
@@ -37,56 +38,51 @@ namespace Dexter.Analyzer
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);
 
-            // TODO: Replace the following code with your own analysis, generating a CodeAction for each fix to suggest
+            //TODO: Replace the following code with your own analysis, generating a CodeAction for each fix to suggest
             var diagnostic = context.Diagnostics.First();
-            var diagnosticSpan = diagnostic.Location.SourceSpan;
-
-            // Find the type declaration identified by the diagnostic.
-            var declaration = root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<BaseTypeDeclarationSyntax>().First();
-
-
+ 
             // Register a code action that will invoke the fix.
             context.RegisterCodeFix(
                 CodeAction.Create(
                     title: title,
-                    createChangedDocument: c => AddDoxygenCommentAsync(context.Document, declaration, c),
+                    createChangedDocument: c => AddFileDoxygenCommentAsync(context.Document, root, c),
                     equivalenceKey: title),
                 diagnostic);
         }
 
-        private Task<Document> AddDoxygenCommentAsync(Document document, BaseTypeDeclarationSyntax declaration, CancellationToken c)
+        private Task<Document> AddFileDoxygenCommentAsync(Document document, SyntaxNode node, CancellationToken c)
         {
-            string[] doxygenComments = GetDoxygenComments(declaration);
+            string doxygenComment = GetDoxygenComment(document.Name);
 
-            var leadingTrivias = declaration.GetLeadingTrivia();
-            var whitespaceCount = leadingTrivias[leadingTrivias.Count - 1].Span.Length;
-            var newDeclaration = declaration.WithLeadingTrivia(
-                GetNewLeadingTrivia(leadingTrivias, SyntaxFactory.ParseLeadingTrivia(
-                                                        ConcatCommentString(doxygenComments, whitespaceCount))));
+            var newNode = node.WithLeadingTrivia(
+                SyntaxFactory.ParseLeadingTrivia(doxygenComment));
 
-            return ReplaceNode(declaration, newDeclaration, document);
+            return ReplaceNode(node, newNode, document);
         }
 
-        private static string[] GetDoxygenComments(BaseTypeDeclarationSyntax declaration)
+        private static string GetDoxygenComment(string fileName)
         {
-            if (declaration is ClassDeclarationSyntax)
-            {
-                return new[] {
-                    "/// <summary>",
-                    "/// ",
-                    "/// </summary>",
-                    "/// <code>",
-                    "/// ",
-                    "/// </code>"
-                };
-            } else
-            {
-                return new[] {
-                    "/// <summary>",
-                    "/// ",
-                    "/// </summary>"
-                };
-            }
+            return String.Format(@"/// @file {0}
+/// <published> N </published>
+/// <privlevel> non-privilege </privlevel>
+/// <privilege> none </privilege> 
+/// <privacy> N </privacy>
+/// <product> TV </product>
+/// <version> 3.*.* </version>
+/// <SDK_Support> Y </SDK_Support>
+/// Copyright (c) 2017 Samsung Electronics Co., Ltd All Rights Reserved
+/// PROPRIETARY/CONFIDENTIAL 
+/// This software is the confidential and proprietary
+/// information of SAMSUNG ELECTRONICS (""Confidential Information""). You shall
+/// not disclose such Confidential Information and shall use it only in
+/// accordance with the terms of the license agreement you entered into with
+/// SAMSUNG ELECTRONICS. SAMSUNG make no representations or warranties about the
+/// suitability of the software, either express or implied, including but not
+/// limited to the implied warranties of merchantability, fitness for a
+/// particular purpose, or non-infringement. SAMSUNG shall not be liable for any
+/// damages suffered by licensee as a result of using, modifying or distributing
+/// this software or its derivatives.
+", fileName);
         }
 
         private string ConcatCommentString(string[] doxygenComments, int whitespaceCount)
@@ -105,15 +101,16 @@ namespace Dexter.Analyzer
 
         private IEnumerable<SyntaxTrivia> GetNewLeadingTrivia(SyntaxTriviaList leadingTrivias, SyntaxTriviaList commentTrivias)
         {
-            
+
             var whitespaceTriva = leadingTrivias[leadingTrivias.Count - 1];
 
-            for (int i=0; i< leadingTrivias.Count-1; i++)
+            for (int i = 0; i < leadingTrivias.Count - 1; i++)
             {
                 yield return leadingTrivias[i];
             }
 
-            foreach (var commentTrivia in commentTrivias) {
+            foreach (var commentTrivia in commentTrivias)
+            {
                 yield return commentTrivia;
             }
 

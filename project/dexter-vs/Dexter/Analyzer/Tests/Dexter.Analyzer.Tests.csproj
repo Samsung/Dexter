@@ -109,9 +109,9 @@
     <Compile Include="Helpers\DiagnosticResult.cs" />
     <Compile Include="Helpers\DiagnosticVerifier.Helper.cs" />
     <Compile Include="NoCommentAnalyzerTest.cs" />
-    <Compile Include="NoCommentCodeFixProviderTest.cs" />
+    <Compile Include="NoCommentFixProviderTest.cs" />
     <Compile Include="NoFileCommentAnalyzerTest.cs" />
-    <Compile Include="NoFileCommentCodeFixProviderTest.cs" />
+    <Compile Include="NoFileCommentFixProviderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

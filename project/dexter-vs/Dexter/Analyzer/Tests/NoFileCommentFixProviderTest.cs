@@ -9,10 +9,10 @@ using Dexter.Analyzer;
 namespace Dexter.Analyzer.Tests
 {
     [TestFixture]
-    public class NoFileCommentCodeFixProviderTest : CodeFixVerifier
+    public class NoFileCommentFixProviderTest : CodeFixVerifier
     {
         [Test]
-        public void NoFileCommentCodeFixProvider_Fix_GivenPublicApiFileWithoutDoxygenComment()
+        public void NoFileCommentFixProvider_Fix_GivenPublicApiFileWithoutDoxygenComment()
         {
             var test = @"
 using System;
@@ -61,7 +61,7 @@ namespace ConsoleApplication1
 
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
-            return new NoFileCommentCodeFixProvider();
+            return new NoFileCommentFixProvider();
         }
     }
 

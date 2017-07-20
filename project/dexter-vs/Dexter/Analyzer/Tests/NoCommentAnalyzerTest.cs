@@ -30,7 +30,7 @@ namespace Dexter.Analyzer.Tests
     }";
             var expected = new DiagnosticResult
             {
-                Id = "VD0001",
+                Id = NoCommentAnalyzer.NoCommentRuleId,
                 Message = "API Type 'TestClass' has no doxygen comment",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
@@ -106,7 +106,7 @@ namespace Dexter.Analyzer.Tests
     }";
             var expected = new DiagnosticResult
             {
-                Id = "VD0001",
+                Id = NoCommentAnalyzer.NoCommentRuleId,
                 Message = "API Type 'Test' has no doxygen comment",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
@@ -137,7 +137,7 @@ namespace Dexter.Analyzer.Tests
     }";
             var expected = new DiagnosticResult
             {
-                Id = "VD0001",
+                Id = NoCommentAnalyzer.NoCommentRuleId,
                 Message = "API Type 'Test' has no doxygen comment",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
@@ -170,12 +170,132 @@ namespace Dexter.Analyzer.Tests
     }";
             var expected = new DiagnosticResult
             {
-                Id = "VD0001",
+                Id = NoCommentAnalyzer.NoCommentRuleId,
                 Message = "API Type 'Test' has no doxygen comment",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {
                             new DiagnosticResultLocation("Test0.cs", 11, 21)
+                        }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        [Test]
+        public void NoCommentAnalyzer_Ignore_GivenPublicEnumWithInternalParent()
+        {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        internal class TestClass
+        {
+            public enum Test
+            {   
+                Start,
+                Stop
+            }
+        }
+    }";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [Test]
+        public void NoCommentAnalyzer_verfiy_GivenPublicMethodWithoutDoxygenComment()
+        {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        /// <summary> test </summary>
+        public class TestClass 
+        {
+            public void Test()
+            {   
+            }
+        }   
+    }";
+            var expected = new DiagnosticResult
+            {
+                Id = NoCommentAnalyzer.NoMethodCommentRuleId,
+                Message = "API Type 'Test' has no doxygen comment",
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[] {
+                            new DiagnosticResultLocation("Test0.cs", 14, 25)
+                        }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
+        [Test]
+        public void NoCommentAnalyzer_Ignore_GivenPublicMethodWithInternalParent()
+        {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        internal class TestClass 
+        {
+            public void Test()
+            {   
+            }
+        }
+    }";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [Test]
+        public void NoCommentAnalyzer_verfiy_GivenPublicConstructorWithoutDoxygenComment()
+        {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        /// <summary> test </summary>
+        public class TestClass 
+        {
+            public TestClass()
+            {   
+            }
+        }   
+    }";
+            var expected = new DiagnosticResult
+            {
+                Id = NoCommentAnalyzer.NoMethodCommentRuleId,
+                Message = "API Type 'TestClass' has no doxygen comment",
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[] {
+                            new DiagnosticResultLocation("Test0.cs", 14, 20)
                         }
             };
 

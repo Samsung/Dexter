@@ -35,9 +35,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="NoCommentAnalyzer.cs" />
-    <Compile Include="NoCommentCodeFixProvider.cs" />
+    <Compile Include="NoCommentFixProvider.cs" />
     <Compile Include="NoFileCommentAnalyzer.cs" />
-    <Compile Include="NoFileCommentCodeFixProvider.cs" />
+    <Compile Include="NoFileCommentFixProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
