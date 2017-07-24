@@ -20,11 +20,30 @@ namespace Dexter.Analyzer
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(NoCommentFixProvider)), Shared]
     public class NoCommentFixProvider : CodeFixProvider
     {
-        private const string title = "Add doxygen comment";
+        private static readonly string title = "Add doxygen comment";
+        private static readonly string[] summaryComments = new[] {
+            "/// <summary>",
+            "/// ",
+            "/// </summary>"
+        };
+        private static readonly string[] summaryAndCodeComments = new[] {
+            "/// <summary>",
+            "/// ",
+            "/// </summary>",
+            "/// <code>",
+            "/// ",
+            "/// </code>"
+        };
 
-        public sealed override ImmutableArray<string> FixableDiagnosticIds
+    public sealed override ImmutableArray<string> FixableDiagnosticIds
         {
-            get { return ImmutableArray.Create(NoCommentAnalyzer.NoCommentRuleId, NoCommentAnalyzer.NoMethodCommentRuleId); }
+            get
+            {
+                return ImmutableArray.Create(
+                    NoCommentAnalyzer.NoCommentRuleId, 
+                    NoCommentAnalyzer.NoMethodCommentRuleId,
+                    NoCommentAnalyzer.NoPropertyCommentRuleId);
+            }
         }
 
         public sealed override FixAllProvider GetFixAllProvider()
@@ -54,6 +73,17 @@ namespace Dexter.Analyzer
                             diagnostic);
                         break;
 
+                    case NoCommentAnalyzer.NoPropertyCommentRuleId:
+                        var propertyDeclaration = root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<BasePropertyDeclarationSyntax>().First();
+
+                        context.RegisterCodeFix(
+                            CodeAction.Create(
+                                title: title,
+                                createChangedDocument: c => AddPropertyDoxygenCommentAsync(context.Document, propertyDeclaration, c),
+                                equivalenceKey: title),
+                            diagnostic);
+                        break;
+
                     default:
                         var declaration = root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<BaseTypeDeclarationSyntax>().First();
 
@@ -68,6 +98,19 @@ namespace Dexter.Analyzer
             }
 
             
+        }
+
+        private Task<Document> AddPropertyDoxygenCommentAsync(Document document, BasePropertyDeclarationSyntax declaration, CancellationToken c)
+        {
+            var doxygenComments = GetPropertyDoxygenComments(declaration);
+
+            var leadingTrivias = declaration.GetLeadingTrivia();
+            var whitespaceCount = leadingTrivias[leadingTrivias.Count - 1].Span.Length;
+            var newDeclaration = declaration.WithLeadingTrivia(
+                GetNewLeadingTrivia(leadingTrivias, SyntaxFactory.ParseLeadingTrivia(
+                                                        ConcatCommentString(doxygenComments, whitespaceCount))));
+
+            return ReplaceNode(declaration, newDeclaration, document);
         }
 
         private Task<Document> AddMethodDoxygenCommentAsync(Document document, BaseMethodDeclarationSyntax declaration, CancellationToken c)
@@ -96,14 +139,17 @@ namespace Dexter.Analyzer
             return ReplaceNode(declaration, newDeclaration, document);
         }
 
-        private static IEnumerable<string> GetMethodDoxygenComments(BaseMethodDeclarationSyntax declaration)
+        private IEnumerable<string> GetPropertyDoxygenComments(BasePropertyDeclarationSyntax declaration)
         {
-            string[] summaryComments = new[] {
-                "/// <summary>",
-                "/// ",
-                "/// </summary>"
-            };
+            var throwStatmentSyntaxs = declaration.DescendantNodes().OfType<ThrowStatementSyntax>();
+            var exceptionComments = GetExceptionComments(throwStatmentSyntaxs);
 
+            return summaryComments
+                .Concat(exceptionComments);
+        }
+
+        private IEnumerable<string> GetMethodDoxygenComments(BaseMethodDeclarationSyntax declaration)
+        {
             var paramComments = GetParameterComments(declaration);
             var throwStatmentSyntaxs = declaration.DescendantNodes().OfType<ThrowStatementSyntax>();
             var exceptionComments = GetExceptionComments(throwStatmentSyntaxs);
@@ -115,7 +161,7 @@ namespace Dexter.Analyzer
                 .Concat(returnComments);
         }
 
-        private static IEnumerable<string> GetReturnComments(BaseMethodDeclarationSyntax declaration)
+        private IEnumerable<string> GetReturnComments(BaseMethodDeclarationSyntax declaration)
         {
             var methodDeclaration = declaration as MethodDeclarationSyntax;
             if (methodDeclaration == null)
@@ -125,7 +171,7 @@ namespace Dexter.Analyzer
                 yield return "/// <returns> </returns>";
         }
 
-        private static bool IsVoidReturnType(MethodDeclarationSyntax declaration)
+        private bool IsVoidReturnType(MethodDeclarationSyntax declaration)
         {
             var predefinedType = declaration.ReturnType as PredefinedTypeSyntax;
             if (predefinedType == null)
@@ -137,7 +183,7 @@ namespace Dexter.Analyzer
             return false;
         }
 
-        private static IEnumerable<string> GetParameterComments(BaseMethodDeclarationSyntax declaration)
+        private IEnumerable<string> GetParameterComments(BaseMethodDeclarationSyntax declaration)
         {
             foreach (var parameter in declaration.ParameterList.Parameters)
             {
@@ -145,7 +191,7 @@ namespace Dexter.Analyzer
             }
         }
 
-        private static IEnumerable<string> GetExceptionComments(IEnumerable<ThrowStatementSyntax> throwStatmentSyntaxs)
+        private IEnumerable<string> GetExceptionComments(IEnumerable<ThrowStatementSyntax> throwStatmentSyntaxs)
         {
             return from throwStatment in throwStatmentSyntaxs
                    let exceptionString = GetExceptionString(throwStatment)
@@ -153,7 +199,7 @@ namespace Dexter.Analyzer
                    select $"/// <exception cref=\"{exceptionString}\"> </exception>";
         }
 
-        private static string GetExceptionString(ThrowStatementSyntax throwStatmentSyntax)
+        private string GetExceptionString(ThrowStatementSyntax throwStatmentSyntax)
         {
             if (throwStatmentSyntax.Expression == null)
             {
@@ -177,25 +223,14 @@ namespace Dexter.Analyzer
             return type.Identifier.Text;
         }
 
-        private static string[] GetDoxygenComments(BaseTypeDeclarationSyntax declaration)
+        private string[] GetDoxygenComments(BaseTypeDeclarationSyntax declaration)
         {
             if (declaration is ClassDeclarationSyntax)
             {
-                return new[] {
-                    "/// <summary>",
-                    "/// ",
-                    "/// </summary>",
-                    "/// <code>",
-                    "/// ",
-                    "/// </code>"
-                };
+                return summaryAndCodeComments;
             } else
             {
-                return new[] {
-                    "/// <summary>",
-                    "/// ",
-                    "/// </summary>"
-                };
+                return summaryComments;
             }
         }
 

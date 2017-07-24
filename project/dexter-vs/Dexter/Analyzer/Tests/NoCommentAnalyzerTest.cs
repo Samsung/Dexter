@@ -302,6 +302,42 @@ namespace Dexter.Analyzer.Tests
             VerifyCSharpDiagnostic(test, expected);
         }
 
+        [Test]
+        public void NoCommentAnalyzer_verfiy_GivenPublicPropertyWithoutDoxygenComment()
+        {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        /// <summary> test </summary>
+        public class TestClass 
+        {
+            public int TestProperty
+            {   
+                get; set;
+            }
+        }   
+    }";
+            var expected = new DiagnosticResult
+            {
+                Id = NoCommentAnalyzer.NoPropertyCommentRuleId,
+                Message = "API Type 'TestProperty' has no doxygen comment",
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[] {
+                            new DiagnosticResultLocation("Test0.cs", 14, 24)
+                        }
+            };
+
+            VerifyCSharpDiagnostic(test, expected);
+        }
+
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
             return new NoCommentAnalyzer();

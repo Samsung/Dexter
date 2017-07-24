@@ -15,6 +15,7 @@ namespace Dexter.Analyzer
     {
         public const string NoCommentRuleId = "VD0001";
         public const string NoMethodCommentRuleId = "VD0002";
+        public const string NoPropertyCommentRuleId = "VD0003";
 
         // You can change these strings in the Resources.resx file. If you do not want your analyzer to be localize-able, you can use regular strings for Title and MessageFormat.
         // See https://github.com/dotnet/roslyn/blob/master/docs/analyzers/Localizing%20Analyzers.md for more on localization
@@ -25,8 +26,15 @@ namespace Dexter.Analyzer
 
         private static readonly DiagnosticDescriptor NoCommentRule = new DiagnosticDescriptor(NoCommentRuleId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
         private static readonly DiagnosticDescriptor NoMethodCommentRule = new DiagnosticDescriptor(NoMethodCommentRuleId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+        private static readonly DiagnosticDescriptor NoPropertyCommentRule = new DiagnosticDescriptor(NoPropertyCommentRuleId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
 
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(NoCommentRule, NoMethodCommentRule); } }
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
+        {
+            get
+            {
+                return ImmutableArray.Create(NoCommentRule, NoMethodCommentRule, NoPropertyCommentRule);
+            }
+        }
 
         public override void Initialize(AnalysisContext context)
         {
@@ -39,13 +47,14 @@ namespace Dexter.Analyzer
             context.RegisterSyntaxNodeAction(AnalyzeEnumSyntaxNode, SyntaxKind.EnumDeclaration);
             context.RegisterSyntaxNodeAction(AnalyzeMethodSyntaxNode, SyntaxKind.MethodDeclaration);
             context.RegisterSyntaxNodeAction(AnalyzeConstructorSyntaxNode, SyntaxKind.ConstructorDeclaration);
+            context.RegisterSyntaxNodeAction(AnalyzePropertySyntaxNode, SyntaxKind.PropertyDeclaration);
         }
 
         private void AnalyzeClassSyntaxNode(SyntaxNodeAnalysisContext context)
         {
             var node = (ClassDeclarationSyntax)context.Node;
 
-            if (!IsPublicType(node))
+            if (!IsPublicType(node.Modifiers))
                 return;
 
             var xmlTrivia = GetXmlTrivia(node);
@@ -57,7 +66,7 @@ namespace Dexter.Analyzer
         {
             var node = (InterfaceDeclarationSyntax)context.Node;
 
-            if (!IsPublicType(node))
+            if (!IsPublicType(node.Modifiers))
                 return;
 
             var xmlTrivia = GetXmlTrivia(node);
@@ -69,7 +78,7 @@ namespace Dexter.Analyzer
         {
             var node = (StructDeclarationSyntax)context.Node;
 
-            if (!IsPublicType(node))
+            if (!IsPublicType(node.Modifiers))
                 return;
 
             var xmlTrivia = GetXmlTrivia(node);
@@ -81,7 +90,7 @@ namespace Dexter.Analyzer
         {
             var node = (EnumDeclarationSyntax)context.Node;
 
-            if (!IsPublicType(node))
+            if (!IsPublicType(node.Modifiers))
                 return;
 
             if (!IsAllParentsPublic(node))
@@ -96,7 +105,7 @@ namespace Dexter.Analyzer
         {
             var node = (MethodDeclarationSyntax)context.Node;
 
-            if (!IsPublicType(node))
+            if (!IsPublicType(node.Modifiers))
                 return;
 
             if (!IsAllParentsPublic(node))
@@ -111,7 +120,7 @@ namespace Dexter.Analyzer
         {
             var node = (ConstructorDeclarationSyntax)context.Node;
 
-            if (!IsPublicType(node))
+            if (!IsPublicType(node.Modifiers))
                 return;
 
             if (!IsAllParentsPublic(node))
@@ -122,22 +131,31 @@ namespace Dexter.Analyzer
                 context.ReportDiagnostic(Diagnostic.Create(NoMethodCommentRule, node.Identifier.GetLocation(), node.Identifier.Text));
         }
 
+        private void AnalyzePropertySyntaxNode(SyntaxNodeAnalysisContext context)
+        {
+            var node = (PropertyDeclarationSyntax)context.Node;
+
+            if (!IsPublicType(node.Modifiers))
+                return;
+
+            if (!IsAllParentsPublic(node))
+                return;
+
+            var xmlTrivia = GetXmlTrivia(node);
+            if (xmlTrivia == null)
+                context.ReportDiagnostic(Diagnostic.Create(NoPropertyCommentRule, node.Identifier.GetLocation(), node.Identifier.Text));
+        }
+
         private bool IsAllParentsPublic(SyntaxNode node)
         {
             return node.Ancestors(false).OfType<BaseTypeDeclarationSyntax>()
-                .All(ancestor => IsPublicType(ancestor));
+                .All(ancestor => IsPublicType(ancestor.Modifiers));
         }
 
-        private bool IsPublicType(BaseMethodDeclarationSyntax node)
+        private bool IsPublicType(SyntaxTokenList modifiers)
         {
-            return node.Modifiers.Any(SyntaxKind.PublicKeyword) ||
-                node.Modifiers.Any(SyntaxKind.ProtectedKeyword);
-        }
-
-        private bool IsPublicType(BaseTypeDeclarationSyntax node)
-        {
-            return node.Modifiers.Any(SyntaxKind.PublicKeyword) ||
-                node.Modifiers.Any(SyntaxKind.ProtectedKeyword);
+            return modifiers.Any(SyntaxKind.PublicKeyword) ||
+                modifiers.Any(SyntaxKind.ProtectedKeyword);
         }
 
         private static DocumentationCommentTriviaSyntax GetXmlTrivia(CSharpSyntaxNode node)

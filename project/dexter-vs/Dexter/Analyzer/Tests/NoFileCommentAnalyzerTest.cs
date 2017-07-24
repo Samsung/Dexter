@@ -29,7 +29,7 @@ namespace Dexter.Analyzer.Tests
     }";
             var expected = new DiagnosticResult
             {
-                Id = "VD0003",
+                Id = "VD0004",
                 Message = "File 'Test0.cs' has no doxygen comment",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =

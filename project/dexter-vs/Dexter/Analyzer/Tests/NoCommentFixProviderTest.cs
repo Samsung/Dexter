@@ -426,6 +426,112 @@ namespace Dexter.Analyzer.Tests
             VerifyCSharpFix(test, fixtest);
         }
 
+        [Test]
+        public void NoCommentFixProvider_Fix_GivenPropertyType()
+        {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        /// <summary> test </summary>
+        public class TestClass
+        {
+            public int TestProperty
+            {   
+                get; set;
+            }
+        }
+    }";
+            var fixtest = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        /// <summary> test </summary>
+        public class TestClass
+        {
+            /// <summary>
+            /// 
+            /// </summary>
+            public int TestProperty
+            {   
+                get; set;
+            }
+        }
+    }";
+            VerifyCSharpFix(test, fixtest);
+        }
+
+        [Test]
+        public void NoCommentFixProvider_Fix_GivenPropertyType_WithExceptionInGetter()
+        {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        /// <summary> test </summary>
+        public class TestClass
+        {
+            public int TestProperty
+            {   
+                get {
+                    throw new Exception(""test exception"");
+                }
+                set {
+                    throw new ArgumentException(""argument"");
+                }
+            }
+        }
+    }";
+            var fixtest = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        /// <summary> test </summary>
+        public class TestClass
+        {
+            /// <summary>
+            /// 
+            /// </summary>
+            /// <exception cref=""Exception""> </exception>
+            /// <exception cref=""ArgumentException""> </exception>
+            public int TestProperty
+            {   
+                get {
+                    throw new Exception(""test exception"");
+                }
+                set {
+                    throw new ArgumentException(""argument"");
+                }
+            }
+        }
+    }";
+            VerifyCSharpFix(test, fixtest);
+        }
+
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
             return new NoCommentAnalyzer();
