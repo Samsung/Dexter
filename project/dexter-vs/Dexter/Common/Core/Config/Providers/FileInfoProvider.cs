@@ -31,19 +31,25 @@ namespace Dexter.Common.Config.Providers
         /// <returns>new ProjectInfo</returns>
         public virtual ProjectInfo Load()
         {
-            Document doc = dte.ActiveDocument;
-
-            return doc == null ?
-            new ProjectInfo() :
-            new ProjectInfo()
+            try
             {
-                projectName = Path.GetFileNameWithoutExtension(doc.FullName),
-                projectFullPath = Path.GetDirectoryName(doc.FullName),
-                sourceDir = { Path.GetDirectoryName(doc.FullName) },
-                headerDir = { Path.GetDirectoryName(doc.FullName) },
-                fileName = { Path.GetFileName(doc.FullName) },
-                type = "FILE"
-            };
+                Document doc = dte.ActiveDocument;
+
+                return doc == null ?
+                new ProjectInfo() :
+                new ProjectInfo()
+                {
+                    projectName = Path.GetFileNameWithoutExtension(doc.FullName),
+                    projectFullPath = Path.GetDirectoryName(doc.FullName),
+                    sourceDir = { Path.GetDirectoryName(doc.FullName) },
+                    headerDir = { Path.GetDirectoryName(doc.FullName) },
+                    fileName = { Path.GetFileName(doc.FullName) },
+                    type = "FILE"
+                };
+            } catch (Exception) // The active document property throws an exception when the project Properties is opened 
+            {
+                return new ProjectInfo();
+            }
         }
     }
 }
