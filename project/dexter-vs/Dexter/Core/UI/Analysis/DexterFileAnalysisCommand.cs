@@ -53,7 +53,7 @@ namespace Dexter.UI.Analysis
             if (docName.EndsWith("c") || docName.EndsWith("h") ||
                 docName.EndsWith("cpp") || docName.EndsWith("hpp") ||
                 docName.EndsWith("cxx") || docName.EndsWith("c++") ||
-                docName.EndsWith("cc"))
+                docName.EndsWith("cc") || docName.EndsWith("cs") )
             {
                 
                 Text = "On " + document.Name;
