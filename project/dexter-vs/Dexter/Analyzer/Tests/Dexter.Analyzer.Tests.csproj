@@ -112,6 +112,7 @@
     <Compile Include="NoCommentFixProviderTest.cs" />
     <Compile Include="NoFileCommentAnalyzerTest.cs" />
     <Compile Include="NoFileCommentFixProviderTest.cs" />
+    <Compile Include="XmlElementAnalyzerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
