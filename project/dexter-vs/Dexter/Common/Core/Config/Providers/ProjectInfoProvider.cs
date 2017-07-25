@@ -42,14 +42,13 @@ namespace Dexter.Common.Config.Providers
         /// <returns>new ProjectInfo</returns>
         public virtual ProjectInfo Load()
         {   
-            Solution solution = dte.Solution;
+            Projects projects = dte.Solution?.Projects;
 
-            if (solution==null || solution.Projects.Count == 0)
+            if (projects == null || projects.Count == 0 || string.IsNullOrEmpty(projects.Item(1).FullName))
             {
                 return new ProjectInfo();
             }
 
-            Projects projects = solution.Projects;
             Project project = projects.Item(1);
 
             return new ProjectInfo()
