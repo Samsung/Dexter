@@ -28,7 +28,7 @@ namespace Dexter.Common.Config.Providers
         {   
             Solution solution = dte.Solution;
 
-            if (solution == null || solution.Count==0)
+            if (solution == null || solution.Count==0 || string.IsNullOrEmpty(solution.FullName))
             {
                 return new ProjectInfo();
             }
