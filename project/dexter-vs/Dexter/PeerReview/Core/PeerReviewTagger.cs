@@ -113,9 +113,10 @@ namespace Dexter.PeerReview
 
             foreach (var line in textBuffer.CurrentSnapshot.Lines)
             {
-                string text = line.GetText().ToLower();
-                int commentStart = text.IndexOf(PeerReviewConstants.COMMENT_DELIMITER);
+                var commentDelimiter = reviewService.GetCommentDelimiter(textDocument.FilePath);
+                var text = line.GetText().ToLower();
 
+                var commentStart = text.IndexOf(commentDelimiter);
                 if (commentStart >= 0)
                 {
                     comments.Add(new PeerReviewSnapshotComment(

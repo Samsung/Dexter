@@ -32,6 +32,8 @@ namespace Dexter.PeerReview.Tests.Utils
             taskCollectionMock = new Mock<IPeerReviewTaskCollectionWrapper>();
             documentServiceMock = new Mock<IDexterDocumentService>();
             taskProviderMock.Setup(provider => provider.Tasks).Returns(taskCollectionMock.Object);
+            reviewServiceMock.Setup(service => service.GetCommentDelimiter(It.IsAny<string>())).
+                Returns(PeerReviewConstants.COMMENT_DELIMITER);
 
             manager = new PeerReviewCommentManager(fileServiceMock.Object, reviewServiceMock.Object, solutionManagerMock.Object, taskProviderMock.Object, documentServiceMock.Object);
         }

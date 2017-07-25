@@ -98,7 +98,8 @@ namespace Dexter.Common.Utils
 
         private bool IsSourceFilePath(string filePath)
         {
-            if (filePath != null && filePath.EndsWith(".cs"))
+            if (filePath != null && (filePath.EndsWith(".cs") || filePath.EndsWith(".c") || 
+                filePath.EndsWith(".cpp") || filePath.EndsWith(".py")))
                 return true;
 
             return false;

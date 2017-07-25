@@ -13,5 +13,6 @@ namespace Dexter.PeerReview
     {
         public static readonly string COMMENT_OWNER = "ICommentOwner";
         public static readonly string COMMENT_DELIMITER = "// dpr:";
+        public static readonly string COMMENT_DELIMITER_PYTHON = "# dpr:";
     }
 }

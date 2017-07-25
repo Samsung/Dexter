@@ -160,9 +160,16 @@ namespace Dexter.PeerReview.Utils
 
         private async Task<IEnumerable<PeerReviewComment>> getReviewCommentsFromOneFilePath(string filePath)
         {
-            var fileText = await fileService.ReadTextAsync(filePath);
+            try
+            {
+                var fileText = await fileService.ReadTextAsync(filePath);
 
-            return getReviewCommentsFromFileContent(filePath, fileText);
+                return getReviewCommentsFromFileContent(filePath, fileText);
+            } catch (FileNotFoundException e)
+            {
+                Debug.WriteLine(e);
+                return Enumerable.Empty< PeerReviewComment>();
+            }
         }
 
         private IEnumerable<PeerReviewComment> getReviewCommentsFromFileContent(string filePath, string fileText)
@@ -174,8 +181,9 @@ namespace Dexter.PeerReview.Utils
                 while ((line = reader.ReadLine()) != null)
                 {
                     lineNum++;
-                    int commentStart = line.ToLower().IndexOf(PeerReviewConstants.COMMENT_DELIMITER);
+                    var commentDelimiter = reviewService.GetCommentDelimiter(filePath);
 
+                    var commentStart = line.ToLower().IndexOf(commentDelimiter);
                     if (commentStart >= 0)
                     {
                         var commentText = line.Substring(commentStart);
