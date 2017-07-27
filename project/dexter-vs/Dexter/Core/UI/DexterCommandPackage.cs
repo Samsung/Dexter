@@ -170,7 +170,8 @@ namespace Dexter.UI
         private void UnregisterSolutionManager()
         {
             var solutionService = GetService(typeof(SVsSolution)) as IVsSolution;
-            solutionService.UnadviseSolutionEvents(dexterSolutionManager.EventCookie);
+            // solutionService can be null; hence the ?. operator is used
+            solutionService?.UnadviseSolutionEvents(dexterSolutionManager.EventCookie); 
         }
 
         private void onAnalysisStarted(object sender, EventArgs args)
