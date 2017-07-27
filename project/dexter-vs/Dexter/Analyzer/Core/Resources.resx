@@ -117,52 +117,85 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AnalyzerDescription" xml:space="preserve">
-    <value>Type names should be all uppercase.</value>
-    <comment>An optional longer localizable description of the diagnostic.</comment>
+  <data name="NoCodeRuleDescription" xml:space="preserve">
+    <value>API Type should have a code comment</value>
   </data>
-  <data name="AnalyzerMessageFormat" xml:space="preserve">
-    <value>Type name '{0}' contains lowercase letters</value>
-    <comment>The format-able message the diagnostic displays.</comment>
+  <data name="NoCodeRuleMessageFormat" xml:space="preserve">
+    <value>API Type '{0}' has no code comment</value>
   </data>
-  <data name="AnalyzerTitle" xml:space="preserve">
-    <value>Type name contains lowercase letters</value>
-    <comment>The title of the diagnostic.</comment>
+  <data name="NoCodeRuleTitle" xml:space="preserve">
+    <value>API Type has no code comment</value>
   </data>
-  <data name="NoCommentAnalyzerDescription" xml:space="preserve">
-    <value>API Type should have a doxygen comment</value>
-  </data>
-  <data name="NoCommentAnalyzerMessageFormat" xml:space="preserve">
-    <value>API Type '{0}' has no doxygen comment</value>
-  </data>
-  <data name="NoCommentAnalyzerTitle" xml:space="preserve">
-    <value>API type has no doxygen comment</value>
-  </data>
-  <data name="NoEndTagAnalyzerDescription" xml:space="preserve">
-    <value>Xml tag shoul have the end tag</value>
-  </data>
-  <data name="NoEndTagAnalyzerMessageFormat" xml:space="preserve">
-    <value>Xml tag '{0}' has no end tag</value>
-  </data>
-  <data name="NoEndTagAnalyzerTitle" xml:space="preserve">
-    <value>Xml tag has no end tag</value>
-  </data>
-  <data name="NoFileCommentAnalyzerDescription" xml:space="preserve">
+  <data name="NoCommentFileRuleDescription" xml:space="preserve">
     <value>File should have a doxygen comment</value>
   </data>
-  <data name="NoFileCommentAnalyzerMessageFormat" xml:space="preserve">
+  <data name="NoCommentFileRuleMessageFormat" xml:space="preserve">
     <value>File '{0}' has no doxygen comment</value>
   </data>
-  <data name="NoFileCommentAnalyzerTitle" xml:space="preserve">
+  <data name="NoCommentFileRuleTitle" xml:space="preserve">
     <value>File has no doxygen comment</value>
   </data>
-  <data name="NoXmlTextAnalyzerDescription" xml:space="preserve">
+  <data name="NoCommentRuleDescription" xml:space="preserve">
+    <value>API Type should have a doxygen comment</value>
+  </data>
+  <data name="NoCommentRuleMessageFormat" xml:space="preserve">
+    <value>API Type '{0}' has no doxygen comment</value>
+  </data>
+  <data name="NoCommentRuleTitle" xml:space="preserve">
+    <value>API type has no doxygen comment</value>
+  </data>
+  <data name="NoEndTagRuleDescription" xml:space="preserve">
+    <value>Xml tag shoul have the end tag</value>
+  </data>
+  <data name="NoEndTagRuleMessageFormat" xml:space="preserve">
+    <value>Xml tag '{0}' has no end tag</value>
+  </data>
+  <data name="NoEndTagRuleTitle" xml:space="preserve">
+    <value>Xml tag has no end tag</value>
+  </data>
+  <data name="NoExceptionRuleDescription" xml:space="preserve">
+    <value>Exception throwed in API shoud have a exception comment</value>
+  </data>
+  <data name="NoExceptionRuleMessageFormat" xml:space="preserve">
+    <value>'{0}' throwed in API has no exception comment</value>
+  </data>
+  <data name="NoExceptionRuleTitle" xml:space="preserve">
+    <value>Exception throwed in API has no exception comment</value>
+  </data>
+  <data name="NoParamRuleDescription" xml:space="preserve">
+    <value>Method Parameter shoud have a param comment</value>
+  </data>
+  <data name="NoParamRuleMessageFormat" xml:space="preserve">
+    <value>Method Parameter '{0}' has no param comment</value>
+  </data>
+  <data name="NoParamRuleTitle" xml:space="preserve">
+    <value>Method Parameter has no param comment</value>
+  </data>
+  <data name="NoReturnsRuleDescription" xml:space="preserve">
+    <value>Method with a return type should have a returns comment</value>
+  </data>
+  <data name="NoReturnsRuleMessageFormat" xml:space="preserve">
+    <value>Method '{0}' has no returns comment</value>
+  </data>
+  <data name="NoReturnsRuleTitle" xml:space="preserve">
+    <value>Method with a return type has no returns comment</value>
+  </data>
+  <data name="NoSummaryRuleDescription" xml:space="preserve">
+    <value>API Type should have a summary comment</value>
+  </data>
+  <data name="NoSummaryRuleMessageFormat" xml:space="preserve">
+    <value>API Type '{0}' has no summary comment</value>
+  </data>
+  <data name="NoSummaryRuleTitle" xml:space="preserve">
+    <value>API Type has no summary comment</value>
+  </data>
+  <data name="NoXmlTextRuleDescription" xml:space="preserve">
     <value>Xml tag shoul have a description</value>
   </data>
-  <data name="NoXmlTextAnalyzerMessageFormat" xml:space="preserve">
+  <data name="NoXmlTextRuleMessageFormat" xml:space="preserve">
     <value>Xml tag '{0}' has no description</value>
   </data>
-  <data name="NoXmlTextAnalyzerTitle" xml:space="preserve">
+  <data name="NoXmlTextRulerTitle" xml:space="preserve">
     <value>Xml tag has no description</value>
   </data>
 </root>

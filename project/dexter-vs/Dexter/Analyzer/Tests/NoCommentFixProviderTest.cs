@@ -394,6 +394,7 @@ namespace Dexter.Analyzer.Tests
     namespace ConsoleApplication1
     {
         /// <summary> test </summary>
+        /// <code> test </code>
         public class TestClass
         {
             public TestClass(int n)
@@ -412,6 +413,7 @@ namespace Dexter.Analyzer.Tests
     namespace ConsoleApplication1
     {
         /// <summary> test </summary>
+        /// <code> test </code>
         public class TestClass
         {
             /// <summary>
@@ -440,6 +442,7 @@ namespace Dexter.Analyzer.Tests
     namespace ConsoleApplication1
     {
         /// <summary> test </summary>
+        /// <code> test </code>
         public class TestClass
         {
             public int TestProperty
@@ -459,6 +462,7 @@ namespace Dexter.Analyzer.Tests
     namespace ConsoleApplication1
     {
         /// <summary> test </summary>
+        /// <code> test </code>
         public class TestClass
         {
             /// <summary>
@@ -487,6 +491,7 @@ namespace Dexter.Analyzer.Tests
     namespace ConsoleApplication1
     {
         /// <summary> test </summary>
+        /// <code> test </code>
         public class TestClass
         {
             public int TestProperty
@@ -511,6 +516,7 @@ namespace Dexter.Analyzer.Tests
     namespace ConsoleApplication1
     {
         /// <summary> test </summary>
+        /// <code> test </code>
         public class TestClass
         {
             /// <summary>
@@ -526,6 +532,170 @@ namespace Dexter.Analyzer.Tests
                 set {
                     throw new ArgumentException(""argument"");
                 }
+            }
+        }
+    }";
+            VerifyCSharpFix(test, fixtest);
+        }
+
+        [Test]
+        public void NoCommentFixProvider_Fix_GivenClassType_WithoutSummary()
+        {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        /// <code> test </code>
+        public class TestClass
+        {
+        }
+    }";
+            var fixtest = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <code> test </code>
+        public class TestClass
+        {
+        }
+    }";
+            VerifyCSharpFix(test, fixtest);
+        }
+
+        [Test]
+        public void NoCommentFixProvider_Fix_GivenClassType_WithoutSummary_WithOneEmptyLine()
+        {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+
+        /// <code> test </code>
+        public class TestClass
+        {
+        }
+    }";
+            var fixtest = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <code> test </code>
+        public class TestClass
+        {
+        }
+    }";
+            VerifyCSharpFix(test, fixtest);
+        }
+
+        [Test]
+        public void NoCommentFixProvider_Fix_GivenClassType_WithoutCode()
+        {
+            var test = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        /// <summary> 
+        /// test
+        /// </summary>
+        public class TestClass
+        {
+        }
+    }";
+            var fixtest = @"
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using System.Threading.Tasks;
+    using System.Diagnostics;
+
+    namespace ConsoleApplication1
+    {
+        /// <summary> 
+        /// test
+        /// </summary>
+        /// <code>
+        /// 
+        /// </code>
+        public class TestClass
+        {
+        }
+    }";
+            VerifyCSharpFix(test, fixtest);
+        }
+
+        [Test]
+        public void NoCommentFixProvider_Fix_GivenMethodType_WithoutReturns()
+        {
+            var test = @"
+    using System;
+
+    namespace ConsoleApplication1
+    {
+        /// <summary> test </summary>
+        /// <code> test </code>
+        public class TestClass
+        {
+            /// <summary>
+            /// test
+            /// </summary>
+            public int test() {
+                return 0;
+            }
+        }
+    }";
+            var fixtest = @"
+    using System;
+
+    namespace ConsoleApplication1
+    {
+        /// <summary> test </summary>
+        /// <code> test </code>
+        public class TestClass
+        {
+            /// <summary>
+            /// test
+            /// </summary>
+            /// <returns> </returns>
+            public int test() {
+                return 0;
             }
         }
     }";

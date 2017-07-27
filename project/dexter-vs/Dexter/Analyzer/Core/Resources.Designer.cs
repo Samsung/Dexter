@@ -62,137 +62,245 @@ namespace Dexter.Analyzer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type names should be all uppercase..
+        ///   Looks up a localized string similar to API Type should have a code comment.
         /// </summary>
-        internal static string AnalyzerDescription {
+        internal static string NoCodeRuleDescription {
             get {
-                return ResourceManager.GetString("AnalyzerDescription", resourceCulture);
+                return ResourceManager.GetString("NoCodeRuleDescription", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type name &apos;{0}&apos; contains lowercase letters.
+        ///   Looks up a localized string similar to API Type &apos;{0}&apos; has no code comment.
         /// </summary>
-        internal static string AnalyzerMessageFormat {
+        internal static string NoCodeRuleMessageFormat {
             get {
-                return ResourceManager.GetString("AnalyzerMessageFormat", resourceCulture);
+                return ResourceManager.GetString("NoCodeRuleMessageFormat", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Type name contains lowercase letters.
+        ///   Looks up a localized string similar to API Type has no code comment.
         /// </summary>
-        internal static string AnalyzerTitle {
+        internal static string NoCodeRuleTitle {
             get {
-                return ResourceManager.GetString("AnalyzerTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to API Type should have a doxygen comment.
-        /// </summary>
-        internal static string NoCommentAnalyzerDescription {
-            get {
-                return ResourceManager.GetString("NoCommentAnalyzerDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to API Type &apos;{0}&apos; has no doxygen comment.
-        /// </summary>
-        internal static string NoCommentAnalyzerMessageFormat {
-            get {
-                return ResourceManager.GetString("NoCommentAnalyzerMessageFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to API type has no doxygen comment.
-        /// </summary>
-        internal static string NoCommentAnalyzerTitle {
-            get {
-                return ResourceManager.GetString("NoCommentAnalyzerTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Xml tag shoul have the end tag.
-        /// </summary>
-        internal static string NoEndTagAnalyzerDescription {
-            get {
-                return ResourceManager.GetString("NoEndTagAnalyzerDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Xml tag &apos;{0}&apos; has no end tag.
-        /// </summary>
-        internal static string NoEndTagAnalyzerMessageFormat {
-            get {
-                return ResourceManager.GetString("NoEndTagAnalyzerMessageFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Xml tag has no end tag.
-        /// </summary>
-        internal static string NoEndTagAnalyzerTitle {
-            get {
-                return ResourceManager.GetString("NoEndTagAnalyzerTitle", resourceCulture);
+                return ResourceManager.GetString("NoCodeRuleTitle", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to File should have a doxygen comment.
         /// </summary>
-        internal static string NoFileCommentAnalyzerDescription {
+        internal static string NoCommentFileRuleDescription {
             get {
-                return ResourceManager.GetString("NoFileCommentAnalyzerDescription", resourceCulture);
+                return ResourceManager.GetString("NoCommentFileRuleDescription", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to File &apos;{0}&apos; has no doxygen comment.
         /// </summary>
-        internal static string NoFileCommentAnalyzerMessageFormat {
+        internal static string NoCommentFileRuleMessageFormat {
             get {
-                return ResourceManager.GetString("NoFileCommentAnalyzerMessageFormat", resourceCulture);
+                return ResourceManager.GetString("NoCommentFileRuleMessageFormat", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to File has no doxygen comment.
         /// </summary>
-        internal static string NoFileCommentAnalyzerTitle {
+        internal static string NoCommentFileRuleTitle {
             get {
-                return ResourceManager.GetString("NoFileCommentAnalyzerTitle", resourceCulture);
+                return ResourceManager.GetString("NoCommentFileRuleTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to API Type should have a doxygen comment.
+        /// </summary>
+        internal static string NoCommentRuleDescription {
+            get {
+                return ResourceManager.GetString("NoCommentRuleDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to API Type &apos;{0}&apos; has no doxygen comment.
+        /// </summary>
+        internal static string NoCommentRuleMessageFormat {
+            get {
+                return ResourceManager.GetString("NoCommentRuleMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to API type has no doxygen comment.
+        /// </summary>
+        internal static string NoCommentRuleTitle {
+            get {
+                return ResourceManager.GetString("NoCommentRuleTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Xml tag shoul have the end tag.
+        /// </summary>
+        internal static string NoEndTagRuleDescription {
+            get {
+                return ResourceManager.GetString("NoEndTagRuleDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Xml tag &apos;{0}&apos; has no end tag.
+        /// </summary>
+        internal static string NoEndTagRuleMessageFormat {
+            get {
+                return ResourceManager.GetString("NoEndTagRuleMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Xml tag has no end tag.
+        /// </summary>
+        internal static string NoEndTagRuleTitle {
+            get {
+                return ResourceManager.GetString("NoEndTagRuleTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exception throwed in API shoud have a exception comment.
+        /// </summary>
+        internal static string NoExceptionRuleDescription {
+            get {
+                return ResourceManager.GetString("NoExceptionRuleDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; throwed in API has no exception comment.
+        /// </summary>
+        internal static string NoExceptionRuleMessageFormat {
+            get {
+                return ResourceManager.GetString("NoExceptionRuleMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exception throwed in API has no exception comment.
+        /// </summary>
+        internal static string NoExceptionRuleTitle {
+            get {
+                return ResourceManager.GetString("NoExceptionRuleTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method Parameter shoud have a param comment.
+        /// </summary>
+        internal static string NoParamRuleDescription {
+            get {
+                return ResourceManager.GetString("NoParamRuleDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method Parameter &apos;{0}&apos; has no param comment.
+        /// </summary>
+        internal static string NoParamRuleMessageFormat {
+            get {
+                return ResourceManager.GetString("NoParamRuleMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method Parameter has no param comment.
+        /// </summary>
+        internal static string NoParamRuleTitle {
+            get {
+                return ResourceManager.GetString("NoParamRuleTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method with a return type should have a returns comment.
+        /// </summary>
+        internal static string NoReturnsRuleDescription {
+            get {
+                return ResourceManager.GetString("NoReturnsRuleDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; has no returns comment.
+        /// </summary>
+        internal static string NoReturnsRuleMessageFormat {
+            get {
+                return ResourceManager.GetString("NoReturnsRuleMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Method with a return type has no returns comment.
+        /// </summary>
+        internal static string NoReturnsRuleTitle {
+            get {
+                return ResourceManager.GetString("NoReturnsRuleTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to API Type should have a summary comment.
+        /// </summary>
+        internal static string NoSummaryRuleDescription {
+            get {
+                return ResourceManager.GetString("NoSummaryRuleDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to API Type &apos;{0}&apos; has no summary comment.
+        /// </summary>
+        internal static string NoSummaryRuleMessageFormat {
+            get {
+                return ResourceManager.GetString("NoSummaryRuleMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to API Type has no summary comment.
+        /// </summary>
+        internal static string NoSummaryRuleTitle {
+            get {
+                return ResourceManager.GetString("NoSummaryRuleTitle", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Xml tag shoul have a description.
         /// </summary>
-        internal static string NoXmlTextAnalyzerDescription {
+        internal static string NoXmlTextRuleDescription {
             get {
-                return ResourceManager.GetString("NoXmlTextAnalyzerDescription", resourceCulture);
+                return ResourceManager.GetString("NoXmlTextRuleDescription", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Xml tag &apos;{0}&apos; has no description.
         /// </summary>
-        internal static string NoXmlTextAnalyzerMessageFormat {
+        internal static string NoXmlTextRuleMessageFormat {
             get {
-                return ResourceManager.GetString("NoXmlTextAnalyzerMessageFormat", resourceCulture);
+                return ResourceManager.GetString("NoXmlTextRuleMessageFormat", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Xml tag has no description.
         /// </summary>
-        internal static string NoXmlTextAnalyzerTitle {
+        internal static string NoXmlTextRulerTitle {
             get {
-                return ResourceManager.GetString("NoXmlTextAnalyzerTitle", resourceCulture);
+                return ResourceManager.GetString("NoXmlTextRulerTitle", resourceCulture);
             }
         }
     }

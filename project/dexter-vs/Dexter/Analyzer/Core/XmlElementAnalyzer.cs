@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Text.RegularExpressions;
+using Dexter.Analyzer.Utils;
 
 namespace Dexter.Analyzer
 {
@@ -24,19 +25,10 @@ namespace Dexter.Analyzer
 
         static XmlElementAnalyzer()
         {
-            NoXmlTextRule = CreateDiagnosticDescriptor(NoXmlTextRuleId, nameof(Resources.NoXmlTextAnalyzerTitle), 
-                nameof(Resources.NoXmlTextAnalyzerMessageFormat), nameof(Resources.NoXmlTextAnalyzerDescription));
-            NoEndTagRule = CreateDiagnosticDescriptor(NoEndTagRuleId, nameof(Resources.NoEndTagAnalyzerTitle),
-                nameof(Resources.NoEndTagAnalyzerMessageFormat), nameof(Resources.NoEndTagAnalyzerDescription));
-        }
-
-        private static  DiagnosticDescriptor CreateDiagnosticDescriptor(string ruleId, string titleId, string messageId, string descriptionId)
-        {
-            var Title = new LocalizableResourceString(titleId, Resources.ResourceManager, typeof(Resources));
-            var MessageFormat = new LocalizableResourceString(messageId, Resources.ResourceManager, typeof(Resources));
-            var Description = new LocalizableResourceString(descriptionId, Resources.ResourceManager, typeof(Resources));
-
-            return new DiagnosticDescriptor(ruleId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+            NoXmlTextRule = AnalyzerUtil.CreateDiagnosticDescriptor(NoXmlTextRuleId, nameof(Resources.NoXmlTextRulerTitle), 
+                nameof(Resources.NoXmlTextRuleMessageFormat), nameof(Resources.NoXmlTextRuleDescription), Category);
+            NoEndTagRule = AnalyzerUtil.CreateDiagnosticDescriptor(NoEndTagRuleId, nameof(Resources.NoEndTagRuleTitle),
+                nameof(Resources.NoEndTagRuleMessageFormat), nameof(Resources.NoEndTagRuleDescription), Category);
         }
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics

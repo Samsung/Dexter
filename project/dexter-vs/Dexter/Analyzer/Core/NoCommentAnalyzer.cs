@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Dexter.Analyzer.Utils;
 
 namespace Dexter.Analyzer
 {
@@ -14,33 +15,70 @@ namespace Dexter.Analyzer
     public class NoCommentAnalyzer : DiagnosticAnalyzer
     {
         public const string NoCommentRuleId = "VDNC01";
-        public const string NoMethodCommentRuleId = "VDNC02";
-        public const string NoPropertyCommentRuleId = "VDNC03";
+        public const string NoCommentMethodRuleId = "VDNC02";
+        public const string NoCommentPropertyRuleId = "VDNC03";
+        public const string NoSummaryRuleId = "VDNC04";
+        public const string NoCodeRuleId = "VDNC05";
+        public const string NoReturnsRuleId = "VDNC06";
+        public const string NoParamRuleId = "VDNC07";
+        public const string NoExceptionRuleId = "VDNC08";
 
-        // You can change these strings in the Resources.resx file. If you do not want your analyzer to be localize-able, you can use regular strings for Title and MessageFormat.
-        // See https://github.com/dotnet/roslyn/blob/master/docs/analyzers/Localizing%20Analyzers.md for more on localization
-        private static readonly LocalizableString Title = new LocalizableResourceString(nameof(Resources.NoCommentAnalyzerTitle), Resources.ResourceManager, typeof(Resources));
-        private static readonly LocalizableString MessageFormat = new LocalizableResourceString(nameof(Resources.NoCommentAnalyzerMessageFormat), Resources.ResourceManager, typeof(Resources));
-        private static readonly LocalizableString Description = new LocalizableResourceString(nameof(Resources.NoCommentAnalyzerDescription), Resources.ResourceManager, typeof(Resources));
+        private static readonly DiagnosticDescriptor NoCommentRule;
+        private static readonly DiagnosticDescriptor NoCommentMethodRule;
+        private static readonly DiagnosticDescriptor NoCommentPropertyRule;
+        private static readonly DiagnosticDescriptor NoSummaryRule;
+        private static readonly DiagnosticDescriptor NoCodeRule;
+        private static readonly DiagnosticDescriptor NoReturnsRule;
+        private static readonly DiagnosticDescriptor NoParamRule;
+        private static readonly DiagnosticDescriptor NoExceptionRule;
+
         private const string Category = "Naming";
 
-        private static readonly DiagnosticDescriptor NoCommentRule = new DiagnosticDescriptor(NoCommentRuleId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
-        private static readonly DiagnosticDescriptor NoMethodCommentRule = new DiagnosticDescriptor(NoMethodCommentRuleId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
-        private static readonly DiagnosticDescriptor NoPropertyCommentRule = new DiagnosticDescriptor(NoPropertyCommentRuleId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
+        static NoCommentAnalyzer()
+        {
+            NoCommentRule = AnalyzerUtil.CreateDiagnosticDescriptor(NoCommentRuleId, 
+                nameof(Resources.NoCommentRuleTitle), nameof(Resources.NoCommentRuleMessageFormat), 
+                nameof(Resources.NoCommentRuleDescription), Category);
+
+            NoCommentMethodRule = AnalyzerUtil.CreateDiagnosticDescriptor(NoCommentMethodRuleId, 
+                nameof(Resources.NoCommentRuleTitle), nameof(Resources.NoCommentRuleMessageFormat), 
+                nameof(Resources.NoCommentRuleDescription), Category);
+
+            NoCommentPropertyRule = AnalyzerUtil.CreateDiagnosticDescriptor(NoCommentPropertyRuleId, 
+                nameof(Resources.NoCommentRuleTitle), nameof(Resources.NoCommentRuleMessageFormat), 
+                nameof(Resources.NoCommentRuleDescription), Category);
+
+            NoSummaryRule = AnalyzerUtil.CreateDiagnosticDescriptor(NoSummaryRuleId,
+                nameof(Resources.NoSummaryRuleTitle), nameof(Resources.NoSummaryRuleMessageFormat),
+                nameof(Resources.NoSummaryRuleDescription), Category);
+
+            NoCodeRule = AnalyzerUtil.CreateDiagnosticDescriptor(NoCodeRuleId,
+                nameof(Resources.NoCodeRuleTitle), nameof(Resources.NoCodeRuleMessageFormat),
+                nameof(Resources.NoCodeRuleDescription), Category);
+
+            NoReturnsRule = AnalyzerUtil.CreateDiagnosticDescriptor(NoReturnsRuleId,
+                nameof(Resources.NoReturnsRuleTitle), nameof(Resources.NoReturnsRuleMessageFormat),
+                nameof(Resources.NoReturnsRuleDescription), Category);
+
+            NoParamRule = AnalyzerUtil.CreateDiagnosticDescriptor(NoParamRuleId,
+                nameof(Resources.NoParamRuleTitle), nameof(Resources.NoParamRuleMessageFormat),
+                nameof(Resources.NoParamRuleDescription), Category);
+
+            NoExceptionRule = AnalyzerUtil.CreateDiagnosticDescriptor(NoExceptionRuleId,
+                nameof(Resources.NoExceptionRuleTitle), nameof(Resources.NoExceptionRuleMessageFormat),
+                nameof(Resources.NoExceptionRuleDescription), Category);
+        }
 
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
             get
             {
-                return ImmutableArray.Create(NoCommentRule, NoMethodCommentRule, NoPropertyCommentRule);
+                return ImmutableArray.Create(NoCommentRule, NoCommentMethodRule, NoCommentPropertyRule, NoSummaryRule, NoCodeRule, NoReturnsRule, NoParamRule, NoExceptionRule);
             }
         }
 
         public override void Initialize(AnalysisContext context)
         {
-            // TODO: Consider registering other actions that act on syntax instead of or in addition to symbols
-            // See https://github.com/dotnet/roslyn/blob/master/docs/analyzers/Analyzer%20Actions%20Semantics.md for more information
-            //context.RegisterSymbolAction(AnalyzeSymbol, SymbolKind.NamedType);
             context.RegisterSyntaxNodeAction(AnalyzeClassSyntaxNode, SyntaxKind.ClassDeclaration);
             context.RegisterSyntaxNodeAction(AnalyzeInterfaceSyntaxNode, SyntaxKind.InterfaceDeclaration);
             context.RegisterSyntaxNodeAction(AnalyzeStructSyntaxNode, SyntaxKind.StructDeclaration);
@@ -59,7 +97,28 @@ namespace Dexter.Analyzer
 
             var xmlTrivia = GetXmlTrivia(node);
             if (xmlTrivia == null)
+            {
                 context.ReportDiagnostic(Diagnostic.Create(NoCommentRule, node.Identifier.GetLocation(), node.Identifier.Text));
+                return;
+            } 
+
+            if (!HasXmlNameTag(xmlTrivia, "summary"))
+            {
+                context.ReportDiagnostic(Diagnostic.Create(NoSummaryRule, node.Identifier.GetLocation(), node.Identifier.Text));
+                return;
+            }
+
+            if (!HasXmlNameTag(xmlTrivia, "code"))
+            {
+                context.ReportDiagnostic(Diagnostic.Create(NoCodeRule, node.Identifier.GetLocation(), node.Identifier.Text));
+                return;
+            }
+        }
+
+        private bool HasXmlNameTag(DocumentationCommentTriviaSyntax xmlTrivia, string name)
+        {
+            return xmlTrivia.DescendantNodes().OfType<XmlElementStartTagSyntax>()
+                .Any(node => node.Name.ToString().Equals(name));
         }
 
         private void AnalyzeInterfaceSyntaxNode(SyntaxNodeAnalysisContext context)
@@ -113,7 +172,90 @@ namespace Dexter.Analyzer
 
             var xmlTrivia = GetXmlTrivia(node);
             if (xmlTrivia == null)
-                context.ReportDiagnostic(Diagnostic.Create(NoMethodCommentRule, node.Identifier.GetLocation(), node.Identifier.Text));
+            {
+                context.ReportDiagnostic(Diagnostic.Create(NoCommentMethodRule, node.Identifier.GetLocation(), node.Identifier.Text));
+                return;
+            }
+
+            if (!(AnalyzerUtil.IsVoidReturnType(node) || HasXmlNameTag(xmlTrivia, "returns")))
+            {
+                context.ReportDiagnostic(Diagnostic.Create(NoReturnsRule, node.Identifier.GetLocation(), node.Identifier.Text));
+            }
+
+            ReportNoParamDiagnostics(context, node, xmlTrivia);
+            ReportNoExceptionDiagnostics(context, node, xmlTrivia);
+        }
+
+        private void ReportNoExceptionDiagnostics(SyntaxNodeAnalysisContext context, SyntaxNode node, DocumentationCommentTriviaSyntax xmlTrivia)
+        {
+            var exceptionCommentNames = xmlTrivia.DescendantNodes().OfType<XmlNameAttributeSyntax>()
+                .Where(attribute => IsNameAttribute(attribute, "exception"))
+                .Select(attribute => attribute.Identifier.ToString());
+
+            var exceptionTokens = GetExceptionTokens(node);
+
+            foreach (var exceptionToken in exceptionTokens)
+            {
+                var exceptionName = exceptionToken.Text;
+
+                if (!exceptionCommentNames.Any(commentName => commentName.Equals(exceptionName)))
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(NoExceptionRule, exceptionToken.GetLocation(), exceptionToken.Text));
+                }
+            }
+        }
+
+        private static IEnumerable<SyntaxToken> GetExceptionTokens(SyntaxNode node)
+        {
+            var throwStatmentSyntaxs = node.DescendantNodes().OfType<ThrowStatementSyntax>();
+            var ObjectCreationExpressions = from throwStatment in throwStatmentSyntaxs
+                                            where throwStatment.Expression != null &&
+                                            throwStatment.Expression is ObjectCreationExpressionSyntax
+                                            select throwStatment.Expression as ObjectCreationExpressionSyntax;
+
+            var exceptionTokens = from expression in ObjectCreationExpressions
+                                  let type = expression.Type as IdentifierNameSyntax
+                                  where type != null
+                                  select type.Identifier;
+
+            return exceptionTokens;
+        }
+
+        private void ReportNoParamDiagnostics(SyntaxNodeAnalysisContext context, BaseMethodDeclarationSyntax node, DocumentationCommentTriviaSyntax xmlTrivia)
+        {
+            var paramCommentNames = xmlTrivia.DescendantNodes().OfType<XmlNameAttributeSyntax>()
+                .Where(attribute => IsNameAttribute(attribute, "param"))
+                .Select(attribute => attribute.Identifier.ToString());
+
+            foreach (var parameter in node.ParameterList.Parameters)
+            {
+                var paramName = parameter.Identifier.Text;
+
+                if (HasThisModifier(parameter))
+                    continue;
+
+                if (!paramCommentNames.Any(commentName => commentName.Equals(paramName)))
+                {
+                    context.ReportDiagnostic(Diagnostic.Create(NoParamRule, parameter.Identifier.GetLocation(), parameter.Identifier.Text));
+                }
+            }
+        }
+
+        private bool HasThisModifier(ParameterSyntax parameter)
+        {
+            return parameter.Modifiers.Any(modifier => modifier.Text.Equals("this"));
+        }
+
+        private bool IsNameAttribute(XmlNameAttributeSyntax xmlNameAttribute, string name)
+        {
+            var parent = xmlNameAttribute.Parent as XmlElementStartTagSyntax;
+            if (parent == null)
+                return false;
+
+            if (parent.Name.ToString().Equals(name))
+                return true;
+
+            return false;
         }
 
         private void AnalyzeConstructorSyntaxNode(SyntaxNodeAnalysisContext context)
@@ -128,7 +270,9 @@ namespace Dexter.Analyzer
 
             var xmlTrivia = GetXmlTrivia(node);
             if (xmlTrivia == null)
-                context.ReportDiagnostic(Diagnostic.Create(NoMethodCommentRule, node.Identifier.GetLocation(), node.Identifier.Text));
+                context.ReportDiagnostic(Diagnostic.Create(NoCommentMethodRule, node.Identifier.GetLocation(), node.Identifier.Text));
+
+            ReportNoParamDiagnostics(context, node, xmlTrivia);
         }
 
         private void AnalyzePropertySyntaxNode(SyntaxNodeAnalysisContext context)
@@ -143,7 +287,9 @@ namespace Dexter.Analyzer
 
             var xmlTrivia = GetXmlTrivia(node);
             if (xmlTrivia == null)
-                context.ReportDiagnostic(Diagnostic.Create(NoPropertyCommentRule, node.Identifier.GetLocation(), node.Identifier.Text));
+                context.ReportDiagnostic(Diagnostic.Create(NoCommentPropertyRule, node.Identifier.GetLocation(), node.Identifier.Text));
+
+            ReportNoExceptionDiagnostics(context, node, xmlTrivia);
         }
 
         private bool IsAllParentsPublic(SyntaxNode node)
@@ -164,21 +310,6 @@ namespace Dexter.Analyzer
                 .Select(i => i.GetStructure())
                 .OfType<DocumentationCommentTriviaSyntax>()
                 .FirstOrDefault();
-        }
-
-        private static void AnalyzeSymbol(SymbolAnalysisContext context)
-        {
-            // TODO: Replace the following code with your own analysis, generating Diagnostic objects for any issues you find
-            var namedTypeSymbol = (INamedTypeSymbol)context.Symbol;
-
-            // Find just those named type symbols with names containing lowercase letters.
-            if (namedTypeSymbol.Name.ToCharArray().Any(char.IsLower))
-            {
-                // For all such symbols, produce a diagnostic.
-                var diagnostic = Diagnostic.Create(NoCommentRule, namedTypeSymbol.Locations[0], namedTypeSymbol.Name);
-
-                context.ReportDiagnostic(diagnostic);
-            }
         }
     }
 }
