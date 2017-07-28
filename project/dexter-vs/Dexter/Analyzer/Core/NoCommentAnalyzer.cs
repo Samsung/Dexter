@@ -270,7 +270,10 @@ namespace Dexter.Analyzer
 
             var xmlTrivia = GetXmlTrivia(node);
             if (xmlTrivia == null)
+            {
                 context.ReportDiagnostic(Diagnostic.Create(NoCommentMethodRule, node.Identifier.GetLocation(), node.Identifier.Text));
+                return;
+            }
 
             ReportNoParamDiagnostics(context, node, xmlTrivia);
         }
@@ -287,7 +290,10 @@ namespace Dexter.Analyzer
 
             var xmlTrivia = GetXmlTrivia(node);
             if (xmlTrivia == null)
+            {
                 context.ReportDiagnostic(Diagnostic.Create(NoCommentPropertyRule, node.Identifier.GetLocation(), node.Identifier.Text));
+                return;
+            }
 
             ReportNoExceptionDiagnostics(context, node, xmlTrivia);
         }
