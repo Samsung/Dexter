@@ -32,7 +32,6 @@ import org.junit.Test;
 
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.defect.Defect;
-import com.sun.org.apache.xml.internal.resolver.helpers.PublicId;
 
 public class FalseAlarmConfigurationTreeTest {
 
