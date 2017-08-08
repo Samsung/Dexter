@@ -10,8 +10,20 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Dexter.Analyzer.Utils
 {
+    /// <summary>
+    /// Provides common functions used by the analyzer
+    /// </summary>
     public static class AnalyzerUtil
     {
+        /// <summary>
+        /// Creates a diagnostic descriptor 
+        /// </summary>
+        /// <param name="ruleId">Diagnostic rule ID</param>
+        /// <param name="titleId">String ID of rule title</param>
+        /// <param name="messageId">String ID of rule message</param>
+        /// <param name="descriptionId">String ID of rule description</param>
+        /// <param name="category">Rule category</param>
+        /// <returns>An instance of Diagnostic descriptor created</returns>
         public static DiagnosticDescriptor CreateDiagnosticDescriptor(string ruleId, string titleId, string messageId, string descriptionId, string category)
         {
             var title = new LocalizableResourceString(titleId, Resources.ResourceManager, typeof(Resources));
@@ -21,6 +33,13 @@ namespace Dexter.Analyzer.Utils
             return new DiagnosticDescriptor(ruleId, title, messageFormat, category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: description);
         }
 
+        /// <summary>
+        /// Gets the declaration syntax node of the type T belonging to the diagnostic
+        /// </summary>
+        /// <typeparam name="T">Type of the declaration syntax node</typeparam>
+        /// <param name="root">Root syntax node</param>
+        /// <param name="diagnostic">Diagnostic with node</param>
+        /// <returns>Declaration syntax node matched</returns>
         public static T GetDeclaration<T>(SyntaxNode root, Diagnostic diagnostic) where T : CSharpSyntaxNode
         {
             var diagnosticSpan = diagnostic.Location.SourceSpan;
@@ -28,6 +47,11 @@ namespace Dexter.Analyzer.Utils
             return root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<T>().First();
         }
 
+        /// <summary>
+        /// Determines if method's return value is void
+        /// </summary>
+        /// <param name="declaration">Method declaration</param>
+        /// <returns>True if method's return value is void, or false </returns>
         public static bool IsVoidReturnType(MethodDeclarationSyntax declaration)
         {
             var predefinedType = declaration.ReturnType as PredefinedTypeSyntax;
@@ -40,6 +64,13 @@ namespace Dexter.Analyzer.Utils
             return false;
         }
 
+        /// <summary>
+        /// Replaces a syntax node in the document
+        /// </summary>
+        /// <param name="oldNode">Old syntax node</param>
+        /// <param name="newNode">New syntax node</param>
+        /// <param name="document">Document with syntax node</param>
+        /// <returns>Document with updated node</returns>
         public static async Task<Document> ReplaceNode(SyntaxNode oldNode, SyntaxNode newNode, Document document)
         {
             SyntaxNode root = await document.GetSyntaxRootAsync().ConfigureAwait(false);
@@ -48,6 +79,12 @@ namespace Dexter.Analyzer.Utils
             return newDocument;
         }
 
+        /// <summary>
+        /// Concats enumerable of doxygenComments with whitespaces
+        /// </summary>
+        /// <param name="doxygenComments">Enumerable of doxygenComments</param>
+        /// <param name="whitespaceCount">Whitespace count</param>
+        /// <returns>Concated doxygen comment string</returns>
         public static string ConcatCommentString(IEnumerable<string> doxygenComments, int whitespaceCount)
         {
             string whiteSpaces = new String(' ', whitespaceCount);
@@ -61,6 +98,13 @@ namespace Dexter.Analyzer.Utils
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Get new leading trivia with doxygen comments inserted
+        /// </summary>
+        /// <param name="leadingTrivias">Original leading trivia</param>
+        /// <param name="doxygenComments">Enumerable of doxygen comments</param>
+        /// <param name="whitespaceCount">Whitespace count</param>
+        /// <returns>new leading trivia with doxygen comments inserted</returns>
         public static SyntaxTriviaList GetNewLeadingTrivia(SyntaxTriviaList leadingTrivias, IEnumerable<string> doxygenComments, int whitespaceCount)
         {
             var commentTrivias = SyntaxFactory.ParseLeadingTrivia(ConcatCommentString(doxygenComments, whitespaceCount));
@@ -68,6 +112,13 @@ namespace Dexter.Analyzer.Utils
             return leadingTrivias.InsertRange(leadingTrivias.Count - 1, commentTrivias);
         }
 
+        /// <summary>
+        /// Get new leading trivia with summary comments inserted
+        /// </summary>
+        /// <param name="leadingTrivias">Original leading trivia</param>
+        /// <param name="summaryComments">Enumerable of summary comments</param>
+        /// <param name="whitespaceCount">Whitespace count</param>
+        /// <returns>new leading trivia with summary comments inserted</returns>
         public static IEnumerable<SyntaxTrivia> GetNewLeadingTriviaWithSummary(SyntaxTriviaList leadingTrivias, IEnumerable<string> summaryComments, int whitespaceCount)
         {
             var summaryTrivias = SyntaxFactory.ParseLeadingTrivia(ConcatCommentString(summaryComments, whitespaceCount));
@@ -85,19 +136,24 @@ namespace Dexter.Analyzer.Utils
             return leadingTrivias.InsertRange(index, summaryTrivias);
         }
 
-        public static string GetExceptionString(ThrowStatementSyntax throwStatmentSyntax)
+        /// <summary>
+        /// Get an exception string for the throw statement
+        /// </summary>
+        /// <param name="throwStatementSyntax">Throw statement syntax</param>
+        /// <returns>Exception string</returns>
+        public static string GetExceptionString(ThrowStatementSyntax throwStatementSyntax)
         {
-            if (throwStatmentSyntax.Expression == null)
+            if (throwStatementSyntax.Expression == null)
             {
                 return "default";
             }
 
-            if (!(throwStatmentSyntax.Expression is ObjectCreationExpressionSyntax))
+            if (!(throwStatementSyntax.Expression is ObjectCreationExpressionSyntax))
             {
                 return "unknown";
             }
 
-            var expression = throwStatmentSyntax.Expression as ObjectCreationExpressionSyntax;
+            var expression = throwStatementSyntax.Expression as ObjectCreationExpressionSyntax;
 
             if (!(expression.Type is IdentifierNameSyntax))
             {

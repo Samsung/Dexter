@@ -12,6 +12,9 @@ using Dexter.Analyzer.Utils;
 
 namespace Dexter.Analyzer
 {
+    /// <summary>
+    /// Dianoses doxygen comments with invalid xml element
+    /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class XmlElementAnalyzer : DiagnosticAnalyzer
     {
@@ -31,6 +34,9 @@ namespace Dexter.Analyzer
                 nameof(Resources.NoEndTagRuleMessageFormat), nameof(Resources.NoEndTagRuleDescription), Category);
         }
 
+        /// <summary>
+        /// Returns supported diagnostics
+        /// </summary>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
             get
@@ -39,6 +45,10 @@ namespace Dexter.Analyzer
             }
         }
 
+        /// <summary>
+        /// Registers syntax node actions to analyze public API types
+        /// </summary>
+        /// <param name="context">Analysis context</param>
         public override void Initialize(AnalysisContext context)
         {
             context.RegisterSyntaxNodeAction(AnalyzeXmlElementSyntaxNode, SyntaxKind.XmlElement);

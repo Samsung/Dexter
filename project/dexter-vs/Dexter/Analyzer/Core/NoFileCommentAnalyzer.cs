@@ -11,6 +11,9 @@ using Microsoft.CodeAnalysis.Diagnostics;
 
 namespace Dexter.Analyzer
 {
+    /// <summary>
+    /// Dianoses a source file without doxygen comment
+    /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class NoFileCommentAnalyzer : DiagnosticAnalyzer
     {
@@ -25,8 +28,15 @@ namespace Dexter.Analyzer
 
         private static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, isEnabledByDefault: true, description: Description);
 
+        /// <summary>
+        /// Returns supported diagnostics
+        /// </summary>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics { get { return ImmutableArray.Create(Rule); } }
 
+        /// <summary>
+        /// Registers syntax node actions to analyze public API types
+        /// </summary>
+        /// <param name="context">Analysis context</param>
         public override void Initialize(AnalysisContext context)
         {
             // TODO: Consider registering other actions that act on syntax instead of or in addition to symbols

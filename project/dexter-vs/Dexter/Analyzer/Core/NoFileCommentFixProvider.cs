@@ -19,22 +19,36 @@ using Dexter.Analyzer.Utils;
 
 namespace Dexter.Analyzer
 {
+    /// <summary>
+    /// Provides codeFixes for NoFileCommentAnalyzer
+    /// </summary>
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(NoFileCommentFixProvider)), Shared]
     public class NoFileCommentFixProvider : CodeFixProvider
     {
         private const string title = "Add file doxygen comment";
 
+        /// <summary>
+        /// Returns fixable diagnostic IDs
+        /// </summary>
         public sealed override ImmutableArray<string> FixableDiagnosticIds
         {
             get { return ImmutableArray.Create(NoFileCommentAnalyzer.DiagnosticId); }
         }
 
+        /// <summary>
+        /// Get Fix All Providers
+        /// </summary>
         public sealed override FixAllProvider GetFixAllProvider()
         {
             // See https://github.com/dotnet/roslyn/blob/master/docs/analyzers/FixAllProvider.md for more information on Fix All Providers
             return WellKnownFixAllProviders.BatchFixer;
         }
 
+        /// <summary>
+        /// Registers code fix action for the diagnostic
+        /// </summary>
+        /// <param name="context">Code fix context</param>
+        /// <returns>Async Task</returns>
         public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken).ConfigureAwait(false);

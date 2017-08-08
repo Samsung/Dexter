@@ -11,6 +11,9 @@ using Dexter.Analyzer.Utils;
 
 namespace Dexter.Analyzer
 {
+    /// <summary>
+    /// Dianoses public API without doxygen comment
+    /// </summary>
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class NoCommentAnalyzer : DiagnosticAnalyzer
     {
@@ -69,6 +72,9 @@ namespace Dexter.Analyzer
                 nameof(Resources.NoExceptionRuleDescription), Category);
         }
 
+        /// <summary>
+        /// Returns supported diagnostics
+        /// </summary>
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics
         {
             get
@@ -77,6 +83,10 @@ namespace Dexter.Analyzer
             }
         }
 
+        /// <summary>
+        /// Registers syntax node actions to analyze public API types
+        /// </summary>
+        /// <param name="context">Analysis context</param>
         public override void Initialize(AnalysisContext context)
         {
             context.RegisterSyntaxNodeAction(AnalyzeClassSyntaxNode, SyntaxKind.ClassDeclaration);
