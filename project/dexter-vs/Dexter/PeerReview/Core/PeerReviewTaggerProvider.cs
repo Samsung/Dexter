@@ -4,7 +4,6 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Utilities;
-using Dexter.Common.Client;
 using Dexter.PeerReview.Utils;
 using Dexter.Common.Config.Providers;
 using Microsoft.VisualStudio.Shell;
