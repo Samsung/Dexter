@@ -28,6 +28,7 @@ package com.samsung.sec.dexter.core.config;
 import com.google.common.base.Charsets;
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
+import com.samsung.sec.dexter.core.util.DexterServerConfig;
 import com.samsung.sec.dexter.core.util.DexterUtil;
 
 import java.io.File;
@@ -35,8 +36,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -186,7 +189,14 @@ public class DexterConfig {
     //private ScheduledFuture<?> mergeFilterFuture = null;
 
     ////////////////////////////////////////////////////////////////////////////////////////////
-
+    
+    public static final String DPR_REG_EXP = "(?:/\\*.*[w]*(DPR:)(?:[^*]|(?:\\*+[^*/]))*\\*+/)|(?://.*[w]*(DPR:).*)";
+	public static final String CRITICAL_REG_EXP = "(?i).*\\[.*cri.*\\] | (?i).*\\[.*critical.*\\]";
+	public static final String MAJOR_REG_EXP = "(?i).*\\[.*maj.*\\] | (?i).*\\[.*major.*\\]";
+	public static final String TOTAL_SEVERITY_REG_EXP = "(?i).*\\[cri]|(?i).*\\[critical]|(?i).*\\[maj]|(?i).*\\[major]|(?i).*\\[crc]";
+	public static final String SIMPLE_DPR_COMMENT_REG_EXP = ".*(DPR:)";
+	public static final String SEVERITY_REG_EXP = "\\[(.*?)]";
+	
     public static enum RunMode {
         CLI, ECLIPSE, DAEMON, INTELLIJ, NETBEANS, SOURCE_INSIGHT
     }
@@ -501,12 +511,12 @@ public class DexterConfig {
         }
     }
 
-    public synchronized void runListenerHandlerWhenNotStandalone() {
+    public synchronized void runListenerHandlerWhenNotStandalone(DexterServerConfig serverConfig) {
         for (int i = 0; i < dexterStandaloneListenerList.size(); i++) {
             final IDexterStandaloneListener listener = dexterStandaloneListenerList.get(i);
 
             if (listener != null) {
-                listener.handleWhenNotStandaloneMode();
+                listener.handleWhenNotStandaloneMode(serverConfig);
             } else {
                 dexterStandaloneListenerList.remove(i--);
             }

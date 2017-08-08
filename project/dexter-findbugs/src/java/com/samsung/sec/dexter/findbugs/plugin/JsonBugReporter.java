@@ -31,6 +31,7 @@ import org.apache.log4j.Logger;
 
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
+import com.samsung.sec.dexter.core.checker.ICheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.RunMode;
 import com.samsung.sec.dexter.core.defect.PreOccurence;
@@ -56,12 +57,12 @@ public class JsonBugReporter extends AbstractBugReporter {
 	private final static Logger logger = Logger.getLogger(JsonBugReporter.class);
 	private final SortedBugCollection bugCollection;
 	private AnalysisResult result;
-	private CheckerConfig checkerConfig;
+	private ICheckerConfig checkerConfig;
 
 	/**
 	 * @param project
 	 */
-	public JsonBugReporter(Project project, CheckerConfig config, AnalysisResult result) {
+	public JsonBugReporter(Project project, ICheckerConfig config, AnalysisResult result) {
 		this.checkerConfig = config;
 		this.result = result;
 		

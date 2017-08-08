@@ -42,9 +42,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class DexterClientUT {
-    static IDexterClient dc = new DexterClient.DexterClientBuilder("", "").dexterServerIp("localhost")
-            .dexterServerPort(4982)
-            .build();
+	
+	static IDexterWebResource webResource = new JerseyDexterWebResource(new DexterServerConfig("admin","dex#0001","http://localhost:4982"));
+    static IDexterClient dc = new DexterClient(webResource);
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {}

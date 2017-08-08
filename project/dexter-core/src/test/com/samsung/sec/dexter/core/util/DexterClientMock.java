@@ -234,7 +234,7 @@ public class DexterClientMock implements IDexterClient {
     public void handleWhenStandaloneMode() {}
 
     @Override
-    public void handleWhenNotStandaloneMode() {}
+    public void handleWhenNotStandaloneMode(DexterServerConfig serverConfig) {}
 
     @Override
     public boolean isServerAlive(String serverAddress) {
@@ -247,4 +247,5 @@ public class DexterClientMock implements IDexterClient {
         // TODO Auto-generated method stub
 
     }
+
 }

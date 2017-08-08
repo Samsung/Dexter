@@ -25,6 +25,14 @@
  */
 package com.samsung.sec.dexter.executor.cli;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.log4j.Logger;
+
 import com.google.common.base.Stopwatch;
 import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
@@ -38,31 +46,28 @@ import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginInitializer;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
 import com.samsung.sec.dexter.core.util.DexterClient;
+import com.samsung.sec.dexter.core.util.DexterServerConfig;
 import com.samsung.sec.dexter.core.util.EmptyDexterClient;
 import com.samsung.sec.dexter.core.util.IDexterClient;
+import com.samsung.sec.dexter.core.util.IDexterWebResource;
+import com.samsung.sec.dexter.core.util.JerseyDexterWebResource;
 import com.samsung.sec.dexter.executor.CLIPluginInitializer;
 import com.samsung.sec.dexter.executor.DexterAnalyzer;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import org.apache.log4j.Logger;
-
 public class Main {
-    private ICLILog cliLog = new CLILog(System.out);
+    private static ICLILog cliLog = new CLILog(System.out);
     private DexterConfig config = DexterConfig.getInstance();
     private List<String> sourceFileFullPathList = new ArrayList<String>();
     private final static Logger log = Logger.getLogger(Main.class);
+    private AccountService accountService;
 
     private int totalSourceFileNumber = 0;
 
     public static void main(String[] args) {
-        Main cliMain = new Main();
+        Main cliMain = new Main(new AccountService(cliLog));
 
         try {
-            final IDexterCLIOption cliOption = new DexterCLIOption(args);
+            final IDexterCLIOption cliOption = new DexterCLIOption(args, new HelpFormatter());
 
             switch (cliOption.getCommandMode()) {
                 case CREATE_ACCOUNT:
@@ -84,32 +89,17 @@ public class Main {
         }
     }
 
-    public Main() {
+    protected IDexterClient createDexterClient(IDexterCLIOption cliOption) {
+		return accountService.createDexterClient(cliOption);
+	}
+
+	public void createAccount(IDexterCLIOption cliOption) {
+		accountService.createAccount(cliOption);		
+	}
+
+	public Main(AccountService accountService) {
+    	this.accountService = accountService;
         DexterConfig.getInstance().setRunMode(RunMode.CLI);
-    }
-
-    public void createAccount(final IDexterCLIOption cliOption) {
-        final IDexterClient client = createDexterClient(cliOption);
-        final IAccountHandler accountHandler = createAccountHandler(client, cliOption);
-        accountHandler.createAccount(cliOption.getUserId(), cliOption.getUserPassword());
-    }
-
-    protected IAccountHandler createAccountHandler(final IDexterClient client, final IDexterCLIOption cliOption) {
-        if (cliOption.isStandAloneMode()) {
-            return new EmptyAccountHandler();
-        } else {
-            return new AccountHandler(client, cliLog);
-        }
-    }
-
-    protected IDexterClient createDexterClient(final IDexterCLIOption cliOption) {
-        if (cliOption.isStandAloneMode()) {
-            return new EmptyDexterClient();
-        } else {
-            return new DexterClient.DexterClientBuilder(cliOption.getUserId(), cliOption.getUserPassword())
-                    .dexterServerIp(cliOption.getServerHostIp()).dexterServerPort(cliOption.getServerPort())
-                    .build();
-        }
     }
 
     public void analyze(final IDexterCLIOption cliOption, final IDexterConfigFile configFile,
@@ -119,7 +109,7 @@ public class Main {
 
         loginOrCreateAccount(client, cliOption);
 
-        final AnalysisConfig baseAnalysisConfig = createBaseAnalysisConfig(client, cliOption, configFile);
+        final AnalysisConfig baseAnalysisConfig = createBaseAnalysisConfig(cliOption, configFile);
         final IAnalysisResultHandler cliAnalysisResultHandler = createCLIAnalysisResultHandler(client,
                 cliOption);
         final IDexterPluginManager pluginManager = loadDexterPlugins(client, cliOption);
@@ -144,7 +134,11 @@ public class Main {
         }
     }
 
-    protected IDexterPluginManager loadDexterPlugins(final IDexterClient client, final IDexterCLIOption cliOption) {
+    protected IAccountHandler createAccountHandler(IDexterClient client, IDexterCLIOption cliOption) {
+		return accountService.createAccountHandler(client, cliOption);
+	}
+
+	protected IDexterPluginManager loadDexterPlugins(final IDexterClient client, final IDexterCLIOption cliOption) {
         IDexterPluginInitializer initializer = new CLIPluginInitializer(cliLog);
         IDexterPluginManager pluginManager = new CLIDexterPluginManager(initializer, client, cliLog, cliOption);
         pluginManager.initDexterPlugins();
@@ -157,7 +151,7 @@ public class Main {
         return new CLIAnalysisResultHandler(client.getDexterWebUrl(), cliOption, cliLog);
     }
 
-    private AnalysisConfig createBaseAnalysisConfig(final IDexterClient client, final IDexterCLIOption cliOption,
+    private AnalysisConfig createBaseAnalysisConfig(final IDexterCLIOption cliOption,
             final IDexterConfigFile configFile) {
         initDexterConfig(cliOption, configFile);
 

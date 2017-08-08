@@ -34,7 +34,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-public class CheckerConfig {
+public class CheckerConfig implements ICheckerConfig{
     private transient Map<String, Checker> checkerMap = new HashMap<>();
     private String toolName;
     private LANGUAGE language;

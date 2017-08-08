@@ -32,6 +32,7 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
+import com.samsung.sec.dexter.core.checker.ICheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
@@ -247,7 +248,7 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
      * .samsung.sec.dexter.core.checker.CheckerConfig)
      */
     @Override
-    public void setCheckerConfig(final CheckerConfig cc) {
+    public void setCheckerConfig(final ICheckerConfig cc) {
         cppcheck.setCheckerConfig(cc);
     }
 
@@ -257,7 +258,7 @@ public class CppcheckDexterPlugin implements IDexterPlugin {
      * @see com.samsung.sec.dexter.core.plugin.IDexterPlugin#getCheckerConfig()
      */
     @Override
-    public CheckerConfig getCheckerConfig() {
+    public ICheckerConfig getCheckerConfig() {
         return cppcheck.getCheckerConfig();
     }
 

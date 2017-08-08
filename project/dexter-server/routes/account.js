@@ -452,7 +452,7 @@ exports.add = function(req, res) {
 
     database.exec(sql, function callbackForInsert(err, result){
         if(err) {
-            if(err.code = 'ER_DUP_ENTRY'){
+            if(err.code == 'ER_DUP_ENTRY'){
                 var msg = "there is duplicated user ID for " + userId;
                 res.send({result:'fail', errorMessage: msg, errorCode: -3});
                 logging.error(msg);
@@ -505,7 +505,7 @@ exports.webAdd = function(req, res) {
 
     database.exec(sql, function callbackForInsert(err, result){
         if(err) {
-            if(err.code = 'ER_DUP_ENTRY'){
+            if(err.code == 'ER_DUP_ENTRY'){
                 var msg = "there is duplicated user ID for " + userId;
                 res.send({result:'fail', errorMessage: msg, errorCode: -3});
                 logging.error(msg);

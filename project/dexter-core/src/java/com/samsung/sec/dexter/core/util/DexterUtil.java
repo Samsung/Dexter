@@ -1222,4 +1222,9 @@ public class DexterUtil {
     public static String getStringOrEmptyString(String value) {
         return Strings.isNullOrEmpty(value) ? "" : value;
     }
+
+	public static void checkNullOrEmptyOfMap(final Map<String, Object> map) {
+		if (map == null || map.size() == 0)
+            throw new DexterRuntimeException("Dexter Configuration Error : empty");
+	}
 }

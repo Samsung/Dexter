@@ -48,7 +48,7 @@ import org.apache.log4j.Logger;
 public class DexterConfigFile implements IDexterConfigFile {
     static Logger log = Logger.getLogger(DexterConfigFile.class);
 
-    private String dexterHome;
+    protected String dexterHome;
     private String dexterServerIp;
     private int dexterServerPort;
     private String projectName;
@@ -209,15 +209,10 @@ public class DexterConfigFile implements IDexterConfigFile {
     }
 
     protected void checkDexterConfigMap(final Map<String, Object> map) {
-        checkNullofMap(map);
+    	DexterUtil.checkNullOrEmptyOfMap(map);
         checkFieldExistence(map);
         checkFolderExistence(map);
         checkTypeAndFollowingFields(map);
-    }
-
-    private void checkNullofMap(final Map<String, Object> map) {
-        if (map == null || map.size() == 0)
-            throw new DexterRuntimeException("Dexter Configuration Error : empty");
     }
 
     private void checkFieldExistence(final Map<String, Object> map) {

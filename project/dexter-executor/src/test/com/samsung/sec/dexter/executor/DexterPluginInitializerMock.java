@@ -5,6 +5,7 @@ import java.util.List;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
+import com.samsung.sec.dexter.core.checker.ICheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginInitializer;
@@ -16,7 +17,7 @@ public class DexterPluginInitializerMock implements IDexterPluginInitializer {
 	@Override
 	public void init(List<IDexterPlugin> pluginHandlerList) {
 		IDexterPlugin mockPlugin = new IDexterPlugin(){
-			private CheckerConfig checkerConfig = new CheckerConfig("dexter-findbugs", LANGUAGE.JAVA);
+			private ICheckerConfig checkerConfig = new CheckerConfig("dexter-findbugs", LANGUAGE.JAVA);
 			
 			@Override
 			public void init() {
@@ -37,12 +38,12 @@ public class DexterPluginInitializerMock implements IDexterPluginInitializer {
 			}
 
 			@Override
-			public void setCheckerConfig(CheckerConfig cc) {
+			public void setCheckerConfig(ICheckerConfig cc) {
 				this.checkerConfig = cc;
 			}
 
 			@Override
-			public CheckerConfig getCheckerConfig() {
+			public ICheckerConfig getCheckerConfig() {
 				return this.checkerConfig;
 			}
 

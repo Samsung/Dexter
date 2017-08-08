@@ -99,7 +99,7 @@ public class AccountHandler implements IAccountHandler {
                 userId = readUserId();
             }
 
-            if (isValidUserId(password) == false) {
+            if (isValidPassword(password) == false) {
                 password = readPassword();
             }
 

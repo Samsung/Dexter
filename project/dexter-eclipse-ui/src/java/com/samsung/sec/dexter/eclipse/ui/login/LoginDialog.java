@@ -6,6 +6,7 @@ package com.samsung.sec.dexter.eclipse.ui.login;
 import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
+import com.samsung.sec.dexter.core.util.DexterServerConfig;
 import com.samsung.sec.dexter.core.util.EmptyDexterClient;
 import com.samsung.sec.dexter.core.util.IDexterClient;
 import com.samsung.sec.dexter.eclipse.ui.DexterUIActivator;
@@ -344,7 +345,8 @@ public class LoginDialog extends TitleAreaDialog {
             DexterUIActivator.getDefault().setDexterPreferences(serverAddress, id, pwd, isStandalone, dexterHome);
         }
 
-        runStandaloneListeners(isStandaloneModeChanged, isStandalone);
+        DexterServerConfig serverConfig = new DexterServerConfig(id, pwd, serverAddress);
+        runStandaloneListeners(isStandaloneModeChanged, isStandalone, serverConfig);
 
         super.okPressed();
         isOpened.set(false);
@@ -480,12 +482,12 @@ public class LoginDialog extends TitleAreaDialog {
         }
     }
 
-    private void runStandaloneListeners(final boolean isChangedStandaloneMode, final boolean isStandalone) {
+    private void runStandaloneListeners(final boolean isChangedStandaloneMode, final boolean isStandalone, final DexterServerConfig serverConfig) {
         if (isChangedStandaloneMode) {
             if (isStandalone) {
                 config.runListenerHandlerWhenStandalone();
             } else {
-                config.runListenerHandlerWhenNotStandalone();
+                config.runListenerHandlerWhenNotStandalone(serverConfig);
             }
         }
     }

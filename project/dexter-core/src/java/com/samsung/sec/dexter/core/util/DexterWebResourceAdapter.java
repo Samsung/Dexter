@@ -69,4 +69,34 @@ public class DexterWebResourceAdapter implements IDexterWebResource {
 	public String postWithBodyforCLI(String uri, String id, String pwd, String bodyJson) {
 		return "";
 	}
+
+	@Override
+	public void setDexterServerConfig(DexterServerConfig serverConfig) {
+		
+	}
+
+	@Override
+	public String getServiceUrl(String serviceUrl) {
+		return null;
+	}
+
+	@Override
+	public String getCurrentUserId() {
+		return null;
+	}
+
+	@Override
+	public String getCurrentUserPassword() {
+		return null;
+	}
+
+	@Override
+	public String getServerHostname() {
+		return null;
+	}
+
+	@Override
+	public int getServerPort() {
+		return 0;
+	}
 }
