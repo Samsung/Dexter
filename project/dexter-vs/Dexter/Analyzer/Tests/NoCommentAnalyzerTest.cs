@@ -758,6 +758,61 @@ namespace Dexter.Analyzer.Tests
             VerifyCSharpDiagnostic(test, expected, expected2);
         }
 
+        [Test]
+        public void NoCommentRule_Ignore_GivenPublicClass_WithTestFixtureAttribute()
+        {
+            var test = @"
+    using System;
+
+    namespace ConsoleApplication1
+    {
+        [TestFixture]
+        public class TestClass 
+        {
+        }   
+    }";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [Test]
+        public void NoCommentMethodRule_Ignore_GivenPublicClass_WithTestFixtureAttribute()
+        {
+            var test = @"
+    using System;
+
+    namespace ConsoleApplication1
+    {
+        [TestFixture]
+        public class TestClass 
+        {
+            public void Test() 
+            {
+            }
+        }   
+    }";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [Test]
+        public void NoCommentPropertyRule_Ignore_GivenPublicClass_WithTestFixtureAttribute()
+        {
+            var test = @"
+    using System;
+
+    namespace ConsoleApplication1
+    {
+        [TestFixture]
+        public class TestClass 
+        {
+            public int Test { get; }
+        }   
+    }";
+
+            VerifyCSharpDiagnostic(test);
+        }
+
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
             return new NoCommentAnalyzer();

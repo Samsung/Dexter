@@ -41,6 +41,21 @@ namespace Dexter.Analyzer.Tests
             VerifyCSharpDiagnostic(test, expected);
         }
 
+        [Test]
+        public void NoFileCommentAnalyzer_Ignore_GivenFileWithTestClass()
+        {
+            var test = @"using System;
+
+    namespace ConsoleApplication1
+    {
+        [TestFixture]
+        public class TestClass
+        {   
+        }
+    }";
+
+            VerifyCSharpDiagnostic(test);
+        }
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {

@@ -102,6 +102,9 @@ namespace Dexter.Analyzer
         {
             var node = (ClassDeclarationSyntax)context.Node;
 
+            if (AnalyzerUtil.IsTestAttribute(node.AttributeLists))
+                return;
+
             if (!IsPublicType(node.Modifiers))
                 return;
 
@@ -162,7 +165,7 @@ namespace Dexter.Analyzer
             if (!IsPublicType(node.Modifiers))
                 return;
 
-            if (!IsAllParentsPublic(node))
+            if (!IsAllParentsValid(node))
                 return;
 
             var xmlTrivia = GetXmlTrivia(node);
@@ -177,7 +180,7 @@ namespace Dexter.Analyzer
             if (!IsPublicType(node.Modifiers))
                 return;
 
-            if (!IsAllParentsPublic(node))
+            if (!IsAllParentsValid(node))
                 return;
 
             var xmlTrivia = GetXmlTrivia(node);
@@ -275,7 +278,7 @@ namespace Dexter.Analyzer
             if (!IsPublicType(node.Modifiers))
                 return;
 
-            if (!IsAllParentsPublic(node))
+            if (!IsAllParentsValid(node))
                 return;
 
             var xmlTrivia = GetXmlTrivia(node);
@@ -295,7 +298,7 @@ namespace Dexter.Analyzer
             if (!IsPublicType(node.Modifiers))
                 return;
 
-            if (!IsAllParentsPublic(node))
+            if (!IsAllParentsValid(node))
                 return;
 
             var xmlTrivia = GetXmlTrivia(node);
@@ -308,10 +311,11 @@ namespace Dexter.Analyzer
             ReportNoExceptionDiagnostics(context, node, xmlTrivia);
         }
 
-        private bool IsAllParentsPublic(SyntaxNode node)
+        private bool IsAllParentsValid(SyntaxNode node)
         {
             return node.Ancestors(false).OfType<BaseTypeDeclarationSyntax>()
-                .All(ancestor => IsPublicType(ancestor.Modifiers));
+                .All(ancestor => IsPublicType(ancestor.Modifiers) && 
+                                    !AnalyzerUtil.IsTestAttribute(ancestor.AttributeLists));
         }
 
         private bool IsPublicType(SyntaxTokenList modifiers)

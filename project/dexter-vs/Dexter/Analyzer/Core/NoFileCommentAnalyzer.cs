@@ -8,6 +8,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
+using Dexter.Analyzer.Utils;
 
 namespace Dexter.Analyzer
 {
@@ -57,7 +58,8 @@ namespace Dexter.Analyzer
             if (namespaceDeclaration == null)
                 return;
 
-            if (!HasPublicType(namespaceDeclaration))
+            var baseTypes = namespaceDeclaration.Members.OfType<BaseTypeDeclarationSyntax>();
+            if (!HasPublicType(baseTypes) || HasTestAttribute(baseTypes))
                 return;
 
             var xmlTrivia = GetXmlTrivia(node);
@@ -68,6 +70,14 @@ namespace Dexter.Analyzer
             }
         }
 
+        private bool HasTestAttribute(IEnumerable<BaseTypeDeclarationSyntax> baseTypes)
+        {
+            if (baseTypes.Any(baseType => AnalyzerUtil.IsTestAttribute(baseType.AttributeLists)))
+                return true;
+
+            return false;
+        }
+
         private static DocumentationCommentTriviaSyntax GetXmlTrivia(CSharpSyntaxNode node)
         {
             return node.GetLeadingTrivia()
@@ -76,9 +86,8 @@ namespace Dexter.Analyzer
                 .FirstOrDefault();
         }
 
-        private bool HasPublicType(NamespaceDeclarationSyntax node)
+        private bool HasPublicType(IEnumerable<BaseTypeDeclarationSyntax> baseTypes)
         {
-            var baseTypes = node.Members.OfType<BaseTypeDeclarationSyntax>();
             if (baseTypes.Any(baseType => baseType.Modifiers.Any(SyntaxKind.PublicKeyword)))
                 return true;
 

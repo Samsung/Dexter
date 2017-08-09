@@ -113,6 +113,19 @@ namespace Dexter.Analyzer.Utils
         }
 
         /// <summary>
+        /// Verifies whether attributeLists contain a test-case attribute
+        /// </summary>
+        /// <param name="attributeLists">List of AttributeListSyntax</param>
+        /// <returns>True if attributeLists contain a test-case attribute, or False</returns>
+        public static bool IsTestAttribute(SyntaxList<AttributeListSyntax> attributeLists)
+        {
+            return attributeLists.Any(attributeList =>
+            {
+                return attributeList.Attributes.Any(attribute => attribute.Name.ToString().Equals("TestFixture"));
+            });
+        }
+
+        /// <summary>
         /// Get new leading trivia with summary comments inserted
         /// </summary>
         /// <param name="leadingTrivias">Original leading trivia</param>
