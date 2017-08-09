@@ -37,6 +37,12 @@ namespace Dexter.Analyzer
 
         private const string Category = "Naming";
 
+        private const string summaryTag = "summary";
+        private const string codeTag = "code";
+        private const string paramTag = "param";
+        private const string returnTag = "returns";
+        private const string exceptionTag = "exception";
+
         static NoCommentAnalyzer()
         {
             NoCommentRule = AnalyzerUtil.CreateDiagnosticDescriptor(NoCommentRuleId, 
@@ -115,13 +121,13 @@ namespace Dexter.Analyzer
                 return;
             } 
 
-            if (!HasXmlNameTag(xmlTrivia, "summary"))
+            if (!HasXmlNameTag(xmlTrivia, summaryTag))
             {
                 context.ReportDiagnostic(Diagnostic.Create(NoSummaryRule, node.Identifier.GetLocation(), node.Identifier.Text));
                 return;
             }
 
-            if (!HasXmlNameTag(xmlTrivia, "code"))
+            if (!HasXmlNameTag(xmlTrivia, codeTag))
             {
                 context.ReportDiagnostic(Diagnostic.Create(NoCodeRule, node.Identifier.GetLocation(), node.Identifier.Text));
                 return;
@@ -190,7 +196,7 @@ namespace Dexter.Analyzer
                 return;
             }
 
-            if (!(AnalyzerUtil.IsVoidReturnType(node) || HasXmlNameTag(xmlTrivia, "returns")))
+            if (!(AnalyzerUtil.IsVoidReturnType(node) || HasXmlNameTag(xmlTrivia, returnTag)))
             {
                 context.ReportDiagnostic(Diagnostic.Create(NoReturnsRule, node.Identifier.GetLocation(), node.Identifier.Text));
             }
@@ -202,7 +208,7 @@ namespace Dexter.Analyzer
         private void ReportNoExceptionDiagnostics(SyntaxNodeAnalysisContext context, SyntaxNode node, DocumentationCommentTriviaSyntax xmlTrivia)
         {
             var exceptionCommentNames = xmlTrivia.DescendantNodes().OfType<XmlNameAttributeSyntax>()
-                .Where(attribute => IsNameAttribute(attribute, "exception"))
+                .Where(attribute => IsNameAttribute(attribute, exceptionTag))
                 .Select(attribute => attribute.Identifier.ToString());
 
             var exceptionTokens = GetExceptionTokens(node);
@@ -237,7 +243,7 @@ namespace Dexter.Analyzer
         private void ReportNoParamDiagnostics(SyntaxNodeAnalysisContext context, BaseMethodDeclarationSyntax node, DocumentationCommentTriviaSyntax xmlTrivia)
         {
             var paramCommentNames = xmlTrivia.DescendantNodes().OfType<XmlNameAttributeSyntax>()
-                .Where(attribute => IsNameAttribute(attribute, "param"))
+                .Where(attribute => IsNameAttribute(attribute, paramTag))
                 .Select(attribute => attribute.Identifier.ToString());
 
             foreach (var parameter in node.ParameterList.Parameters)
