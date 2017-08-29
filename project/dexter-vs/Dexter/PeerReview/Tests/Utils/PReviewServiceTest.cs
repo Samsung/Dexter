@@ -334,6 +334,32 @@ namespace Dexter.PeerReview.Tests.Utils
             Assert.AreEqual("Base64 text", jsonFormat.SourceCode);
         }
 
+        [Test]
+        public void GetCommentDelimiter_returnNormalStyle_GivenCSharpFile()
+        {
+            // given
+            var filePath = "c:\\test\\source.cs";
+
+            // when
+            var delimiter = reviewService.GetCommentDelimiter(filePath);
+
+            // then
+            Assert.AreEqual(PeerReviewConstants.COMMENT_DELIMITER, delimiter);
+        }
+
+        [Test]
+        public void GetCommentDelimiter_returnPythonStyle_GivenPythonFile()
+        {
+            // given
+            var filePath = "c:\\test\\source.py";
+
+            // when
+            var delimiter = reviewService.GetCommentDelimiter(filePath);
+
+            // then
+            Assert.AreEqual(PeerReviewConstants.COMMENT_DELIMITER_PYTHON, delimiter);
+        }
+
 
         private IList<PeerReviewSnapshotComment> createTestComments()
         {

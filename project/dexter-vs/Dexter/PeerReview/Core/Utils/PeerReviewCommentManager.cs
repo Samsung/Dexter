@@ -181,8 +181,9 @@ namespace Dexter.PeerReview.Utils
                 while ((line = reader.ReadLine()) != null)
                 {
                     lineNum++;
-                    int commentStart = line.ToLower().IndexOf(PeerReviewConstants.COMMENT_DELIMITER);
+                    var commentDelimiter = reviewService.GetCommentDelimiter(filePath);
 
+                    var commentStart = line.ToLower().IndexOf(commentDelimiter);
                     if (commentStart >= 0)
                     {
                         var commentText = line.Substring(commentStart);

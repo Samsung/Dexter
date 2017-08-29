@@ -3,3 +3,6 @@
 
 [$RootKey$\Languages\CodeExpansions\C/C++\Paths]   
 "Dexter c++"="$PackageFolder$\Dexter C++"  
+
+[$RootKey$\Languages\CodeExpansions\Python\Paths]   
+"Dexter python"="$PackageFolder$\Dexter Python"  
