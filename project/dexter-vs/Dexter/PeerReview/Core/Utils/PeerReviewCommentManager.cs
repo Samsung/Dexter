@@ -165,8 +165,9 @@ namespace Dexter.PeerReview.Utils
                 var fileText = await fileService.ReadTextAsync(filePath);
 
                 return getReviewCommentsFromFileContent(filePath, fileText);
-            } catch (FileNotFoundException e)
+            } catch (Exception e)
             {
+                Debug.WriteLine("getReviewCommentsFromOneFilePath: errored ");
                 Debug.WriteLine(e.Message);
                 return Enumerable.Empty<PeerReviewComment>();
             }

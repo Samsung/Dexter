@@ -29,6 +29,12 @@ namespace Dexter.Common.Utils
         public IList<string> getAllSourceFilePaths(IVsHierarchy pHierarchy)
         {
             Stack<string> currentPathes = new Stack<string>();
+            string projectPath = GetProjectPath(pHierarchy);
+            if (projectPath == null)
+            {
+                return new List<String>();
+            }
+
             currentPathes.Push(GetProjectPath(pHierarchy));
 
             return TraverseSourceFiles(pHierarchy, VSConstants.VSITEMID_ROOT, currentPathes)
@@ -44,13 +50,11 @@ namespace Dexter.Common.Utils
 
         private IEnumerable<string> TraverseSourceFiles(IVsHierarchy pHierarchy, uint itemid, Stack<string> currentPathes)
         {
-            IntPtr nestedHierarchyObj;
-            uint nestedItemId;
             var hierGuid = typeof(IVsHierarchy).GUID;
 
             PushItemNameToCurrentPathes(pHierarchy, itemid, currentPathes);
 
-            var hr = pHierarchy.GetNestedHierarchy(itemid, ref hierGuid, out nestedHierarchyObj, out nestedItemId);
+            var hr = pHierarchy.GetNestedHierarchy(itemid, ref hierGuid, out IntPtr nestedHierarchyObj, out uint nestedItemId);
             if (VSConstants.S_OK == hr && IntPtr.Zero != nestedHierarchyObj)
             {
                 var nestedHierarchy = Marshal.GetObjectForIUnknown(nestedHierarchyObj) as IVsHierarchy;
@@ -102,6 +106,7 @@ namespace Dexter.Common.Utils
                     }
                 }
             }
+            
             currentPathes.Pop();
         }
 
