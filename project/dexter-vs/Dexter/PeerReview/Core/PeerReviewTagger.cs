@@ -134,7 +134,7 @@ namespace Dexter.PeerReview
         private bool IsPReviewCommentsChanged(IList<PeerReviewSnapshotComment> previousComments, IList<PeerReviewSnapshotComment> currentComments)
         {
             if (previousComments == null)
-                return false;
+                return true;
 
             if (previousComments.Count != currentComments.Count)
                 return true;

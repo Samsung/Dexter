@@ -128,7 +128,8 @@ namespace Dexter.Common.Utils
         private bool IsSourceFileName(string fileName)
         {
             if (fileName != null && (fileName.EndsWith(".cs") || fileName.EndsWith(".c") ||
-                fileName.EndsWith(".cpp") || fileName.EndsWith(".py")))
+                fileName.EndsWith(".cpp") || fileName.EndsWith(".py") || fileName.EndsWith(".js") ||
+                fileName.EndsWith(".ts")))
             {
                 return true;
             }
