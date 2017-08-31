@@ -8,6 +8,7 @@ This guide is for developers who need to run the server in local environment.
 [Dexter Server Wiki Pages](https://dexter.atlassian.net/wiki/display/DW/Dexter+Server)
 
 
+
 # Docker Guide
 ## Installing on Docker
 
