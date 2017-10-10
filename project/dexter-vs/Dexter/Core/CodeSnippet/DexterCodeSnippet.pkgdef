@@ -3,3 +3,12 @@
 
 [$RootKey$\Languages\CodeExpansions\C/C++\Paths]   
 "Dexter c++"="$PackageFolder$\Dexter C++"  
+
+[$RootKey$\Languages\CodeExpansions\Python\Paths]   
+"Dexter python"="$PackageFolder$\Dexter Python"  
+
+[$RootKey$\Languages\CodeExpansions\JavaScript\Paths]   
+"Dexter javascript"="$PackageFolder$\Dexter JavaScript"
+
+[$RootKey$\Languages\CodeExpansions\TypeScript\Paths]   
+"Dexter typescript"="$PackageFolder$\Dexter TypeScript"  

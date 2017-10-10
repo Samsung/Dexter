@@ -59,6 +59,8 @@ namespace Dexter.PeerReview.Utils
         /// <param name="fileContent">The content of the file to be transferred</param>
         /// <returns></returns>
         SourceCodeJsonFormat ConverToSourceCodeJsonFormat(string filePath, string fileContent);
+
+        string GetCommentDelimiter(string filePath);
     }
 
     /// <summary>
@@ -249,6 +251,16 @@ namespace Dexter.PeerReview.Utils
                 FileName = Path.GetFileName(filePath),
                 SourceCode = textService.Base64Encoding(fileContent)
             };
+        }
+
+        public string GetCommentDelimiter(string filePath)
+        {
+            var ext = Path.GetExtension(filePath);
+
+            if (ext.Equals(".py"))
+                return PeerReviewConstants.COMMENT_DELIMITER_PYTHON;
+            else
+                return PeerReviewConstants.COMMENT_DELIMITER;
         }
     }
 }

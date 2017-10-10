@@ -91,7 +91,7 @@ namespace Dexter.Tests.Analysis
         /// <summary>
         /// Account creation should fail due to wrong host address
         /// </summary>
-        [Test]
+        [Test, Explicit]
         public void CreateUser_callErrorDataReceived()
         {
             var errorDataReceived = false;
