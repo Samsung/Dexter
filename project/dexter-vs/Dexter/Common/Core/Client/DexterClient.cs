@@ -14,7 +14,7 @@ namespace Dexter.Common.Client
     /// </summary>
     public class DexterClient : IDexterClient
     {
-        public static readonly string POST_ANALYSIS_RESULT_V3 = "/api/v1/analysis/result";
+        public static readonly string POST_ANALYSIS_RESULT_V3 = "/api/v3/analysis/result";
         public static readonly string POST_SNAPSHOT_SOURCECODE = "/api/v1/analysis/snapshot/source";
         public static readonly string POST_ACCOUNT_ADD_V1 = "/api/v1/accounts/add";
 
