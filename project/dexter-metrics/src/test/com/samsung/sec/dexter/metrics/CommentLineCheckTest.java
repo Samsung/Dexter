@@ -1,16 +1,16 @@
 /**
- * Copyright (c) 2014 Samsung Electronics, Inc.,
+ * Copyright (c) 2017 Samsung Electronics, Inc.,
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * 
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  * 
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -22,32 +22,32 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+ */
+package com.samsung.sec.dexter.metrics;
 
-public class DexterMetricsActivator implements BundleActivator {
+import org.junit.Test;
 
-	private static BundleContext context;
+import com.puppycrawl.tools.checkstyle.api.DetailAST;
+import com.puppycrawl.tools.checkstyle.api.TokenTypes;
 
-	static BundleContext getContext() {
-		return context;
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Assert;
+
+public class CommentLineCheckTest {
+	
+	@Test
+	public void getDefaultTokensTest_ReturnsProperIntArrayWithTokens() {
+		CommentLineCheck tester = new CommentLineCheck();
+		int[] defaultTokens;
+		defaultTokens = tester.getDefaultTokens();
+		
+		assertEquals(defaultTokens[0], TokenTypes.PACKAGE_DEF);
+		assertEquals(defaultTokens[1], TokenTypes.IMPORT);
+		assertEquals(defaultTokens[2], TokenTypes.CLASS_DEF);
+		assertEquals(defaultTokens[3], TokenTypes.ENUM);
+		assertEquals(defaultTokens[4], TokenTypes.METHOD_DEF);
+		assertEquals(defaultTokens[5], TokenTypes.CTOR_CALL);
+		assertEquals(defaultTokens[6], TokenTypes.ANNOTATION_FIELD_DEF);
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-	 */
-	public void start(BundleContext bundleContext) throws Exception {
-		DexterMetricsActivator.context = bundleContext;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(BundleContext bundleContext) {
-		DexterMetricsActivator.context = null;
-	}
-
 }

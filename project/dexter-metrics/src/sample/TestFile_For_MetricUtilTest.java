@@ -1,16 +1,16 @@
 /**
- * Copyright (c) 2014 Samsung Electronics, Inc.,
+ * Copyright (c) 2017 Samsung Electronics, Inc.,
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * 
  * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
+ * list of conditions and the following disclaimer.
  * 
  * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -22,32 +22,27 @@
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+ */
+package com.samsung.sec.dexter.metrics.util;
 
-public class DexterMetricsActivator implements BundleActivator {
+import javax.swing.text.StyledEditorKit.ForegroundAction;
 
-	private static BundleContext context;
-
-	static BundleContext getContext() {
-		return context;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+public class TestFile_For_MetricUtilTest {
+	// comment
+	/**
+	 * another comment
 	 */
-	public void start(BundleContext bundleContext) throws Exception {
-		DexterMetricsActivator.context = bundleContext;
-	}
+	// here starts the code:
 
+	TestFile_For_MetricUtilTest() {
+		int k = 5;
+		int n=1000;
+
+		for(int i = 0;i<n;i++){
+			k=k*2;
+		}
+	}
 	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+	 * more comments
 	 */
-	public void stop(BundleContext bundleContext) {
-		DexterMetricsActivator.context = null;
-	}
-
 }

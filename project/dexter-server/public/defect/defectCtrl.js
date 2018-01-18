@@ -381,9 +381,13 @@ defectApp.controller('DefectCtrl', function ($scope, $http, $sce, $location, $an
         });
     }
 
-    $scope.toggleShowFileTreeBtn = function(isShowState) {
+    function toggleShowFileTreeBtn(isShowState) {
         $scope.isFileTreeHidden = isShowState;
         $scope.isFileTreeBtnTitleHidden = ((isShowState === true) ? SHOW_FILE_TREE_MESSAGE : HIDE_FILE_TREE_MESSAGE);
+    }
+
+    $scope.toggleShowFileTreeBtn = function (isShowState) {
+        return toggleShowFileTreeBtn(isShowState);
     };
 
     function checkLogin() {

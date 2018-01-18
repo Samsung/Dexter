@@ -443,6 +443,7 @@ function initRestAPI(){
     /* Analysis Result */
     app.get('/api/v3/defect/count', analysis.getDefectCountByModuleAndFileV3);
     app.post('/api/v3/analysis/snapshot/sourcecode', auth, analysis.getSnapshotSourceCodeV3);
+
 }
 
 function startServer(){
