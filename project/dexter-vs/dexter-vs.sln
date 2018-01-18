@@ -1,11 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dexter-vs", "dexter-vs\dexter-vs.csproj", "{F46F8A70-C08C-4FB3-A18D-E0FEC18A0BA3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dexter-vs-tests", "dexter-vs-tests\dexter-vs-tests.csproj", "{7DF75ADC-0C42-4935-AAF2-CDA44BEE97D4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F46F8A70-C08C-4FB3-A18D-E0FEC18A0BA3} = {F46F8A70-C08C-4FB3-A18D-E0FEC18A0BA3}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +27,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {97D5F51A-35B1-4051-8FFC-58E1AFB94DC9}
 	EndGlobalSection
 EndGlobal
