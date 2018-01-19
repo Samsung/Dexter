@@ -28,6 +28,7 @@ package com.samsung.sec.dexter.findbugs.plugin;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
+import com.samsung.sec.dexter.core.checker.ICheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.plugin.IDexterPlugin;
@@ -87,7 +88,7 @@ public class FindbugsDexterPlugin implements IDexterPlugin {
      * @see com.samsung.sec.dexter.core.plugin.IDexterPlugin#getCheckerConfig()
      */
     @Override
-    public CheckerConfig getCheckerConfig() {
+    public ICheckerConfig getCheckerConfig() {
         return findbug.getCheckerConfig();
     }
 
@@ -98,7 +99,7 @@ public class FindbugsDexterPlugin implements IDexterPlugin {
      * CheckerConfig)
      */
     @Override
-    public void setCheckerConfig(CheckerConfig cc) {
+    public void setCheckerConfig(ICheckerConfig cc) {
         findbug.setCheckerConfig(cc);
     }
 

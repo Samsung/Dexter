@@ -30,6 +30,7 @@ import com.google.common.base.Strings;
 import com.samsung.sec.dexter.core.analyzer.AnalysisConfig;
 import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
+import com.samsung.sec.dexter.core.checker.ICheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.IDexterHomeListener;
 import com.samsung.sec.dexter.core.exception.DexterException;
@@ -83,7 +84,7 @@ public class BaseDexterPluginManager implements IDexterPluginManager, IDexterHom
                 for (int i = 0; i < pluginList.size(); i++) {
                     IDexterPlugin plugin = pluginList.get(i);
                     String pluginName = plugin.getDexterPluginDescription().getPluginName();
-                    CheckerConfig cc = client.getDexterPluginChecker(plugin, pluginName);
+                    ICheckerConfig cc = client.getDexterPluginChecker(plugin, pluginName);
                     plugin.setCheckerConfig(cc);
                     plugin.getCheckerConfig().checkerListToMap();
                 }
@@ -136,12 +137,12 @@ public class BaseDexterPluginManager implements IDexterPluginManager, IDexterHom
     }
 
     @Override
-    public CheckerConfig getCheckerConfig(final String pluginName) {
+    public ICheckerConfig getCheckerConfig(final String pluginName) {
         assert Strings.isNullOrEmpty(pluginName) == false;
 
         for (final IDexterPlugin plugin : pluginList) {
             if (pluginName.equals(plugin.getDexterPluginDescription().getPluginName())) {
-                final CheckerConfig config = plugin.getCheckerConfig();
+                final ICheckerConfig config = plugin.getCheckerConfig();
                 return config;
             }
         }
@@ -150,7 +151,7 @@ public class BaseDexterPluginManager implements IDexterPluginManager, IDexterHom
     }
 
     @Override
-    public void setCheckerConfig(final String pluginName, final CheckerConfig config) {
+    public void setCheckerConfig(final String pluginName, final ICheckerConfig config) {
         assert !Strings.isNullOrEmpty(pluginName);
         assert config != null;
 
@@ -179,4 +180,9 @@ public class BaseDexterPluginManager implements IDexterPluginManager, IDexterHom
         for (IDexterPlugin plugin : pluginList)
             plugin.handleDexterHomeChanged(oldPath, newPath);
     }
+
+	@Override
+	public void setDexterClient(IDexterClient dexterClient) {
+		this.client = dexterClient;
+	}
 }

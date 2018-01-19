@@ -25,8 +25,10 @@
  */
 package com.samsung.sec.dexter.core.config;
 
+import com.samsung.sec.dexter.core.util.DexterServerConfig;
+
 public interface IDexterStandaloneListener {
     public void handleWhenStandaloneMode();
 
-    public void handleWhenNotStandaloneMode();
+    public void handleWhenNotStandaloneMode(DexterServerConfig serverConfig);
 }

@@ -33,6 +33,7 @@ import com.samsung.sec.dexter.core.analyzer.ResultFileConstant;
 import com.samsung.sec.dexter.core.checker.Checker;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.checker.IChecker;
+import com.samsung.sec.dexter.core.checker.ICheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.defect.PreOccurence;
@@ -54,12 +55,12 @@ public class ResultFileHandler extends DefaultHandler {
     private PreOccurence currentOccurence;
     private AnalysisResult result;
     private AnalysisConfig config;
-    private CheckerConfig checkerConfig;
+    private ICheckerConfig checkerConfig;
 
     private final static Logger logger = Logger.getLogger(ResultFileHandler.class);
 
     public ResultFileHandler(final AnalysisResult result, final AnalysisConfig config,
-            final CheckerConfig checkerConfig) {
+            final ICheckerConfig checkerConfig) {
         this.config = config;
         this.checkerConfig = checkerConfig;
         this.result = result;

@@ -7,6 +7,7 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.checker.IChecker;
+import com.samsung.sec.dexter.core.checker.ICheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.LANGUAGE;
 import com.samsung.sec.dexter.core.defect.Defect;
@@ -39,7 +40,7 @@ public class DexterVdCppPlugin implements IDexterPlugin {
 
     private final static Logger LOG = Logger.getLogger(DexterVdCppPlugin.class);
 
-    private CheckerConfig checkerConfig;
+    private ICheckerConfig checkerConfig;
     private Map<String, ICheckerLogic> checkerLogicMap;
 
     private ITranslationUnitFactory unitFactory = new TranslationUnitFactory();
@@ -127,12 +128,12 @@ public class DexterVdCppPlugin implements IDexterPlugin {
     }
 
     @Override
-    public void setCheckerConfig(CheckerConfig cc) {
+    public void setCheckerConfig(ICheckerConfig cc) {
         this.checkerConfig = cc;
     }
 
     @Override
-    public CheckerConfig getCheckerConfig() {
+    public ICheckerConfig getCheckerConfig() {
         return this.checkerConfig;
     }
 

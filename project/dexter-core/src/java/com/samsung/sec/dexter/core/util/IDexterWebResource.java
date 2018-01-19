@@ -30,50 +30,52 @@ import java.util.Map;
 import com.samsung.sec.dexter.core.exception.DexterException;
 
 public interface IDexterWebResource {
+	public void setDexterServerConfig(final DexterServerConfig serverConfig);
+	
 	/**
 	 * RESTful API 
 	 * METHOD: GET
 	 * 
-	 * @param uri
+	 * @param restApiPath
 	 * @param id
 	 * @param pwd
 	 * @return
 	 * @throws DexterException
 	 * @return String
 	 */
-	public String getText(final String uri, final String id, final String pwd);
+	public String getText(final String restApiPath, final String id, final String pwd);
 
 	/**
 	 * RESTful API
 	 * METHOD: GET
 	 * 
-	 * @param uri
+	 * @param restApiPath
 	 * @param id
 	 * @param pwd
 	 * @return
 	 * @throws DexterException
 	 * @return Map<String,Object>
 	 */
-	public Map<String, Object> getMap(final String uri, final String id, final String pwd);
+	public Map<String, Object> getMap(final String restApiPath, final String id, final String pwd);
 
 	/**
 	 * RESTful API
 	 * METHOD: POST
 	 * 
-	 * @param uri
+	 * @param restApiPath
 	 * @param id
 	 * @param pwd
 	 * @return
 	 * @throws DexterException
 	 * @return String
 	 */
-	public abstract String postText(final String uri, final String id, final String pwd);
+	public abstract String postText(final String restApiPath, final String id, final String pwd);
 	
 	/**
 	 * RESTful API
 	 * METHOD: POST
 	 * 
-	 * @param uri
+	 * @param restApiPath
 	 * @param id
 	 * @param pwd
 	 * @param body	request.body
@@ -81,16 +83,16 @@ public interface IDexterWebResource {
 	 * @throws DexterException
 	 * @return String
 	 */
-	public abstract String postWithBody(final String uri, final String id, final String pwd, final Map<String, Object> body);
+	public abstract String postWithBody(final String restApiPath, final String id, final String pwd, final Map<String, Object> body);
 	
-	public abstract String postWithBodyforCLI(final String uri, final String id, final String pwd, final String bodyJson);
+	public abstract String postWithBodyforCLI(final String restApiPath, final String id, final String pwd, final String bodyJson);
 
 
 	/**
 	 * RESTful API
 	 * METHOD: DELETE
 	 * 
-	 * @param uri
+	 * @param restApiPath
 	 * @param id
 	 * @param pwd
 	 * @param body	reqeust.body
@@ -98,13 +100,13 @@ public interface IDexterWebResource {
 	 * @throws DexterException
 	 * @return String
 	 */
-	public abstract String deleteWithBody(final String uri, final String id, final String pwd, final Map<String, Object> body);
+	public abstract String deleteWithBody(final String restApiPath, final String id, final String pwd, final Map<String, Object> body);
 
 	/**
 	 * RESTful API
 	 * METHOD: PUT
 	 * 
-	 * @param uri
+	 * @param restApiPath
 	 * @param id
 	 * @param pwd
 	 * @param body
@@ -112,7 +114,7 @@ public interface IDexterWebResource {
 	 * @throws DexterException
 	 * @return String
 	 */
-	public String putWithBody(String uri, String id, String pwd, Map<String, Object> body);
+	public String putWithBody(String restApiPath, String id, String pwd, Map<String, Object> body);
 	
 	/**
 	 * RESTful API
@@ -128,4 +130,11 @@ public interface IDexterWebResource {
 	 */
 	
 	public String getConnectionResult(final String uri, final String id, final String pwd);		
+	
+	public String getServiceUrl(String serviceUrl);
+	
+	public String getCurrentUserId();
+	public String getCurrentUserPassword();
+	public String getServerHostname();
+	public int getServerPort();
 }

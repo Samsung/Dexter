@@ -25,6 +25,8 @@
 */
 package com.samsung.sec.dexter.util;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class LocUtil
 {

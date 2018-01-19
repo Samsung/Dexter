@@ -32,6 +32,7 @@ import com.samsung.sec.dexter.core.analyzer.AnalysisResult;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisEntityFactory;
 import com.samsung.sec.dexter.core.analyzer.IAnalysisResultHandler;
 import com.samsung.sec.dexter.core.checker.CheckerConfig;
+import com.samsung.sec.dexter.core.checker.ICheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig.AnalysisType;
 import com.samsung.sec.dexter.core.defect.Defect;
 import com.samsung.sec.dexter.core.exception.DexterException;
@@ -166,7 +167,7 @@ public class DexterAnalyzerTest {
                 String pluginName = "dexter-findbugs";
 
                 // 1. customizing rules, then...
-                CheckerConfig cc = pluginManager.getCheckerConfig(pluginName);
+                ICheckerConfig cc = pluginManager.getCheckerConfig(pluginName);
 
                 if (cc == null) {
                     return;

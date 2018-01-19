@@ -84,8 +84,7 @@ public class AccountTest {
 			PrintStream out = new PrintStream(byteOut);
 			out.flush();
 
-			String sampleInput = "12345" + DexterUtil.LINE_SEPARATOR + DexterUtil.LINE_SEPARATOR;
-			ByteArrayInputStream byteIn = new ByteArrayInputStream(sampleInput.getBytes());
+			ByteArrayInputStream byteIn = createTestInputStream();
 
 			accountHandler.setDexterClient(client);
 			accountHandler.setInputStream(byteIn);
@@ -117,9 +116,7 @@ public class AccountTest {
 			ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
 			PrintStream out = new PrintStream(byteOut);
 			out.flush();
-
-			String sampleInput = "12345" + DexterUtil.LINE_SEPARATOR;
-			ByteArrayInputStream byteIn = new ByteArrayInputStream(sampleInput.getBytes());
+			ByteArrayInputStream byteIn = createTestInputStream();
 
 			accountHandler.setDexterClient(client);
 			accountHandler.setInputStream(byteIn);
@@ -144,11 +141,23 @@ public class AccountTest {
 		IDexterClient client = mock(IDexterClient.class);
 
 		when(client.hasAccount(anyString())).thenReturn(true);
+		accountHandler.setDexterClient(client);
 
+		ByteArrayInputStream byteIn = createTestInputStream();
+		accountHandler.setInputStream(byteIn);
+		
 		try {
 			accountHandler.createAccount("1234", "user-password");
 			fail();
 		} catch (RuntimeException e) {
+		} finally {
+			byteIn.close();
 		}
+	}
+
+	private ByteArrayInputStream createTestInputStream() {
+		String sampleInput = "12345" + DexterUtil.LINE_SEPARATOR;
+		ByteArrayInputStream byteIn = new ByteArrayInputStream(sampleInput.getBytes());
+		return byteIn;
 	}
 }

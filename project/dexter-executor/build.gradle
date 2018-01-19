@@ -17,7 +17,8 @@ dependencies {
 					':jspf.remote.lipermi:1.0.2',
 					':jspf.remote.xmlrpc:1.0.2',
 					':jspf.remote.xmlrpcdelight:1.0.2',
-					'log4j:log4j:1.2.17'
+					'log4j:log4j:1.2.17',
+					'com.googlecode.json-simple:json-simple:1.1.1'
 	
 	configurations.compile.extendsFrom(configurations.includeInJar)
 	configurations.compile.extendsFrom(configurations.testJars)

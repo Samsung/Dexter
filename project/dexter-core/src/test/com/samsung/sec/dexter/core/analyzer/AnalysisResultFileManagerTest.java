@@ -113,7 +113,7 @@ public class AnalysisResultFileManagerTest {
 		assertEquals(expectedMetricString, resultMap.get(ResultFileConstant.CODE_METRICS).toString());
 		
 		// check defect list
-		final String expectedDefectListString = "[{gdid=-1.0, occurences=[{code=, startLine=79.0, endLine=79.0, charStart=-1.0, charEnd=-1.0, variableName=, stringValue=, fieldName=, message=Memory leak: sgtree}], createdDateTime=1.439973272636E12, message=[#1@79] Memory leak: sgtree [#1@79] Memory leak: sgtree , severityCode=CRI, categoryName=security, modifiedDateTime=1.439973272636E12, checkerCode=memleak, className=TestSource, methodName=testMethod, toolName=my-tool, language=JAVA, fileName=TestSource.java, modulePath=com/samsung, fileStatus=}]";
+		final String expectedDefectListString = "[{gdid=-1.0, occurences=[{code=, startLine=79.0, endLine=79.0, charStart=-1.0, charEnd=-1.0, variableName=, stringValue=, fieldName=, message=Memory leak: sgtree}], createdDateTime=1.439973272636E12, message=[#1@79] Memory leak: sgtree [#1@79] Memory leak: sgtree , severityCode=CRI, categoryName=security, modifiedDateTime=1.439973272636E12, analysisType=, checkerCode=memleak, className=TestSource, methodName=testMethod, toolName=my-tool, language=JAVA, fileName=TestSource.java, modulePath=com/samsung, fileStatus=}]";
 		assertEquals(expectedDefectListString, resultMap.get(ResultFileConstant.DEFECT_LIST).toString());
 	}
 	
