@@ -45,12 +45,7 @@ import com.samsung.sec.dexter.core.config.IDexterConfigFile;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginInitializer;
 import com.samsung.sec.dexter.core.plugin.IDexterPluginManager;
-import com.samsung.sec.dexter.core.util.DexterClient;
-import com.samsung.sec.dexter.core.util.DexterServerConfig;
-import com.samsung.sec.dexter.core.util.EmptyDexterClient;
 import com.samsung.sec.dexter.core.util.IDexterClient;
-import com.samsung.sec.dexter.core.util.IDexterWebResource;
-import com.samsung.sec.dexter.core.util.JerseyDexterWebResource;
 import com.samsung.sec.dexter.executor.CLIPluginInitializer;
 import com.samsung.sec.dexter.executor.DexterAnalyzer;
 
@@ -61,13 +56,15 @@ public class Main {
     private final static Logger log = Logger.getLogger(Main.class);
     private AccountService accountService;
 
-    private int totalSourceFileNumber = 0;
-
     public static void main(String[] args) {
         Main cliMain = new Main(new AccountService(cliLog));
 
         try {
             final IDexterCLIOption cliOption = new DexterCLIOption(args, new HelpFormatter());
+            
+            if (cliOption.getConfigFilePath() == null) {
+            	return;
+            }
 
             switch (cliOption.getCommandMode()) {
                 case CREATE_ACCOUNT:
@@ -204,8 +201,6 @@ public class Main {
             this.sourceFileFullPathList = cliOption.getTargetFileFullPathList();
         else
             this.sourceFileFullPathList = configFile.generateSourceFileFullPathList();
-
-        this.totalSourceFileNumber = this.sourceFileFullPathList.size();
     }
 
     private void analyzeSynchronously(final IDexterPluginManager pluginManager,
@@ -254,11 +249,11 @@ public class Main {
     }
 
     public void setCLILog(final ICLILog cliLog) {
-        this.cliLog = cliLog;
+    	Main.cliLog = cliLog;
     }
 
     public ICLILog getCLILog() {
-        return this.cliLog;
+        return Main.cliLog;
     }
 
     protected void setDexterConfig(final DexterConfig dexterConfig) {

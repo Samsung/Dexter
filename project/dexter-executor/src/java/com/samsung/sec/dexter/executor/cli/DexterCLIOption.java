@@ -83,8 +83,6 @@ public class DexterCLIOption implements IDexterCLIOption {
     			cliLog.info(e.getMessage() + "\n\n");
     			helpFormatter.printHelp(commandFormat, rawOptions);
     		}
-    		
-    		throw e;
     	}
 	}
 
