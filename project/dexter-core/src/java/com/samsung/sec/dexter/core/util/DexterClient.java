@@ -50,7 +50,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 
 import org.apache.log4j.Logger;
 
@@ -395,6 +394,19 @@ public class DexterClient implements IDexterClient, IDexterStandaloneListener {
 
         checkResultOk(text);
     }
+    
+    @Override
+    public void resetPassword(String id, String newPassword) {
+         final Map<String, Object> body = new HashMap<String, Object>();
+         body.put("userId", id);
+         body.put("userId2", newPassword);
+         body.put("isAdmin", "N");
+         
+         final String text = webResource.postWithBody(DexterConfig.UPDATE_ACCOUNT  + "/" + id, webResource.getCurrentUserId(), webResource.getCurrentUserPassword(), body);
+         
+         checkResultOk(text);
+    }
+    
 
     /**
      * @param defect

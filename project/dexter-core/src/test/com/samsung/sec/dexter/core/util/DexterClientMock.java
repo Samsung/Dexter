@@ -188,6 +188,9 @@ public class DexterClientMock implements IDexterClient {
     public void createAccount(String id, String pwd, boolean isAdmin) {}
 
     @Override
+    public void resetPassword(String id, String newPassword) {}
+    
+    @Override
     public void insertSourceCode(long snapshotId, long defectGroupId, String modulePath, String fileName,
             String sourceCode) {}
 

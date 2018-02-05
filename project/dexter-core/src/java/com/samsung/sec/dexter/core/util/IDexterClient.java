@@ -131,6 +131,14 @@ public interface IDexterClient extends IDexterStandaloneListener {
      * @return void
      */
     public void createAccount(final String id, final String pwd, final boolean isAdmin);
+    
+    /**
+     * Reset password for Dexter Server account
+     * 
+     * @param id user id
+     * @param newPassword new password
+     */
+    public void resetPassword(final String id,final String newPassword);
 
     public boolean hasAccount(final String id);
 

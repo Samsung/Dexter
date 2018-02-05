@@ -20,15 +20,16 @@ public class DexterCLIOptionTest {
 		helpFormatter = mock(HelpFormatter.class);
 	}
 
-	@Test(expected = InvalidArgumentRuntimeException.class)
-	public void DexterCliOption_throwInvaliArgumentExceptionWithInvalidOption() {
+	@Test
+	public void DexterCliOption_doNotSetConfigFilePathWithInvalidOption() {
 		// given
 		String[] invalidOptions = { "invalid" };
 		
 		// when
 		cliOption = new DexterCLIOption(invalidOptions, helpFormatter);
 		
-		// then throw InvalidArgumentException
+		// then
+		assertNull(cliOption.getConfigFilePath());
 	}
 	
 	@Test
@@ -40,12 +41,10 @@ public class DexterCLIOptionTest {
 		try {
 			// when
 			cliOption = new DexterCLIOption(invalidOptions, helpFormatter);
-			fail();
+
 		} catch (InvalidArgumentRuntimeException e) {
 			// then
 			verify(helpFormatter).printHelp(anyString(), any(Options.class));
 		}
-		
-		// then throw InvalidArgumentException
 	}
 }

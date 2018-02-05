@@ -110,6 +110,18 @@ public class AccountHandler implements IAccountHandler {
             throw new RuntimeException("Can't make new account. try it again. " + e1.getMessage(), e1);
         }
     }
+    
+    @Override
+    public void resetPassword(String userId) {
+        try {
+            String newPassword = readNewPassword();
+
+            client.resetPassword(userId, newPassword);
+            cliLog.infoln(String.format("Password for user %s was reset.", userId));
+        } catch (DexterRuntimeException e1) {
+            throw new RuntimeException("Can't reset password. Please try again. " + e1.getMessage(), e1);
+        }
+    }
 
     private String readUserId() {
         Scanner input = new Scanner(in);
@@ -170,7 +182,7 @@ public class AccountHandler implements IAccountHandler {
                 }
 
                 if (++tryCount >= MAX_TRY_COUNT) {
-                    throw new DexterRuntimeException("Invalid Passowrd");
+                    throw new DexterRuntimeException("Invalid Password");
                 }
             } while (isValidPassword(password) == false);
 
@@ -179,6 +191,36 @@ public class AccountHandler implements IAccountHandler {
             throw new DexterRuntimeException(e.getMessage(), e);
         } finally {
             input.close();
+        }
+    }
+    
+    private String readNewPassword() {
+ 
+        try (Scanner input = new Scanner(in)) {
+            String password = "";
+            int tryCount = 0;
+
+            do {
+                cliLog.info("Enter your new password('CTRL + C' to exit): ");
+                password = input.nextLine().trim();
+
+                String password2 = "";
+                cliLog.info("Enter your new password again('CTRL + C' to exit): ");
+                password2 = input.nextLine().trim();
+
+                if (password.equals(password2) == false) {
+                    cliLog.infoln("Passwords are not same.");
+                    password = "";
+                }
+
+                if (++tryCount >= MAX_TRY_COUNT) {
+                    throw new DexterRuntimeException("Invalid Password");
+                }
+            } while (isValidPassword(password) == false);
+
+            return password;
+        } catch (Exception e) {
+            throw new DexterRuntimeException(e.getMessage(), e);
         }
     }
 

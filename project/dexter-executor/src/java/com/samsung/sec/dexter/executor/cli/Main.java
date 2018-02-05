@@ -61,16 +61,18 @@ public class Main {
 
         try {
             final IDexterCLIOption cliOption = new DexterCLIOption(args, new HelpFormatter());
-            
-            if (cliOption.getConfigFilePath() == null) {
-            	return;
-            }
-
+          	log.info(cliOption.getCommandMode());
             switch (cliOption.getCommandMode()) {
                 case CREATE_ACCOUNT:
                     cliMain.createAccount(cliOption);
                     break;
+                case RESET_PASSWORD:
+               	 	cliMain.resetPassword(cliOption);
+               	 	break;
                 case STATIC_ANALYSIS:
+                	if (cliOption.getConfigFilePath() == null) {
+                    	return;
+                    }
                     IDexterConfigFile configFile = cliMain.createDexterConfigFile(cliOption);
                     cliOption.setDexterServerIP(configFile.getDexterServerIp());
                     cliOption.setDexterServerPort(configFile.getDexterServerPort());
@@ -92,6 +94,10 @@ public class Main {
 
 	public void createAccount(IDexterCLIOption cliOption) {
 		accountService.createAccount(cliOption);		
+	}
+	
+	public void resetPassword(IDexterCLIOption cliOption) {
+		accountService.resetPassword(cliOption);		
 	}
 
 	public Main(AccountService accountService) {

@@ -27,7 +27,6 @@ package com.samsung.sec.dexter.executor.cli;
 
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
-import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.checker.ICheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
@@ -124,7 +123,7 @@ public class DexterCLIOption implements IDexterCLIOption {
                 "File name for result file without an extension(.xml) - myreport.xml e.g. -n myreport");
         options.addOption("o", true, "Dexter Server Port address. e.g. -p 4982");
         options.addOption("p", true, "User Password. e.g. -p password");
-        options.addOption("r", true, "Reset password. User this option with -u, e.g. -u -r my_id");
+        options.addOption("r", false, "Reset password. User this option with -u and -p, e.g. -r -u my_id -p my_password");
         options.addOption("s", false,
                 "Standalone. Run Dexter Analysis without DexterServer. you don't need LOG in(id & password) e.g. -s");
         options.addOption("t", true,
@@ -178,6 +177,9 @@ public class DexterCLIOption implements IDexterCLIOption {
 
         if (cmd.hasOption("c")) {
             this.commandMode = CommandMode.CREATE_ACCOUNT;
+            setHostAndPort(cmd.getOptionValue("h"), cmd.getOptionValue("o"));
+        } else if (cmd.hasOption("r")) {
+            this.commandMode = CommandMode.RESET_PASSWORD;
             setHostAndPort(cmd.getOptionValue("h"), cmd.getOptionValue("o"));
         } else {
             if (cmd.hasOption("f")) {
