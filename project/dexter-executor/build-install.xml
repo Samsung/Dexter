@@ -41,6 +41,9 @@
 		<echo file="${dist-bin}/create-user.bat" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar -c -u %1 -p %2 -h %3 -o %4</echo>
 		<echo file="${dist-bin}/create-user.sh" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar -c -u $1 -p $2 -h $3 -o $4</echo>
 		
+		<echo file="${dist-bin}/reset-password.bat" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar -r -u %1 -p %2 -h %3 -o %4</echo>
+		<echo file="${dist-bin}/reset-password.sh" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar -r -u $1 -p $2 -h $3 -o $4</echo>
+		
 		<echo file="${dist-bin}/dexter2.bat" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar %*</echo>
 		<echo file="${dist-bin}/dexter2.sh" append="false">java -Xms256m -Xmx786m -XX:MaxPermSize=256m -jar dexter-executor.jar $@</echo>
 				
