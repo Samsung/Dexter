@@ -67,6 +67,7 @@ public class DexterConfig {
     public static final String CHECK_HAS_ACCOUNT = "/api/v1/accounts/hasAccount";
     public static final String ADD_ACCOUNT = "/api/v1/accounts/add";
     public static final String FIND_ACCOUNT = "/api/v1/accounts/findById";
+    public static final String UPDATE_ACCOUNT = "/api/v1/accounts/update";
 
     public static final String STOP_SERVER = "/api/v1/server";
     public static final String CHECK_SERVER_ADDRESS = "/api/v1/isServerAlive";

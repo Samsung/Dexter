@@ -23,6 +23,12 @@ public class AccountService {
         final IAccountHandler accountHandler = createAccountHandler(client, cliOption);
         accountHandler.createAccount(cliOption.getUserId(), cliOption.getUserPassword());
     }
+	
+	public void resetPassword(final IDexterCLIOption cliOption) {
+        final IDexterClient client = createDexterClient(cliOption);
+        final IAccountHandler accountHandler = createAccountHandler(client, cliOption);
+        accountHandler.resetPassword(cliOption.getUserId());
+    }
 
     public IAccountHandler createAccountHandler(final IDexterClient client, final IDexterCLIOption cliOption) {
         if (cliOption.isStandAloneMode()) {

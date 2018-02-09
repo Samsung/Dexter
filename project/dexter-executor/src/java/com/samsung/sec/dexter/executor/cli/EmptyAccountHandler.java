@@ -51,4 +51,8 @@ public class EmptyAccountHandler implements IAccountHandler {
 	@Override
 	public void setDexterClient(IDexterClient client) {
 	}
+
+	@Override
+	public void resetPassword(String userId) {
+	}
 }

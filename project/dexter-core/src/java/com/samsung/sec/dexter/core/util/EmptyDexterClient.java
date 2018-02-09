@@ -145,6 +145,9 @@ public class EmptyDexterClient implements IDexterClient {
 
     @Override
     public void createAccount(String id, String pwd, boolean isAdmin) {}
+    
+    @Override
+    public void resetPassword(String id, String newPassword) {}
 
     @Override
     public boolean hasAccount(String id) {

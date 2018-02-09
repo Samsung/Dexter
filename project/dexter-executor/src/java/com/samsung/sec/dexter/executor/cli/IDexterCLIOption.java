@@ -32,7 +32,7 @@ import java.util.List;
 
 public interface IDexterCLIOption {
     public enum CommandMode {
-        NONE, CREATE_ACCOUNT, STATIC_ANALYSIS
+        NONE, CREATE_ACCOUNT, RESET_PASSWORD, STATIC_ANALYSIS
     };
 
     /**

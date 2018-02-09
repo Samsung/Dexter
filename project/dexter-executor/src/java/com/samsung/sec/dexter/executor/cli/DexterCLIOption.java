@@ -27,7 +27,6 @@ package com.samsung.sec.dexter.executor.cli;
 
 import com.google.common.base.Strings;
 import com.google.common.io.Files;
-import com.samsung.sec.dexter.core.checker.CheckerConfig;
 import com.samsung.sec.dexter.core.checker.ICheckerConfig;
 import com.samsung.sec.dexter.core.config.DexterConfig;
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
@@ -83,8 +82,6 @@ public class DexterCLIOption implements IDexterCLIOption {
     			cliLog.info(e.getMessage() + "\n\n");
     			helpFormatter.printHelp(commandFormat, rawOptions);
     		}
-    		
-    		throw e;
     	}
 	}
 
@@ -113,27 +110,28 @@ public class DexterCLIOption implements IDexterCLIOption {
         final Options options = new Options();
 
         options.addOption("a", false,
-                "Asynchronous Analysis. It is faster than synchronous. No Result Log and File(Check on Dexter WEB). eg) -a");
+                "Asynchronous Analysis. It is faster than synchronous. No Result Log and File(Check on Dexter WEB). e.g. -a");
         options.addOption("c", false,
-                "Create an account. use this option with -u your_id -p your_password. eg) -c -u myid -p mypwd");
+                "Create an account. Use this option with -u your_id -p your_password. e.g. -c -u myid -p mypwd");
         options.addOption("e", true,
-                "Enable only specified checker(s), checkercode1;checkercode2:language:toolname;... eg) -e nullpointer;initializerlist:CPP:cppcheck");
+                "Enable only specified checker(s), checkercode1;checkercode2:language:toolname;... e.g. -e nullpointer;initializerlist:CPP:cppcheck");
         options.addOption("f", true,
-                "Analysis Configuration File. eg) -f C:/dexter/" + DexterConfig.DEXTER_CFG_FILENAME);
-        options.addOption("h", true, "Dexter Server IP address. eg) 123.123.123.123");
-        options.addOption("j", false, "Create Json result file - dexter-result.json. eg) -j");
+                "Analysis Configuration File. e.g. -f C:/dexter/" + DexterConfig.DEXTER_CFG_FILENAME);
+        options.addOption("h", true, "Dexter Server IP address. e.g. 123.123.123.123");
+        options.addOption("j", false, "Create Json result file - dexter-result.json. e.g. -j");
         options.addOption("n", true,
-                "File name for result file without an extension(.xml) - myreport.xml eg) -n myreport");
-        options.addOption("o", true, "Dexter Server Port address. eg) -p 4982");
-        options.addOption("p", true, "User Password. eg) -p password");
+                "File name for result file without an extension(.xml) - myreport.xml e.g. -n myreport");
+        options.addOption("o", true, "Dexter Server Port address. e.g. -p 4982");
+        options.addOption("p", true, "User Password. e.g. -p password");
+        options.addOption("r", false, "Reset password. User this option with -u and -p, e.g. -r -u my_id -p my_password");
         options.addOption("s", false,
-                "Standalone. Run Dexter Analysis without DexterServer. you don't need LOG in(id & password) eg) -s");
+                "Standalone. Run Dexter Analysis without DexterServer. you don't need LOG in(id & password) e.g. -s");
         options.addOption("t", true,
-                "Target source code file names and paths. eg) -t C:/myproject/src/main.cpp;C:/myproject/src/util.cpp");
-        options.addOption("u", true, "User ID. eg) -u id");
-        options.addOption("x", false, "Create XML result file - dexter-result.xml. eg) -x");
+                "Target source code file names and paths. e.g. -t C:/myproject/src/main.cpp;C:/myproject/src/util.cpp");
+        options.addOption("u", true, "User ID. e.g. -u id");
+        options.addOption("x", false, "Create XML result file - dexter-result.xml. e.g. -x");
         options.addOption("X", false,
-                "Create XML result file with timestamp - dexter-result_yyyyMMddhh:mm:ss.xml. eg) -X");
+                "Create XML result file with timestamp - dexter-result_yyyyMMddhh:mm:ss.xml. e.g. -X");
 
         return options;
     }
@@ -179,6 +177,9 @@ public class DexterCLIOption implements IDexterCLIOption {
 
         if (cmd.hasOption("c")) {
             this.commandMode = CommandMode.CREATE_ACCOUNT;
+            setHostAndPort(cmd.getOptionValue("h"), cmd.getOptionValue("o"));
+        } else if (cmd.hasOption("r")) {
+            this.commandMode = CommandMode.RESET_PASSWORD;
             setHostAndPort(cmd.getOptionValue("h"), cmd.getOptionValue("o"));
         } else {
             if (cmd.hasOption("f")) {
