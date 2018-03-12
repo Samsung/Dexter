@@ -49,8 +49,8 @@ public class CodeMetricsGeneratorTest {
 	CodeMetrics codeMetrics = null;
 	FunctionMetrics functionMetrics = null;
 	List<String> functionList = null;
-
-	String TestDirectoryPath = "." + File.separator + File.separator +"src" + File.separator + "sample" + File.separator + "TestDirectory_For_CodeMetricsGeneratorTest";
+    
+    String TestDirectoryPath = "." + File.separator + File.separator +"src" + File.separator + "sample" + File.separator + "TestDirectory_For_CodeMetricsGeneratorTest";
     String EmptyJavaTestFilePath = "." + File.separator + File.separator +"src" + File.separator + "sample" + File.separator +"TestJavaFile_For_CodeMetricsGeneratorTest_Empty.java";
     String TooLongTestFilePath = "." + File.separator + File.separator +"src" + File.separator + "sample" + File.separator +"TestFile_For_CodeMetricsGeneratorTest_TooLong.txt";
     String LogPath = "." + File.separator + File.separator +"log" + File.separator +"dexter-core.log";
