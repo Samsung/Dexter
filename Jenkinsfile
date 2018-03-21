@@ -15,6 +15,14 @@ sh 'gradle build -x test'
 
 }
 }
+stage('Docker') {
+steps {
+dir(path: 'project/dexter-server') {
+sh 'echo "vs message"'
+}
+
+}
+}
 stage('UT') {
 parallel {
 stage('UTmessage') {
