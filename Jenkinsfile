@@ -4,7 +4,7 @@ stages {
 stage('InitStep') {
 steps {
 sh '''java -version;
-echo "tt shell message"'''
+echo "shell message"'''
 }
 }
 stage('Build') {
@@ -19,7 +19,7 @@ stage('UT') {
 parallel {
 stage('UTmessage') {
 steps {
-sh 'echo "tt UT message"'
+sh 'echo "UT message"'
 }
 }
 stage('UnitTests') {
@@ -34,7 +34,7 @@ sh 'gradle test '
 }
 stage('Finish') {
 steps {
-sh 'echo "tt The end"'
+sh 'echo "The end"'
 }
 }
 }
