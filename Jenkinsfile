@@ -8,6 +8,8 @@ echo "shell message"'''
 }
 }
 stage('Build') {
+parallel {
+stage('Build') {
 steps {
 dir(path: 'project') {
 sh 'gradle build -x test'
@@ -15,9 +17,6 @@ sh 'gradle build -x test'
 
 }
 }
-
-stage('UT') {
-parallel {
 stage('Docker') {
 steps {
 dir(path: 'project/dexter-server') {
@@ -25,6 +24,12 @@ sh 'echo "vs message"'
 }
 }
 }
+}
+}
+
+stage('UT') {
+parallel {
+
 stage('UTmessage') {
 steps {
 sh 'echo "UT message"'
