@@ -25,7 +25,7 @@ agent { dockerfile {
     } 
 steps {
 dir(path: 'project/dexter-server') {
-sh 'echo "vs message"'
+sh 'docker -v'
 }
 }
 }
