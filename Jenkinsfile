@@ -18,8 +18,9 @@ sh 'gradle build -x test'
 }
 }
 stage('Docker') {
-agent any
 steps {
+dir(path: 'project/dexter-server') {
+sh 'echo "vs message"'
 }
 }
 }
