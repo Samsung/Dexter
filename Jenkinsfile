@@ -18,11 +18,7 @@ sh 'gradle build -x test'
 }
 }
 stage('Docker') {
-agent { dockerfile {
-        filename 'Dockerfile'
-        dir 'project/dexter-server'
-    }
-    } 
+agent any
 steps {
 dir(path: 'project/dexter-server') {
 sh 'docker -v'
