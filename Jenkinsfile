@@ -52,6 +52,6 @@ sh 'echo "The end"'
 }
 }
 tools {
-gradle 'gradle-4.5.1'
+gradle 'gradle'
 }
 }
