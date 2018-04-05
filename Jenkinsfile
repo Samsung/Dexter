@@ -21,7 +21,7 @@ steps {
 dir(path: 'project/dexter-server') {
 sh 'docker pull srpol/dexter:latest'
 sh 'docker rm --force dextertest'
-sh "docker run --name='dextertest' -td -p 4982:4982 --env DBHOST='dexter-test' --env DBNAME='my_dexter_db' --env DBUSER='root' --env DBPASSWORD='gre4d' srpol/dexter"
+sh "docker run --name='dextertest' -td -p 8084:4982 --env DBHOST='dexter-test' --env DBNAME='my_dexter_db' --env DBUSER='root' --env DBPASSWORD='gre4d' srpol/dexter"
 }
 }
 }
