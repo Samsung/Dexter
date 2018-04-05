@@ -27,7 +27,6 @@ sh 'echo "vs message"'
 }
 }
 
-stage('UT') {
 stage('UnitTests') {
 steps {
 dir(path: 'project') {
@@ -35,7 +34,7 @@ sh 'gradle test '
 }
 }
 }
-}
+
 
 stage('Finish') {
 steps {
