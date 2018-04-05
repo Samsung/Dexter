@@ -14,7 +14,6 @@ steps {
 dir(path: 'project') {
 sh 'gradle build -x test'
 }
-
 }
 }
 stage('Docker') {
