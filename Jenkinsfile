@@ -28,23 +28,15 @@ sh 'echo "vs message"'
 }
 
 stage('UT') {
-parallel {
-
-stage('UTmessage') {
-steps {
-sh 'echo "UT message"'
-}
-}
 stage('UnitTests') {
 steps {
 dir(path: 'project') {
 sh 'gradle test '
 }
+}
+}
+}
 
-}
-}
-}
-}
 stage('Finish') {
 steps {
 sh 'echo "The end"'
