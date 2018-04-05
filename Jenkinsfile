@@ -19,7 +19,7 @@ sh 'gradle build -x test'
 stage('Docker') {
 steps {
 dir(path: 'project/dexter-server') {
-sh 'echo "vs message"'
+sh 'docker run hello world'
 }
 }
 }
