@@ -26,7 +26,6 @@ sh "docker run —restart=always —name=\'dexter_testproject\' -td -p 4982:4982
 }
 }
 }
-
 stage('UnitTests') {
 steps {
 dir(path: 'project') {
