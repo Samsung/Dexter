@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jdumay
+Build-Jdk: 1.8.0_60
+Extension-Name: display-url-api
+Specification-Title: Provides the DisplayURLProvider extension point t
+ o provide alternate URLs for use in notifications
+Implementation-Title: display-url-api
+Implementation-Version: 0.2
+Group-Id: org.jenkins-ci.plugins
+Short-Name: display-url-api
+Long-Name: Display URL API
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Display+URL+API+Plugin
+Plugin-Version: 0.2
+Hudson-Version: 1.625.3
+Jenkins-Version: 1.625.3
+Plugin-Dependencies: junit:1.3
+Plugin-Developers: James Dumay:jdumay:jdumay@cloudbees.com
+Support-Dynamic-Loading: true
+

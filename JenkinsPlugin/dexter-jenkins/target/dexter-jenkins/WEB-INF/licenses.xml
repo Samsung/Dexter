@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<l:dependencies xmlns:l='licenses' groupId='io.jenkins.plugins' artifactId='dexter-jenkins' version='1.0'><l:dependency name='TODO Plugin' groupId='io.jenkins.plugins' artifactId='dexter-jenkins' version='1.0' url=''><l:description>TODO</l:description><l:license name='MIT License' url='https://opensource.org/licenses/MIT'/></l:dependency></l:dependencies>
