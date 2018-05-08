@@ -1,0 +1,25 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler"
+ xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson"  xmlns:f="/lib/form">
+    <f:section title="Dexter static analysis">
+     <f:block>
+<form>
+     <f:entry field="dexterServer" title="Dexter Server address">
+      <f:textbox />
+       </f:entry>
+       <f:entry field="dexterPort" title="Dexter Server port">
+      <f:textbox />
+    </f:entry>
+      <f:entry field="dexterUser" title="User name">
+      <f:textbox />
+    </f:entry>
+    <f:entry field="dexterPassword" title="User password">
+      <f:password />
+    </f:entry>
+    <f:validateButton 
+   title="${%Test Connection}" progress="${%Testing...}"
+   method="testConnection" with="dexterServer,dexterPort, dexterUser, dexterPassword"/>
+  </form>
+</f:block>
+    </f:section>
+</j:jelly>
