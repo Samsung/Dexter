@@ -48,10 +48,10 @@ public class DexterConfiguration extends GlobalConfiguration {
 
 
 
-	private static String DEXTER_SERVER = "";
-	private static String DEXTER_PORT = "";
-	private static String DEXTER_USER = "";
-	private static  String DEXTER_PASSWORD = "";
+	public static String DEXTER_SERVER = "";
+	public static String DEXTER_PORT = "";
+	public static String DEXTER_USER = "";
+	public static  String DEXTER_PASSWORD = "";
 
 
 	
@@ -131,10 +131,10 @@ public class DexterConfiguration extends GlobalConfiguration {
 	      	dexterPassword = formData.getString("dexterPassword");
 	   	    save();
 	   	    
-	   	    DEXTER_SERVER = dexterServer;
-	   	    DEXTER_PORT = dexterPort;
-	   	    DEXTER_USER = dexterUser;
-	   	    DEXTER_PASSWORD = dexterPassword;
+	   	 //   DEXTER_SERVER = dexterServer;
+	   	 //   DEXTER_PORT = dexterPort;
+	   	 //   DEXTER_USER = dexterUser;
+	   	    //DEXTER_PASSWORD = dexterPassword;
 	   	
 	   	    return true;
 	   	  }

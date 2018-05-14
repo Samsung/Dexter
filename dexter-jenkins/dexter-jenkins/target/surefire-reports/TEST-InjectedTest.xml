@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="InjectedTest" time="28.055" tests="6" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="InjectedTest" time="24.406" tests="14" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk1.8.0_131\jre\bin"/>
     <property name="java.vm.version" value="25.131-b11"/>
     <property name="user.country.format" value="PL"/>
     <property name="java.vm.vendor" value="Oracle Corporation"/>
-    <property name="maven.multiModuleProjectDirectory" value="C:\Users\v.sanko\dexter-jenkins\dexter-jenkins"/>
+    <property name="maven.multiModuleProjectDirectory" value="C:\fork\Dexter\dexter-jenkins\dexter-jenkins"/>
     <property name="java.vendor.url" value="http://java.oracle.com/"/>
     <property name="path.separator" value=";"/>
     <property name="guice.disable.misplaced.annotation.check" value="true"/>
@@ -17,7 +17,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.os.patch.level" value="Service Pack 1"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
-    <property name="user.dir" value="C:\Users\v.sanko\dexter-jenkins\dexter-jenkins"/>
+    <property name="user.dir" value="C:\fork\Dexter\dexter-jenkins\dexter-jenkins"/>
     <property name="java.runtime.version" value="1.8.0_131-b11"/>
     <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment"/>
     <property name="java.endorsed.dirs" value="C:\Program Files\Java\jdk1.8.0_131\jre\lib\endorsed"/>
@@ -29,7 +29,7 @@
     <property name="os.name" value="Windows 7"/>
     <property name="classworlds.conf" value="D:\apache-maven-3.5.0\bin\..\bin\m2.conf"/>
     <property name="sun.jnu.encoding" value="Cp1250"/>
-    <property name="java.library.path" value="C:\Program Files\Java\jdk1.8.0_131\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Brackets\command;C:\Program Files\TortoiseGit\bin;D:\apache-ant-1.10.1\bin;D:\apache-maven-3.5.0\bin;C:\Program Files\Microsoft\Web Platform Installer\;C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Pages\v1.0\;C:\Program Files\Microsoft SQL Server\110\Tools\Binn\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin;C:\Users\v.sanko\Tools\svace-analyzer-2.3-20161225-x64-windows\bin;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Program Files\MySQL\MySQL Utilities 1.6\;C:\Dexter\node\;C:\Gradle\gradle-4.6-bin\gradle-4.6\bin;C:\Program Files\7-Zip;C:\Users\v.sanko\AppData\Roaming\npm;;."/>
+    <property name="java.library.path" value="C:\Program Files\Java\jdk1.8.0_131\bin;C:\Windows\Sun\Java\bin;C:\Windows\system32;C:\Windows;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\Brackets\command;C:\Program Files\TortoiseGit\bin;D:\apache-ant-1.10.1\bin;D:\apache-maven-3.5.0\bin;C:\Program Files\Microsoft\Web Platform Installer\;C:\Program Files (x86)\Microsoft ASP.NET\ASP.NET Web Pages\v1.0\;C:\Program Files\Microsoft SQL Server\110\Tools\Binn\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin;C:\Users\v.sanko\Tools\svace-analyzer-2.3-20161225-x64-windows\bin;C:\Program Files\dotnet\;C:\Program Files\Git\cmd;C:\Dexter\node\;C:\Gradle\gradle-4.6-bin\gradle-4.6\bin;C:\Program Files\MySQL\MySQL Server 5.5\bin;C:\Program Files\7-Zip;C:\Users\v.sanko\AppData\Roaming\npm;;."/>
     <property name="maven.conf" value="D:\apache-maven-3.5.0\bin\../conf"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.class.version" value="52.0"/>
@@ -66,10 +66,18 @@
     <property name="sun.desktop" value="windows"/>
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
-  <testcase name="index.jelly" classname="org.jvnet.hudson.test.JellyTestSuiteBuilder$JellyCheck" time="0.037"/>
-  <testcase name="io\jenkins\plugins\dexter\DexterConfiguration\config.jelly" classname="org.jvnet.hudson.test.JellyTestSuiteBuilder$JellyCheck" time="0.047"/>
-  <testcase name="io\jenkins\plugins\dexter\DexterConfiguration\global.jelly" classname="org.jvnet.hudson.test.JellyTestSuiteBuilder$JellyCheck" time="0.168"/>
-  <testcase name="testCliSanity" classname="org.jvnet.hudson.test.PluginAutomaticTestBuilder$OtherTests" time="0.016"/>
+  <testcase name="io\jenkins\plugins\dexter\DexterPublisher\global.jelly" classname="org.jvnet.hudson.test.JellyTestSuiteBuilder$JellyCheck" time="0.155"/>
+  <testcase name="io\jenkins\plugins\dexter\DexterBuildAction\index.jelly" classname="org.jvnet.hudson.test.JellyTestSuiteBuilder$JellyCheck" time="0.065"/>
+  <testcase name="io\jenkins\plugins\dexter\DexterConfiguration\global.jelly" classname="org.jvnet.hudson.test.JellyTestSuiteBuilder$JellyCheck" time="0.1"/>
+  <testcase name="io\jenkins\plugins\dexter\DexterProjectAction\index.jelly" classname="org.jvnet.hudson.test.JellyTestSuiteBuilder$JellyCheck" time="0.07"/>
+  <testcase name="io\jenkins\plugin\dexter\DexterPublisher\config.jelly" classname="org.jvnet.hudson.test.JellyTestSuiteBuilder$JellyCheck" time="0.02"/>
+  <testcase name="index.jelly" classname="org.jvnet.hudson.test.JellyTestSuiteBuilder$JellyCheck" time="0.005"/>
+  <testcase name="io\jenkins\plugin\dexter\DexterProjectAction\index.jelly" classname="org.jvnet.hudson.test.JellyTestSuiteBuilder$JellyCheck" time="0.07"/>
+  <testcase name="io\jenkins\plugins\dexter\DexterBuilder\config.jelly" classname="org.jvnet.hudson.test.JellyTestSuiteBuilder$JellyCheck" time="0.02"/>
+  <testcase name="io\jenkins\plugins\dexter\DexterPublisher\config.jelly" classname="org.jvnet.hudson.test.JellyTestSuiteBuilder$JellyCheck" time="0.015"/>
+  <testcase name="io\jenkins\plugins\dexter\DexterConfiguration\config.jelly" classname="org.jvnet.hudson.test.JellyTestSuiteBuilder$JellyCheck" time="0"/>
+  <testcase name="io\jenkins\plugin\dexter\DexterPublisher\global.jelly" classname="org.jvnet.hudson.test.JellyTestSuiteBuilder$JellyCheck" time="0.02"/>
+  <testcase name="testCliSanity" classname="org.jvnet.hudson.test.PluginAutomaticTestBuilder$OtherTests" time="0.01"/>
   <testcase name="testPluginActive" classname="org.jvnet.hudson.test.PluginAutomaticTestBuilder$OtherTests" time="0"/>
   <testcase name="org.jvnet.hudson.test.JellyTestSuiteBuilder$JellyTestSuite" classname="org.jvnet.hudson.test.junit.FailedTest" time="0"/>
 </testsuite>

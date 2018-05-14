@@ -6,8 +6,8 @@ Plugin-Version: 1.0
 Hudson-Version: 2.7.3
 Jenkins-Version: 2.7.3
 Plugin-Developers: 
-Libraries: C:\Users\v.sanko\dexter-jenkins\dexter-jenkins\src\main\res
- ources,C:\Users\v.sanko\dexter-jenkins\dexter-jenkins\target\classes
-Resource-Path: C:\Users\v.sanko\dexter-jenkins\dexter-jenkins\src\main
- \webapp
+Libraries: C:\fork\Dexter\dexter-jenkins\dexter-jenkins\src\main\resou
+ rces,C:\fork\Dexter\dexter-jenkins\dexter-jenkins\target\classes
+Resource-Path: C:\fork\Dexter\dexter-jenkins\dexter-jenkins\src\main\w
+ ebapp
 

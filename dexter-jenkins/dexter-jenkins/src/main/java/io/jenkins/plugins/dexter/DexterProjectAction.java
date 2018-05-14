@@ -1,0 +1,55 @@
+package io.jenkins.plugins.dexter;
+
+import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
+import hudson.model.Action;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class DexterProjectAction implements Action {
+
+    private AbstractProject<?, ?> project;
+
+    @Override
+    public String getIconFileName() {
+        return "/plugin/testExample/img/project_icon.png";
+    }
+
+    @Override
+    public String getDisplayName() {
+        return "Start Dexter Static Analysis";
+    }
+
+    @Override
+    public String getUrlName() {
+        return "dexterExample";
+    }
+
+    public AbstractProject<?, ?> getProject() {
+        return this.project;
+    }
+
+    public String getProjectName() {
+        return this.project.getName();
+    }
+
+    public List<String> getProjectMessages() {
+        List<String> projectMessages = new ArrayList<String>();
+        List<? extends AbstractBuild<?, ?>> builds = project.getBuilds();
+        String projectMessage="";
+        final Class<DexterBuildAction> buildClass =DexterBuildAction.class;
+
+        for (AbstractBuild<?, ?> currentBuild : builds) {
+            projectMessage = "Build #"+currentBuild.getAction(buildClass).getBuildNumber()
+                    +": "+currentBuild.getAction(buildClass).getMessage();
+            projectMessages.add(projectMessage);
+        }
+        return projectMessages;
+    }
+
+    DexterProjectAction(final AbstractProject<?, ?> project) {
+        this.project = project;
+    }
+}
