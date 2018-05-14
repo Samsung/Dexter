@@ -1,5 +1,6 @@
 package io.jenkins.plugins.dexter;
 
+import io.jenkins.plugins.dexter.*;
 import hudson.Launcher;
 import hudson.Extension;
 import hudson.model.Action;
@@ -14,36 +15,49 @@ import org.kohsuke.stapler.StaplerRequest;
 import org.kohsuke.stapler.QueryParameter;
 
 import javax.servlet.ServletException;
+
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 
 public class DexterPublisher extends Recorder {
 
-    private final String name;
+    private final String path;
 
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public DexterPublisher(String name) {
-        this.name = name;
+    public DexterPublisher(String path) {
+        this.path = path;
     }
 
     /**
      * We'll use this from the <tt>config.jelly</tt>.
      */
     public String getName() {
-        return name;
+        return path;
     }
 
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
-        // This is where you 'build' the project.
-        // Since this is a dummy, we just say 'hello world' and call that a build.
+     
+    	  String message;
+          
+          message="Hello, " + path + "!";
+          Runtime runtime = Runtime.getRuntime();
+          try {
 
-        // This also shows how you can consult the global configuration of the builder
-        String message;
-       
-            message="Hello, " + name + "!";
-
+              String command = "cmd /c start cmd.exe /K "  + "\"cd " + path + " && D: && dexter.bat user dexter\"";
+              message = command;
+                          
+                          runtime.exec(command);
+                  message = command;
+   
+              } catch(IOException e) {
+                      System.out.println(e.getMessage() );
+              } catch(Exception e){
+                  System.out.println(e.getMessage() );
+              }
         DexterBuildAction buildAction = new DexterBuildAction(message, build);
         build.addAction(buildAction);
 
