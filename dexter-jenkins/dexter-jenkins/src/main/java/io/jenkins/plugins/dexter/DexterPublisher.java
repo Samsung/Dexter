@@ -37,6 +37,16 @@ public class DexterPublisher extends Recorder {
 
     private final String path;
     private final String pathConfig;
+    private final String dexterServerPort;
+    private final String projectName;
+    private final String projectFullPath;
+    private final String sourceDir;
+    private final String sourceEncoding;
+    private final String binDir;
+    private final String language;
+    private final String type;
+
+
 
     public String getPathConfig() {
 		return pathConfig;
@@ -44,12 +54,64 @@ public class DexterPublisher extends Recorder {
 
 	// Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public DexterPublisher(String path, String pathConfig) {
+    public DexterPublisher(String path, String pathConfig, String dexterServerPort, 
+    		String projectName, String projectFullPath, String sourceDir, String sourceEncoding, String binDir, 
+    		String language, String type) {
         this.path = path;
         this.pathConfig = pathConfig;
+        this.dexterServerPort = dexterServerPort;
+        this.projectName = projectName;
+        this.projectFullPath = projectFullPath;
+        this.sourceDir = sourceDir;
+        this.sourceEncoding = sourceEncoding;
+        this.binDir = binDir;
+        this.language = language;
+        this.type = type;
     }
 
-    /**
+
+	public static String getFilename() {
+		return filename;
+	}
+
+
+	public String getPath() {
+		return path;
+	}
+
+	public String getDexterServerPort() {
+		return dexterServerPort;
+	}
+
+	public String getProjectName() {
+		return projectName;
+	}
+
+	public String getProjectFullPath() {
+		return projectFullPath;
+	}
+
+	public String getSourceDir() {
+		return sourceDir;
+	}
+
+	public String getSourceEncoding() {
+		return sourceEncoding;
+	}
+
+	public String getBinDir() {
+		return binDir;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	/**
      * We'll use this from the <tt>config.jelly</tt>.
      */
     public String getName() {
@@ -118,10 +180,19 @@ public class DexterPublisher extends Recorder {
         try {
         	Path fileToWrite = Paths.get(pathConfig);
             BufferedWriter bufwriter = Files.newBufferedWriter(fileToWrite, Charset.forName("UTF-8"),  myOpt);
-            bufwriter.write("\n{");
-            bufwriter.write("\"dexterHome\\\":\\\"\"D:\\Dexter\\Dexter_client\\\", \n"); 
-            bufwriter.write("\"dexterHome\\\":\\\"\"D:\\Dexter\\Dexter_client\\\", \n"); 
-            bufwriter.write("\"dexterHome\\\":\\\"\"D:\\Dexter\\Dexter_client\\\", \n"); 
+            bufwriter.write("{\n");
+            bufwriter.write("\"dexterHome\":\"D:\\Dexter\\Dexter_client\\bin\", \n"); 
+            bufwriter.write("\"dexterServerIp\":\"127.0.0.1\", \n"); 
+            bufwriter.write("\"dexterServerPort\":\"4982\", \n"); 
+            bufwriter.write("\"projectName\":\"Timetable-planner-master\", \n"); 
+            bufwriter.write("\"projectFullPath\":\"D:\\Dexter\\Dexter_client\\bin\", \n"); 
+            bufwriter.write("\"sourceDir\":\"127.0.0.1\", \n"); 
+            bufwriter.write("\"sourceEncoding\":\"UTF-8\", \n"); 
+            bufwriter.write("\"binDir\":\"127.0.0.1\", \n"); 
+            bufwriter.write("\"binDir\":\" D:\\tests\\Timetable-planner-master\\Timetable-planner-master\\bin\\timetable\", \n"); 
+            bufwriter.write("\"language\":\"JAVA\", \n"); 
+            bufwriter.write("\"type\":\"PROJECT\", \n"); 
+            bufwriter.write("}\n"); 
             bufwriter.close();
         } catch (Exception e) {
             System.out.println("Error occured while attempting to write to file: " + e.getMessage());
@@ -129,15 +200,6 @@ public class DexterPublisher extends Recorder {
     }
     private  void replacement() {
         readFile();
-       // String lineToEdit = "{";    
-        //int replacementText1 = stringBufferOfData.length();
-       // String replacementText = Integer.toString(replacementText1);
-        // " 
-      
-     //   int startIndex = stringBufferOfData.indexOf(lineToEdit);
-    //    int endIndex = stringBufferOfData.toString().length();
-       // stringBufferOfData.
-       
     }
     
     @Override

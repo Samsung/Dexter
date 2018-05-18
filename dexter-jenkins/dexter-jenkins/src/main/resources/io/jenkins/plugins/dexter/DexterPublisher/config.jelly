@@ -3,7 +3,28 @@
   <f:entry title="Enter dexter.bat folder" field="path">
     <f:textbox />
   </f:entry>
-   <f:entry title="cnf" field="pathConfig">
+   <f:entry title="Dexter.cnf location" field="pathConfig">
+    <f:textbox />
+  </f:entry>  
+   <f:entry title="Project name" field="projectName">
+    <f:textbox />
+  </f:entry>  
+   <f:entry title="Project full path" field="projectFullPath">
+    <f:textbox />
+  </f:entry>  
+   <f:entry title="Source directory" field="sourceDir">
+    <f:textbox />
+  </f:entry>  
+   <f:entry title="Source encoding" field="sourceEncoding">
+    <f:textbox />
+  </f:entry>  
+   <f:entry title="Binary direction" field="binDir">
+    <f:textbox />
+  </f:entry>  
+   <f:entry title="Language" field="language">
+    <f:textbox />
+  </f:entry>  
+   <f:entry title="Type" field="type">
     <f:textbox />
   </f:entry>
 </j:jelly>
