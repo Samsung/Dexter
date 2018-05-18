@@ -3,4 +3,7 @@
   <f:entry title="Enter dexter.bat folder" field="path">
     <f:textbox />
   </f:entry>
+   <f:entry title="cnf" field="pathConfig">
+    <f:textbox />
+  </f:entry>
 </j:jelly>
