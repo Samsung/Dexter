@@ -24,7 +24,10 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
@@ -37,7 +40,6 @@ public class DexterPublisher extends Recorder {
 
     private final String path;
     private final String pathConfig;
-    private final String dexterServerPort;
     private final String projectName;
     private final String projectFullPath;
     private final String sourceDir;
@@ -54,12 +56,10 @@ public class DexterPublisher extends Recorder {
 
 	// Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public DexterPublisher(String path, String pathConfig, String dexterServerPort, 
-    		String projectName, String projectFullPath, String sourceDir, String sourceEncoding, String binDir, 
+    public DexterPublisher(String path, String pathConfig, String projectName, String projectFullPath, String sourceDir, String sourceEncoding, String binDir, 
     		String language, String type) {
         this.path = path;
         this.pathConfig = pathConfig;
-        this.dexterServerPort = dexterServerPort;
         this.projectName = projectName;
         this.projectFullPath = projectFullPath;
         this.sourceDir = sourceDir;
@@ -79,10 +79,7 @@ public class DexterPublisher extends Recorder {
 		return path;
 	}
 
-	public String getDexterServerPort() {
-		return dexterServerPort;
-	}
-
+	
 	public String getProjectName() {
 		return projectName;
 	}
@@ -121,10 +118,10 @@ public class DexterPublisher extends Recorder {
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
      
-    	  String message;
+  String message;
           
           message="Hello, " + path + "!";
-          Runtime runtime = Runtime.getRuntime();
+        //  Runtime runtime = Runtime.getRuntime();
           try {
         	  boolean fileRead = readFile();
               if (fileRead) {
@@ -133,8 +130,18 @@ public class DexterPublisher extends Recorder {
               }
               String command = "cmd /c start cmd.exe /K "  + "\"cd " + path + " && D: && dexter.bat user dexter\"";
               message = command;
-                          
-                          runtime.exec(command);
+          //    Path fileToWrite = Paths.get(pathConfig);
+              OpenOption myOpt = StandardOpenOption.APPEND;
+              //  Process proc = runtime.exec(command);
+              Path fileToWrite = Paths.get(pathConfig);
+                java.util.Scanner s = new java.util.Scanner(Runtime.getRuntime().exec(command).getInputStream(), "UTF-8").useDelimiter("\\A");
+                BufferedWriter bufwriter = Files.newBufferedWriter(fileToWrite, Charset.forName("UTF-8"),  myOpt);
+                if(s.hasNext())
+                {
+                bufwriter.write("HMMdvdgxvcxbvHG");
+                }
+                bufwriter.close();
+                s.close();
                   message = command;
    
               } catch(IOException e) {
@@ -181,17 +188,20 @@ public class DexterPublisher extends Recorder {
         	Path fileToWrite = Paths.get(pathConfig);
             BufferedWriter bufwriter = Files.newBufferedWriter(fileToWrite, Charset.forName("UTF-8"),  myOpt);
             bufwriter.write("{\n");
-            bufwriter.write("\"dexterHome\":\"D:\\Dexter\\Dexter_client\\bin\", \n"); 
+            bufwriter.write("\"dexterHome\":\"D:\\Dexter\\Dexter_client\", \n"); 
             bufwriter.write("\"dexterServerIp\":\"127.0.0.1\", \n"); 
             bufwriter.write("\"dexterServerPort\":\"4982\", \n"); 
-            bufwriter.write("\"projectName\":\"Timetable-planner-master\", \n"); 
-            bufwriter.write("\"projectFullPath\":\"D:\\Dexter\\Dexter_client\\bin\", \n"); 
-            bufwriter.write("\"sourceDir\":\"127.0.0.1\", \n"); 
+            bufwriter.write("\"projectName\":\"example\", \n"); 
+            bufwriter.write("\"projectFullPath\":\"D:\\tests\\project\\example\\example\", \n"); 
+            bufwriter.write("\"sourceDir\":[\"D:\\tests\\project\\example\\example\"], \n"); 
+            bufwriter.write("\"headerDir\":[\"D:\\tests\\project\\example\\example\"], \n"); 
             bufwriter.write("\"sourceEncoding\":\"UTF-8\", \n"); 
-            bufwriter.write("\"binDir\":\"127.0.0.1\", \n"); 
-            bufwriter.write("\"binDir\":\" D:\\tests\\Timetable-planner-master\\Timetable-planner-master\\bin\\timetable\", \n"); 
-            bufwriter.write("\"language\":\"JAVA\", \n"); 
-            bufwriter.write("\"type\":\"PROJECT\", \n"); 
+            bufwriter.write("\"libDir\":[], \n"); 
+            bufwriter.write("\"binDir\":\"\", \n"); 
+         //   bufwriter.write("\"language\":\"JAVA\", \n"); 
+            bufwriter.write("\"modulePath\":\"\", \n");
+            bufwriter.write("\"fileName\":[\"main.cpp\"], \n");
+            bufwriter.write("\"type\":\"FILE\" \n"); 
             bufwriter.write("}\n"); 
             bufwriter.close();
         } catch (Exception e) {
