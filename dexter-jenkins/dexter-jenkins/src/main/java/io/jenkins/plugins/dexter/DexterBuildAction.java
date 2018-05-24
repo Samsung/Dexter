@@ -15,7 +15,7 @@ public class DexterBuildAction implements Action {
 
     @Override
     public String getDisplayName() {
-        return "Static analysis example Build Page";
+        return "Static analysis results";
     }
 
     @Override

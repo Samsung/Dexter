@@ -1,79 +1,79 @@
 Running tests for io.jenkins.plugins:dexter-jenkins:1.0
-May 21, 2018 6:43:21 PM org.eclipse.jetty.util.log.Log initialized
-INFO: Logging initialized @517ms to org.eclipse.jetty.util.log.Slf4jLog
-May 21, 2018 6:43:22 PM org.jvnet.hudson.test.WarExploder explode
+May 24, 2018 4:21:00 PM org.eclipse.jetty.util.log.Log initialized
+INFO: Logging initialized @498ms to org.eclipse.jetty.util.log.Slf4jLog
+May 24, 2018 4:21:01 PM org.jvnet.hudson.test.WarExploder explode
 INFO: Picking up existing exploded jenkins.war at C:\fork\Dexter\dexter-jenkins\dexter-jenkins\target\jenkins-for-test
-May 21, 2018 6:43:22 PM org.eclipse.jetty.server.handler.ContextHandler setContextPath
+May 24, 2018 4:21:02 PM org.eclipse.jetty.server.handler.ContextHandler setContextPath
 WARNING: Empty contextPath
-May 21, 2018 6:43:22 PM org.eclipse.jetty.server.Server doStart
+May 24, 2018 4:21:02 PM org.eclipse.jetty.server.Server doStart
 INFO: jetty-9.4.5.v20170502
-May 21, 2018 6:43:22 PM org.eclipse.jetty.webapp.StandardDescriptorProcessor visitServlet
+May 24, 2018 4:21:02 PM org.eclipse.jetty.webapp.StandardDescriptorProcessor visitServlet
 INFO: NO JSP Support for /, did not find org.eclipse.jetty.jsp.JettyJspServlet
-May 21, 2018 6:43:22 PM org.eclipse.jetty.server.session.DefaultSessionIdManager doStart
+May 24, 2018 4:21:02 PM org.eclipse.jetty.server.session.DefaultSessionIdManager doStart
 INFO: DefaultSessionIdManager workerName=node0
-May 21, 2018 6:43:22 PM org.eclipse.jetty.server.session.DefaultSessionIdManager doStart
+May 24, 2018 4:21:02 PM org.eclipse.jetty.server.session.DefaultSessionIdManager doStart
 INFO: No SessionScavenger set, using defaults
-May 21, 2018 6:43:22 PM org.eclipse.jetty.server.session.HouseKeeper startScavenging
-INFO: Scavenging every 660000ms
-May 21, 2018 6:43:22 PM org.eclipse.jetty.server.handler.ContextHandler doStart
+May 24, 2018 4:21:02 PM org.eclipse.jetty.server.session.HouseKeeper startScavenging
+INFO: Scavenging every 600000ms
+May 24, 2018 4:21:02 PM org.eclipse.jetty.server.handler.ContextHandler doStart
 INFO: Started o.e.j.w.WebAppContext@554e218{/,file:///C:/fork/Dexter/dexter-jenkins/dexter-jenkins/target/jenkins-for-test/,AVAILABLE}{C:\fork\Dexter\dexter-jenkins\dexter-jenkins\target\jenkins-for-test}
-May 21, 2018 6:43:22 PM org.eclipse.jetty.server.AbstractConnector doStart
-INFO: Started ServerConnector@ee86bcb{HTTP/1.1,[http/1.1]}{localhost:53958}
-May 21, 2018 6:43:22 PM org.eclipse.jetty.server.Server doStart
-INFO: Started @1523ms
-May 21, 2018 6:43:22 PM jenkins.InitReactorRunner$1 onAttained
+May 24, 2018 4:21:02 PM org.eclipse.jetty.server.AbstractConnector doStart
+INFO: Started ServerConnector@ee86bcb{HTTP/1.1,[http/1.1]}{localhost:53122}
+May 24, 2018 4:21:02 PM org.eclipse.jetty.server.Server doStart
+INFO: Started @1838ms
+May 24, 2018 4:21:02 PM jenkins.InitReactorRunner$1 onAttained
 INFO: Started initialization
-May 21, 2018 6:43:37 PM jenkins.InitReactorRunner$1 onAttained
+May 24, 2018 4:21:17 PM jenkins.InitReactorRunner$1 onAttained
 INFO: Listed all plugins
-May 21, 2018 6:43:38 PM jenkins.InitReactorRunner$1 onAttained
+May 24, 2018 4:21:18 PM jenkins.InitReactorRunner$1 onAttained
 INFO: Prepared all plugins
-May 21, 2018 6:43:38 PM jenkins.InitReactorRunner$1 onAttained
+May 24, 2018 4:21:18 PM jenkins.InitReactorRunner$1 onAttained
 INFO: Started all plugins
-May 21, 2018 6:43:38 PM jenkins.InitReactorRunner$1 onAttained
+May 24, 2018 4:21:18 PM jenkins.InitReactorRunner$1 onAttained
 INFO: Augmented all extensions
-May 21, 2018 6:43:39 PM jenkins.InitReactorRunner$1 onAttained
+May 24, 2018 4:21:19 PM jenkins.InitReactorRunner$1 onAttained
 INFO: Loaded all jobs
-May 21, 2018 6:43:39 PM org.jenkinsci.main.modules.sshd.SSHD start
-INFO: Started SSHD at port 53987
-May 21, 2018 6:43:39 PM jenkins.InitReactorRunner$1 onAttained
+May 24, 2018 4:21:19 PM org.jenkinsci.main.modules.sshd.SSHD start
+INFO: Started SSHD at port 53151
+May 24, 2018 4:21:19 PM jenkins.InitReactorRunner$1 onAttained
 INFO: Completed initialization
-May 21, 2018 6:43:40 PM org.eclipse.jetty.server.Server doStart
+May 24, 2018 4:21:19 PM org.eclipse.jetty.server.Server doStart
 INFO: jetty-9.4.5.v20170502
-May 21, 2018 6:43:40 PM org.eclipse.jetty.server.session.DefaultSessionIdManager doStart
+May 24, 2018 4:21:19 PM org.eclipse.jetty.server.session.DefaultSessionIdManager doStart
 INFO: DefaultSessionIdManager workerName=node0
-May 21, 2018 6:43:40 PM org.eclipse.jetty.server.session.DefaultSessionIdManager doStart
+May 24, 2018 4:21:19 PM org.eclipse.jetty.server.session.DefaultSessionIdManager doStart
 INFO: No SessionScavenger set, using defaults
-May 21, 2018 6:43:40 PM org.eclipse.jetty.server.session.HouseKeeper startScavenging
-INFO: Scavenging every 660000ms
-May 21, 2018 6:43:40 PM org.eclipse.jetty.server.handler.ContextHandler doStart
+May 24, 2018 4:21:19 PM org.eclipse.jetty.server.session.HouseKeeper startScavenging
+INFO: Scavenging every 600000ms
+May 24, 2018 4:21:19 PM org.eclipse.jetty.server.handler.ContextHandler doStart
 INFO: Started o.e.j.s.ServletContextHandler@630cb4a4{/,null,AVAILABLE}
-May 21, 2018 6:43:40 PM org.eclipse.jetty.server.AbstractConnector doStart
-INFO: Started ServerConnector@12dae582{HTTP/1.1,[http/1.1]}{0.0.0.0:53989}
-May 21, 2018 6:43:40 PM org.eclipse.jetty.server.Server doStart
-INFO: Started @19061ms
-May 21, 2018 6:43:44 PM org.eclipse.jetty.server.AbstractConnector doStop
+May 24, 2018 4:21:19 PM org.eclipse.jetty.server.AbstractConnector doStart
+INFO: Started ServerConnector@12dae582{HTTP/1.1,[http/1.1]}{0.0.0.0:53153}
+May 24, 2018 4:21:19 PM org.eclipse.jetty.server.Server doStart
+INFO: Started @19417ms
+May 24, 2018 4:21:24 PM org.eclipse.jetty.server.AbstractConnector doStop
 INFO: Stopped ServerConnector@ee86bcb{HTTP/1.1,[http/1.1]}{localhost:0}
-May 21, 2018 6:43:44 PM org.eclipse.jetty.server.session.HouseKeeper stopScavenging
+May 24, 2018 4:21:24 PM org.eclipse.jetty.server.session.HouseKeeper stopScavenging
 INFO: Stopped scavenging
-May 21, 2018 6:43:44 PM org.eclipse.jetty.server.handler.ContextHandler doStop
+May 24, 2018 4:21:24 PM org.eclipse.jetty.server.handler.ContextHandler doStop
 INFO: Stopped o.e.j.w.WebAppContext@554e218{/,file:///C:/fork/Dexter/dexter-jenkins/dexter-jenkins/target/jenkins-for-test/,UNAVAILABLE}{C:\fork\Dexter\dexter-jenkins\dexter-jenkins\target\jenkins-for-test}
-May 21, 2018 6:43:44 PM jenkins.model.Jenkins cleanUp
+May 24, 2018 4:21:24 PM jenkins.model.Jenkins cleanUp
 INFO: Stopping Jenkins
-May 21, 2018 6:43:44 PM jenkins.model.Jenkins$21 onAttained
+May 24, 2018 4:21:24 PM jenkins.model.Jenkins$21 onAttained
 INFO: Started termination
-May 21, 2018 6:43:44 PM jenkins.model.Jenkins$21 onAttained
+May 24, 2018 4:21:24 PM jenkins.model.Jenkins$21 onAttained
 INFO: Completed termination
-May 21, 2018 6:43:44 PM jenkins.model.Jenkins _cleanUpDisconnectComputers
+May 24, 2018 4:21:24 PM jenkins.model.Jenkins _cleanUpDisconnectComputers
 INFO: Starting node disconnection
-May 21, 2018 6:43:44 PM hudson.TcpSlaveAgentListener$ConnectionHandler run
-INFO: Accepted connection #1 from /106.120.68.44:54001
-May 21, 2018 6:43:44 PM jenkins.model.Jenkins _cleanUpShutdownPluginManager
+May 24, 2018 4:21:24 PM hudson.TcpSlaveAgentListener$ConnectionHandler run
+INFO: Accepted connection #1 from /106.120.68.44:53165
+May 24, 2018 4:21:24 PM jenkins.model.Jenkins _cleanUpShutdownPluginManager
 INFO: Stopping plugin manager
-May 21, 2018 6:43:44 PM jenkins.model.Jenkins _cleanUpPersistQueue
+May 24, 2018 4:21:24 PM jenkins.model.Jenkins _cleanUpPersistQueue
 INFO: Persisting build queue
-May 21, 2018 6:43:44 PM jenkins.model.Jenkins _cleanUpAwaitDisconnects
+May 24, 2018 4:21:24 PM jenkins.model.Jenkins _cleanUpAwaitDisconnects
 INFO: Waiting for node disconnection completion
 WARN: The method class org.apache.commons.logging.impl.SLF4JLogFactory#release() was invoked.
 WARN: Please see http://www.slf4j.org/codes.html#release for an explanation.
-May 21, 2018 6:43:44 PM jenkins.model.Jenkins cleanUp
+May 24, 2018 4:21:24 PM jenkins.model.Jenkins cleanUp
 INFO: Jenkins stopped

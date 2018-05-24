@@ -19,12 +19,12 @@ public class DexterProjectAction implements Action {
 
     @Override
     public String getDisplayName() {
-        return "Start Dexter Static Analysis";
+        return "Dexter Static Analysis log";
     }
 
     @Override
     public String getUrlName() {
-        return "dexterExample";
+        return "dexterAnalysis";
     }
 
     public AbstractProject<?, ?> getProject() {
@@ -43,7 +43,7 @@ public class DexterProjectAction implements Action {
 
         for (AbstractBuild<?, ?> currentBuild : builds) {
             projectMessage = "Build #"+currentBuild.getAction(buildClass).getBuildNumber()
-                    +": "+currentBuild.getAction(buildClass).getMessage();
+                    +": \n"+currentBuild.getAction(buildClass).getMessage() + "\n";
             projectMessages.add(projectMessage);
         }
         return projectMessages;

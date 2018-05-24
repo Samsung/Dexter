@@ -1,9 +1,10 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
-  <f:entry title="Enter dexter.bat folder" field="path">
+
+ <f:entry title="Enter dexter.bat location" field="path">
     <f:textbox />
   </f:entry>
-   <f:entry title="Dexter.cnf location" field="pathConfig">
+   <f:entry title=" Enter dexter_cfg location" field="pathConfig">
     <f:textbox />
   </f:entry>  
    <f:entry title="Project name" field="projectName">
@@ -15,12 +16,15 @@
    <f:entry title="Source directory" field="sourceDir">
     <f:textbox />
   </f:entry>  
-   <f:entry title="Source encoding" field="sourceEncoding">
+   <f:entry title="Binary directory" field="binDir">
     <f:textbox />
   </f:entry>  
-   <f:entry title="Binary direction" field="binDir">
+  <f:entry title="Header directory" field="headerDir">
     <f:textbox />
-  </f:entry>  
+  </f:entry>
+   <f:entry title="Filename" field="analyseFileName">
+    <f:textbox />
+  </f:entry>
    <f:entry title="Language" field="language">
     <f:textbox />
   </f:entry>  

@@ -21,6 +21,7 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
+import java.util.Scanner;
 
 import javax.servlet.ServletException;
 
@@ -31,6 +32,8 @@ import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -48,7 +51,7 @@ public class DexterConfiguration extends GlobalConfiguration {
 
 
 
-	public static String DEXTER_SERVER = "";
+	  static String DEXTER_SERVER = "";
 	public static String DEXTER_PORT = "";
 	public static String DEXTER_USER = "";
 	public static  String DEXTER_PASSWORD = "";
@@ -63,11 +66,17 @@ public class DexterConfiguration extends GlobalConfiguration {
 	        load();
 	    }
 
+ 	    static StringBuffer stringBufferOfData = new StringBuffer();
+ 	    static String filename = null;
+ 	    static Scanner sc = new Scanner(System.in, "UTF-8");
+ 	   
+ 	 
 	 
 	    public FormValidation doTestConnection(@QueryParameter("dexterServer") final String dexterServer, @QueryParameter("dexterPort") final String dexterPort, @QueryParameter("dexterUser") final String dexterUser, @QueryParameter("dexterPassword") final String dexterPassword)
 	           throws IOException, ServletException {
 	    	  Socket socket;
 	        try {
+	        	
 	        	socket = new Socket();
 	            socket.connect(new InetSocketAddress(dexterServer, Integer.parseInt(dexterPort)), 5000);
 	            URL url = new URL("http://" + dexterServer + ":" + dexterPort + "/api/accounts/userId");
@@ -122,24 +131,19 @@ public class DexterConfiguration extends GlobalConfiguration {
 				this.dexterServer = dexterServer;
 			}
 
-	       
 	    	 @Override
 	   	  public boolean configure(StaplerRequest req, JSONObject formData) throws FormException{
 	   	    dexterServer = formData.getString("dexterServer");
 	   	    dexterPort = formData.getString("dexterPort");
 	      	dexterUser = formData.getString("dexterUser");
-	      	dexterPassword = formData.getString("dexterPassword");
+	      	dexterPassword = formData.getString("dexterPassword");		   	
 	   	    save();
-	   	    
-	   	 //   DEXTER_SERVER = dexterServer;
-	   	 //   DEXTER_PORT = dexterPort;
-	   	 //   DEXTER_USER = dexterUser;
-	   	    //DEXTER_PASSWORD = dexterPassword;
-	   	
+	   	 
 	   	    return true;
 	   	  }
 	       
-
+	    
+	    	
 	    } 
 	    
 

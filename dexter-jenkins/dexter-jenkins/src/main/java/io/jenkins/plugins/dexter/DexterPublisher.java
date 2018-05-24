@@ -4,6 +4,7 @@ import io.jenkins.plugins.dexter.*;
 import hudson.Launcher;
 import hudson.Extension;
 import hudson.model.Action;
+import java.util.logging.ConsoleHandler;
 import hudson.tasks.*;
 import hudson.util.FormValidation;
 import hudson.model.AbstractBuild;
@@ -43,32 +44,45 @@ public class DexterPublisher extends Recorder {
     private final String projectName;
     private final String projectFullPath;
     private final String sourceDir;
-    private final String sourceEncoding;
     private final String binDir;
+    private final String headerDir;
+    private final String analyseFileName;
     private final String language;
     private final String type;
+    private String dexterServer = "";
+    private String dexterPort = "";
+    private String dexterUser = "";
+    private String dexterPassword="";
+    String message;
 
-
-
-    public String getPathConfig() {
+	public String getPathConfig() {
 		return pathConfig;
 	}
 
 	// Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public DexterPublisher(String path, String pathConfig, String projectName, String projectFullPath, String sourceDir, String sourceEncoding, String binDir, 
-    		String language, String type) {
+    public DexterPublisher(String path, String pathConfig, String projectName, String projectFullPath, String sourceDir, String binDir, String headerDir,
+    		String analyseFileName, String language, String type) {
         this.path = path;
         this.pathConfig = pathConfig;
         this.projectName = projectName;
         this.projectFullPath = projectFullPath;
         this.sourceDir = sourceDir;
-        this.sourceEncoding = sourceEncoding;
         this.binDir = binDir;
+        this.headerDir = headerDir;
+        this.analyseFileName = analyseFileName;
         this.language = language;
         this.type = type;
     }
 
+
+	public String getAnalyseFileName() {
+		return analyseFileName;
+	}
+
+	public String getHeaderDir() {
+		return headerDir;
+	}
 
 	public static String getFilename() {
 		return filename;
@@ -92,9 +106,7 @@ public class DexterPublisher extends Recorder {
 		return sourceDir;
 	}
 
-	public String getSourceEncoding() {
-		return sourceEncoding;
-	}
+	
 
 	public String getBinDir() {
 		return binDir;
@@ -108,9 +120,7 @@ public class DexterPublisher extends Recorder {
 		return type;
 	}
 
-	/**
-     * We'll use this from the <tt>config.jelly</tt>.
-     */
+	
     public String getName() {
         return path;
     }
@@ -118,40 +128,56 @@ public class DexterPublisher extends Recorder {
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
      
-  String message;
-          
-          message="Hello, " + path + "!";
-        //  Runtime runtime = Runtime.getRuntime();
-          try {
-        	  boolean fileRead = readFile();
-              if (fileRead) {
-                  replacement();
-                  writeToFile();
-              }
-              String command = "cmd /c start cmd.exe /K "  + "\"cd " + path + " && D: && dexter.bat user dexter\"";
-              message = command;
-          //    Path fileToWrite = Paths.get(pathConfig);
-              OpenOption myOpt = StandardOpenOption.APPEND;
-              //  Process proc = runtime.exec(command);
-              Path fileToWrite = Paths.get(pathConfig);
-                java.util.Scanner s = new java.util.Scanner(Runtime.getRuntime().exec(command).getInputStream(), "UTF-8").useDelimiter("\\A");
-                BufferedWriter bufwriter = Files.newBufferedWriter(fileToWrite, Charset.forName("UTF-8"),  myOpt);
-                if(s.hasNext())
-                {
-                bufwriter.write("HMMdvdgxvcxbvHG");
-                }
-                bufwriter.close();
-                s.close();
-                  message = command;
-   
-              } catch(IOException e) {
-                      System.out.println(e.getMessage() );
-              } catch(Exception e){
-                  System.out.println(e.getMessage() );
-              }
-        DexterBuildAction buildAction = new DexterBuildAction(message, build);
-        build.addAction(buildAction);
+ 
+  String way =  System.getProperty("user.dir") + "\\work\\io.jenkins.plugins.dexter.DexterConfiguration.xml"; 
+   if (readFile(way))
+   {
+	   char[] chArr = new char[20];
+	   char[] portArr = new char[20];
+	   char[] userArr = new char[50];
+	   char[] passwordArr = new char[50];
+	   int startServer = stringBufferOfData.indexOf("<dexterServer>") + 14;
+	   int endServer = stringBufferOfData.indexOf("</dexterServer>");
+	   stringBufferOfData.getChars(startServer, endServer, chArr, 0);
+	   dexterServer = new String(chArr).trim();
+	   
+	   int startPort = stringBufferOfData.indexOf("<dexterPort>") + 12;
+	   int endPort= stringBufferOfData.indexOf("</dexterPort>");
+	   stringBufferOfData.getChars(startPort, endPort, portArr, 0);
+	   dexterPort = new String(portArr).trim();
+	   
+	   int startUser = stringBufferOfData.indexOf("<dexterUser>") + 12;
+	   int endUser= stringBufferOfData.indexOf("</dexterUser>");
+	   stringBufferOfData.getChars(startUser, endUser, userArr, 0);
+	   dexterUser = new String(userArr).trim();
 
+	   
+	   int startPassword = stringBufferOfData.indexOf("<dexterPassword>") + 16;
+	   int endPassword = stringBufferOfData.indexOf("</dexterPassword>");
+	   stringBufferOfData.getChars(startPassword, endPassword, passwordArr, 0);
+	   dexterPassword = new String(passwordArr).trim();
+
+	   stringBufferOfData.delete(0,  stringBufferOfData.length());
+   }
+       
+         Runtime runtime = Runtime.getRuntime();
+         writeToFile();
+              
+              String command = "cmd /c start cmd.exe /K "  + "\"cd " + path + " && D: && dexter.bat user dexter > logs.txt \"";
+              try {
+				runtime.exec(command);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+   
+       if(readFile(path + "//logs.txt")) {       
+    	   message = stringBufferOfData.toString();
+       }
+       else
+    	   message = "Error saving logs";
+        DexterBuildAction buildAction = new DexterBuildAction(message, build);
+        build.addAction(buildAction);        
         return true;
     }
     
@@ -159,15 +185,14 @@ public class DexterPublisher extends Recorder {
     static String filename = null;
     static Scanner sc = new Scanner(System.in, "UTF-8");
    
-    private boolean readFile() {
-    	
-       filename = pathConfig;        
+    private boolean readFile(String filenameRead) {    	
+      filename = filenameRead;        
         Scanner fileToRead = null;
         try {
             fileToRead = new Scanner(new File(filename), "UTF-8"); 
             for (String line; fileToRead.hasNextLine() && (line = fileToRead.nextLine()) != null; ) {
                 System.out.println(line);
-                stringBufferOfData.append(line).append("\r\n");
+                stringBufferOfData.append(line).append("\n");
             }
             fileToRead.close();
             return true;
@@ -189,27 +214,26 @@ public class DexterPublisher extends Recorder {
             BufferedWriter bufwriter = Files.newBufferedWriter(fileToWrite, Charset.forName("UTF-8"),  myOpt);
             bufwriter.write("{\n");
             bufwriter.write("\"dexterHome\":\"D:\\Dexter\\Dexter_client\", \n"); 
-            bufwriter.write("\"dexterServerIp\":\"127.0.0.1\", \n"); 
-            bufwriter.write("\"dexterServerPort\":\"4982\", \n"); 
-            bufwriter.write("\"projectName\":\"example\", \n"); 
-            bufwriter.write("\"projectFullPath\":\"D:\\tests\\project\\example\\example\", \n"); 
-            bufwriter.write("\"sourceDir\":[\"D:\\tests\\project\\example\\example\"], \n"); 
-            bufwriter.write("\"headerDir\":[\"D:\\tests\\project\\example\\example\"], \n"); 
+            bufwriter.write("\"dexterServerIp\":\"" + dexterServer + "\", \n"); 
+            bufwriter.write("\"dexterServerPort\":\"" + dexterPort + "\", \n"); 
+            bufwriter.write("\"projectName\":\"" + projectName + "\", \n"); 
+            bufwriter.write("\"projectFullPath\":\"" + projectFullPath + "\", \n");   //D:\\tests\\project\\example\\example
+            bufwriter.write("\"sourceDir\":[\"" + sourceDir + "\"], \n");  //D:\\tests\\project\\example\\example
+            bufwriter.write("\"headerDir\":[\"" + headerDir+ "\"], \n"); //D:\\tests\\project\\example\\example
             bufwriter.write("\"sourceEncoding\":\"UTF-8\", \n"); 
             bufwriter.write("\"libDir\":[], \n"); 
             bufwriter.write("\"binDir\":\"\", \n"); 
          //   bufwriter.write("\"language\":\"JAVA\", \n"); 
             bufwriter.write("\"modulePath\":\"\", \n");
-            bufwriter.write("\"fileName\":[\"main.cpp\"], \n");
-            bufwriter.write("\"type\":\"FILE\" \n"); 
+            bufwriter.write("\"fileName\":[\"" + analyseFileName + "\"], \n");  //main.cpp
+            bufwriter.write("\"type\":\""+ type +"\" \n"); 
             bufwriter.write("}\n"); 
+            bufwriter.write(dexterPassword);
+            bufwriter.write(dexterUser);
             bufwriter.close();
         } catch (Exception e) {
             System.out.println("Error occured while attempting to write to file: " + e.getMessage());
         }
-    }
-    private  void replacement() {
-        readFile();
     }
     
     @Override
@@ -235,17 +259,7 @@ public class DexterPublisher extends Recorder {
         public DescriptorImpl() {
             load();
         }
-
-      
-        public FormValidation doCheckName(@QueryParameter String value)
-                throws IOException, ServletException {
-            if (value.length() == 0)
-                return FormValidation.error("Please set dexter client path");
-            if (value.length() < 4)
-                return FormValidation.warning("Isn't the path too short?");
-            return FormValidation.ok();
-        }
-
+     
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             // Indicates that this builder can be used with all kinds of project types 
             return true;
