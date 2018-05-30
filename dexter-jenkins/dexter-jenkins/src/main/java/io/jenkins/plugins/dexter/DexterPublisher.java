@@ -39,9 +39,7 @@ import java.util.Scanner;
 
 public class DexterPublisher extends Recorder {
 
-    private final String path;
-    private final String pathConfig;
-    private final String projectName;
+    private String pathDexter;
     private final String projectFullPath;
     private final String sourceDir;
     private final String binDir;
@@ -53,6 +51,9 @@ public class DexterPublisher extends Recorder {
     private String dexterPort = "";
     private String dexterUser = "";
     private String dexterPassword="";
+    private String pathToBat="";
+    private String pathConfig="";
+    private String projectName="";
     String message;
 
 	public String getPathConfig() {
@@ -61,11 +62,9 @@ public class DexterPublisher extends Recorder {
 
 	// Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public DexterPublisher(String path, String pathConfig, String projectName, String projectFullPath, String sourceDir, String binDir, String headerDir,
+    public DexterPublisher( String pathDexter,  String projectFullPath, String sourceDir, String binDir, String headerDir,
     		String analyseFileName, String language, String type) {
-        this.path = path;
-        this.pathConfig = pathConfig;
-        this.projectName = projectName;
+        this.pathDexter = pathDexter;
         this.projectFullPath = projectFullPath;
         this.sourceDir = sourceDir;
         this.binDir = binDir;
@@ -76,6 +75,7 @@ public class DexterPublisher extends Recorder {
     }
 
 
+    
 	public String getAnalyseFileName() {
 		return analyseFileName;
 	}
@@ -88,14 +88,9 @@ public class DexterPublisher extends Recorder {
 		return filename;
 	}
 
-
-	public String getPath() {
-		return path;
-	}
-
 	
 	public String getProjectName() {
-		return projectName;
+		 return "project";
 	}
 
 	public String getProjectFullPath() {
@@ -122,13 +117,14 @@ public class DexterPublisher extends Recorder {
 
 	
     public String getName() {
-        return path;
+        return pathDexter;
     }
 
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
-     
- 
+     pathToBat = pathDexter + "/bin";
+     pathConfig = pathDexter  = "/bin/dexter_cfg.json";
+     projectName = getProjectName();
   String way =  System.getProperty("user.dir") + "\\work\\io.jenkins.plugins.dexter.DexterConfiguration.xml"; 
    if (readFile(way))
    {
@@ -163,7 +159,7 @@ public class DexterPublisher extends Recorder {
          Runtime runtime = Runtime.getRuntime();
          writeToFile();
               
-              String command = "cmd /c start cmd.exe /K "  + "\"cd " + path + " && D: && dexter.bat user dexter > logs.txt \"";
+              String command = "cmd /c start cmd.exe /K "  + "\"cd " + pathToBat + " && D: && dexter.bat user dexter > logs.txt \"";
               try {
 				runtime.exec(command);
 			} catch (IOException e) {
@@ -171,7 +167,8 @@ public class DexterPublisher extends Recorder {
 				e.printStackTrace();
 			}
    
-       if(readFile(path + "//logs.txt")) {       
+       if(readFile(pathToBat
+    		   + "//logs.txt")) {       
     	   message = stringBufferOfData.toString();
        }
        else
