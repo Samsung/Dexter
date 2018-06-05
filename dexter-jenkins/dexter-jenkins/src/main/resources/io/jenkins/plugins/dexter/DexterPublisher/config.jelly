@@ -1,8 +1,18 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form">
-  <f:entry title=" Enter Dexter CLI location" field="pathDexter">
+<f:entry title="Dexter server" field="dexterServer">
+    <f:textbox />
+  </f:entry>  <f:entry title="Dexter port" field="dexterPort">
+    <f:textbox />
+  </f:entry>  <f:entry title="Dexter user" field="dexterUser">
+    <f:textbox />
+  </f:entry>  <f:entry title="Dexter password" field="dexterPassword">
+       <f:password />
+  </f:entry>  
+  <f:entry title="Enter Dexter CLI location" field="pathDexter">
     <f:textbox />
   </f:entry>  
+ 
    <f:entry title="Project full path" field="projectFullPath">
     <f:textbox />
   </f:entry>  

@@ -47,10 +47,10 @@ public class DexterPublisher extends Recorder {
     private final String analyseFileName;
     private final String language;
     private final String type;
-    private String dexterServer = "";
-    private String dexterPort = "";
-    private String dexterUser = "";
-    private String dexterPassword="";
+    private String dexterServer;
+    private String dexterPort;
+    private String dexterUser;
+    private String dexterPassword;
     private String pathToBat="";
     private String pathConfig="";
     private String projectName="";
@@ -62,8 +62,12 @@ public class DexterPublisher extends Recorder {
 
 	// Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public DexterPublisher( String pathDexter,  String projectFullPath, String sourceDir, String binDir, String headerDir,
+    public DexterPublisher(String dexterServer, String dexterPort, String dexterUser, String dexterPassword, String pathDexter,  String projectFullPath, String sourceDir, String binDir, String headerDir,
     		String analyseFileName, String language, String type) {
+    	this.dexterServer = dexterServer;
+    	this.dexterPort = dexterPort;
+    	this.dexterUser = dexterUser;
+    	this.dexterPassword = dexterPassword;
         this.pathDexter = pathDexter;
         this.projectFullPath = projectFullPath;
         this.sourceDir = sourceDir;
@@ -99,9 +103,7 @@ public class DexterPublisher extends Recorder {
 
 	public String getSourceDir() {
 		return sourceDir;
-	}
-
-	
+	}	
 
 	public String getBinDir() {
 		return binDir;
@@ -119,44 +121,46 @@ public class DexterPublisher extends Recorder {
     public String getName() {
         return pathDexter;
     }
+	public String getDexterServer() {
+		return dexterServer;
+	}
+
+	public String getDexterPort() {
+		return dexterPort;
+	}
+
+	public void setDexterPort(String dexterPort) {
+		this.dexterPort = dexterPort;
+	}
+
+	public String getDexterUser() {
+		return dexterUser;
+	}
+
+	public void setDexterUser(String dexterUser) {
+		this.dexterUser = dexterUser;
+	}
+
+	public String getDexterPassword() {
+		return dexterPassword;
+	}
+
+	public void setDexterPassword(String dexterPassword) {
+		this.dexterPassword = dexterPassword;
+	}
+
+	public void setDexterServer(String dexterServer) {
+		this.dexterServer = dexterServer;
+	}
+
 
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
      pathToBat = pathDexter + "/bin";
      pathConfig = pathDexter  = "/bin/dexter_cfg.json";
      projectName = getProjectName();
-  String way =  System.getProperty("user.dir") + "\\work\\io.jenkins.plugins.dexter.DexterConfiguration.xml"; 
-   if (readFile(way))
-   {
-	   char[] chArr = new char[20];
-	   char[] portArr = new char[20];
-	   char[] userArr = new char[50];
-	   char[] passwordArr = new char[50];
-	   int startServer = stringBufferOfData.indexOf("<dexterServer>") + 14;
-	   int endServer = stringBufferOfData.indexOf("</dexterServer>");
-	   stringBufferOfData.getChars(startServer, endServer, chArr, 0);
-	   dexterServer = new String(chArr).trim();
-	   
-	   int startPort = stringBufferOfData.indexOf("<dexterPort>") + 12;
-	   int endPort= stringBufferOfData.indexOf("</dexterPort>");
-	   stringBufferOfData.getChars(startPort, endPort, portArr, 0);
-	   dexterPort = new String(portArr).trim();
-	   
-	   int startUser = stringBufferOfData.indexOf("<dexterUser>") + 12;
-	   int endUser= stringBufferOfData.indexOf("</dexterUser>");
-	   stringBufferOfData.getChars(startUser, endUser, userArr, 0);
-	   dexterUser = new String(userArr).trim();
-
-	   
-	   int startPassword = stringBufferOfData.indexOf("<dexterPassword>") + 16;
-	   int endPassword = stringBufferOfData.indexOf("</dexterPassword>");
-	   stringBufferOfData.getChars(startPassword, endPassword, passwordArr, 0);
-	   dexterPassword = new String(passwordArr).trim();
-
-	   stringBufferOfData.delete(0,  stringBufferOfData.length());
-   }
-       
-         Runtime runtime = Runtime.getRuntime();
+ 
+      Runtime runtime = Runtime.getRuntime();
          writeToFile();
               
               String command = "cmd /c start cmd.exe /K "  + "\"cd " + pathToBat + " && D: && dexter.bat user dexter > logs.txt \"";
@@ -210,13 +214,13 @@ public class DexterPublisher extends Recorder {
         	Path fileToWrite = Paths.get(pathConfig);
             BufferedWriter bufwriter = Files.newBufferedWriter(fileToWrite, Charset.forName("UTF-8"),  myOpt);
             bufwriter.write("{\n");
-            bufwriter.write("\"dexterHome\":\"D:\\Dexter\\Dexter_client\", \n"); 
+            bufwriter.write("\"dexterHome\":\"" + pathDexter + "\", \n"); 
             bufwriter.write("\"dexterServerIp\":\"" + dexterServer + "\", \n"); 
             bufwriter.write("\"dexterServerPort\":\"" + dexterPort + "\", \n"); 
             bufwriter.write("\"projectName\":\"" + projectName + "\", \n"); 
-            bufwriter.write("\"projectFullPath\":\"" + projectFullPath + "\", \n");   //D:\\tests\\project\\example\\example
-            bufwriter.write("\"sourceDir\":[\"" + sourceDir + "\"], \n");  //D:\\tests\\project\\example\\example
-            bufwriter.write("\"headerDir\":[\"" + headerDir+ "\"], \n"); //D:\\tests\\project\\example\\example
+            bufwriter.write("\"projectFullPath\":\"" + projectFullPath + "\", \n");   
+            bufwriter.write("\"sourceDir\":[\"" + sourceDir + "\"], \n"); 
+            bufwriter.write("\"headerDir\":[\"" + headerDir+ "\"], \n"); 
             bufwriter.write("\"sourceEncoding\":\"UTF-8\", \n"); 
             bufwriter.write("\"libDir\":[], \n"); 
             bufwriter.write("\"binDir\":\"\", \n"); 
