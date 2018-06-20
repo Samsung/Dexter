@@ -27,6 +27,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.ServerSocket;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -39,6 +40,7 @@ import java.util.Scanner;
 
 public class DexterPublisher extends Recorder {
 
+	 private boolean createServer;
     private String pathDexter;
     private final String projectFullPath;
     private final String sourceDir;
@@ -52,6 +54,9 @@ public class DexterPublisher extends Recorder {
     private String dexterUser;
     private String dexterPassword;
     private String pathToBat="";
+    private String serverDisc="";
+    private String dexterDisc="";
+    private String dexterServerPath="";
     private String pathConfig="";
     private String projectName="";
     String message;
@@ -62,8 +67,10 @@ public class DexterPublisher extends Recorder {
 
 	// Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public DexterPublisher(String dexterServer, String dexterPort, String dexterUser, String dexterPassword, String pathDexter,  String projectFullPath, String sourceDir, String binDir, String headerDir,
+    public DexterPublisher(boolean createServer, String dexterServerPath, String dexterServer, String dexterPort, String dexterUser, String dexterPassword, String pathDexter,  String projectFullPath, String sourceDir, String binDir, String headerDir,
     		String analyseFileName, String language, String type) {
+    	this.createServer = createServer;
+    	this.dexterServerPath = dexterServerPath;
     	this.dexterServer = dexterServer;
     	this.dexterPort = dexterPort;
     	this.dexterUser = dexterUser;
@@ -80,6 +87,14 @@ public class DexterPublisher extends Recorder {
 
 
     
+	public boolean isCreateServer() {
+		return createServer;
+	}
+
+	public void setCreateServer(boolean createServer) {
+		this.createServer = createServer;
+	}
+
 	public String getAnalyseFileName() {
 		return analyseFileName;
 	}
@@ -156,16 +171,34 @@ public class DexterPublisher extends Recorder {
 
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
+    	if(createServer) {
+    		ServerSocket s;
+			try {
+				s = new ServerSocket(0);
+				int port = s.getLocalPort();
+				dexterPort = Integer.toString(port);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+    		dexterServer = "127.0.0.1";
+    		
+    	}
      pathToBat = pathDexter + "/bin";
      pathConfig = pathDexter  = "/bin/dexter_cfg.json";
+     
+   //  serverDisc = dexterServerPath.substring(0,2);
+     dexterDisc = pathDexter.substring(0, 2);
+   
      projectName = getProjectName();
  
       Runtime runtime = Runtime.getRuntime();
+   //  Runtime runtimeServ = Runtime.getRuntime();
          writeToFile();
-              
-              String command = "cmd /c start cmd.exe /K "  + "\"cd " + pathToBat + " && D: && dexter.bat user dexter > logs.txt \"";
+      String createServerCommand = "cmd /c start cmd.exe /K "  + "\"cd " + dexterServerPath + " && " + serverDisc + " && echo HELLO \"";
+       String command = "cmd /c start cmd.exe /K "  + "\"cd " + pathToBat + " && " + dexterDisc + " && dexter.bat user dexter > logs.txt \"";
               try {
 				runtime.exec(command);
+				runtime.exec(createServerCommand);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
