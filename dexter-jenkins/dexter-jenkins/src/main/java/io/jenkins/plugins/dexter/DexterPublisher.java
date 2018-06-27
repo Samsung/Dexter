@@ -55,7 +55,7 @@ public class DexterPublisher extends Recorder {
     private String dexterPassword;
     private String pathToBat="";
     private String serverDisc="";
-    private String dexterDisc="";
+   // private String dexterDisc="";
     private String dexterServerPath="";
     private String pathConfig="";
     private String projectName="";
@@ -169,6 +169,7 @@ public class DexterPublisher extends Recorder {
 	}
 
 
+
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
     	if(createServer) {
@@ -183,30 +184,39 @@ public class DexterPublisher extends Recorder {
     		dexterServer = "127.0.0.1";
     		
     	}
+    	
      pathToBat = pathDexter + "/bin";
      pathConfig = pathDexter  = "/bin/dexter_cfg.json";
      
-   //  serverDisc = dexterServerPath.substring(0,2);
-     dexterDisc = pathDexter.substring(0, 2);
-   
+     serverDisc = dexterServerPath.substring(0,2);
+ //    dexterDisc = pathDexter.substring(0, 2);
+   if (isWindows())
+   {
+	   writeToBatFile();
+	   Runtime runtime = Runtime.getRuntime();	   
+	   String command = "cmd /c start cmd.exe /K "  + "\"cd " + dexterServerPath + " &&" + serverDisc + " && run.bat \"";
+	              try {
+					runtime.exec(command);							
+				} catch (IOException e) {					
+					e.printStackTrace();
+				}
+   }
      projectName = getProjectName();
  
-      Runtime runtime = Runtime.getRuntime();
-   //  Runtime runtimeServ = Runtime.getRuntime();
-         writeToFile();
-      String createServerCommand = "cmd /c start cmd.exe /K "  + "\"cd " + dexterServerPath + " && " + serverDisc + " && echo HELLO \"";
-       String command = "cmd /c start cmd.exe /K "  + "\"cd " + pathToBat + " && " + dexterDisc + " && dexter.bat user dexter > logs.txt \"";
-              try {
-				runtime.exec(command);
-				runtime.exec(createServerCommand);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
    
+   if (!isWindows()) {
+	   Runtime runtime = Runtime.getRuntime();	   
+	   String command = "/bin/bash -c echo vi";
+	              try {
+					runtime.exec(command);							
+				} catch (IOException e) {					
+					e.printStackTrace();
+				}
+	   
+   }
        if(readFile(pathToBat
     		   + "//logs.txt")) {       
-    	   message = stringBufferOfData.toString();
+    	  // message = stringBufferOfData.toString();
        }
        else
     	   message = "Error saving logs";
@@ -241,6 +251,18 @@ public class DexterPublisher extends Recorder {
         }
        
     }
+    private static String OS = null;
+    public static String getOsName()
+    {
+       if(OS == null) { OS = System.getProperty("os.name"); }
+       return OS;
+    }
+    public static boolean isWindows()
+    {
+       return getOsName().startsWith("Windows");
+    }
+
+    
     private  void writeToFile() {
     	OpenOption myOpt = StandardOpenOption.CREATE;
         try {
@@ -269,7 +291,22 @@ public class DexterPublisher extends Recorder {
             System.out.println("Error occured while attempting to write to file: " + e.getMessage());
         }
     }
-    
+    private  void writeToBatFile() {
+    	OpenOption myOpt = StandardOpenOption.CREATE;
+        try {
+        	Path fileToWrite = Paths.get(dexterServerPath + "/run.bat");
+            BufferedWriter bufwriter = Files.newBufferedWriter(fileToWrite, Charset.forName("UTF-8"),  myOpt);
+            bufwriter.write("node server.js -database.host=");
+            bufwriter.write(dexterServer); 
+            bufwriter.write(" database.name=my_dexter_db -database.user="); 
+            bufwriter.write(dexterUser); 
+            bufwriter.write(" -database.password="); 
+            bufwriter.write(dexterPassword);             
+            bufwriter.close();
+        } catch (Exception e) {
+            System.out.println("Error occured while attempting to write to file: " + e.getMessage());
+        }
+    }
     @Override
     public DescriptorImpl getDescriptor() {
         return (DescriptorImpl) super.getDescriptor();
