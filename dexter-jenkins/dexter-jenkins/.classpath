@@ -645,5 +645,6 @@
 			<attribute name="javadoc_location" value="jar:file:/C:/Users/v.sanko/.m2/repository/org/jenkins-ci/test-annotations/1.2/test-annotations-1.2-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="target/dexter-jenkins.jar"/>
 	<classpathentry kind="output" path="target/eclipse-classes"/>
 </classpath>

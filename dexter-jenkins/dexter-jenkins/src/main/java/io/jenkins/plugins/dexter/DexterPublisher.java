@@ -27,7 +27,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.ServerSocket;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -40,26 +39,29 @@ import java.util.Scanner;
 
 public class DexterPublisher extends Recorder {
 
-	 private boolean createServer;
-    private String pathDexter;
-    private final String projectFullPath;
-    private final String sourceDir;
-    private final String binDir;
-    private final String headerDir;
-    private final String analyseFileName;
-    private final String language;
-    private final String type;
-    private String dexterServer;
-    private String dexterPort;
-    private String dexterUser;
-    private String dexterPassword;
-    private String pathToBat="";
-    private String serverDisc="";
-   // private String dexterDisc="";
-    private String dexterServerPath="";
-    private String pathConfig="";
-    private String projectName="";
-    String message;
+	private boolean createServer; 
+	private String pathDexter; 
+	private String projectFullPath; 
+	private String sourceDir; 
+	private String binDir; 
+	private String headerDir; 
+	private final String analyseFileName; 
+	private final boolean file; 
+	private final boolean folder; 
+	private final boolean project; 
+	private final boolean snapshot; 
+	private String dexterServer; 
+	private String dexterPort; 
+	private String dexterUser; 
+	private String dexterPassword; 
+	private String pathToBat=""; 
+	private String serverDisc=""; 
+	private String dexterDisc=""; 
+	private String dexterServerPath=""; 
+	private String pathConfig=""; 
+	private String projectName=""; 
+	private String projectType=""; 
+	String message; 
 
 	public String getPathConfig() {
 		return pathConfig;
@@ -67,156 +69,182 @@ public class DexterPublisher extends Recorder {
 
 	// Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public DexterPublisher(boolean createServer, String dexterServerPath, String dexterServer, String dexterPort, String dexterUser, String dexterPassword, String pathDexter,  String projectFullPath, String sourceDir, String binDir, String headerDir,
-    		String analyseFileName, String language, String type) {
-    	this.createServer = createServer;
-    	this.dexterServerPath = dexterServerPath;
-    	this.dexterServer = dexterServer;
-    	this.dexterPort = dexterPort;
-    	this.dexterUser = dexterUser;
-    	this.dexterPassword = dexterPassword;
-        this.pathDexter = pathDexter;
-        this.projectFullPath = projectFullPath;
-        this.sourceDir = sourceDir;
-        this.binDir = binDir;
-        this.headerDir = headerDir;
-        this.analyseFileName = analyseFileName;
-        this.language = language;
-        this.type = type;
-    }
+    public DexterPublisher(boolean createServer, String dexterServerPath, String dexterServer, String dexterPort, String dexterUser, String dexterPassword, String pathDexter, String projectFullPath, String sourceDir, String binDir, String headerDir, 
+    String analyseFileName, boolean file, boolean folder, boolean project, boolean snapshot) { 
+    this.createServer = createServer; 
+    this.dexterServerPath = dexterServerPath; 
+    this.dexterServer = dexterServer; 
+    this.dexterPort = dexterPort; 
+    this.dexterUser = dexterUser; 
+    this.dexterPassword = dexterPassword; 
+    this.pathDexter = pathDexter; 
+    this.projectFullPath = projectFullPath; 
+    this.sourceDir = sourceDir; 
+    this.binDir = binDir; 
+    this.headerDir = headerDir; 
+    this.analyseFileName = analyseFileName; 
+    this.file = file; 
+    this.folder = folder; 
+    this.project = project; 
+    this.snapshot = snapshot; 
+    } 
 
 
-    
-	public boolean isCreateServer() {
-		return createServer;
-	}
 
-	public void setCreateServer(boolean createServer) {
-		this.createServer = createServer;
-	}
+    public boolean isCreateServer() { 
+    	return createServer; 
+    } 
 
-	public String getAnalyseFileName() {
-		return analyseFileName;
-	}
+    public void setCreateServer(boolean createServer) { 
+    	this.createServer = createServer; 
+    } 
 
-	public String getHeaderDir() {
-		return headerDir;
-	}
+    public String getAnalyseFileName() { 
+    	return analyseFileName; 
+    } 
 
-	public static String getFilename() {
-		return filename;
-	}
+    public String getHeaderDir() { 
+    	return headerDir; 
+    } 
+
+    public static String getFilename() { 
+    	return filename; 
+    } 
+
+
+    public String getProjectName() { 
+    	return "project"; 
+    } 
+
+    public String getProjectFullPath() { 
+    	return projectFullPath; 
+    } 
+
+	public String getSourceDir() { 
+	return sourceDir; 
+	} 
+	
+	public String getBinDir() { 
+	return binDir; 
+	} 
+	
+	public boolean isFile() { 
+	return file; 
+	} 
+	
+	public boolean isFolder() { 
+	return folder; 
+	} 
+	public boolean isProject() { 
+	return project; 
+	} 
+	public boolean isSnapshot() { 
+	return snapshot; 
+	} 
 
 	
-	public String getProjectName() {
-		 return "project";
-	}
-
-	public String getProjectFullPath() {
-		return projectFullPath;
-	}
-
-	public String getSourceDir() {
-		return sourceDir;
-	}	
-
-	public String getBinDir() {
-		return binDir;
-	}
-
-	public String getLanguage() {
-		return language;
-	}
-
-	public String getType() {
-		return type;
-	}
-
+	public String getName() { 
+	return pathDexter; 
+	} 
+	public String getDexterServer() { 
+	return dexterServer; 
+	} 
 	
-    public String getName() {
-        return pathDexter;
-    }
-	public String getDexterServer() {
-		return dexterServer;
-	}
-
-	public String getDexterPort() {
-		return dexterPort;
-	}
-
-	public void setDexterPort(String dexterPort) {
-		this.dexterPort = dexterPort;
-	}
-
-	public String getDexterUser() {
-		return dexterUser;
-	}
-
-	public void setDexterUser(String dexterUser) {
-		this.dexterUser = dexterUser;
-	}
-
-	public String getDexterPassword() {
-		return dexterPassword;
-	}
-
-	public void setDexterPassword(String dexterPassword) {
-		this.dexterPassword = dexterPassword;
-	}
-
-	public void setDexterServer(String dexterServer) {
-		this.dexterServer = dexterServer;
-	}
-
-
+	public String getDexterPort() { 
+	return dexterPort; 
+	} 
+	
+	public void setDexterPort(String
+	dexterPort) { 
+	this.dexterPort = dexterPort; 
+	} 
+	
+	public String getDexterUser() { 
+	return dexterUser; 
+	} 
+	
+	public void setDexterUser(String dexterUser) { 
+	this.dexterUser = dexterUser; 
+	} 
+	
+	public String getDexterPassword() { 
+	return dexterPassword; 
+	} 
+	
+	public void setDexterPassword(String dexterPassword) { 
+	this.dexterPassword = dexterPassword; 
+	} 
+	
+	public void setDexterServer(String dexterServer) { 
+	this.dexterServer = dexterServer; 
+	} 
+	private static String OS = null; 
+	public static String getOsName() 
+	{ 
+	if(OS == null) { OS = System.getProperty("os.name"); } 
+	return OS; 
+	} 
+	public static boolean isWindows() 
+	{ 
+	return getOsName().startsWith("Windows"); 
+	} 
 
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
-    	if(createServer) {
-    		ServerSocket s;
-			try {
-				s = new ServerSocket(0);
-				int port = s.getLocalPort();
-				dexterPort = Integer.toString(port);
+   //  projectFullPath = projectFullPath.replaceAll("\\", "\\\\");
+    // sourceDir = sourceDir.replaceAll("\\", "\\\\");
+   //  binDir = binDir.replaceAll("\\", "\\\\");
+   //  headerDir = headerDir.replaceAll("\\", "\\\\");
+     pathToBat = pathDexter + "/bin";
+     pathConfig = pathDexter + "/bin/dexter_cfg.json";
+     projectName = getProjectName();
+     serverDisc = dexterServerPath.substring(0,2); 
+     dexterDisc = pathDexter.substring(0, 2); 
+    if(isCreateServer()) 
+     { 
+     if (isWindows()) 
+     { 
+     writeToBatFile(); 
+     Runtime runtime = Runtime.getRuntime(); 
+     String command = "cmd /c start cmd.exe /K " + "\"cd " + dexterServerPath + " && " + serverDisc + " && run.bat \""; 
+     try { 
+     runtime.exec(command); 
+     } catch (IOException e) { 
+     e.printStackTrace(); 
+     } 
+     } 
+     if (!isWindows()) { 
+     Runtime runtime = Runtime.getRuntime(); 
+     String command = "/bin/bash -c echo vi"; 
+     try { 
+     runtime.exec(command); 
+     } catch (IOException e) { 
+     e.printStackTrace(); 
+     } 
+
+     } 
+     } 
+     
+     if(file) {projectType = "FILE";} 
+     if(folder) {projectType = "FOLDER";} 
+     if(project) {projectType = "PROJECT";} 
+     if(snapshot) {projectType = "SNAPSHOT";} 
+
+     
+      Runtime runtime = Runtime.getRuntime();
+         writeToFile();
+              
+              String command = "cmd /c start cmd.exe /K "  + "\"cd " + pathToBat + " && " + dexterDisc + " && dexter.bat " + dexterUser + " " + dexterPassword + " > logs.txt \"";
+              try {
+				runtime.exec(command);
 			} catch (IOException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-    		dexterServer = "127.0.0.1";
-    		
-    	}
-    	
-     pathToBat = pathDexter + "/bin";
-     pathConfig = pathDexter  = "/bin/dexter_cfg.json";
-     
-     serverDisc = dexterServerPath.substring(0,2);
- //    dexterDisc = pathDexter.substring(0, 2);
-   if (isWindows())
-   {
-	   writeToBatFile();
-	   Runtime runtime = Runtime.getRuntime();	   
-	   String command = "cmd /c start cmd.exe /K "  + "\"cd " + dexterServerPath + " &&" + serverDisc + " && run.bat \"";
-	              try {
-					runtime.exec(command);							
-				} catch (IOException e) {					
-					e.printStackTrace();
-				}
-   }
-     projectName = getProjectName();
- 
    
-   if (!isWindows()) {
-	   Runtime runtime = Runtime.getRuntime();	   
-	   String command = "/bin/bash -c echo vi";
-	              try {
-					runtime.exec(command);							
-				} catch (IOException e) {					
-					e.printStackTrace();
-				}
-	   
-   }
        if(readFile(pathToBat
     		   + "//logs.txt")) {       
-    	  // message = stringBufferOfData.toString();
+    	   message = stringBufferOfData.toString();
        }
        else
     	   message = "Error saving logs";
@@ -251,18 +279,22 @@ public class DexterPublisher extends Recorder {
         }
        
     }
-    private static String OS = null;
-    public static String getOsName()
-    {
-       if(OS == null) { OS = System.getProperty("os.name"); }
-       return OS;
-    }
-    public static boolean isWindows()
-    {
-       return getOsName().startsWith("Windows");
-    }
-
-    
+    private void writeToBatFile() { 
+    	OpenOption myOpt = StandardOpenOption.CREATE; 
+    	try { 
+    	Path fileToWrite = Paths.get(dexterServerPath + "/run.bat"); 
+    	BufferedWriter bufwriter = Files.newBufferedWriter(fileToWrite, Charset.forName("UTF-8"), myOpt); 
+    	bufwriter.write("node server.js -database.host="); 
+    	bufwriter.write(dexterServer); 
+    	bufwriter.write(" database.name=my_dexter_db -database.user="); 
+    	bufwriter.write(dexterUser); 
+    	bufwriter.write(" -database.password="); 
+    	bufwriter.write(dexterPassword); 
+    	bufwriter.close(); 
+    	} catch (Exception e) { 
+    	System.out.println("Error occured while attempting to write to file: " + e.getMessage()); 
+    	} 
+    	} 
     private  void writeToFile() {
     	OpenOption myOpt = StandardOpenOption.CREATE;
         try {
@@ -282,7 +314,7 @@ public class DexterPublisher extends Recorder {
          //   bufwriter.write("\"language\":\"JAVA\", \n"); 
             bufwriter.write("\"modulePath\":\"\", \n");
             bufwriter.write("\"fileName\":[\"" + analyseFileName + "\"], \n");  //main.cpp
-            bufwriter.write("\"type\":\""+ type +"\" \n"); 
+            bufwriter.write("\"type\":\""+ projectType +"\" \n"); 
             bufwriter.write("}\n"); 
             bufwriter.write(dexterPassword);
             bufwriter.write(dexterUser);
@@ -291,22 +323,7 @@ public class DexterPublisher extends Recorder {
             System.out.println("Error occured while attempting to write to file: " + e.getMessage());
         }
     }
-    private  void writeToBatFile() {
-    	OpenOption myOpt = StandardOpenOption.CREATE;
-        try {
-        	Path fileToWrite = Paths.get(dexterServerPath + "/run.bat");
-            BufferedWriter bufwriter = Files.newBufferedWriter(fileToWrite, Charset.forName("UTF-8"),  myOpt);
-            bufwriter.write("node server.js -database.host=");
-            bufwriter.write(dexterServer); 
-            bufwriter.write(" database.name=my_dexter_db -database.user="); 
-            bufwriter.write(dexterUser); 
-            bufwriter.write(" -database.password="); 
-            bufwriter.write(dexterPassword);             
-            bufwriter.close();
-        } catch (Exception e) {
-            System.out.println("Error occured while attempting to write to file: " + e.getMessage());
-        }
-    }
+    
     @Override
     public DescriptorImpl getDescriptor() {
         return (DescriptorImpl) super.getDescriptor();

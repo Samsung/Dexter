@@ -1,6 +1,6 @@
-io\jenkins\plugins\dexter\DexterProjectAction.class
-io\jenkins\plugins\dexter\DexterPublisher.class
-io\jenkins\plugins\dexter\DexterPublisher$DescriptorImpl.class
 io\jenkins\plugins\dexter\DexterBuildAction.class
 io\jenkins\plugins\dexter\DexterPublisher.stapler
+io\jenkins\plugins\dexter\DexterProjectAction.class
+io\jenkins\plugins\dexter\DexterPublisher.class
 META-INF\annotations\hudson.Extension
+io\jenkins\plugins\dexter\DexterPublisher$DescriptorImpl.class
