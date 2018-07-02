@@ -244,15 +244,14 @@ public class DexterPublisher extends Recorder {
 				} else
 					message = "Error saving logs";
 			}
-			if (!isWindows()) {
+			else {
 				Runtime runtime = Runtime.getRuntime();
-				String command = "ls -l";
+				String command = "ls -al";
 				try {
 					runtime.exec(command);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-
 			}
 		}
 
