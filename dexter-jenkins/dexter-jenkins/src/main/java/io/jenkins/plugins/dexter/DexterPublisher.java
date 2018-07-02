@@ -227,7 +227,7 @@ public class DexterPublisher extends Recorder {
 					e.printStackTrace();
 				}
 
-				Runtime runtimeDexter = Runtime.getRuntime();
+			//	Runtime runtimeDexter = Runtime.getRuntime();
 				writeToFile();
 
 				String commandDexter = "cmd /c start cmd.exe /K " + "\"cd " + pathToBat + " && " + dexterDisc
