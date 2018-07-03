@@ -1,1 +1,1 @@
-node server.js -database.host=127.0.0.1 database.name=my_dexter_db -database.user=user -database.password=dexter
+node server.js -database.host=localhost -p=4982 -database.name=my_dexter_db -database.user=user -database.password=dexter

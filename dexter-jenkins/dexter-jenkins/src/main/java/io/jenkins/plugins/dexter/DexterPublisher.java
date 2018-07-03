@@ -193,10 +193,6 @@ public class DexterPublisher extends Recorder {
 
 	@Override
 	public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) {
-		// projectFullPath = projectFullPath.replaceAll("\\", "\\\\");
-		// sourceDir = sourceDir.replaceAll("\\", "\\\\");
-		// binDir = binDir.replaceAll("\\", "\\\\");
-		// headerDir = headerDir.replaceAll("\\", "\\\\");
 		pathToBat = pathDexter + "/bin";
 		pathConfig = pathDexter + "/bin/dexter_cfg.json";
 		projectName = getProjectName();
@@ -227,7 +223,6 @@ public class DexterPublisher extends Recorder {
 					e.printStackTrace();
 				}
 
-			//	Runtime runtimeDexter = Runtime.getRuntime();
 				writeToFile();
 
 				String commandDexter = "cmd /c start cmd.exe /K " + "\"cd " + pathToBat + " && " + dexterDisc
@@ -235,7 +230,6 @@ public class DexterPublisher extends Recorder {
 				try {
 					runtime.exec(commandDexter);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 
@@ -243,15 +237,28 @@ public class DexterPublisher extends Recorder {
 					message = stringBufferOfData.toString();
 				} else
 					message = "Error saving logs";
-			}
-			else {
+			} else {
+				writeToShFile();
 				Runtime runtime = Runtime.getRuntime();
-				String command = "ls -al";
+				String command = "/home/v.sanko/dexter-server/run.sh";
 				try {
 					runtime.exec(command);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+				writeToFile();
+
+				String commandDexter = pathToBat + "/dexter.sh " + dexterUser + " " + dexterPassword + " > logs.txt \"";
+				try {
+					runtime.exec(commandDexter);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+
+				if (readFile(pathToBat + "/logs.txt")) {
+					message = stringBufferOfData.toString();
+				} else
+					message = "Error saving logs";
 			}
 		}
 
@@ -307,6 +314,25 @@ public class DexterPublisher extends Recorder {
 		}
 	}
 
+	private void writeToShFile() {
+		OpenOption myOpt = StandardOpenOption.CREATE;
+		try {
+			Path fileToWrite = Paths.get(dexterServerPath + "/run.sh");
+			BufferedWriter bufwriter = Files.newBufferedWriter(fileToWrite, Charset.forName("UTF-8"), myOpt);
+			bufwriter.write("node server.js -database.host=");
+			bufwriter.write(dexterServer);
+			bufwriter.write(" -p=");
+			bufwriter.write(dexterPort);
+			bufwriter.write(" -database.name=my_dexter_db -database.user=");
+			bufwriter.write(dexterUser);
+			bufwriter.write(" -database.password=");
+			bufwriter.write(dexterPassword);
+			bufwriter.close();
+		} catch (Exception e) {
+			System.out.println("Error occured while attempting to write to file: " + e.getMessage());
+		}
+	}
+
 	private void writeToFile() {
 		OpenOption myOpt = StandardOpenOption.CREATE;
 		try {
@@ -324,11 +350,9 @@ public class DexterPublisher extends Recorder {
 			bufwriter.write("\"libDir\":[], \n");
 			bufwriter.write("\"binDir\":\"\", \n");
 			bufwriter.write("\"modulePath\":\"\", \n");
-			bufwriter.write("\"fileName\":[\"" + analyseFileName + "\"], \n"); 
+			bufwriter.write("\"fileName\":[\"" + analyseFileName + "\"], \n");
 			bufwriter.write("\"type\":\"" + projectType + "\" \n");
 			bufwriter.write("}\n");
-			bufwriter.write(dexterPassword);
-			bufwriter.write(dexterUser);
 			bufwriter.close();
 		} catch (Exception e) {
 			System.out.println("Error occured while attempting to write to file: " + e.getMessage());
@@ -350,8 +374,7 @@ public class DexterPublisher extends Recorder {
 		return new DexterProjectAction(project);
 	}
 
-	@Extension // This indicates to Jenkins that this is an implementation of an extension
-				// point.
+	@Extension
 	public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
 		public DescriptorImpl() {
@@ -359,7 +382,7 @@ public class DexterPublisher extends Recorder {
 		}
 
 		public boolean isApplicable(Class<? extends AbstractProject> aClass) {
-			// Indicates that this builder can be used with all kinds of project types
+
 			return true;
 		}
 

@@ -19,7 +19,7 @@ public class DexterProjectAction implements Action {
 
     @Override
     public String getDisplayName() {
-        return "Dexter Static Analysis log";
+        return "";
     }
 
     @Override
