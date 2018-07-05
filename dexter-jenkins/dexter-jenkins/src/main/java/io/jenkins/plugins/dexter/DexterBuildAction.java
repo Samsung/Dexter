@@ -20,7 +20,7 @@ public class DexterBuildAction implements Action {
 
     @Override
     public String getUrlName() {
-        return "staticexample";
+        return "analysisResults";
     }
 
     public String getMessage() {

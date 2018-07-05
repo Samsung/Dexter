@@ -42,8 +42,9 @@ public class DexterProjectAction implements Action {
         final Class<DexterBuildAction> buildClass =DexterBuildAction.class;
 
         for (AbstractBuild<?, ?> currentBuild : builds) {
-            projectMessage = "Build #"+currentBuild.getAction(buildClass).getBuildNumber()
-                    +": \n"+currentBuild.getAction(buildClass).getMessage() + "\n";
+        	int buildNumber = currentBuild.getAction(buildClass).getBuildNumber();
+        	String message = currentBuild.getAction(buildClass).getMessage();
+        	projectMessage = String.format("Build # %1$s :  %2$s ", buildNumber, message);
             projectMessages.add(projectMessage);
         }
         return projectMessages;
