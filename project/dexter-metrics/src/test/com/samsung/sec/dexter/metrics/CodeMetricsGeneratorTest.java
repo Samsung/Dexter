@@ -29,6 +29,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,10 +51,10 @@ public class CodeMetricsGeneratorTest {
 	FunctionMetrics functionMetrics = null;
 	List<String> functionList = null;
     
-    String TestDirectoryPath = "." + File.separator + File.separator +"src" + File.separator + "sample" + File.separator + "TestDirectory_For_CodeMetricsGeneratorTest";
-    String EmptyJavaTestFilePath = "." + File.separator + File.separator +"src" + File.separator + "sample" + File.separator +"TestJavaFile_For_CodeMetricsGeneratorTest_Empty.java";
-    String TooLongTestFilePath = "." + File.separator + File.separator +"src" + File.separator + "sample" + File.separator +"TestFile_For_CodeMetricsGeneratorTest_TooLong.txt";
-    String LogPath = "." + File.separator + File.separator +"log" + File.separator +"dexter-core.log";
+    String TestDirectoryPath = Paths.get(".", "src", "sample", "TestDirectory_For_CodeMetricsGeneratorTest").toString();    
+    String EmptyJavaTestFilePath = Paths.get(".", "src", "sample", "TestJavaFile_For_CodeMetricsGeneratorTest_Empty.java").toString();
+    String TooLongTestFilePath = Paths.get(".", "src", "sample", "TestFile_For_CodeMetricsGeneratorTest_TooLong.txt").toString();
+    String LogPath = Paths.get(".", "log", "dexter-core.log").toString();
     
 	private boolean isDefault(CodeMetrics codeMetrics) {
 		if(!codeMetrics.getMetric("loc").equals(0)) {
