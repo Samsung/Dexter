@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+***********************************************************************************************
+Microsoft.Bcl.Build.Symbols.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+          Defines the compile time symbols Microsoft forgot
+          Modeled from https://msdn.microsoft.com/en-us/library/ms171464.aspx
+
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(TargetFrameworkVersion)' != ''">
+    <FrameworkVersion>$(TargetFrameworkVersion.Substring(1))</FrameworkVersion>
+    <FrameworkNumber>$(FrameworkVersion.Replace(".", "").PadRight(3,"0"))</FrameworkNumber>
+  </PropertyGroup>
+  <!--- Framework Version -->
+  <PropertyGroup Condition="'$(TargetFrameworkVersion)' != ''">
+    <FrameworkConstants Condition="$(FrameworkNumber) &gt;= 470">$(FrameworkConstants)NETFX_47;</FrameworkConstants>
+    <FrameworkConstants Condition="$(FrameworkNumber) &gt;= 462">$(FrameworkConstants)NETFX_462;</FrameworkConstants>
+    <FrameworkConstants Condition="$(FrameworkNumber) &gt;= 461">$(FrameworkConstants)NETFX_461;</FrameworkConstants>
+    <FrameworkConstants Condition="$(FrameworkNumber) &gt;= 460">$(FrameworkConstants)NETFX_46;</FrameworkConstants>
+    <FrameworkConstants Condition="$(FrameworkNumber) &gt;= 452">$(FrameworkConstants)NETFX_452;</FrameworkConstants>
+    <FrameworkConstants Condition="$(FrameworkNumber) &gt;= 451">$(FrameworkConstants)NETFX_451;</FrameworkConstants>
+    <FrameworkConstants Condition="$(FrameworkNumber) &gt;= 450">$(FrameworkConstants)NETFX_45;</FrameworkConstants>
+    <FrameworkConstants Condition="$(FrameworkNumber) &gt;= 400">$(FrameworkConstants)NETFX_40;</FrameworkConstants>
+    <FrameworkConstants Condition="$(FrameworkNumber) &gt;= 350">$(FrameworkConstants)NETFX_35;</FrameworkConstants>
+    <FrameworkConstants Condition="$(FrameworkNumber) &gt;= 300">$(FrameworkConstants)NETFX_30;</FrameworkConstants>
+    <FrameworkConstants Condition="$(FrameworkNumber) &gt;= 200">$(FrameworkConstants)NETFX_20;</FrameworkConstants>
+    <!--		
+		<FrameworkConstants Condition="$(FrameworkNumber) &gt;= 110">$(FrameworkConstants)NETFX_11;</FrameworkConstants>
+		<FrameworkConstants Condition="$(FrameworkNumber) &gt;= 100">$(FrameworkConstants)NETFX_10;</FrameworkConstants>
+		-->
+  </PropertyGroup>
+  <!--- Framework Profiles -->
+  <PropertyGroup Condition="'$(TargetFrameworkProfile)' != ''">
+    <FrameworkConstants Condition="$(TargetFrameworkProfile.StartsWith('Profile'))">PORTABLE;PROFILE_$(TargetFrameworkProfile.ToUpper().Substring(7));$(FrameworkConstants)</FrameworkConstants>
+  </PropertyGroup>
+  <!--- Mono -->
+  <PropertyGroup Condition="'$(OS)' != 'Windows_NT' ">
+    <FrameworkConstants>MONO;$(FrameworkConstants)</FrameworkConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(OS)' == 'Windows_NT' ">
+    <FrameworkConstants Condition="'$(TargetFrameworkProfile)' != '' AND '$(TargetFrameworkProfile.ToUpper())' == 'MONO'">MONO;$(FrameworkConstants)</FrameworkConstants>
+  </PropertyGroup>
+  <!-- Xamarin -->
+  <PropertyGroup Condition="'$(XamarinAndroidVersion)' != '' OR '$(IOSDebuggerPort)' != ''">
+    <FrameworkConstants>XAMARIN;$(FrameworkConstants)</FrameworkConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(XamarinAndroidVersion)' != ''">
+    <FrameworkConstants>ANDROID;$(FrameworkConstants)</FrameworkConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(IOSDebuggerPort)' != ''">
+    <FrameworkConstants>IOS;$(FrameworkConstants)</FrameworkConstants>
+  </PropertyGroup>
+  
+  <!--- Messages -->
+  <Target Name="BeforeBuild">
+    <Message Importance="High" Text="Frameworks #$(FrameworkNumber): '$(FrameworkConstants)'" />
+  </Target>
+
+  <PropertyGroup>
+    <DefineConstants Condition="'$(FrameworkConstants)' != ''">$(FrameworkConstants)$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+  
+</Project>

@@ -1,0 +1,5 @@
+﻿{"checkerList" :
+[
+{"code":"USLEEP","name":"USEEP for Critical Secure Coding","type":"BOTH","categoryName":"Market Issue","severityCode":"CRI","version":"0.10.6","description":"usleep(useconds_t usec) function can affect system performance, if usec parameter set too shortly. VD recommend that you use more than 10000 ms of usleep function.","isActive":true,"properties":{"value":"10000"},"cwe":0}
+],
+"toolName":"dexter-cs-crc","language":"C_SHARP"}

@@ -1,0 +1,52 @@
+﻿{
+  "checkerList": [
+    {
+      "code": "VconfGet",
+      "name": " GET",
+      "type": "BOTH",
+      "categoryName": "CsharpDepend",
+      "severityCode": "CRI",
+      "version": "0.1.0",
+      "description": " to check",
+      "isActive": true,
+      "properties": { "value": "Vconf.GetString,Vconf.GetInt,Vconf.GetDouble,Vconf.GetBool,VconfUtil.GetStringValue" },
+      "cwe": 0
+    },
+    {
+      "code": "VconfSet",
+      "name": " SET",
+      "type": "BOTH",
+      "categoryName": "CsharpDepend",
+      "severityCode": "CRI",
+      "version": "0.1.0",
+      "description": " to check",
+      "isActive": true,
+      "properties": { "value": "Vconf.SetString,Vconf.SetInt,Vconf.SetDouble,Vconf.SetBool" },
+      "cwe": 0
+    },
+    {
+      "code": "VconfETC",
+      "name": " ETC",
+      "type": "BOTH",
+      "categoryName": "CsharpDepend",
+      "severityCode": "CRI",
+      "version": "0.1.0",
+      "description": " to check",
+      "isActive": true,
+      "properties": { "value": "Vconf.NotifyKeyChanged" },
+      "cwe": 0
+    },
+    {
+      "code": "MessagePort",
+      "name": " Usage",
+      "type": "BOTH",
+      "categoryName": "CsharpDepend",
+      "severityCode": "CRI",
+      "version": "0.1.0",
+      "description": " to check",
+      "isActive": true,
+      "properties": { "value": "new MessagePort,new FSMessagePort" },
+      "cwe": 0
+    }
+  ],
+"toolName":"dexter-cs-depend","language":"C_SHARP"}
