@@ -125,6 +125,7 @@ namespace DexterCS
                 {
                     case "xml":
                         this.IsXmlResultFile = true;
+                        CreateXmlResultFile(ResultFileName);
                         break;
                     case "xml2":
                         this.IsXml2ResultFile = true;
@@ -154,6 +155,19 @@ namespace DexterCS
             }
             ServerHostIp = host;
             ServerPort = port;
+        }
+
+        private void CreateXmlResultFile(string fileName)
+        {
+            try
+            {
+                XmlResultFile = new FileInfo(fileName + ".xml");
+                File.WriteAllText(XmlResultFile.FullName, "", Encoding.UTF8);
+            }
+            catch (IOException e)
+            {
+                throw new DexterRuntimeException(e.Message);
+            }
         }
 
         private void CreateJsonResultFile(string fileName)

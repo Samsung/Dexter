@@ -47,7 +47,8 @@ namespace DexterCS
                 {
                     cliResultFile.WriteXml2ResultFilePrefix(cliOption.Xml2ResultFile);
                 }
-            } catch (IOException e)
+            }
+            catch (IOException e)
             {
                 cliLog.Error(e.Message, e);
             }
@@ -57,12 +58,16 @@ namespace DexterCS
         {
             try
             {
-                if (cliOption.IsJsonResultFile)
+                if (cliOption.IsXmlResultFile)
+                {
+                    cliResultFile.WriteXmlResultFilePostfix(cliOption.XmlResultFile);
+                }
+                else if (cliOption.IsJsonResultFile)
                 {
                     cliResultFile.WriteJsonResultFilePostfix(cliOption.JsonResultFile);
-                    //cliLog.PrintResultFileLocation(cliOption.IsJsonResultFile);
                 }
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 cliLog.Error(e.StackTrace);
             }
@@ -85,7 +90,7 @@ namespace DexterCS
 
         public void HandleAnalysisResult(List<AnalysisResult> resultList, IDexterClient client)
         {
-            if(resultList.Count == 0)
+            if (resultList.Count == 0)
             {
                 cliLog.Warn("No defect result");
                 return;
@@ -101,7 +106,8 @@ namespace DexterCS
                 string resultFilePrefixName = AnalysisResultFileManager.Instance.
                     GetResultFilePrefixName(firstAnalysisResult.ModulePath, firstAnalysisResult.FileName);
                 SendResultJob.SendResultFileThenDelete(client, resultFilePrefixName);
-            } catch (IOException e)
+            }
+            catch (IOException e)
             {
                 cliLog.Error(e.StackTrace);
             }
@@ -114,14 +120,14 @@ namespace DexterCS
             }
             else
             {
-                cliLog.Info("    > Total Defects: " + allDefectList.Count); 
+                cliLog.Info("    > Total Defects: " + allDefectList.Count);
             }
             PrintDefect(allDefectList);
         }
 
         private void PrintDefect(List<Defect> allDefectList)
         {
-            foreach(var defect in allDefectList)
+            foreach (var defect in allDefectList)
             {
                 switch (defect.SeverityCode)
                 {
@@ -148,8 +154,8 @@ namespace DexterCS
                 totalCnt++;
                 totalOccurenceCnt += defect.Occurences.Count;
 
-                cliLog.Info("    > " + defect.CheckerCode + " / " + defect.SeverityCode + " / " 
-                    + defect.Occurences.Count + " / " + defect.MethodName +  " / " + defect.ClassName);
+                cliLog.Info("    > " + defect.CheckerCode + " / " + defect.SeverityCode + " / "
+                    + defect.Occurences.Count + " / " + defect.MethodName + " / " + defect.ClassName);
 
                 PrintOccurences(defect.Occurences.ToArray());
             }
@@ -158,7 +164,7 @@ namespace DexterCS
         private void PrintOccurences(Occurence[] occurence)
         {
             int i = 0;
-            foreach(var occ in occurence)
+            foreach (var occ in occurence)
             {
                 i += 1;
                 if (i == occurence.Count())
@@ -174,7 +180,7 @@ namespace DexterCS
             }
         }
 
-        private void WriteResultFile(List<Defect> allDefectList, string sourceFileFullPath) 
+        private void WriteResultFile(List<Defect> allDefectList, string sourceFileFullPath)
         {
             if (cliOption.IsJsonResultFile)
             {
