@@ -35,10 +35,12 @@ import org.junit.Test;
 import java.io.File;
 import java.nio.file.Paths;
 
+
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.metrics.util.MetricUtil;
 
 public class MetricUtilTest {
+
 	String TestFilePath = (Paths.get(".", "src", "sample", "TestFile_For_MetricUtilTest.java")).toString();
 	
 	@Test
@@ -67,6 +69,7 @@ public class MetricUtilTest {
 		int start = 0;
 		int end = 10;
 		try {
+
 			MetricUtil.getFunctionLOCArray(((Paths.get(".", "ThereIsNoSuchFile.no")).toString()), start, end);
 			Assert.fail();
 		}
