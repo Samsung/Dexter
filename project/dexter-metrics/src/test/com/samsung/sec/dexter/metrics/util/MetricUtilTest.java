@@ -33,12 +33,15 @@ import org.junit.Assert;
 
 import org.junit.Test;
 import java.io.File;
+import java.nio.file.Paths;
+
 
 import com.samsung.sec.dexter.core.exception.DexterRuntimeException;
 import com.samsung.sec.dexter.metrics.util.MetricUtil;
 
 public class MetricUtilTest {
-	String TestFilePath = "." + File.separator + File.separator + "src" + File.separator+ "sample" + File.separator + "TestFile_For_MetricUtilTest.java";
+
+	String TestFilePath = (Paths.get(".", "src", "sample", "TestFile_For_MetricUtilTest.java")).toString();
 	
 	@Test
 	public void test() {
@@ -66,7 +69,8 @@ public class MetricUtilTest {
 		int start = 0;
 		int end = 10;
 		try {
-			MetricUtil.getFunctionLOCArray( "." + File.separator + File.separator +"ThereIsNoSuchFile.no", start, end);
+
+			MetricUtil.getFunctionLOCArray(((Paths.get(".", "ThereIsNoSuchFile.no")).toString()), start, end);
 			Assert.fail();
 		}
 		catch(DexterRuntimeException e) {
