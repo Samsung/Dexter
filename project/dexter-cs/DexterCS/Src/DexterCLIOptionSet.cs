@@ -31,7 +31,7 @@ namespace DexterCS
 
         [Option('X', "XML Result File with TimeStamp", Required = false,
             HelpText = "Create XML result file with timestamp - dexter-result_yyyyMMddhh:mm:ss.xml. eg) -X")]
-        public string XML2ResultFile { get; set; }
+        public bool XML2ResultFile { get; set; }
 
         [Option('F', Required = true, HelpText ="-F json/ -F xml / -F xml2, default: json")]
         public string ResultFormat { get; set; }
