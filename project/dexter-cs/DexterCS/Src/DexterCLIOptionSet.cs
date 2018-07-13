@@ -27,7 +27,7 @@ namespace DexterCS
         public string UserPassword { get; set; }
 
         [Option('x', "XML Result File", Required = false, HelpText = "Create XML result file - dexter-result.xml. eg) -x")]
-        public string XMLResultFile { get; set; }
+        public bool XMLResultFile { get; set; }
 
         [Option('X', "XML Result File with TimeStamp", Required = false,
             HelpText = "Create XML result file with timestamp - dexter-result_yyyyMMddhh:mm:ss.xml. eg) -X")]
