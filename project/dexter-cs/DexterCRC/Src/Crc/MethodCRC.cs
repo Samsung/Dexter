@@ -29,6 +29,7 @@ namespace DexterCRC
             foreach(var methodRaw in methodRaws)
             {
                 string methodName = methodRaw.Identifier.ToString();
+
                 if (underscore.HasDefect(methodName))
                 {
                     PreOccurence preOcc = underscore.MakeDefect(config, checker, methodRaw);

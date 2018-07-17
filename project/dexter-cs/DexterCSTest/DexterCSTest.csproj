@@ -125,6 +125,7 @@
     <Compile Include="Src\CRCLogic\BracketTest.cs" />
     <Compile Include="Src\CRCLogic\CamelCasingTest.cs" />
     <Compile Include="Src\CRCLogic\ClassCRCTest.cs" />
+    <Compile Include="Src\CRCLogic\CommentRulesTest.cs" />
     <Compile Include="Src\CRCLogic\DelegateCRCTest.cs" />
     <Compile Include="Src\CRCLogic\EventCRCTest.cs" />
     <Compile Include="Src\CRCLogic\FieldCRCTest.cs" />
