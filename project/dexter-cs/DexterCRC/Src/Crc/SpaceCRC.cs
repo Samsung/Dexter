@@ -29,12 +29,15 @@ namespace DexterCRC.Src.Crc
 
             foreach (var methodRaw in methodRaws)
             {
-                
-                if (methodRaw.GetLeadingTrivia().ToList().Count == 0)
+                foreach (object item in methodRaw.GetLeadingTrivia().ToList())
                 {
-                    spaceRules.HasDefect(true);
-                    PreOccurence preOcc = spaceRules.MakeDefect(config, checker, methodRaw);
-                    result.AddDefectWithPreOccurence(preOcc);
+                    if (!item.ToString().Contains(Environment.NewLine))
+                    {
+                        spaceRules.HasDefect(true);
+                        PreOccurence preOcc = spaceRules.MakeDefect(config, checker, methodRaw);
+                        result.AddDefectWithPreOccurence(preOcc);
+                    }
+                        
                 }
             }
         }
