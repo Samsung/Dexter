@@ -127,6 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Src\CheckerLogic\CommentRules.cs" />
+    <Compile Include="Src\CheckerLogic\SpaceRules.cs" />
     <Compile Include="Src\CheckerLogic\WithBrace.cs" />
     <Compile Include="Src\CheckerLogic\CamelCasing.cs" />
     <Compile Include="Src\CheckerLogic\ICheckerLogic.cs" />
@@ -151,6 +152,7 @@
     <Compile Include="Src\Crc\ParameterCRC.cs" />
     <Compile Include="Src\Crc\PropertyCRC.cs" />
     <Compile Include="Src\Crc\CommentCRC.cs" />
+    <Compile Include="Src\Crc\SpaceCRC.cs" />
     <Compile Include="Src\Crc\WhileStatementsCRC.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
