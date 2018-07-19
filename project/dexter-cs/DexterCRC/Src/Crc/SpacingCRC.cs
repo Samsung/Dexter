@@ -6,17 +6,18 @@ using System.Threading.Tasks;
 using DexterCRC.Src.CheckerLogic;
 using DexterCS;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace DexterCRC.Src.Crc
+namespace DexterCRC
 {
-    class SpaceCRC : ICRCLogic
+    class SpacingCRC : ICRCLogic
     {
-        SpaceRules spaceRules;
+        MethodSpacing methodSpacing;
 
-        public SpaceCRC()
+        public SpacingCRC()
         {
-            spaceRules = new SpaceRules();
+            methodSpacing = new MethodSpacing();
         }
 
         public void Analyze(AnalysisConfig config, AnalysisResult result, Checker checker, SyntaxNode syntaxRoot)
@@ -29,19 +30,11 @@ namespace DexterCRC.Src.Crc
 
             foreach (var methodRaw in methodRaws)
             {
-                int count = 0;
-                foreach (object item in methodRaw.GetLeadingTrivia().ToList())
-                {                    
-                    if (item.ToString().Contains(Environment.NewLine))
-                    {
-                        count = count++;
-                    }
-                }
+                SyntaxTriviaList syntaxTriviaList = methodRaw.GetLeadingTrivia();
 
-                if (count > 1 || count == 0)
+                if (methodSpacing.HasDefect(syntaxTriviaList))
                 {
-                    spaceRules.HasDefect(true);
-                    PreOccurence preOcc = spaceRules.MakeDefect(config, checker, methodRaw);
+                    PreOccurence preOcc = methodSpacing.MakeDefect(config, checker, methodRaw);
                     result.AddDefectWithPreOccurence(preOcc);
                 }
             }
