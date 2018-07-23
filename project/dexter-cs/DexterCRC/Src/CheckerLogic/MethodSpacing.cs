@@ -37,19 +37,9 @@ namespace DexterCRC.Src.CheckerLogic
 
         private bool ContainsOneBlankLine(SyntaxTriviaList syntaxTriviaList)
         {
-            int endOfLineCount = 0;
-            int singleCommentLineCount = 0;
-            int multiCommentLineCount = 0;
-
-            singleCommentLineCount = syntaxTriviaList.Count(syntaxTrivia => syntaxTrivia.IsKind(SyntaxKind.SingleLineCommentTrivia));
-            endOfLineCount = syntaxTriviaList.Count(syntaxTrivia => syntaxTrivia.IsKind(SyntaxKind.EndOfLineTrivia));
-            multiCommentLineCount = syntaxTriviaList.Count(syntaxTrivia => syntaxTrivia.IsKind(SyntaxKind.MultiLineCommentTrivia));
-
-            Console.WriteLine("Trivia: " + "-------" + endOfLineCount + " " + singleCommentLineCount + " " + multiCommentLineCount);
-            foreach (SyntaxTrivia x in syntaxTriviaList)
-            {
-                Console.Write(x);
-            }
+            int endOfLineCount = syntaxTriviaList.Count(syntaxTrivia => syntaxTrivia.IsKind(SyntaxKind.EndOfLineTrivia));
+            int singleCommentLineCount = syntaxTriviaList.Count(syntaxTrivia => syntaxTrivia.IsKind(SyntaxKind.SingleLineCommentTrivia));
+            int multiCommentLineCount = syntaxTriviaList.Count(syntaxTrivia => syntaxTrivia.IsKind(SyntaxKind.MultiLineCommentTrivia));
 
             // Counting only the "blank lines", so lines with comments do not count
             return endOfLineCount - singleCommentLineCount - multiCommentLineCount == 1;
