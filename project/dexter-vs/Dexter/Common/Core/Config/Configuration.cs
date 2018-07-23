@@ -99,6 +99,13 @@ namespace Dexter.Common.Config
         public string DexterExecutorPath { get { return dexterHome + "\\bin\\dexter-executor.jar"; } }
 
         /// <summary>
+        /// Default path to DexterCS executable: dexterHome + "\bin\DexterCS.exe"
+        /// </summary>
+        [JsonIgnore]
+        public string DexterCSPath { get { return dexterHome + "\\bin\\DexterCS.exe"; } }
+
+
+        /// <summary>
         /// Default path to dexter configuration file: "\dexter-config-vsplugin.json"
         /// </summary>
         [JsonIgnore]

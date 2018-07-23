@@ -98,8 +98,8 @@ namespace Dexter.Analysis
             dexterProcess = new Process();
             dexterProcess.StartInfo = new ProcessStartInfo()
             {
-                FileName = "java.exe",
-                Arguments = "-jar " + configuration.DexterExecutorPath + createUserFlag + createXmlResultFlag + configFlag + credentialsParams,
+                FileName = configuration.DexterCSPath,
+                Arguments = createUserFlag + createXmlResultFlag + configFlag + credentialsParams,
                 WorkingDirectory = Path.GetDirectoryName(configuration.DexterExecutorPath),
                 CreateNoWindow = true,
                 UseShellExecute = false,
