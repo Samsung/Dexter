@@ -1,4 +1,5 @@
 ﻿using Dexter.Common.Config;
+using Dexter.Common.Utils;
 using Dexter.Defects;
 using System;
 using System.Diagnostics;
@@ -96,16 +97,35 @@ namespace Dexter.Analysis
                 : " -u " + configuration.userName + " -p " + configuration.userPassword + " -h " + configuration.dexterServerIp + " -o " + configuration.dexterServerPort;
                 
             dexterProcess = new Process();
-            dexterProcess.StartInfo = new ProcessStartInfo()
+
+            if (LanguageDetector.IsMostCommonLanguageCSharp(configuration.projectFullPath))
             {
-                FileName = configuration.DexterCSPath,
-                Arguments = createUserFlag + createXmlResultFlag + configFlag + credentialsParams,
-                WorkingDirectory = Path.GetDirectoryName(configuration.DexterExecutorPath),
-                CreateNoWindow = true,
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true
-            };
+                dexterProcess.StartInfo = new ProcessStartInfo()
+                {
+                    FileName = configuration.DexterCSPath,
+                    Arguments = createUserFlag + createXmlResultFlag + configFlag + credentialsParams,
+                    WorkingDirectory = Path.GetDirectoryName(configuration.DexterExecutorPath),
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
+                };
+            }
+            else
+            {
+                dexterProcess.StartInfo = new ProcessStartInfo()
+                {
+                    FileName = "java.exe",
+                    Arguments = "-jar " + configuration.DexterExecutorPath + createUserFlag + createXmlResultFlag + configFlag + credentialsParams,
+                    WorkingDirectory = Path.GetDirectoryName(configuration.DexterExecutorPath),
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
+                };
+            }
+
+            
             
             dexterProcess.OutputDataReceived += OutputDataReceived;
             dexterProcess.ErrorDataReceived += ErrorDataReceived;
