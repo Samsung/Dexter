@@ -39,11 +39,11 @@ namespace DexterCS
                 {
                     cliResultFile.WriteJsonResultFilePrefix(cliOption.JsonResultFile);
                 }
-                else if (cliOption.IsXmlResultFile)
+                if (cliOption.IsXmlResultFile)
                 {
                     cliResultFile.WriteXmlResultFilePrefix(cliOption.XmlResultFile);
                 }
-                else if (cliOption.IsXml2ResultFile)
+                if (cliOption.IsXml2ResultFile)
                 {
                     cliResultFile.WriteXml2ResultFilePrefix(cliOption.Xml2ResultFile);
                 }
