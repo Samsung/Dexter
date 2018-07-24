@@ -33,7 +33,7 @@ namespace DexterCS
             }
             catch (IOException)
             {
-                throw new DexterRuntimeException("writeJsonResultFilePostfix Exception");
+                throw new DexterRuntimeException("Exception in method " + DexterUtil.GetCurrentMethodName());
             }
         }
 
@@ -48,7 +48,7 @@ namespace DexterCS
             }
             catch (IOException)
             {
-                throw new DexterRuntimeException("writeJsonResultFilePrefix Exception");
+                throw new DexterRuntimeException("Exception in method " + DexterUtil.GetCurrentMethodName());
             }
         }
 
@@ -86,7 +86,7 @@ namespace DexterCS
             }
             catch (IOException)
             {
-                throw new DexterRuntimeException("WriteXmlResultFileBody Exception");
+                throw new DexterRuntimeException("Exception in method " + DexterUtil.GetCurrentMethodName());
             }
         }
 
@@ -101,7 +101,7 @@ namespace DexterCS
             }
             catch (IOException)
             {
-                throw new DexterRuntimeException("writeJsonResultFilePostfix Exception");
+                throw new DexterRuntimeException("Exception in method " + DexterUtil.GetCurrentMethodName());
             }
         }
 
@@ -116,7 +116,7 @@ namespace DexterCS
             }
             catch (IOException)
             {
-                throw new DexterRuntimeException("writeXmlResultFilePrefix Exception");
+                throw new DexterRuntimeException("Exception in method " + DexterUtil.GetCurrentMethodName());
             }
         }
 
@@ -142,7 +142,7 @@ namespace DexterCS
             }
             catch (IOException)
             {
-                throw new DexterRuntimeException("writeJsonResultFilePostfix Exception");
+                throw new DexterRuntimeException("Exception in method " + DexterUtil.GetCurrentMethodName());
             }
         }
 
@@ -157,7 +157,7 @@ namespace DexterCS
             }
             catch (IOException)
             {
-                throw new DexterRuntimeException("writeXmlResultFilePrefix Exception");
+                throw new DexterRuntimeException("Exception in method " + DexterUtil.GetCurrentMethodName());
             }
         }
     }
