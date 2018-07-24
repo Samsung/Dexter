@@ -11,7 +11,7 @@ namespace Dexter.Common.Config
     public sealed class Configuration
     {
         /// <summary>
-        /// Dexter Home path
+        /// Dexter/DexterCS Home path
         /// </summary>
         public string dexterHome { get; set; }
 
@@ -124,7 +124,7 @@ namespace Dexter.Common.Config
         }
 
         /// <summary>
-        /// Whether Dexter home is enabled (Dexter home is available for only c/c++ analysis)
+        /// Whether Dexter/Dexter CS home is enabled (Dexter/DexterCS home is available for only c/c++ analysis)
         /// </summary>
         [JsonIgnore]
         public bool IsDexterHomeEnabled { get; set; }

@@ -9,7 +9,7 @@ namespace Dexter.Common.Config
     public class DexterInfo
     {
         /// <summary>
-        /// Dexter Home path
+        /// Dexter/DexterCS Home path
         /// </summary>
         public string dexterHome { get; set; }
 
@@ -39,7 +39,7 @@ namespace Dexter.Common.Config
         public bool standalone { get; set; }
 
         /// <summary>
-        ///  Whether Dexter home is enabled (Dexter home is available for only c/c++ analysis)
+        ///  Whether Dexter/DexterCS home is enabled (Dexter/DexterCS home is available for only c/c++ analysis)
         /// </summary>
         public bool IsDexterHomeEnabled { get; set; }
 

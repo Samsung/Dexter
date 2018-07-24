@@ -179,7 +179,7 @@ namespace Dexter.UI.Settings
             this.enableDexterHomeCheckBox.Name = "enableDexterHomeCheckBox";
             this.enableDexterHomeCheckBox.Size = new System.Drawing.Size(222, 17);
             this.enableDexterHomeCheckBox.TabIndex = 6;
-            this.enableDexterHomeCheckBox.Text = "Enable dexter home  (Only C/C++ project)";
+            this.enableDexterHomeCheckBox.Text = "Enable Dexter/DexterCS home";
             this.enableDexterHomeCheckBox.UseVisualStyleBackColor = true;
             this.enableDexterHomeCheckBox.CheckedChanged += new System.EventHandler(this.enableDexterHomeCheckBox_CheckedChanged);
             // 
@@ -203,7 +203,7 @@ namespace Dexter.UI.Settings
             this.dexterPathLabel.Name = "dexterPathLabel";
             this.dexterPathLabel.Size = new System.Drawing.Size(91, 13);
             this.dexterPathLabel.TabIndex = 1;
-            this.dexterPathLabel.Text = "Dexter home path";
+            this.dexterPathLabel.Text = "Dexter/DexterCS home path";
             // 
             // createUserButton
             // 
