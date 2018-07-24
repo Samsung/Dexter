@@ -3,7 +3,6 @@ using Dexter.Common.Utils;
 using Dexter.Defects;
 using System;
 using System.Diagnostics;
-
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
@@ -40,7 +39,7 @@ namespace Dexter.Analysis
         /// </summary>   
         /// <param name="dexterPath">path to a dexter-executor.jar</param>
         /// <param name="configuration">Configuration</param>
-        public DexterLegacyAnalyzer(Configuration configuration) 
+        public DexterLegacyAnalyzer(Configuration configuration)
         {
             this.configuration = configuration;
             if (configuration == null)
@@ -68,7 +67,7 @@ namespace Dexter.Analysis
         /// </summary>
         public void Cancel()
         {
-            if (dexterProcess!=null && !dexterProcess.HasExited)
+            if (dexterProcess != null && !dexterProcess.HasExited)
             {
                 dexterProcess.Kill();
             }
@@ -92,19 +91,26 @@ namespace Dexter.Analysis
             string configFlag = File.Exists(Configuration.DefaultConfigurationPath) ? " -f " + Configuration.DefaultConfigurationPath : "";
             string createUserFlag = createUser ? " -c " : "";
             string createXmlResultFlag = " -x ";
-            string credentialsParams = (configuration.standalone && !createUser) 
-                ? " -s " 
+            string credentialsParams = (configuration.standalone && !createUser)
+                ? " -s "
                 : " -u " + configuration.userName + " -p " + configuration.userPassword + " -h " + configuration.dexterServerIp + " -o " + configuration.dexterServerPort;
-                
+
             dexterProcess = new Process();
+
+            DexterInfo dexterInfo = DexterInfo.fromConfiguration(configuration);
 
             if (LanguageDetector.IsCodeModelLanguageCSharp(configuration.projectFullPath))
             {
+                if (!File.Exists(configuration.DexterCSPath))
+                {
+                    throw new DexterRuntimeException("DexterCS.exe not found in \"" + configuration.DexterCSPath + "\"");
+                }
+
                 dexterProcess.StartInfo = new ProcessStartInfo()
                 {
                     FileName = configuration.DexterCSPath,
                     Arguments = createUserFlag + createXmlResultFlag + configFlag + credentialsParams,
-                    WorkingDirectory = Path.GetDirectoryName(configuration.DexterExecutorPath),
+                    WorkingDirectory = Path.GetDirectoryName(configuration.DexterCSPath),
                     CreateNoWindow = true,
                     UseShellExecute = false,
                     RedirectStandardOutput = true,
@@ -113,6 +119,11 @@ namespace Dexter.Analysis
             }
             else
             {
+                if (!File.Exists(configuration.DexterExecutorPath))
+                {
+                    throw new DexterRuntimeException("dexter-executor.jar not found in \"" + configuration.DexterExecutorPath + "\"");
+                }
+
                 dexterProcess.StartInfo = new ProcessStartInfo()
                 {
                     FileName = "java.exe",
@@ -125,11 +136,9 @@ namespace Dexter.Analysis
                 };
             }
 
-            
-            
             dexterProcess.OutputDataReceived += OutputDataReceived;
             dexterProcess.ErrorDataReceived += ErrorDataReceived;
-            dexterProcess.Disposed += (s,e) => dexterProcess = null;
+            dexterProcess.Disposed += (s, e) => dexterProcess = null;
         }
 
         /// <summary>
@@ -164,8 +173,8 @@ namespace Dexter.Analysis
 
             using (XmlReader reader = XmlReader.Create(resultFile))
             {
-               XmlSerializer serializer = new XmlSerializer(typeof(Result));
-               return (Result)serializer.Deserialize(reader);
+                XmlSerializer serializer = new XmlSerializer(typeof(Result));
+                return (Result)serializer.Deserialize(reader);
             }
         }
 
