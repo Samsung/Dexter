@@ -18,5 +18,17 @@ namespace DexterCS.Tests
             // Then
             Assert.AreEqual(expectedPath, result);
         }
+
+        [TestMethod()]
+        public void GetCurrentMethodNameTest_ReturnsCorrectMethodName()
+        {
+            // Given
+
+            // When
+            string methodName = DexterUtil.GetCurrentMethodName();
+
+            // Then
+            Assert.AreEqual("GetCurrentMethodNameTest_ReturnsCorrectMethodName", methodName);
+        }
     }
 }

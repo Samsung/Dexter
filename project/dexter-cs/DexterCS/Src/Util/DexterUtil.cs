@@ -1,6 +1,7 @@
 ﻿using log4net;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -67,6 +68,14 @@ namespace DexterCS
             {
                 throw new DexterRuntimeException(e.Message);
             }
+        }
+
+        public static string GetCurrentMethodName()
+        {
+            StackTrace st = new StackTrace();
+            StackFrame sf = st.GetFrame(1);
+
+            return sf.GetMethod().Name;
         }
 
         public static string currentDateTime()
