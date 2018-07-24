@@ -1,8 +1,6 @@
 ﻿using EnvDTE;
 using EnvDTE80;
 using System;
-using System.Collections.Generic;
-using System.IO;
 
 namespace Dexter.Common.Utils
 {
@@ -23,6 +21,10 @@ namespace Dexter.Common.Utils
             }
         }
 
+        /// <summary>
+        /// DTE object for Visual Studio 2015 and Visual Studio 2017 or null otherwise
+        /// </summary>
+        /// <returns>DTE object or null</returns>
         private static DTE2 GetDTE2Object()
         {
             DTE2 dte2 = null;
