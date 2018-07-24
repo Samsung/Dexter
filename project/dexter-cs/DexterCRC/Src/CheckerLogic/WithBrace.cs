@@ -1,6 +1,6 @@
-﻿using System;
-using DexterCS;
+﻿using DexterCS;
 using Microsoft.CodeAnalysis.CSharp;
+using System;
 
 namespace DexterCRC
 {

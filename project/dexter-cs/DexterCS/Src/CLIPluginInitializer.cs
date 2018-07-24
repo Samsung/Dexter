@@ -1,10 +1,8 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Collections.Generic;
-using log4net;
 using System.IO;
 using System.Reflection;
-using log4net.Plugin;
-using DexterCS;
 
 namespace DexterCS
 {

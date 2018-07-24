@@ -1,6 +1,6 @@
-﻿using System;
+﻿using DexterCS.Client;
+using System;
 using System.Collections.Generic;
-using DexterCS.Client;
 
 namespace DexterCS
 {

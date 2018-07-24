@@ -1,13 +1,7 @@
-﻿using DexterCS;
-using log4net;
+﻿using log4net;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DexterCS.Client

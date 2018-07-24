@@ -1,9 +1,8 @@
-﻿using System;
-using DexterCS;
-using DexterCS.Client;
+﻿using DexterCS.Client;
+using log4net;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using log4net;
 using System.Text;
 
 namespace DexterCS.Job

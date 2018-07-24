@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using CommandLine;
-using CommandLine.Text;
-using System.IO;
-using System.ComponentModel;
-using System.Text;
-using System.Collections;
+﻿using CommandLine;
 using log4net;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Text;
 
 namespace DexterCS
 {

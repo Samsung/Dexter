@@ -1,12 +1,12 @@
-﻿using System;
-using System.Text;
-using DexterCS;
+﻿using DexterCS;
 using log4net;
-using System.Reflection;
-using System.IO;
-using Newtonsoft.Json;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Newtonsoft.Json;
+using System;
+using System.IO;
+using System.Reflection;
+using System.Text;
 
 namespace DexterDepend
 {

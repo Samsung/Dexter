@@ -1,9 +1,8 @@
-﻿using System;
+﻿using DexterCS.Client;
+using log4net;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
-using DexterCS.Client;
-using log4net;
 
 namespace DexterCS
 {

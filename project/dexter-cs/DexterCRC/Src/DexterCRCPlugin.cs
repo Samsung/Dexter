@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DexterCS;
-using System.Reflection;
-using System.IO;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis;
-using System.ComponentModel;
+﻿using DexterCS;
 using log4net;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Newtonsoft.Json;
+using System;
+using System.IO;
+using System.Reflection;
+using System.Text;
 
 namespace DexterCRC
 {

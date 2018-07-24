@@ -1,7 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Text;
-using static DexterCS.DexterConfig;
+﻿using System.ComponentModel;
 
 namespace DexterCS
 {
