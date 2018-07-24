@@ -160,7 +160,7 @@ namespace DexterCS
             }
             catch (IOException)
             {
-                CliLog.Error("IOException in DexteerConfig");
+                CliLog.Error("IOException in DexterConfig");
             }
         }
 

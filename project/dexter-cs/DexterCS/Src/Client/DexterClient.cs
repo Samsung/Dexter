@@ -39,7 +39,7 @@ namespace DexterCS.Client
         {
             if (string.IsNullOrEmpty(resultJson))
             {
-                throw new DexterRuntimeException("The result file has noe content to send");
+                throw new DexterRuntimeException("The result file has no content to send");
             }
 
             if (DexterConfig.Run_Mode.CLI == DexterConfig.Instance.RunMode)

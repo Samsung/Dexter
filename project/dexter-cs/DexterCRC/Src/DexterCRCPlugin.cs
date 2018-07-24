@@ -43,7 +43,7 @@ namespace DexterCRC
 
         public string PLUGIN_AUTHOR
         {
-            get { return "Samsung Electroincs"; }
+            get { return "Samsung Electronics"; }
         }
 
         public Version VERSION

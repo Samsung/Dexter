@@ -10,7 +10,7 @@ namespace DexterCS
         public List<Checker> CheckerList { get; set; }
         [JsonProperty("toolName")]
         public string ToolName { get; set; }
-        [JsonProperty("langyage")]
+        [JsonProperty("language")]
         public DexterConfig.LANGUAGE Language { get; set; }
     }
 }
