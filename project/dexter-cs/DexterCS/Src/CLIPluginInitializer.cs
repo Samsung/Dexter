@@ -43,10 +43,10 @@ namespace DexterCS
                 throw new Exception("There are no dexter plug-ins to add");
             }
 
-            foreach(var plugin in pluginHandlerList)
+            foreach (var plugin in pluginHandlerList)
             {
                 plugin.Init();
-                CliLog.Info(plugin.PLUGIN_DESCRIPTION +" :v" + plugin.VERSION + " loaded.");
+                CliLog.Info(plugin.PLUGIN_DESCRIPTION + " :v" + plugin.VERSION + " loaded.");
             }
         }
 
@@ -71,7 +71,8 @@ namespace DexterCS
                         }
                     }
                 }
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 CliLog.Error("Plugin Loading failed:" + e.StackTrace);
             }

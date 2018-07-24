@@ -6,7 +6,8 @@ namespace DexterCRC
 {
     public class WithBrace : ICheckerLogic
     {
-        public WithBrace() {
+        public WithBrace()
+        {
             CheckerName = this.GetType().Name;
             Description = "Even though statement are a single line, brace should be used";
         }

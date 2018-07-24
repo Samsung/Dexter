@@ -15,7 +15,7 @@ namespace DexterCS
         private List<string> headerBaseDirList = new List<string>(0);
         internal long GroupId { get { return -1; } }
         private string outputDir = "";
-        
+
         public IList<string> SourceBaseDirList { get; set; }
         public IList<string> HeaderBaseDirList { get; set; }
         private string OutputDir
@@ -51,7 +51,8 @@ namespace DexterCS
             Sourcecode = other.Sourcecode;
             AnalysisConfigType = other.AnalysisConfigType;
         }
-        public string SourcecodeFromFile {
+        public string SourcecodeFromFile
+        {
             get { return DexterUtil.GetSourcecodeFromFile(SourceFileFullPath); }
         }
 
@@ -59,16 +60,16 @@ namespace DexterCS
 
         public void AddHeaderAndSourceConfiguration(List<ProjectAnalysisConfiguration> projectAnalysisConfigurationList)
         {
-            foreach(var param in projectAnalysisConfigurationList)
+            foreach (var param in projectAnalysisConfigurationList)
             {
                 if (param.ProjectName.Equals(ProjectName) &&
                     DexterUtil.RefinePath(param.ProjectFullPath).Equals(ProjectFullPath))
                 {
-                    foreach(string dir in param.SourceDirs)
+                    foreach (string dir in param.SourceDirs)
                     {
                         AddSourceBaseDirList(dir);
                     }
-                    foreach(string dir in param.HeaderDirs)
+                    foreach (string dir in param.HeaderDirs)
                     {
                         AddHeaderBaseDirList(dir);
                     }
@@ -113,7 +114,7 @@ namespace DexterCS
 
         internal void GenerateModulePath()
         {
-            foreach(string sourceDir in SourceBaseDirList)
+            foreach (string sourceDir in SourceBaseDirList)
             {
                 if (HandleGeneratingModulePath(sourceDir))
                 {
@@ -128,9 +129,9 @@ namespace DexterCS
             {
                 if (SourceFileFullPath.StartsWith(sourceDir, StringComparison.CurrentCulture))
                 {
-                    int baseIndex = sourceDir.Length + 1 ;
+                    int baseIndex = sourceDir.Length + 1;
                     int endIndex = SourceFileFullPath.IndexOf(FileName, StringComparison.CurrentCulture);
-                    if ( baseIndex > endIndex || baseIndex < 0 || endIndex < 0)
+                    if (baseIndex > endIndex || baseIndex < 0 || endIndex < 0)
                     {
                         throw new Exception("cannot calculate the positions of module path:"
                             + " sourceDir:" + sourceDir

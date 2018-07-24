@@ -16,7 +16,7 @@ namespace DexterCRC
             {
                 return;
             }
-            foreach(var parameterRaw in parameterRaws)
+            foreach (var parameterRaw in parameterRaws)
             {
                 string parameterName = parameterRaw.Identifier.ValueText;
                 if (camelCasing.HasDefect(parameterName))

@@ -16,7 +16,7 @@ namespace DexterCRC
             {
                 return;
             }
-            foreach(var whileRaw in whileRaws)
+            foreach (var whileRaw in whileRaws)
             {
                 if (bracket.HasDefect(whileRaw.Statement.ToString()))
                 {

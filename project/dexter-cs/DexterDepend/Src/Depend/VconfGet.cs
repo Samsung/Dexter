@@ -22,7 +22,7 @@ namespace DexterDepend
             string[] subMethod = checker.Properties.Value.Split(delimiters);
             List<string> subMethodList = new List<string>();
             subMethodList.AddRange(subMethod);
-            
+
             foreach (var statementRaw in statementRaws)
             {
                 string statement = statementRaw.ToString();
@@ -36,7 +36,7 @@ namespace DexterDepend
                     foreach (string s in resultList)
                     {
                         string[] declaredArr = s.Split('=');
-                        if(declaredArr.Length == 2)
+                        if (declaredArr.Length == 2)
                         {
                             args[0] = declaredArr[1].Trim().Replace("\"", "");
                         }

@@ -17,7 +17,7 @@ namespace DexterCRC
         public bool HasDefect(object value)
         {
             string name = value.ToString();
-            if(name.Equals("_"))
+            if (name.Equals("_"))
             {
                 return false;
             }

@@ -26,7 +26,7 @@ namespace DexterDepend
             foreach (var statementRaw in statementRaws)
             {
                 string statement = statementRaw.ToString();
-                if(messageMethod.HasVconfMethod(subMethodList, statement))
+                if (messageMethod.HasVconfMethod(subMethodList, statement))
                 {
                     List<string> args = new List<string>(2) { "", "" };
                     PreOccurence preOcc = messageMethod.MakeVConfList(config, checker, statementRaw, args);

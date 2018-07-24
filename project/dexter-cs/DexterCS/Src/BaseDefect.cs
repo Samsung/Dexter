@@ -24,13 +24,13 @@ namespace DexterCS
 
         public override bool Equals(object obj)
         {
-            if(obj == null)
+            if (obj == null)
             {
                 return false;
             }
 
             BaseDefect other = obj as BaseDefect;
-            if((object)other == null)
+            if ((object)other == null)
             {
                 return false;
             }
@@ -59,7 +59,7 @@ namespace DexterCS
             {
                 return false;
             }
-            if(Language != null && !Object.Equals(Language, other.Language))
+            if (Language != null && !Object.Equals(Language, other.Language))
             {
                 return false;
             }

@@ -47,7 +47,7 @@ namespace DexterCS
             IsActive = isActive;
         }
 
-        public Checker(string code, string name, string type, 
+        public Checker(string code, string name, string type,
             string version, string description, Boolean isActive, Properties properties, string cwe)
         {
             Code = code;

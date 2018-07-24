@@ -10,7 +10,8 @@ namespace DexterCRC
         PascalCasing pascalCasing;
         WithoutUnderscore underscore;
 
-        public MethodCRC() {
+        public MethodCRC()
+        {
             pascalCasing = new PascalCasing();
             underscore = new WithoutUnderscore();
         }
@@ -22,7 +23,7 @@ namespace DexterCRC
                 return;
             }
 
-            foreach(var methodRaw in methodRaws)
+            foreach (var methodRaw in methodRaws)
             {
                 string methodName = methodRaw.Identifier.ToString();
 

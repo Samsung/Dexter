@@ -1,13 +1,13 @@
 {
-	"dexterHome":":/DEV/temp/dexterCS-cli_0.1.0_64",
-	"dexterServerIp":"localhost",
-	"dexterServerPort":"4982",
-	"projectName":"epg_ug",
-	"projectFullPath":":/TEST//TestSI",
-	"sourceDir":[":/TEST//TestSI/TestDir4", ":/TEST//TestSI/TestDir5"],
-	"headerDir":[],
-	"sourceEncoding":"UTF-8",
-	"libDir":[],
-	"binDir":"",
+  "dexterHome": ":/DEV/temp/dexterCS-cli_0.1.0_64",
+  "dexterServerIp": "localhost",
+  "dexterServerPort": "4982",
+  "projectName": "epg_ug",
+  "projectFullPath": ":/TEST//TestSI",
+  "sourceDir": [ ":/TEST//TestSI/TestDir4", ":/TEST//TestSI/TestDir5" ],
+  "headerDir": [],
+  "sourceEncoding": "UTF-8",
+  "libDir": [],
+  "binDir": "",
   "type": "PROJECT"
 }

@@ -9,7 +9,7 @@ namespace DexterCS
         private ILog cliLog;
         private IDexterCLIOption cliOption;
 
-        public CLIDexterPluginManager(IDexterPluginInitializer initializer, IDexterClient client, 
+        public CLIDexterPluginManager(IDexterPluginInitializer initializer, IDexterClient client,
             ILog cliLog, IDexterCLIOption cliOption)
             : base(initializer, client)
         {

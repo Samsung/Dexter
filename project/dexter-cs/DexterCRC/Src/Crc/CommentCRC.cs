@@ -13,7 +13,7 @@ namespace DexterCRC.Src.Crc
 
         public CommentCRC()
         {
-           commentRules = new CommentRules();
+            commentRules = new CommentRules();
         }
 
 
@@ -32,7 +32,7 @@ namespace DexterCRC.Src.Crc
                 {
                     PreOccurence preOcc = commentRules.MakeDefect(config, checker, commentRaw);
                     result.AddDefectWithPreOccurence(preOcc);
-                }       
+                }
             }
             throw new NotImplementedException();
         }

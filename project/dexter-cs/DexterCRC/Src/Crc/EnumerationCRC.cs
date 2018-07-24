@@ -9,14 +9,15 @@ namespace DexterCRC
     {
         PascalCasing pascalCasing;
 
-        public EnumerationCRC() {
+        public EnumerationCRC()
+        {
             pascalCasing = new PascalCasing();
         }
         public void Analyze(AnalysisConfig config, AnalysisResult result, Checker checker, SyntaxNode syntaxRoot)
         {
-           
+
             var enumRaws = syntaxRoot.DescendantNodes().OfType<EnumDeclarationSyntax>();
-            foreach(var enumRaw in enumRaws)
+            foreach (var enumRaw in enumRaws)
             {
                 var enumName = enumRaw.Identifier.ToString();
                 if (pascalCasing.HasDefect(enumName))

@@ -29,7 +29,7 @@ namespace DexterCS
         private void InitSupportingFileExtensions()
         {
             DexterConfig.Instance.RemoveAllSupportingFileExtensions();
-            foreach(IDexterPlugin plugin in pluginList)
+            foreach (IDexterPlugin plugin in pluginList)
             {
                 DexterConfig.Instance.AddSupprotingFileExtensions(plugin.SupportingFileExtensions);
             }
@@ -39,7 +39,7 @@ namespace DexterCS
         {
             List<AnalysisResult> resultList = new List<AnalysisResult>();
 
-            foreach(IDexterPlugin plugin in pluginList)
+            foreach (IDexterPlugin plugin in pluginList)
             {
                 if (plugin.SupportLanguage(config.GetLanguageEnum()))
                 {

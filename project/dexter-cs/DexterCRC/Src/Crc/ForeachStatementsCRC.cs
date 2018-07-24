@@ -12,9 +12,10 @@ namespace DexterCRC
         public void Analyze(AnalysisConfig config, AnalysisResult result, Checker checker, SyntaxNode syntaxRoot)
         {
             var foreachRaws = syntaxRoot.DescendantNodes().OfType<ForEachStatementSyntax>();
-            foreach(var foreachRaw in foreachRaws)
+            foreach (var foreachRaw in foreachRaws)
             {
-                if (bracket.HasDefect(foreachRaw.Statement.ToString())) {
+                if (bracket.HasDefect(foreachRaw.Statement.ToString()))
+                {
                     PreOccurence preOcc = bracket.MakeDefect(config, checker, foreachRaw);
                     result.AddDefectWithPreOccurence(preOcc);
                 }

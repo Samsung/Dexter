@@ -12,7 +12,7 @@ namespace DexterCRC
         public ForStatementsCRC() { }
         public void Analyze(AnalysisConfig config, AnalysisResult result, Checker checker, SyntaxNode syntaxRoot)
         {
-            var forRaws = syntaxRoot.DescendantNodes().OfType<ForStatementSyntax> ();
+            var forRaws = syntaxRoot.DescendantNodes().OfType<ForStatementSyntax>();
             if (!forRaws.Any())
             {
                 return;

@@ -8,7 +8,7 @@ namespace DexterCS
 
         public string ToolName { get; set; }
 
-      
+
         public Dictionary<string, string> properties = new Dictionary<string, string>();
         public Dictionary<string, string> Properties { get; set; }
 
@@ -33,7 +33,7 @@ namespace DexterCS
 
         public IChecker GetChecker(string checkerCode)
         {
-            IChecker checker = CheckerList.Find(c => c.Code == checkerCode) ;
+            IChecker checker = CheckerList.Find(c => c.Code == checkerCode);
             return checker == null ? new EmptyChecker() : checker;
         }
     }

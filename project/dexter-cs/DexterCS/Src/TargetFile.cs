@@ -10,7 +10,8 @@ namespace DexterCS
 
         private string fileName = "";
         [JsonProperty("fileName")]
-        public string FileName {
+        public string FileName
+        {
             get { return fileName; }
             set { this.fileName = value; }
         }
@@ -26,16 +27,19 @@ namespace DexterCS
             ModulePath = other.ModulePath;
             FileStatus = other.FileStatus;
         }
-        private string modulePath="";
+        private string modulePath = "";
         [JsonProperty("modulePath")]
-        public string ModulePath {
+        public string ModulePath
+        {
             get { return modulePath; }
-            set {
-                if (string.IsNullOrEmpty(value)) {
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
                     return;
                 }
                 value = value.Replace("\\", "/");
-                if(GetLanguageEnum() == DexterConfig.LANGUAGE.JAVA)
+                if (GetLanguageEnum() == DexterConfig.LANGUAGE.JAVA)
                 {
                     value = value.Replace(".", "/");
                 }

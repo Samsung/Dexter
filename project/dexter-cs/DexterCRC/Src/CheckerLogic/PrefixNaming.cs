@@ -5,7 +5,8 @@ namespace DexterCRC
 {
     public class PrefixNaming : ICheckerLogic
     {
-        public PrefixNaming() {
+        public PrefixNaming()
+        {
             CheckerName = this.GetType().Name;
             Description = "Check Prefix";
         }

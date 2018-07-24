@@ -69,13 +69,14 @@ namespace DexterCRC
                 {
                     dexterConfig = reader.ReadToEnd();
                 }
-                
+
                 baseCheckerConfig = JsonConvert.DeserializeObject<BaseCheckerConfig>(dexterConfig
                     , new JsonSerializerSettings
                     {
                         NullValueHandling = NullValueHandling.Ignore
                     });
-            } catch(Exception e)
+            }
+            catch (Exception e)
             {
                 CliLog.Error("There is no plug-in in directory.");
                 CliLog.Error(e.StackTrace);
@@ -95,7 +96,8 @@ namespace DexterCRC
 
         public bool SupportLanguage(DexterConfig.LANGUAGE language)
         {
-            if (language.Equals(DexterConfig.LANGUAGE.C_SHARP)) {
+            if (language.Equals(DexterConfig.LANGUAGE.C_SHARP))
+            {
                 return true;
             }
             else
@@ -131,7 +133,7 @@ namespace DexterCRC
                     continue;
                 }
                 ICRCLogic logic = GetCheckerLogic(checker.Code);
-               
+
                 logic.Analyze(config, result, checker, syntaxRoot);
             }
             return result;

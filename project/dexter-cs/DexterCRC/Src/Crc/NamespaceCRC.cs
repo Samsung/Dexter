@@ -12,10 +12,10 @@ namespace DexterCRC
         public void Analyze(AnalysisConfig config, AnalysisResult result, Checker checker, SyntaxNode syntaxRoot)
         {
             var namespaceRaws = syntaxRoot.DescendantNodes().OfType<NamespaceDeclarationSyntax>();
-            foreach(var namespaceRaw in namespaceRaws)
+            foreach (var namespaceRaw in namespaceRaws)
             {
                 string namespaceName = namespaceRaw.Name.ToString();
-                if (pascalCasing.HasDefect(namespaceName)) 
+                if (pascalCasing.HasDefect(namespaceName))
                 {
                     PreOccurence preOcc = pascalCasing.MakeDefect(config, checker, namespaceRaw);
                     result.AddDefectWithPreOccurence(preOcc);

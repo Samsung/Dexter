@@ -20,8 +20,8 @@ namespace DexterCS.Job
         {
             string resultFolderStr = DexterConfig.Instance.DexterHome + "/" + DexterConfig.RESULT_FOLDER_NAME;
             IList<FileInfo> resultFiles = DexterUtil.GetSubFileNamesByPrefix(resultFolderStr, resultFilePrefix);
-            
-            foreach(var resultFile in resultFiles)
+
+            foreach (var resultFile in resultFiles)
             {
                 SendResult(resultFile, client);
                 MmoveResultFileToOldFolder(resultFile);
@@ -48,19 +48,21 @@ namespace DexterCS.Job
                 throw new DexterRuntimeException("Invalid resultFile parameter:" + resultFile);
             }
 
-            if (!DexterUtil.JSON_EXTENSION.Equals(resultFile.Extension) 
-                || !resultFile.ToString().StartsWith("result_", StringComparison.Ordinal)) {
+            if (!DexterUtil.JSON_EXTENSION.Equals(resultFile.Extension)
+                || !resultFile.ToString().StartsWith("result_", StringComparison.Ordinal))
+            {
                 return;
             }
             try
             {
                 client.SendAnalysisResult(File.ReadAllText(resultFile.FullName, Encoding.UTF8)).Wait();
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 CliLog.Error(e.StackTrace);
             }
         }
 
-        
+
     }
 }

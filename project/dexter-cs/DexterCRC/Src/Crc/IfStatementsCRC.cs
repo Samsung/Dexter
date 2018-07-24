@@ -19,7 +19,7 @@ namespace DexterCRC
                 return;
             }
 
-            foreach(var ifRaw in ifRaws)
+            foreach (var ifRaw in ifRaws)
             {
                 if (bracket.HasDefect(ifRaw.Statement.ToString()))
                 {

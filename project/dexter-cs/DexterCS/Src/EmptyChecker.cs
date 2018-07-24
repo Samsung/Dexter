@@ -5,9 +5,9 @@ namespace DexterCS
     public class EmptyChecker : IChecker
     {
         [DefaultValue("")]
-        public string Type { get; set;}
+        public string Type { get; set; }
         [DefaultValue("")]
-        public string CategoryName {get;set;}
+        public string CategoryName { get; set; }
         [DefaultValue("")]
         public string Cwe { get; set; }
         public string Description { get; set; }

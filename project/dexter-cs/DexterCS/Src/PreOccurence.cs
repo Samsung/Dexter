@@ -11,7 +11,7 @@
         public string StringValue { get; set; }
         public string FieldName { get; set; }
         public string Message { get; set; }
-        public string SeverityCode {get;set;}
+        public string SeverityCode { get; set; }
         public string CategoryName { get; set; }
 
         internal Occurence ToOccurence()

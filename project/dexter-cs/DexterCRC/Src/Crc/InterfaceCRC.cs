@@ -12,12 +12,13 @@ namespace DexterCRC
         WithoutUnderscore underscore;
         PrefixNaming prefixNaming;
 
-        public InterfaceCRC() {
+        public InterfaceCRC()
+        {
             pascalCasing = new PascalCasing();
             underscore = new WithoutUnderscore();
             //naming = new Naming();
             prefixNaming = new PrefixNaming();
-           
+
         }
         public void Analyze(AnalysisConfig config, AnalysisResult result, Checker checker, SyntaxNode syntaxRoot)
         {
@@ -30,9 +31,11 @@ namespace DexterCRC
             {
                 string interfaceName = interfaceRaw.Identifier.ToString();
 
-                if (prefixNaming.HasDefect(new NamingSet {
+                if (prefixNaming.HasDefect(new NamingSet
+                {
                     currentName = interfaceName,
-                    basicWord = "I" }))
+                    basicWord = "I"
+                }))
                 {
                     PreOccurence preOcc = prefixNaming.MakeDefect(config, checker, interfaceRaw);
                     result.AddDefectWithPreOccurence(preOcc);
@@ -51,6 +54,6 @@ namespace DexterCRC
                 }
             }
         }
-       
+
     }
 }

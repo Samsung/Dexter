@@ -104,7 +104,7 @@ namespace DexterCS
 
             return new DexterClient(httpWrapper);
         }
-            
+
         private IDexterConfigFile CreateDexterConfigFile(IDexterCLIOption cliOption)
         {
             IDexterConfigFile configFile = new DexterConfigFile();

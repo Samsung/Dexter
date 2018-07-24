@@ -32,7 +32,7 @@ namespace DexterCS
 
         public void AddOccurence(Occurence occ)
         {
-            string key = @"[#"+ (Occurences.Count+1) + "@" + occ.StartLine+"]";
+            string key = @"[#" + (Occurences.Count + 1) + "@" + occ.StartLine + "]";
             Message += key + occ.Message + " ";
             Occurences.Add(occ);
         }
@@ -44,7 +44,7 @@ namespace DexterCS
 
         public override bool Equals(Object obj)
         {
-            if(obj == null)
+            if (obj == null)
             {
                 return false;
             }

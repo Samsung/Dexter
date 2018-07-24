@@ -30,7 +30,8 @@ namespace DexterCS.Client
 
         public int ServerPort { get; set; }
 
-        public string SourceCode(string modulePath, string fileName) {
+        public string SourceCode(string modulePath, string fileName)
+        {
             return @"";
         }
 
