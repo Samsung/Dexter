@@ -1,11 +1,9 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DexterCRC;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace DexterCSTest.checkerLogic
+namespace DexterCRC.Tests
 {
-    [TestClass]
-    public class WithBraceTest
+    [TestClass()]
+    public class WithBraceTests
     {
         WithBrace brace;
         public void Init()
@@ -14,29 +12,29 @@ namespace DexterCSTest.checkerLogic
         }
 
         [TestMethod]
-        public void HasDefect_Should_True_without_Brace()
+        public void HasDefectTest_WithoutBrace_ReturnsTrue()
         {
             Init();
-            //given
+            // Given
             string statement = @" int a = 10; ";
-            //when
+            // When
             bool result = brace.HasDefect(statement);
-            //then
+            // Then
             Assert.IsTrue(result);
         }
 
         [TestMethod]
-        public void HasDefect_Should_False_with_Brace()
+        public void HasDefectTest_With_Brace_ReturnsFalse()
         {
             Init();
-            //given
+            // Given
             string statement = @"{
                                     int a = 10; 
                                     int b = 20;
                                   }";
-            //when
+            // When
             bool result = brace.HasDefect(statement);
-            //then
+            // Then
             Assert.IsFalse(result);
         }
     }

@@ -1,63 +1,62 @@
-﻿using System;
+﻿using DexterCRC;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DexterCRC;
 
-namespace DexterCSTest.checkerLogic
+namespace DexterCRC.Tests
 {
-
-    [TestClass]
-    public class CamelCasingTest
+    [TestClass()]
+    public class CamelCasingTests
     {
         CamelCasing camelCasing;
-        void Init() {
+        void Init()
+        {
             camelCasing = new CamelCasing();
         }
 
         [TestMethod]
-        public void HasDefect_Should_True_without_Calmel_Casing()
+        public void HasDefectTest_WithoutCamelCasing_ReturnsTrue()
         {
             Init();
-            //given
+            // Given
             string typeName = @"Name";
-            //when
+            // When
             bool result = camelCasing.HasDefect(typeName);
-            //then
+            // Then
             Assert.IsTrue(result);
         }
 
         [TestMethod]
-        public void HasDefect_Should_False_with_Calmel_Casing()
+        public void HasDefectTest_WithCamelCasing_ReturnsFalse()
         {
             Init();
-            //given
+            // Given
             string typeName = @"pName";
-            //when
+            // When
             bool result = camelCasing.HasDefect(typeName);
-            //then
+            // Then
             Assert.IsFalse(result);
         }
 
         [TestMethod]
-        public void HasDefect_Should_False_with_Lambda_Parameter()
+        public void HasDefectTest_WithLambdaParameter_ReturnsFalse()
         {
             Init();
-            //given
+            // Given
             string parameterName = @"_";
-            //when
+            // When
             bool result = camelCasing.HasDefect(parameterName);
-            //then
+            // Then
             Assert.IsFalse(result);
         }
 
         [TestMethod]
-        public void HasDefect_Should_True_with_Lambda_Parameter()
+        public void HasDefectTest_WithLambdaParameter_ReturnsTrue()
         {
             Init();
-            //given
+            // Given
             string parameterName = @"_pName";
-            //when
+            // When
             bool result = camelCasing.HasDefect(parameterName);
-            //then
+            // Then
             Assert.IsTrue(result);
         }
     }

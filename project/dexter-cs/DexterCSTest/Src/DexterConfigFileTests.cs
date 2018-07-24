@@ -1,16 +1,14 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DexterCS;
-using System.IO;
-using System.Reflection;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
-namespace DexterCSTest.src
+namespace DexterCS.Tests
 {
-    [TestClass]
-    public class DexterConfigFileTest
+    [TestClass()]
+    public class DexterConfigFileTests
     {
         DexterConfigFile dexterConfigFile;
         static string currentSolutionPath = Directory.GetParent(Environment.CurrentDirectory).Parent.FullName;
@@ -21,37 +19,49 @@ namespace DexterCSTest.src
         {
             dexterConfigFile = new DexterConfigFile();
         }
+
         [TestMethod]
-        public void GetListFromDictionary_ShouldSuccess()
+        public void DexterConfigFileTest_InitiatesDexterConfigFile()
+        {
+            // Given
+            dexterConfigFile = new DexterConfigFile();
+            // When
+
+            // Then
+            Assert.IsNotNull(dexterConfigFile);
+        }
+
+        [TestMethod]
+        public void GetListFromDictionaryTest_TwoElementDictionary_ShouldReturnCorrectList()
         {
             DexterConfigFileInit();
 
-            //given
+            // Given
             JObject configMetadata = JObject.Parse(dexterConfig);
             List<string> expected = new List<string>();
             expected.Add(":/TEST//TestSI/TestDir4");
             expected.Add(":/TEST//TestSI/TestDir5");
 
-            //when
+            // When
             List<string> result = dexterConfigFile.GetListFromDictionary(configMetadata["sourceDir"]);
 
-            //then
+            // Then
             Assert.AreEqual(expected[0], result[0]);
             Assert.AreEqual(expected[1], result[1]);
         }
 
         [TestMethod]
-        public void GetSnapshotIdFromConfigFile_ShouldSuccess()
+        public void GetSnapshotIdFromConfigFileTest_SnapshotIDProvided_ReturnCorrectSnaphshotId()
         {
             DexterConfigFileInit();
-            //given
+            // Given
             JObject configMetadata = JObject.Parse(dexterSnapshotConfig);
             long expected = 155556;
 
-            //when
+            // When
             long result = Convert.ToInt64((string)configMetadata["snapshotId"]);
 
-            //then
+            // Then
             Assert.AreEqual(expected, result);
         }
     }

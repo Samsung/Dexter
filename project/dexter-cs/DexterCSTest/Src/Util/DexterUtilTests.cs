@@ -1,23 +1,22 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DexterCS;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
-namespace DexterCSTest.src
+namespace DexterCS.Tests
 {
-    [TestClass]
-    public class DexterUtilTest
+    [TestClass()]
+    public class DexterUtilTests
     {
         [TestMethod]
-        public void RefinePath_ShouldRefineFilePath() 
+        public void RefinePathTest_RefinesFilePath()
         {
-            //given
+            // Given
             string tempPath = @":/DEV//temp\DexterCS-cli_#.#.#_64";
             string expectedPath = @":/DEV/temp/DexterCS-cli_#.#.#_64";
 
-            //when
+            // When
             string result = DexterUtil.RefinePath(tempPath);
 
-            //then
+            // Then
             Assert.AreEqual(expectedPath, result);
         }
     }

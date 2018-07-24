@@ -1,11 +1,9 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DexterCRC;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace DexterCSTest
+namespace DexterCRC.Tests
 {
-    [TestClass]
-    public class ClassCRCTest
+    [TestClass()]
+    public class ClassCRCTests
     {
         ClassCRC classCRC;
 
@@ -15,53 +13,53 @@ namespace DexterCSTest
         }
 
         [TestMethod]
-        public void CheckEventNaming_Should_True_Invalid_Class_Name()
+        public void CheckEventNamingTest_ReturnsTrue_Invalid_Class_Name()
         {
             Init();
-            //given
+            // Given
             string className = @"MyEvent";
             string baseName = @"EventArgs";
-            //when
+            // When
             bool result = classCRC.CheckEventNaming(className, baseName);
-            //then
+            // Then
             Assert.IsTrue(result);
         }
 
         [TestMethod]
-        public void CheckEventNaming_Should_False_Valid_Class_Name()
+        public void CheckEventNamingTest_ValidClassName_ReturnsFalse()
         {
             Init();
-            //given
+            // Given
             string className = @"MyEventArgs";
             string baseName = @"EventArgs";
-            //when
+            // When
             bool result = classCRC.CheckEventNaming(className, baseName);
-            //then
+            // Then
             Assert.IsFalse(result);
         }
 
         [TestMethod]
-        public void CheckAttributeNaming_Should_True_Invalid_Class_Name()
+        public void CheckAttributeNamingTest_InvalidClassName_ReturnsTrue()
         {
             Init();
-            //given
+            // Given
             string className = @"User";
             string baseName = @"Attribute";
-            //when
+            // When
             bool result = classCRC.CheckAttributeNaming(className, baseName);
-            //then
+            // Then
             Assert.IsTrue(result);
         }
         [TestMethod]
-        public void CheckAttributeNaming_Should_False_Valid_Class_Name()
+        public void CheckAttributeNamingTest_ValidClassName_ReturnsFalse()
         {
             Init();
-            //given
+            // Given
             string className = @"HelpAttribute";
             string baseName = @"Attribute";
-            //when
+            // When
             bool result = classCRC.CheckAttributeNaming(className, baseName);
-            //then
+            // Then
             Assert.IsFalse(result);
         }
     }
