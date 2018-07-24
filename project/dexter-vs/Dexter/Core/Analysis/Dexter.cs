@@ -98,7 +98,7 @@ namespace Dexter.Analysis
                 
             dexterProcess = new Process();
 
-            if (LanguageDetector.IsMostCommonLanguageCSharp(configuration.projectFullPath))
+            if (LanguageDetector.IsCodeModelLanguageCSharp(configuration.projectFullPath))
             {
                 dexterProcess.StartInfo = new ProcessStartInfo()
                 {
