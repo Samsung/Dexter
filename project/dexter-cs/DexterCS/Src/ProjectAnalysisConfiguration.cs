@@ -9,14 +9,14 @@ namespace DexterCS
         private List<string> sourceDirs;
         public List<string> SourceDirs
         {
-            get { return sourceDirs == null ? new List<string>() : sourceDirs; }
+            get { return sourceDirs ?? new List<string>(); }
             set { sourceDirs = value; }
         }
 
         private List<string> headerDirs;
         public List<string> HeaderDirs
         {
-            get { return headerDirs == null ? new List<string>() : headerDirs; }
+            get { return headerDirs ?? new List<string>(); }
             set { headerDirs = value; }
         }
 
@@ -25,7 +25,7 @@ namespace DexterCS
         {
             get
             {
-                return targetDir == null ? new List<string>() : targetDir;
+                return targetDir ?? new List<string>();
             }
             set { targetDir = value; }
         }
