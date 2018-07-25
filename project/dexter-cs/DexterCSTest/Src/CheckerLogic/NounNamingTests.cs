@@ -27,7 +27,7 @@ namespace DexterCRC.Tests
             string camelCaseWord = "camelCaseWord";
 
             // When
-            string[] splitCamelCaseWord = nounNaming.SplitOnCamelCase(camelCaseWord);
+            string[] splitCamelCaseWord = nounNaming.Split(camelCaseWord);
 
             // Then
             Assert.IsTrue(splitCamelCaseWord.SequenceEqual(new string[] { "camel", "Case", "Word" }));

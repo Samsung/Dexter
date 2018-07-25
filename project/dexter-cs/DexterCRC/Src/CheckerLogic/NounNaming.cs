@@ -1,6 +1,7 @@
 ﻿using DexterCRC.Src.Util;
 using DexterCS;
 using Microsoft.CodeAnalysis.CSharp;
+using System.Text.RegularExpressions;
 
 namespace DexterCRC
 {
@@ -19,7 +20,7 @@ namespace DexterCRC
         {
             string name = value.ToString();
 
-            string[] words = SplitOnCamelCase(name);
+            string[] words = DexterUtil.Split(name);
 
             return !OpenNLPUtil.IsNoun(words);
         }
@@ -29,11 +30,6 @@ namespace DexterCRC
             var lineSpan = raw.GetLocation().GetLineSpan();
             PreOccurence preOcc = DexterCRCUtil.MakePreOccurence(raw, lineSpan, checker, config, CheckerName, Description);
             return preOcc;
-        }
-
-        public string[] SplitOnCamelCase(string input)
-        {
-            return System.Text.RegularExpressions.Regex.Replace(input, "([A-Z])", " $1", System.Text.RegularExpressions.RegexOptions.Compiled).Trim().Split(' ');
         }
     }
 }
