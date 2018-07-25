@@ -55,6 +55,8 @@
     <Compile Include="Defects\FileDefects.cs" />
     <Compile Include="Defects\Occurence.cs" />
     <Compile Include="Defects\Result.cs" />
+    <Compile Include="Exception\DexterException.cs" />
+    <Compile Include="Exception\DexterRunTimeException.cs" />
     <Compile Include="UI\Analysis\CancelCommand.cs" />
     <Compile Include="UI\Analysis\DexterAnalysisCommand.cs" />
     <Compile Include="UI\Analysis\DexterFileAnalysisCommand.cs" />
