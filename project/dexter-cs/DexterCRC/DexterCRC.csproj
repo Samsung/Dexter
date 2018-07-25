@@ -72,6 +72,12 @@
       <HintPath>..\packages\Newtonsoft.Json.4.5.11\lib\net40\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="OpenNLP, Version=1.0.6211.31491, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenNLP.1.3.4\lib\net45\OpenNLP.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpEntropy, Version=1.0.6211.31255, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\OpenNLP.1.3.4\lib\net45\SharpEntropy.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.1.37.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Collections.Immutable.1.1.37\lib\dotnet\System.Collections.Immutable.dll</HintPath>
@@ -126,6 +132,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Src\CheckerLogic\NounNaming.cs" />
     <Compile Include="Src\CheckerLogic\CommentRules.cs" />
     <Compile Include="Src\CheckerLogic\MethodSpacing.cs" />
     <Compile Include="Src\CheckerLogic\WithBrace.cs" />
@@ -162,6 +169,7 @@
     </Compile>
     <Compile Include="Src\DexterCRCPlugin.cs" />
     <Compile Include="Src\Util\DexterCRCUtil.cs" />
+    <Compile Include="Src\Util\OpenNLPUtil.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

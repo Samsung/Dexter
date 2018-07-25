@@ -123,6 +123,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Src\CheckerLogic\MethodSpacingTests.cs" />
+    <Compile Include="Src\CheckerLogic\NounNamingTests.cs" />
     <Compile Include="Src\CRCLogic\BracketTest.cs" />
     <Compile Include="Src\CRCLogic\CamelCasingTest.cs" />
     <Compile Include="Src\CRCLogic\ClassCRCTest.cs" />
