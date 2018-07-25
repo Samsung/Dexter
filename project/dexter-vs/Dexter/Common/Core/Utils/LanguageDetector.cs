@@ -7,19 +7,13 @@ namespace Dexter.Common.Utils
 {
     public static class LanguageDetector
     {
-        public static bool IsCodeModelLanguageCSharp(string projectFullPath)
+        public static bool IsCodeModelLanguageCSharp()
         {
             DTE2 dte2 = (DTE2)ServiceProvider.GlobalProvider.GetService(typeof(DTE));
 
-            if (dte2.DTE.ActiveDocument.ProjectItem.ContainingProject.CodeModel.Language 
-                == CodeModelLanguageConstants.vsCMLanguageCSharp)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            string projectLanguage = dte2.DTE.ActiveDocument.ProjectItem.ContainingProject.CodeModel.Language;
+
+            return projectLanguage == CodeModelLanguageConstants.vsCMLanguageCSharp;
         }
     }
 }

@@ -99,7 +99,7 @@ namespace Dexter.Analysis
 
             DexterInfo dexterInfo = DexterInfo.fromConfiguration(configuration);
 
-            if (LanguageDetector.IsCodeModelLanguageCSharp(configuration.projectFullPath))
+            if (LanguageDetector.IsCodeModelLanguageCSharp())
             {
                 if (!File.Exists(configuration.DexterCSPath))
                 {
