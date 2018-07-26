@@ -9,7 +9,7 @@ namespace DexterCS
             if (DexterUtil.HasOption(firstOption) &&
                 DexterUtil.HasOption(secondOption))
             {
-                throw new Exception(@"you can't use option -" + firstOption + " and with -" + secondOption);
+                throw new Exception("Cannot use option -" + firstOption + " with option -" + secondOption);
             }
         }
     }

@@ -131,7 +131,7 @@ namespace DexterCS
                 string.Compare(ResultFileConstant.PROJECT_TYPE, _type, StringComparison.OrdinalIgnoreCase) != 0 &&
                 string.Compare(ResultFileConstant.SNAPSHOT_TYPE, _type, StringComparison.OrdinalIgnoreCase) != 0)
             {
-                throw new DexterRuntimeException("'type' field can be {FILE,FOLDER,PROJECT,SNAPSHOT}. your input : " + _type);
+                throw new DexterRuntimeException("'type' field can be {FILE, FOLDER, PROJECT, SNAPSHOT}. Your input: " + _type);
             }
 
             if (string.Compare(ResultFileConstant.FILE_TYPE, _type, StringComparison.OrdinalIgnoreCase) == 0)
@@ -157,7 +157,7 @@ namespace DexterCS
         {
             if (object.ReferenceEquals(null, fieldValue))
             {
-                throw new DexterRuntimeException("Dexter Configuration Error : '" + key + "' field is empty");
+                throw new DexterRuntimeException("Dexter Configuration Error: '" + key + "' field is empty");
             }
         }
 
@@ -165,7 +165,7 @@ namespace DexterCS
         {
             if (configMetadata == null || configMetadata.Count < 1)
             {
-                throw new DexterRuntimeException("Dexter Configuration Error: Empty");
+                throw new DexterRuntimeException("Dexter Configuration Error: Empty configMetadata");
             }
         }
 

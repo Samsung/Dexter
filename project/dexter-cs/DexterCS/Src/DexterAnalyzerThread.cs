@@ -69,12 +69,12 @@ namespace DexterCS
         {
             if (string.IsNullOrEmpty(analysisConfig.SourceFileFullPath) || string.IsNullOrEmpty(analysisConfig.FileName))
             {
-                throw new DexterRuntimeException("Invalid Analysis Config : fileName or sourceFileFullPath is null or empty");
+                throw new DexterRuntimeException("Invalid Analysis Config: SourceFileFullPath or FileName is null or empty");
             }
 
             if (!File.Exists(analysisConfig.SourceFileFullPath))
             {
-                throw new DexterRuntimeException("Invalid Analysis Config : projectName or projectFullPath is null or empty");
+                throw new DexterRuntimeException("Invalid Analysis Config: SourceFileFullPath does not exist: " + analysisConfig.SourceFileFullPath);
             }
         }
     }

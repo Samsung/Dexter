@@ -21,7 +21,7 @@ namespace DexterCS
             DirectoryInfo pluginBaseDir = new DirectoryInfo(pluginBasePath);
             if (pluginBaseDir.Exists == false)
             {
-                throw new Exception("There is no exist Dexter Home.");
+                throw new Exception("Dexter Home does not exist");
             }
             foreach (string fileOn in Directory.GetFiles(pluginBasePath))
             {
@@ -40,7 +40,7 @@ namespace DexterCS
             //FEEDBACK 역할
             if (pluginHandlerList.Count == 0)
             {
-                throw new Exception("There are no dexter plug-ins to add");
+                throw new Exception("There are no Dexter plug-ins to load");
             }
 
             foreach (var plugin in pluginHandlerList)

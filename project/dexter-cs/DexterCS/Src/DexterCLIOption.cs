@@ -37,7 +37,7 @@ namespace DexterCS
                 {
                     if (string.IsNullOrEmpty(value))
                     {
-                        throw new DexterRuntimeException("Invalid CommandLine Option for filePath(null or empty)");
+                        throw new DexterRuntimeException("Invalid CommandLine option for configFilePath (null or empty)");
                     }
                 }
                 catch (DexterRuntimeException e)
@@ -92,7 +92,7 @@ namespace DexterCS
 
                 if (exitCode != DexterUtil.STATUS_CODE.SUCCESS)
                 {
-                    throw new Exception("Parse Error");
+                    throw new Exception("Command parsing error");
                 }
             }
             catch (Exception e)

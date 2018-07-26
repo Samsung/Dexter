@@ -45,7 +45,7 @@ namespace DexterCS.Job
         {
             if (DexterUtil.IsDirectory(resultFile) || false.Equals(resultFile.Exists) || true.Equals(resultFile.IsReadOnly))
             {
-                throw new DexterRuntimeException("Invalid resultFile parameter:" + resultFile);
+                throw new DexterRuntimeException("Cannot access result file (is not a directory or does not exist or is read-only: " + resultFile);
             }
 
             if (!DexterUtil.JSON_EXTENSION.Equals(resultFile.Extension)
