@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using DexterCS;
+﻿using DexterCS;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace DexterDepend
 {
@@ -27,7 +26,7 @@ namespace DexterDepend
             foreach (var statementRaw in statementRaws)
             {
                 string statement = statementRaw.ToString();
-                if(messageMethod.HasVconfMethod(subMethodList, statement))
+                if (messageMethod.HasVconfMethod(subMethodList, statement))
                 {
                     List<string> args = new List<string>(2) { "", "" };
                     PreOccurence preOcc = messageMethod.MakeVConfList(config, checker, statementRaw, args);

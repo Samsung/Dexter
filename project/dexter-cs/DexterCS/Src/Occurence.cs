@@ -15,7 +15,7 @@ namespace DexterCS
         [JsonProperty("charStart")]
         public int CharStart { get; set; }
         [JsonProperty("charEnd")]
-        public int CharEnd{get;set;}
+        public int CharEnd { get; set; }
         [JsonProperty("variableName")]
         public string VariableName { get; set; }
         [JsonProperty("stringValue")]
@@ -37,8 +37,8 @@ namespace DexterCS
                 return false;
             }
             PreOccurence other = (PreOccurence)obj;
-            
-            if(!Object.Equals(StartLine, other.StartLine))
+
+            if (!Object.Equals(StartLine, other.StartLine))
             {
                 return false;
             }

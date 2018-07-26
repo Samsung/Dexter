@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Collections.Generic;
 
 namespace DexterCS
 {
@@ -9,7 +7,7 @@ namespace DexterCS
         public AnalysisResult() { }
 
         private List<Defect> defectList = new List<Defect>();
-        public List<Defect> DefectList { get { return defectList; }}
+        public List<Defect> DefectList { get { return defectList; } }
 
         public void AddDefect(Defect defect)
         {
@@ -22,19 +20,19 @@ namespace DexterCS
 
         public void AddDefectWithPreOccurence(PreOccurence preOcc)
         {
-            if(preOcc.StartLine == -1)
+            if (preOcc.StartLine == -1)
             {
                 return;
             }
             bool isNewDefect = true;
-            foreach(var defect in DefectList)
+            foreach (var defect in DefectList)
             {
                 defect.AnalysisType = AnalysisType;
-               
+
                 if (defect.Equals(preOcc))
                 {
                     bool IsDifferentOcc = true;
-                    foreach(var occ in defect.Occurences)
+                    foreach (var occ in defect.Occurences)
                     {
                         if (occ.Equals(preOcc))
                         {

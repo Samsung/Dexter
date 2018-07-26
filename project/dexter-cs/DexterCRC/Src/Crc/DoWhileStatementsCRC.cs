@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using DexterCS;
+﻿using DexterCS;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Linq;
 
 namespace DexterCRC
 {
@@ -10,7 +10,8 @@ namespace DexterCRC
     {
         WithBrace bracket;
 
-        public DoWhileStatementsCRC() {
+        public DoWhileStatementsCRC()
+        {
             bracket = new WithBrace();
         }
 
@@ -22,9 +23,9 @@ namespace DexterCRC
                 return;
             }
 
-            foreach(var doStatementRaw in doStatementRaws)
+            foreach (var doStatementRaw in doStatementRaws)
             {
-                if(bracket.HasDefect(doStatementRaw.Statement.ToString()))
+                if (bracket.HasDefect(doStatementRaw.Statement.ToString()))
                 {
                     PreOccurence preOcc = bracket.MakeDefect(config, checker, doStatementRaw);
                     result.AddDefectWithPreOccurence(preOcc);

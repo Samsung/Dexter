@@ -2,9 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DexterCS
 {
@@ -37,8 +35,8 @@ namespace DexterCS
         };
 
         public bool IsSpecifiedCheckerOptionEnabledByCli { get; set; }
-        
-        
+
+
 
         public readonly String DEXTER_HOME_KEY = "dexterHome";
         private readonly string PLUGIN_FOLDER_NAME = "plugin";
@@ -46,9 +44,9 @@ namespace DexterCS
         private static HashSet<string> supportingFileExtensions = new HashSet<string>();
         public void AddSupprotingFileExtensions(string[] fileExtensions)
         {
-            foreach(string extension in fileExtensions)
+            foreach (string extension in fileExtensions)
             {
-                if(supportingFileExtensions.Contains(extension.ToLowerInvariant()) == false)
+                if (supportingFileExtensions.Contains(extension.ToLowerInvariant()) == false)
                 {
                     supportingFileExtensions.Add(extension.ToLowerInvariant());
                 }
@@ -73,12 +71,13 @@ namespace DexterCS
             {
                 return dexterHome;
             }
-            set {
+            set
+            {
                 HomePath = DexterUtil.RefinePath(value);
                 dexterHome = HomePath;
             }
         }
-        
+
         public static HashSet<string> SupportingFileExtensions
         {
             get
@@ -104,7 +103,7 @@ namespace DexterCS
 
         private static DexterConfig instance = null;
         private static readonly object padlock = new object();
-        public Encoding SourceEncoding = new UTF8Encoding(true) ;
+        public Encoding SourceEncoding = new UTF8Encoding(true);
 
         public static DexterConfig Instance
         {
@@ -112,7 +111,7 @@ namespace DexterCS
             {
                 lock (padlock)
                 {
-                    if(instance == null)
+                    if (instance == null)
                     {
                         instance = new DexterConfig();
                     }
@@ -159,8 +158,9 @@ namespace DexterCS
                 string filter = DexterHome + "/" + FILTER_FOLDER_NAME;
                 DexterUtil.CreateFolderWithParents(filter);
             }
-            catch (IOException) {
-                CliLog.Error("IOException in DexteerConfig");
+            catch (IOException)
+            {
+                CliLog.Error("IOException in DexterConfig");
             }
         }
 
@@ -172,7 +172,7 @@ namespace DexterCS
 
         public bool IsAnalysisAllowedFile(string fileName)
         {
-            string extension = Path.GetExtension(fileName).ToLowerInvariant().Replace(".","");
+            string extension = Path.GetExtension(fileName).ToLowerInvariant().Replace(".", "");
             return SupportingFileExtensions.Contains(extension);
         }
     }

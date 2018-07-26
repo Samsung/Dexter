@@ -1,10 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DexterCRC;
 
-namespace DexterCSTest.checkerLogic
+namespace DexterCRC.Tests
 {
-    [TestClass]
-    public class PascalCasingTest
+    [TestClass()]
+    public class PascalCasingTests
     {
         PascalCasing pascalCasing;
 
@@ -14,39 +13,39 @@ namespace DexterCSTest.checkerLogic
         }
 
         [TestMethod]
-        public void HasDefect_Should_True_with_Pascal_Casing()
+        public void HasDefectTest_WithPascalCasing_ReturnsTrue()
         {
             Init();
-            //given
+            // Given
             string typeName = @"textReader";
-            //when
+            // When
             bool result = pascalCasing.HasDefect(typeName);
-            //then
+            // Then
             Assert.IsTrue(result);
         }
 
         [TestMethod]
-        public void HasDefect_Should_False_with_Pascal_Casing()
+        public void HasDefectTest_WithPascalCasing_ReturnsFalse()
         {
             Init();
-            //given
+            // Given
             string typeName = @"TestReader";
-            //when
+            // When
             bool result = pascalCasing.HasDefect(typeName);
-            //then
+            // Then
             Assert.IsFalse(result);
 
         }
 
         [TestMethod]
-        public void HasDefect_Should_False_with_Pascal_Casing_Whti_Integer()
+        public void HasDefectTest_WithPascalCasingWithInteger_ReturnsFalse()
         {
             Init();
-            //given
+            // Given
             string typeName = @"TestReader1301";
-            //when
+            // When
             bool result = pascalCasing.HasDefect(typeName);
-            //then
+            // Then
             Assert.IsFalse(result);
         }
     }

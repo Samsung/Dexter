@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using DexterDepend;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 
-namespace DexterCSTest
+namespace DexterDepend.Tests
 {
-    [TestClass]
-    public class MessagePortTest
+    [TestClass()]
+    public class MessageMehodTests
     {
         MessageMethod messageMethod;
         List<string> subMethodList;
@@ -17,30 +16,30 @@ namespace DexterCSTest
             subMethodList.AddRange(new string[] { "new MessagePort" });
         }
         [TestMethod]
-        public void HasMessageMethod_Should_True_MessagePort_Usage()
+        public void HasMessageMethodTest_MessagePortUsage_ReturnsTrue()
         {
-            //given
+            // Given
             Init();
             string methodName = "new MessagePort(senderPort, false);";
 
-            //when
+            // When
             bool result = messageMethod.HasVconfMethod(subMethodList, methodName);
 
-            //then
+            // Then
             Assert.IsTrue(result);
         }
 
         [TestMethod]
-        public void HasMessageMethod_Should_False_other_method()
+        public void HasMessageMethodTest_OtherMethod_ReturnsFalse()
         {
-            //given
+            // Given
             Init();
             string methodName = "MessagePort(\"weatherMsgPort\", false);";
 
-            //when
+            // When
             bool result = messageMethod.HasVconfMethod(subMethodList, methodName);
 
-            //then
+            // Then
             Assert.IsFalse(result);
         }
     }

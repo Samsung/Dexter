@@ -39,8 +39,8 @@
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\packages\Castle.Core.4.0.0\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="CommandLine, Version=1.9.71.2, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
+    <Reference Include="CommandLine, Version=2.0.61.0, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommandLineParser.2.0.61-alpha\lib\net45\CommandLine.dll</HintPath>
     </Reference>
     <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
@@ -122,32 +122,33 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="Src\CheckerLogic\MethodSpacingTests.cs" />
-    <Compile Include="Src\CRCLogic\BracketTest.cs" />
-    <Compile Include="Src\CRCLogic\CamelCasingTest.cs" />
-    <Compile Include="Src\CRCLogic\ClassCRCTest.cs" />
-    <Compile Include="Src\CRCLogic\CommentRulesTest.cs" />
-    <Compile Include="Src\CRCLogic\DelegateCRCTest.cs" />
-    <Compile Include="Src\CRCLogic\EventCRCTest.cs" />
-    <Compile Include="Src\CRCLogic\FieldCRCTest.cs" />
-    <Compile Include="Src\CRCLogic\PrefixNamingTest.cs" />
-    <Compile Include="Src\CRCLogic\PascalCasingTest.cs" />
-    <Compile Include="Src\CRCLogic\UnderscoreTest.cs" />
-    <Compile Include="Src\CRCPluginTest.cs" />
-    <Compile Include="Src\DependLogic\MessagePortTest.cs" />
-    <Compile Include="Src\DependLogic\VconfETCTest.cs" />
-    <Compile Include="Src\DependLogic\VconfGetTest.cs" />
-    <Compile Include="Src\DependLogic\VconfSetTest.cs" />
-    <Compile Include="Src\DexterConfigFileTest.cs" />
+    <Compile Include="Src\CheckerLogic\CamelCasingTests.cs" />
+    <Compile Include="Src\CheckerLogic\MessageMethodTests.cs" />
+    <Compile Include="Src\CheckerLogic\PascalCasingTests.cs" />
+    <Compile Include="Src\CheckerLogic\PrefixNamingTests.cs" />
+    <Compile Include="Src\CheckerLogic\WithBraceTests.cs" />
+    <Compile Include="Src\CheckerLogic\WithoutUnderscoreTests.cs" />
+    <Compile Include="Src\Crc\ClassCRCTests.cs" />
+    <Compile Include="Src\Crc\DelegateCRCTests.cs" />
+    <Compile Include="Src\Crc\EventCRCTests.cs" />
+    <Compile Include="Src\Crc\FieldCRCTests.cs" />
+    <Compile Include="Src\Depend\VconfETCTests.cs" />
+    <Compile Include="Src\Depend\VconfGetTests.cs" />
+    <Compile Include="Src\Depend\VconfSetTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Src\DexterUtilTest.cs" />
+    <Compile Include="Src\DexterConfigFileTests.cs" />
+    <Compile Include="Src\DexterCRCPluginTests.cs" />
+    <Compile Include="Src\DexterDependPluginTests.cs" />
+    <Compile Include="Src\Util\DexterUtilTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
     <EmbeddedResource Include="Resource\checker-config.json" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Resource\dexter_cfg-snapshot.json" />
     <None Include="Resource\dexter_cfg.json" />
   </ItemGroup>
@@ -169,6 +170,7 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

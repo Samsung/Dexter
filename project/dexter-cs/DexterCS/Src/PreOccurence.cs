@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DexterCS
+﻿namespace DexterCS
 {
     public class PreOccurence : BaseDefect
     {
@@ -17,7 +11,7 @@ namespace DexterCS
         public string StringValue { get; set; }
         public string FieldName { get; set; }
         public string Message { get; set; }
-        public string SeverityCode {get;set;}
+        public string SeverityCode { get; set; }
         public string CategoryName { get; set; }
 
         internal Occurence ToOccurence()

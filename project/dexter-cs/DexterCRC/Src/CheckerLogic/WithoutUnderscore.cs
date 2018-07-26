@@ -5,7 +5,8 @@ namespace DexterCRC
 {
     public class WithoutUnderscore : ICheckerLogic
     {
-        public WithoutUnderscore() {
+        public WithoutUnderscore()
+        {
             CheckerName = this.GetType().Name;
             Description = "Without Underscore";
         }

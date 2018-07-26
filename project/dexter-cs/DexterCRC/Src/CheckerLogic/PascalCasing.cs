@@ -5,7 +5,8 @@ namespace DexterCRC
 {
     public class PascalCasing : ICheckerLogic
     {
-        public PascalCasing() {
+        public PascalCasing()
+        {
             CheckerName = this.GetType().Name;
             Description = "Use Pascal Casing";
         }

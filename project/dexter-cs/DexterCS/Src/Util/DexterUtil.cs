@@ -1,6 +1,7 @@
 ﻿using log4net;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace DexterCS
         public enum STATUS_CODE
         {
             SUCCESS, ERROR
-    }
+        }
         public enum OS
         {
             WINDOWS, LINUX, MAC, UNKNOWN
@@ -30,7 +31,7 @@ namespace DexterCS
             WIN32, WIN64, WIN128, LINUX32, LINUX64, LINUX128, UNKNOWN
         };
 
-       
+
 
         public static string FILE_SEPARATOR
         {
@@ -62,10 +63,19 @@ namespace DexterCS
                     return "";
                 }
                 return File.ReadAllText(fi.FullName, Encoding.UTF8);
-            } catch(IOException e)
+            }
+            catch (IOException e)
             {
                 throw new DexterRuntimeException(e.Message);
             }
+        }
+
+        public static string GetCurrentMethodName()
+        {
+            StackTrace st = new StackTrace();
+            StackFrame sf = st.GetFrame(1);
+
+            return sf.GetMethod().Name;
         }
 
         public static string currentDateTime()
@@ -111,7 +121,8 @@ namespace DexterCS
                 {
                     sw.Write(contents);
                 }
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 CliLog.Error(e.StackTrace);
             }
@@ -122,7 +133,7 @@ namespace DexterCS
             try
             {
                 if (!File.Exists(filePath))
-                    throw new DexterRuntimeException("There is no file to read " + filePath);
+                    throw new DexterRuntimeException("File does not exist: " + filePath);
             }
             catch (DexterRuntimeException e)
             {
@@ -143,7 +154,8 @@ namespace DexterCS
                         Byte[] info = new UTF8Encoding(true).GetBytes("");
                         fs.Write(info, 0, info.Length);
                     }
-                }catch(Exception e)
+                }
+                catch (Exception e)
                 {
                     CliLog.Error(e.StackTrace);
                 }
@@ -155,11 +167,12 @@ namespace DexterCS
         {
             try
             {
-                if (! File.Exists(filePath))
+                if (!File.Exists(filePath))
                 {
-                    throw (new DexterRuntimeException("There is no file : " + filePath));
+                    throw (new DexterRuntimeException("File does not exist: " + filePath));
                 }
-            } catch (DexterRuntimeException e)
+            }
+            catch (DexterRuntimeException e)
             {
                 CliLog.Error(e.Message);
                 Environment.Exit(0);
@@ -184,7 +197,8 @@ namespace DexterCS
                 try
                 {
                     File.Create(cfgFilePath);
-                }catch(Exception e)
+                }
+                catch (Exception e)
                 {
                     CliLog.Error(e.StackTrace);
                 }
@@ -210,7 +224,7 @@ namespace DexterCS
             }
             if (!new DirectoryInfo(dir.ToString()).Exists)
             {
-                throw new DexterRuntimeException("Folder(Directory) is not exist : " + dir);
+                throw new DexterRuntimeException("Directory does not exist: " + dir);
             }
         }
 
@@ -220,7 +234,7 @@ namespace DexterCS
             {
                 return "";
             }
-            string _path = path.Replace("//", "/").Replace("\\","/").Replace(DexterUtil.FILE_SEPARATOR,"/");
+            string _path = path.Replace("//", "/").Replace("\\", "/").Replace(DexterUtil.FILE_SEPARATOR, "/");
             return _path;
         }
 
@@ -235,7 +249,7 @@ namespace DexterCS
             }
             catch (Exception)
             {
-                CliLog.Error("Can not create");
+                CliLog.Error("Cannot create directory: " + dir);
             }
         }
 
@@ -245,7 +259,7 @@ namespace DexterCS
             {
                 return new List<string>();
             }
-            
+
             try
             {
                 DirectoryInfo baseDirInfo = new DirectoryInfo(baseDir);
@@ -266,7 +280,7 @@ namespace DexterCS
             {
                 return new List<FileInfo>();
             }
-            
+
             try
             {
                 DirectoryInfo baseDirInfo = new DirectoryInfo(baseDir);

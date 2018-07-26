@@ -1,9 +1,8 @@
-﻿using System;
-using System.Linq;
-using DexterCS;
+﻿using DexterCS;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Linq;
 
 namespace DexterCRC
 {
@@ -20,7 +19,7 @@ namespace DexterCRC
                 return;
             }
 
-            foreach(var ifRaw in ifRaws)
+            foreach (var ifRaw in ifRaws)
             {
                 if (bracket.HasDefect(ifRaw.Statement.ToString()))
                 {

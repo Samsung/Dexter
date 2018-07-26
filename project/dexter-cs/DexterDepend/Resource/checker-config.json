@@ -49,4 +49,6 @@
       "cwe": 0
     }
   ],
-"toolName":"dexter-cs-depend","language":"C_SHARP"}
+  "toolName": "dexter-cs-depend",
+  "language": "C_SHARP"
+}

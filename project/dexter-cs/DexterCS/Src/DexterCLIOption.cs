@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using CommandLine;
-using CommandLine.Text;
-using System.IO;
-using System.ComponentModel;
-using System.Text;
-using System.Collections;
+﻿using CommandLine;
 using log4net;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.IO;
+using System.Text;
 
 namespace DexterCS
 {
@@ -24,19 +22,22 @@ namespace DexterCS
 
         public int ServerPort { get; set; }
         public string UserId { get; set; }
-        public string UserPassword { get; set;}
+        public string UserPassword { get; set; }
         public string ServerHostIp { get; set; }
         private string configFilePath;
-        public string ConfigFilePath {
-            get {
+        public string ConfigFilePath
+        {
+            get
+            {
                 return this.configFilePath;
             }
-            set {
+            set
+            {
                 try
                 {
                     if (string.IsNullOrEmpty(value))
                     {
-                        throw new DexterRuntimeException("Invalid CommandLine Option for filePath(null or empty)");
+                        throw new DexterRuntimeException("Invalid CommandLine option for configFilePath (null or empty)");
                     }
                 }
                 catch (DexterRuntimeException e)
@@ -72,7 +73,7 @@ namespace DexterCS
             set { }
         }
 
-        public string[] TargetFiles { get;  set; }
+        public string[] TargetFiles { get; set; }
 
         private void CreateCliOptionFromArguments(string[] args)
         {
@@ -80,7 +81,8 @@ namespace DexterCS
             {
                 var command = Parser.Default.ParseArguments<DexterCLIOptionSet>(args);
                 DexterUtil.STATUS_CODE exitCode = command
-                    .Return(opts => {
+                    .Return(opts =>
+                    {
                         var parsed = (Parsed<DexterCLIOptionSet>)command;
                         var options = parsed.Value;
                         SetFieldsByCommandLine(options);
@@ -90,7 +92,7 @@ namespace DexterCS
 
                 if (exitCode != DexterUtil.STATUS_CODE.SUCCESS)
                 {
-                    throw new Exception("Parse Error");
+                    throw new Exception("Command parsing error");
                 }
             }
             catch (Exception e)
@@ -110,9 +112,11 @@ namespace DexterCS
             this.UserId = options.UserId;
             this.UserPassword = options.UserPassword;
 
-            if (DexterUtil.HasOption(options.SpecifiedDexterConfigFile)){
+            if (DexterUtil.HasOption(options.SpecifiedDexterConfigFile))
+            {
                 this.ConfigFilePath = options.SpecifiedDexterConfigFile;
-            } else
+            }
+            else
             {
                 this.ConfigFilePath = "./" + DexterConfig.DEXTER_CFG_FILENAME;
             }
@@ -148,7 +152,7 @@ namespace DexterCS
                             "You have to use both -h dexter_server_host_ip and -o dexter_server_port_number options");
                 }
             }
-            catch(DexterRuntimeException e)
+            catch (DexterRuntimeException e)
             {
                 CliLog.Error(e.Message);
                 Environment.Exit(0);
@@ -175,7 +179,7 @@ namespace DexterCS
             try
             {
                 JsonResultFile = new FileInfo(fileName + ".json");
-                File.WriteAllText(JsonResultFile.FullName, "" , Encoding.UTF8);
+                File.WriteAllText(JsonResultFile.FullName, "", Encoding.UTF8);
             }
             catch (IOException e)
             {

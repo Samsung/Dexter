@@ -1,8 +1,7 @@
-﻿using log4net;
+﻿using DexterCS.Client;
+using log4net;
 using System;
 using System.Collections.Generic;
-
-using DexterCS.Client;
 
 namespace DexterCS
 {
@@ -30,7 +29,7 @@ namespace DexterCS
         private void InitSupportingFileExtensions()
         {
             DexterConfig.Instance.RemoveAllSupportingFileExtensions();
-            foreach(IDexterPlugin plugin in pluginList)
+            foreach (IDexterPlugin plugin in pluginList)
             {
                 DexterConfig.Instance.AddSupprotingFileExtensions(plugin.SupportingFileExtensions);
             }
@@ -40,7 +39,7 @@ namespace DexterCS
         {
             List<AnalysisResult> resultList = new List<AnalysisResult>();
 
-            foreach(IDexterPlugin plugin in pluginList)
+            foreach (IDexterPlugin plugin in pluginList)
             {
                 if (plugin.SupportLanguage(config.GetLanguageEnum()))
                 {

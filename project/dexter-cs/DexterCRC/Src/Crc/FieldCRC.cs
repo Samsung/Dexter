@@ -1,8 +1,7 @@
-﻿using System;
-using System.Linq;
-using DexterCS;
+﻿using DexterCS;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Linq;
 
 namespace DexterCRC
 {
@@ -10,7 +9,8 @@ namespace DexterCRC
     {
         PascalCasing pascalCasing;
 
-        public FieldCRC() {
+        public FieldCRC()
+        {
             pascalCasing = new PascalCasing();
         }
         public void Analyze(AnalysisConfig config, AnalysisResult result, Checker checker, SyntaxNode syntaxRoot)
@@ -54,8 +54,8 @@ namespace DexterCRC
         public bool HasInvalidModifier(string modifier)
         {
             modifier = modifier.Trim();
-            return ("protected static".Equals(modifier) || "public static".Equals(modifier) 
-                || "static protected".Equals(modifier) || "static public".Equals(modifier) );
+            return ("protected static".Equals(modifier) || "public static".Equals(modifier)
+                || "static protected".Equals(modifier) || "static public".Equals(modifier));
         }
     }
 }

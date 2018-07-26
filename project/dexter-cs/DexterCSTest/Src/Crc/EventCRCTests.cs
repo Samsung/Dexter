@@ -1,11 +1,9 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DexterCRC;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace DexterCSTest
+namespace DexterCRC.Tests
 {
-    [TestClass]
-    public class EventCRCTest
+    [TestClass()]
+    public class EventCRCTests
     {
         SuffixNaming suffixNaming;
         void Init()
@@ -14,36 +12,36 @@ namespace DexterCSTest
         }
 
         [TestMethod]
-        public void HasDefect_Should_True_with_InValid_Event_Type_Name()
+        public void HasDefectTest_WithInValidEventTypeName_ReturnsTrue()
         {
             Init();
-            //given
+            // Given
             string eventTypeName = @"NameChangedEvent";
             NamingSet namingSet = new NamingSet
             {
                 currentName = eventTypeName,
                 basicWord = DexterCRCUtil.EVENT_TYPE_SUFFIX
             };
-            //when
+            // When
             bool result = suffixNaming.HasDefect(namingSet);
-            //then
+            // Then
             Assert.IsTrue(result);
         }
 
         [TestMethod]
-        public void HasDefect_Should_False_with_Valid_Event_Type_Name()
+        public void HasDefectTest_WithValidEventTypeName_ReturnsFalse()
         {
             Init();
-            //given
+            // Given
             string eventTypeName = @"NameChangedEventHandler";
             NamingSet namingSet = new NamingSet
             {
                 currentName = eventTypeName,
                 basicWord = DexterCRCUtil.EVENT_TYPE_SUFFIX
             };
-            //when
+            // When
             bool result = suffixNaming.HasDefect(namingSet);
-            //then
+            // Then
             Assert.IsFalse(result);
         }
     }

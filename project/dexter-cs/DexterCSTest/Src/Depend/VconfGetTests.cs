@@ -1,12 +1,10 @@
-﻿using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DexterDepend;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 
-namespace DexterCSTest
+namespace DexterDepend.Tests
 {
-    [TestClass]
-    public class VconfGetTest
+    [TestClass()]
+    public class VconfGetTests
     {
         VconfMethod vconfMethod;
         List<string> subMethodList;
@@ -15,47 +13,47 @@ namespace DexterCSTest
         {
             vconfMethod = new VconfMethod();
             subMethodList = new List<string>();
-            subMethodList.AddRange(new string[] { "Vconf.GetString", "Vconf.GetInt"});
+            subMethodList.AddRange(new string[] { "Vconf.GetString", "Vconf.GetInt" });
         }
         [TestMethod]
-        public void HasVConfMethod_Should_True_vconf_get()
+        public void HasVConfMethodTest_VconfGet_ReturnsTrue()
         {
-            //given
+            // Given
             Init();
             string methodName = "Vconf.GetInt(IntKey, out GetValue)";
 
-            //when
+            // When
             bool result = vconfMethod.HasVconfMethod(subMethodList, methodName);
 
-            //then
+            // Then
             Assert.IsTrue(result);
         }
 
         [TestMethod]
-        public void HasVConfMethod_Should_False_other_method()
+        public void HasVConfMethodTest_OtherMethod_ReturnsFalse()
         {
-            //given
+            // Given
             Init();
             string methodName = "Vconf.GetTest(IntKey, out GetValue)";
 
-            //when
+            // When
             bool result = vconfMethod.HasVconfMethod(subMethodList, methodName);
 
-            //then
+            // Then
             Assert.IsFalse(result);
         }
 
         [TestMethod]
-        public void HasVConfMethod_Should_True_vconf_get_int()
+        public void HasVConfMethodTest_VconfGetInt_ReturnsTrue()
         {
-            //given
+            // Given
             Init();
             string methodName = "Vconf.GetInt(IntKey, out GetValue)";
 
-            //when
+            // When
             bool result = vconfMethod.HasVconfMethod(subMethodList, methodName);
 
-            //then
+            // Then
             Assert.IsTrue(result);
         }
     }

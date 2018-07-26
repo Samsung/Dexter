@@ -2,10 +2,8 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace DexterCS
 {
@@ -27,7 +25,8 @@ namespace DexterCS
         public string ConfigType { get; set; }
         public long SnapshotId { get; set; }
         private string modulePath = "";
-        public string ModulePath {
+        public string ModulePath
+        {
             get { return modulePath; }
             set { modulePath = value ?? ""; }
         }
@@ -40,7 +39,7 @@ namespace DexterCS
         private List<string> HeaderDirList { get; set; }
         private string BinDir { get; set; }
         private string Language { get; set; }
-        
+
 
         private IList<string> fileNameList = new List<string>();
         public IList<string> FileNameList { get; set; }
@@ -83,18 +82,19 @@ namespace DexterCS
             DexterServerIp = ((string)configMetadata["dexterServerIp"]);
             DexterServerPort = (Int32.Parse((string)configMetadata["dexterServerPort"]));
             ProjectName = ((string)configMetadata["projectName"]);
-            ProjectFullPath= ((string)configMetadata["projectFullPath"] + " / ");
+            ProjectFullPath = ((string)configMetadata["projectFullPath"] + " / ");
             SourceDirList = GetListFromDictionary(configMetadata["sourceDir"]);
             HeaderDirList = GetListFromDictionary(configMetadata["headerDir"]);
-            SourceEncoding=((string)configMetadata["sourceEncoding"]);
-            ConfigType=((string)configMetadata["type"]);
+            SourceEncoding = ((string)configMetadata["sourceEncoding"]);
+            ConfigType = ((string)configMetadata["type"]);
             ModulePath = (string)configMetadata["modulePath"];
-            
+
             FileNameList = GetListFromDictionary(configMetadata["fileName"]);
             try
             {
                 SnapshotId = (long.Parse((string)configMetadata["snapshotId"]));
-            } catch(Exception)
+            }
+            catch (Exception)
             {
                 SnapshotId = -1;
             }
@@ -107,11 +107,11 @@ namespace DexterCS
             {
                 return tempDirs;
             }
-            
-            foreach(var dir in dirs)
+
+            foreach (var dir in dirs)
             {
                 tempDirs.Add(dir.ToString());
-            } 
+            }
             return tempDirs;
         }
 
@@ -125,16 +125,16 @@ namespace DexterCS
 
         private void CheckTypeAndFollowingFields(dynamic configMetadata)
         {
-            string _type = (string) configMetadata.type;
-            if(string.Compare(ResultFileConstant.FILE_TYPE, _type, StringComparison.OrdinalIgnoreCase) != 0 &&
+            string _type = (string)configMetadata.type;
+            if (string.Compare(ResultFileConstant.FILE_TYPE, _type, StringComparison.OrdinalIgnoreCase) != 0 &&
                 string.Compare(ResultFileConstant.FOLDER_TYPE, _type, StringComparison.OrdinalIgnoreCase) != 0 &&
                 string.Compare(ResultFileConstant.PROJECT_TYPE, _type, StringComparison.OrdinalIgnoreCase) != 0 &&
-                string.Compare(ResultFileConstant.SNAPSHOT_TYPE, _type, StringComparison.OrdinalIgnoreCase) != 0 )
+                string.Compare(ResultFileConstant.SNAPSHOT_TYPE, _type, StringComparison.OrdinalIgnoreCase) != 0)
             {
-                throw new DexterRuntimeException("'type' field can be {FILE,FOLDER,PROJECT,SNAPSHOT}. your input : " + _type);
+                throw new DexterRuntimeException("'type' field can be {FILE, FOLDER, PROJECT, SNAPSHOT}. Your input: " + _type);
             }
 
-            if(string.Compare(ResultFileConstant.FILE_TYPE, _type, StringComparison.OrdinalIgnoreCase) == 0)
+            if (string.Compare(ResultFileConstant.FILE_TYPE, _type, StringComparison.OrdinalIgnoreCase) == 0)
             {
                 CheckFieldEmptyInDexterConfiguration(configMetadata, ResultFileConstant.FILE_NAME);
             }
@@ -155,17 +155,17 @@ namespace DexterCS
 
         private void CheckFieldEmptyInDexterConfiguration(dynamic fieldValue, string key)
         {
-            if(object.ReferenceEquals(null, fieldValue))
+            if (object.ReferenceEquals(null, fieldValue))
             {
-                throw new DexterRuntimeException("Dexter Configuration Error : '" + key + "' field is empty");
+                throw new DexterRuntimeException("Dexter Configuration Error: '" + key + "' field is empty");
             }
         }
 
         private void CheckNullOfMap(dynamic configMetadata)
         {
-            if(configMetadata == null || configMetadata.Count < 1)
+            if (configMetadata == null || configMetadata.Count < 1)
             {
-                throw new DexterRuntimeException("Dexter Configuration Error: Empty");
+                throw new DexterRuntimeException("Dexter Configuration Error: Empty configMetadata");
             }
         }
 
@@ -183,10 +183,11 @@ namespace DexterCS
             analysisConfig.ResultFileFullPath = ResultFileFullPath;
 
             string type = ConfigType;
-            switch(type){
+            switch (type)
+            {
                 case "PROJECT":
                     analysisConfig.AnalysisConfigType = DexterConfig.AnalysisType.PROJECT;
-                break;
+                    break;
                 case "SNAPSHOT":
                     analysisConfig.AnalysisConfigType = DexterConfig.AnalysisType.SNAPSHOT;
                     break;
@@ -211,7 +212,7 @@ namespace DexterCS
             {
                 return sourceFileFullPathList;
             }
-            if(this.ConfigType == Type.FILE.ToString())
+            if (this.ConfigType == Type.FILE.ToString())
             {
                 sourceFileFullPathList = GenerateSourceFileFullPathListAsFileType();
             }
@@ -228,7 +229,7 @@ namespace DexterCS
 
         private List<string> GenerateSourceFileFullPathListAsProjectType()
         {
-            List <string> sourceFileFullPathList = new List<string>(50);
+            List<string> sourceFileFullPathList = new List<string>(50);
 
             foreach (var srcDir in SourceDirList)
             {
@@ -249,7 +250,9 @@ namespace DexterCS
                         if (hasValidDirectoryName(subFile))
                         {
                             AddSourceFileFullPathHierachy(subFile, sourceFileFullPathList);
-                        } else {
+                        }
+                        else
+                        {
                             continue;
                         }
                     }
@@ -262,7 +265,8 @@ namespace DexterCS
                     }
                     sourceFileFullPathList.Add(DexterUtil.RefinePath(basePath));
                 }
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 CliLog.Error("There is no file :" + e.Message);
                 Environment.Exit(0);
@@ -276,7 +280,7 @@ namespace DexterCS
 
         private bool hasValidDirectoryName(string path)
         {
-            if(path.Contains("\\Properties") || path.Contains("\\Interop") || path.Contains(".Tests") )
+            if (path.Contains("\\Properties") || path.Contains("\\Interop") || path.Contains(".Tests"))
             {
                 return false;
             }
@@ -292,7 +296,7 @@ namespace DexterCS
             }
             List<string> sourceFileFullPathList = new List<String>(10);
 
-            foreach(string filePath in (DexterUtil.getSubFileNames(moduleFullPath)))
+            foreach (string filePath in (DexterUtil.getSubFileNames(moduleFullPath)))
             {
                 sourceFileFullPathList.Add(filePath);
             }
@@ -302,7 +306,7 @@ namespace DexterCS
 
         private string GetExistingModuleFullPathWithSourceDirList()
         {
-            foreach(string srcDir in SourceDirList)
+            foreach (string srcDir in SourceDirList)
             {
                 string moduleFullPath = DexterUtil.RefinePath(srcDir + "/" + ModulePath);
                 if (File.Exists(moduleFullPath))

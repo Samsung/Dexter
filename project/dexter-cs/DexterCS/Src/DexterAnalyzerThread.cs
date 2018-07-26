@@ -1,9 +1,8 @@
-﻿using System;
+﻿using DexterCS.Client;
+using log4net;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
-using DexterCS.Client;
-using log4net;
 
 namespace DexterCS
 {
@@ -15,7 +14,7 @@ namespace DexterCS
         private IDexterPluginManager pluginManager;
         private IDexterClient client;
 
-        public void SetFields(AnalysisConfig config,IDexterPluginManager pluginManager,IDexterClient client)
+        public void SetFields(AnalysisConfig config, IDexterPluginManager pluginManager, IDexterClient client)
         {
             this.config = config;
             this.pluginManager = pluginManager;
@@ -35,7 +34,7 @@ namespace DexterCS
                 analyzer.PreRunStaticAnalysis(analysisConfig);
                 List<AnalysisResult> resultList = RunStaticAnalysis(analysisConfig, pluginManager, client);
                 analyzer.PostRunStaticAnalysis(analysisConfig, resultList);
-                
+
             }
             catch (Exception e)
             {
@@ -49,7 +48,8 @@ namespace DexterCS
             {
                 client.StoreSourceCodeCharSequence(config.SnapshotId, config.GroupId,
                     config.ModulePath, config.FileName, config.SourcecodeFromFile).Wait();
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 CliLog.Error(e.StackTrace);
             }
@@ -67,14 +67,14 @@ namespace DexterCS
 
         private void CheckAnalysisConfig(AnalysisConfig analysisConfig)
         {
-            if(string.IsNullOrEmpty(analysisConfig.SourceFileFullPath) || string.IsNullOrEmpty(analysisConfig.FileName))
+            if (string.IsNullOrEmpty(analysisConfig.SourceFileFullPath) || string.IsNullOrEmpty(analysisConfig.FileName))
             {
-                throw new DexterRuntimeException("Invalid Analysis Config : fileName or sourceFileFullPath is null or empty");
+                throw new DexterRuntimeException("Invalid Analysis Config: SourceFileFullPath or FileName is null or empty");
             }
 
             if (!File.Exists(analysisConfig.SourceFileFullPath))
             {
-                throw new DexterRuntimeException("Invalid Analysis Config : projectName or projectFullPath is null or empty");
+                throw new DexterRuntimeException("Invalid Analysis Config: SourceFileFullPath does not exist: " + analysisConfig.SourceFileFullPath);
             }
         }
     }

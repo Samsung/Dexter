@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DexterCS;
+﻿using DexterCS;
 using Microsoft.CodeAnalysis.CSharp;
+using System;
 
 namespace DexterCRC.Src.CheckerLogic
 {

@@ -1,11 +1,9 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DexterCRC;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace DexterCSTest
+namespace DexterCRC.Tests
 {
-    [TestClass]
-    public class DelegateCRCTest
+    [TestClass()]
+    public class DelegateCRCTests
     {
         SuffixNaming suffixNaming;
 
@@ -15,35 +13,36 @@ namespace DexterCSTest
         }
 
         [TestMethod]
-        public void HasDefect_Should_True_with_Invalid_Delegate_Name()
+        public void HasDefectTest_WithInvalidDelegateName_Should_True()
         {
             Init();
-            //given
+            // Given
             string delegateName = @"NameChangedDelegate";
-            NamingSet namingSet = new NamingSet {
+            NamingSet namingSet = new NamingSet
+            {
                 currentName = delegateName,
                 basicWord = DexterCRCUtil.DELEGATE_SUFFIX
             };
-            //when
+            // When
             bool result = !suffixNaming.HasDefect(namingSet);
-            //then
+            // Then
             Assert.IsTrue(result);
         }
 
         [TestMethod]
-        public void HasDefect_Should_False_with_Valid_Delegate_Name()
+        public void HasDefectTest_WithValidDelegateName_ReturnsFalse()
         {
             Init();
-            //given
+            // Given
             string delegateName = @"NameChangedDele";
             NamingSet namingSet = new NamingSet
             {
                 currentName = delegateName,
                 basicWord = DexterCRCUtil.DELEGATE_SUFFIX
             };
-            //when
+            // When
             bool result = !suffixNaming.HasDefect(namingSet);
-            //then
+            // Then
             Assert.IsFalse(result);
         }
     }

@@ -7,7 +7,7 @@
         public string SourceFileFullPath { get; set; }
         public string ResultFileFullPath { get; set; }
         public long SnapshotId { get; set; }
-        public DexterConfig.AnalysisType AnalysisType { get;  set; }
+        public DexterConfig.AnalysisType AnalysisType { get; set; }
 
         protected BaseAnalysisEntity() { }
         protected BaseAnalysisEntity(BaseAnalysisEntity entitiy) : base(entitiy)

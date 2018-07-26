@@ -1,9 +1,8 @@
-﻿using System;
-using DexterCS;
-using DexterCS.Client;
+﻿using DexterCS.Client;
+using log4net;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using log4net;
 using System.Text;
 
 namespace DexterCS.Job
@@ -21,8 +20,8 @@ namespace DexterCS.Job
         {
             string resultFolderStr = DexterConfig.Instance.DexterHome + "/" + DexterConfig.RESULT_FOLDER_NAME;
             IList<FileInfo> resultFiles = DexterUtil.GetSubFileNamesByPrefix(resultFolderStr, resultFilePrefix);
-            
-            foreach(var resultFile in resultFiles)
+
+            foreach (var resultFile in resultFiles)
             {
                 SendResult(resultFile, client);
                 MmoveResultFileToOldFolder(resultFile);
@@ -44,24 +43,26 @@ namespace DexterCS.Job
 
         private static void SendResult(FileInfo resultFile, IDexterClient client)
         {
-            if (DexterUtil.IsDirectory(resultFile) || false.Equals(resultFile.Exists) || true.Equals(resultFile.IsReadOnly))
+            if (DexterUtil.IsDirectory(resultFile) || !resultFile.Exists || resultFile.IsReadOnly)
             {
-                throw new DexterRuntimeException("Invalid resultFile parameter:" + resultFile);
+                throw new DexterRuntimeException("Cannot access result file (is not a directory or does not exist or is read-only: " + resultFile);
             }
 
-            if (!DexterUtil.JSON_EXTENSION.Equals(resultFile.Extension) 
-                || !resultFile.ToString().StartsWith("result_", StringComparison.Ordinal)) {
+            if (!DexterUtil.JSON_EXTENSION.Equals(resultFile.Extension)
+                || !resultFile.ToString().StartsWith("result_", StringComparison.Ordinal))
+            {
                 return;
             }
             try
             {
                 client.SendAnalysisResult(File.ReadAllText(resultFile.FullName, Encoding.UTF8)).Wait();
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
                 CliLog.Error(e.StackTrace);
             }
         }
 
-        
+
     }
 }

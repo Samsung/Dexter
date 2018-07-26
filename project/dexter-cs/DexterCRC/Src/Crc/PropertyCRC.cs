@@ -1,8 +1,7 @@
-﻿using System;
-using System.Linq;
-using DexterCS;
+﻿using DexterCS;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Linq;
 
 namespace DexterCRC
 {
@@ -17,7 +16,7 @@ namespace DexterCRC
             {
                 return;
             }
-            foreach(var propertyRaw in propertyRaws)
+            foreach (var propertyRaw in propertyRaws)
             {
                 string propertyName = propertyRaw.Identifier.ToString();
                 if (pascalCasing.HasDefect(propertyName))

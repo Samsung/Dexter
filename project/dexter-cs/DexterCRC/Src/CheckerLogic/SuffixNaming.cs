@@ -5,7 +5,8 @@ namespace DexterCRC
 {
     public class SuffixNaming : ICheckerLogic
     {
-        public SuffixNaming() {
+        public SuffixNaming()
+        {
             CheckerName = this.GetType().Name;
             Description = "Check Suffix";
         }

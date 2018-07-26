@@ -1,6 +1,4 @@
-﻿using System;
-using DexterCS;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace DexterCS
 {
@@ -15,7 +13,7 @@ namespace DexterCS
         {
             return new AnalysisConfig(baseAnalysisConfig);
         }
-        
+
         public AnalysisResult CreateAnalysisResult(AnalysisConfig config)
         {
             AnalysisResult result = new AnalysisResult();
@@ -42,7 +40,7 @@ namespace DexterCS
             result.SourceFileFullPath = baseResult.SourceFileFullPath;
             result.ResultFileFullPath = baseResult.ResultFileFullPath;
 
-            foreach(var temp in resultList)
+            foreach (var temp in resultList)
             {
                 result.DefectList.AddRange(temp.DefectList);
             }
