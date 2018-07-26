@@ -9,7 +9,7 @@ namespace Dexter.Common.Config
     public class DexterInfo
     {
         /// <summary>
-        /// Dexter Home path
+        /// Dexter/DexterCS Home path
         /// </summary>
         public string dexterHome { get; set; }
 
@@ -39,28 +39,34 @@ namespace Dexter.Common.Config
         public bool standalone { get; set; }
 
         /// <summary>
-        ///  Whether Dexter home is enabled (Dexter home is available for only c/c++ analysis)
+        ///  Whether Dexter/DexterCS home is enabled (Dexter/DexterCS home is available for only c/c++ analysis)
         /// </summary>
         public bool IsDexterHomeEnabled { get; set; }
 
         /// <summary>
-        /// Default path to dexter executable: dexterHome + "\bin\dexter-executor.jar"
+        /// Default path to dexter-executor: dexterHome + "\bin\dexter-executor.jar"
         /// </summary>
         [JsonIgnore]
         public string DexterExecutorPath { get { return dexterHome + "\\bin\\dexter-executor.jar"; } }
 
         /// <summary>
-        /// Checks if dexter-executor.jar is found under dexterExecutorPath
+        /// Default path to DexterCS: dexterHome + "\bin\DexterCS.exe"
+        /// </summary>
+        [JsonIgnore]
+        public string DexterCSPath { get { return dexterHome + "\\bin\\DexterCS.exe"; } }
+
+        /// <summary>
+        /// Checks if dexter-executor.jar is found under dexterExecutorPath or DexterCS.exe is found under DexterCSPath
         /// </summary>
         [JsonIgnore]
         public bool IsDexterFound
         {
             get
             {
-                return File.Exists(DexterExecutorPath);
+                return (File.Exists(DexterExecutorPath) || File.Exists(DexterCSPath));
             }
         }
-        
+
         /// <summary>
         /// Creates new DexterInfo instance with default values
         /// </summary>
