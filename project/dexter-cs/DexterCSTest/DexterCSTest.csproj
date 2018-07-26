@@ -123,7 +123,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Src\CheckerLogic\MethodSpacingTests.cs" />
-    <Compile Include="Src\CheckerLogic\NounNamingTests.cs" />
     <Compile Include="Src\CRCLogic\BracketTest.cs" />
     <Compile Include="Src\CRCLogic\CamelCasingTest.cs" />
     <Compile Include="Src\CRCLogic\ClassCRCTest.cs" />
@@ -142,6 +141,7 @@
     <Compile Include="Src\DexterConfigFileTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Src\DexterUtilTest.cs" />
+    <Compile Include="Src\Util\DexterUtilTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

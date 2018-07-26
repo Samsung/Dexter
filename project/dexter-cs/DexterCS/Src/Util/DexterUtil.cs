@@ -33,8 +33,9 @@ namespace DexterCS
 
         public static string[] Split(string input)
         {
-            input = Regex.Replace(input, "_", " $1", RegexOptions.CultureInvariant);
+            input = Regex.Replace(input, "_", " ", RegexOptions.CultureInvariant);
             input = Regex.Replace(input, "([A-Z])", " $1", RegexOptions.CultureInvariant);
+            input = Regex.Replace(input, @"\s+", " ");
             return input.Trim().Split(' '); ;
         }
 
