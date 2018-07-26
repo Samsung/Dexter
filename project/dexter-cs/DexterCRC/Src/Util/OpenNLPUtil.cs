@@ -25,8 +25,6 @@ namespace DexterCRC.Src.Util
         {
             string wordTag = GetTagger().Tag(new string[] { word })[0];
 
-            Console.WriteLine("--------------" +  word + " is " + wordTag);
-
             foreach (string tag in tags)
             {
                 if (wordTag == tag)
@@ -43,7 +41,7 @@ namespace DexterCRC.Src.Util
             return DoesWordMatchAnyOfTags(word, NounTags);
         }
 
-        public static bool IsNoun(string[] words)
+        public static bool AreNouns(string[] words)
         {
             foreach(string word in words)
             {
@@ -55,17 +53,12 @@ namespace DexterCRC.Src.Util
             return true;
         }
 
-        public static bool IsVerb(string word)
-        {
-            return DoesWordMatchAnyOfTags(word, NounTags);
-        }
-
         private static EnglishMaximumEntropyPosTagger GetTagger()
         {
             if (englishMaximumEntropyPosTagger == null)
             {
                 englishMaximumEntropyPosTagger = new EnglishMaximumEntropyPosTagger(
-                     DexterConfig.Instance.DexterHome + "\\EnglishPOS.nbin");
+                     DexterConfig.Instance.DexterHome + "\\bin\\dexterCS\\EnglishPOS.nbin");
             }
             return englishMaximumEntropyPosTagger;
         }

@@ -22,7 +22,7 @@ namespace DexterCRC
 
             string[] words = DexterUtil.Split(name);
 
-            return !OpenNLPUtil.IsNoun(words);
+            return !OpenNLPUtil.AreNouns(words);
         }
 
         public PreOccurence MakeDefect(AnalysisConfig config, Checker checker, CSharpSyntaxNode raw)
