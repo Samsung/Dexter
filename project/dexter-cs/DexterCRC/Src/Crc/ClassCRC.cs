@@ -3,6 +3,7 @@ using DexterCS;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Linq;
 
 namespace DexterCRC
 {
@@ -13,7 +14,8 @@ namespace DexterCRC
         SuffixNaming suffixNaming;
         NounNaming nounNaming;
 
-        public ClassCRC() {
+        public ClassCRC()
+        {
             underscore = new WithoutUnderscore();
             pascalCasing = new PascalCasing();
             suffixNaming = new SuffixNaming();
@@ -28,7 +30,7 @@ namespace DexterCRC
                 return;
             }
 
-            foreach (var classRaw in classRaws) 
+            foreach (var classRaw in classRaws)
             {
                 string className = classRaw.Identifier.ToString();
                 if (underscore.HasDefect(className))
@@ -51,7 +53,7 @@ namespace DexterCRC
                 {
                     continue;
                 }
-                else if(HasBaseTypeNamingDefect(className, classRaw.BaseList.Types))
+                else if (HasBaseTypeNamingDefect(className, classRaw.BaseList.Types))
                 {
                     PreOccurence preOcc = suffixNaming.MakeDefect(config, checker, classRaw);
                     result.AddDefectWithPreOccurence(preOcc);
@@ -67,9 +69,9 @@ namespace DexterCRC
                 {
                     return true;
                 }
-                if(CheckAttributeNaming(className, baseType.Type.ToString()))
+                if (CheckAttributeNaming(className, baseType.Type.ToString()))
                 {
-                    return true;    
+                    return true;
                 }
             }
             return false;
@@ -77,13 +79,13 @@ namespace DexterCRC
 
         public bool CheckAttributeNaming(string className, string baseName)
         {
-            return (DexterCRCUtil.HasSuffix(baseName, DexterCRCUtil.ATTRIBUTE_CLASS_SUFFIX )
+            return (DexterCRCUtil.HasSuffix(baseName, DexterCRCUtil.ATTRIBUTE_CLASS_SUFFIX)
                 && !DexterCRCUtil.HasSuffix(className, DexterCRCUtil.ATTRIBUTE_CLASS_SUFFIX));
         }
 
         public bool CheckEventNaming(string className, string baseName)
         {
-            return (DexterCRCUtil.HasSuffix(baseName, DexterCRCUtil.EVENT_CLASS_SUFFIX )
+            return (DexterCRCUtil.HasSuffix(baseName, DexterCRCUtil.EVENT_CLASS_SUFFIX)
                     && !DexterCRCUtil.HasSuffix(className, DexterCRCUtil.EVENT_CLASS_SUFFIX));
         }
     }

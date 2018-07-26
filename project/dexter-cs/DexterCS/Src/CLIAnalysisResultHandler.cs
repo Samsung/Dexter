@@ -1,9 +1,9 @@
-﻿using System;
-using log4net;
-using System.IO;
-using System.Collections.Generic;
-using DexterCS.Client;
+﻿using DexterCS.Client;
 using DexterCS.Job;
+using log4net;
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace DexterCS

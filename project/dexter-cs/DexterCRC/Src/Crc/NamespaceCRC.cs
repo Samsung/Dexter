@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DexterCS;
+﻿using DexterCS;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Linq;
 
 namespace DexterCRC
 {
@@ -16,10 +12,10 @@ namespace DexterCRC
         public void Analyze(AnalysisConfig config, AnalysisResult result, Checker checker, SyntaxNode syntaxRoot)
         {
             var namespaceRaws = syntaxRoot.DescendantNodes().OfType<NamespaceDeclarationSyntax>();
-            foreach(var namespaceRaw in namespaceRaws)
+            foreach (var namespaceRaw in namespaceRaws)
             {
                 string namespaceName = namespaceRaw.Name.ToString();
-                if (pascalCasing.HasDefect(namespaceName)) 
+                if (pascalCasing.HasDefect(namespaceName))
                 {
                     PreOccurence preOcc = pascalCasing.MakeDefect(config, checker, namespaceRaw);
                     result.AddDefectWithPreOccurence(preOcc);

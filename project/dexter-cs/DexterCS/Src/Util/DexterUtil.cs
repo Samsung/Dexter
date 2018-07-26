@@ -1,6 +1,7 @@
 ﻿using log4net;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -76,6 +77,14 @@ namespace DexterCS
             }
         }
 
+        public static string GetCurrentMethodName()
+        {
+            StackTrace st = new StackTrace();
+            StackFrame sf = st.GetFrame(1);
+
+            return sf.GetMethod().Name;
+        }
+
         public static string currentDateTime()
         {
             DateTime dateTime = DateTime.Now;
@@ -131,7 +140,7 @@ namespace DexterCS
             try
             {
                 if (!File.Exists(filePath))
-                    throw new DexterRuntimeException("There is no file to read " + filePath);
+                    throw new DexterRuntimeException("File does not exist: " + filePath);
             }
             catch (DexterRuntimeException e)
             {
@@ -167,7 +176,7 @@ namespace DexterCS
             {
                 if (!File.Exists(filePath))
                 {
-                    throw (new DexterRuntimeException("There is no file : " + filePath));
+                    throw (new DexterRuntimeException("File does not exist: " + filePath));
                 }
             }
             catch (DexterRuntimeException e)
@@ -222,7 +231,7 @@ namespace DexterCS
             }
             if (!new DirectoryInfo(dir.ToString()).Exists)
             {
-                throw new DexterRuntimeException("Folder(Directory) is not exist : " + dir);
+                throw new DexterRuntimeException("Directory does not exist: " + dir);
             }
         }
 
@@ -247,7 +256,7 @@ namespace DexterCS
             }
             catch (Exception)
             {
-                CliLog.Error("Can not create");
+                CliLog.Error("Cannot create directory: " + dir);
             }
         }
 

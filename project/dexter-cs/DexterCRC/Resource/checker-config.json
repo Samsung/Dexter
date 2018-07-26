@@ -1,5 +1,5 @@
-﻿{"checkerList" :
-  [
+﻿{
+  "checkerList": [
     {
       "code": "InterfaceCRC",
       "name": "Interface",
@@ -191,6 +191,20 @@
       "isActive": true,
       "properties": { "value": "" },
       "cwe": 0
+    },
+    {
+      "code": "HeadingCRC",
+      "name": "Heading",
+      "type": "BOTH",
+      "categoryName": "CsharpCRC",
+      "severityCode": "CRI",
+      "version": "0.1.0",
+      "description": " for Heading.",
+      "isActive": true,
+      "properties": { "value": "" },
+      "cwe": 0
     }
   ],
-"toolName":"dexter-cs-crc","language":"C_SHARP"}
+  "toolName": "dexter-cs-crc",
+  "language": "C_SHARP"
+}

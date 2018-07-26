@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace DexterCS
 {
@@ -8,22 +7,28 @@ namespace DexterCS
         public string ProjectName { get; set; }
         public string ProjectFullPath { get; set; }
         private List<string> sourceDirs;
-        public List<string> SourceDirs {
-            get { return sourceDirs == null ? new List<string>() : sourceDirs; }
+        public List<string> SourceDirs
+        {
+            get { return sourceDirs ?? new List<string>(); }
             set { sourceDirs = value; }
         }
 
         private List<string> headerDirs;
-        public List<string> HeaderDirs {
-            get { return headerDirs == null ? new List<string>() : headerDirs; }
+        public List<string> HeaderDirs
+        {
+            get { return headerDirs ?? new List<string>(); }
             set { headerDirs = value; }
         }
 
         private List<string> targetDir;
-        public List<string> TargetDirs {
-            get { return targetDir == null ? new List<string>() : targetDir;
+        public List<string> TargetDirs
+        {
+            get
+            {
+                return targetDir ?? new List<string>();
             }
-            set { targetDir = value; } }
+            set { targetDir = value; }
+        }
         public string Type { get; set; }
     }
 }

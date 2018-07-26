@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DexterCS;
+﻿using DexterCS;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Linq;
 
 namespace DexterCRC
 {
@@ -14,7 +10,8 @@ namespace DexterCRC
         PascalCasing pascalCasing;
         WithoutUnderscore underscore;
 
-        public MethodCRC() {
+        public MethodCRC()
+        {
             pascalCasing = new PascalCasing();
             underscore = new WithoutUnderscore();
         }
@@ -26,7 +23,7 @@ namespace DexterCRC
                 return;
             }
 
-            foreach(var methodRaw in methodRaws)
+            foreach (var methodRaw in methodRaws)
             {
                 string methodName = methodRaw.Identifier.ToString();
 

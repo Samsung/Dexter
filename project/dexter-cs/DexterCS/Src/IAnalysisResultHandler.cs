@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using DexterCS.Client;
+﻿using DexterCS.Client;
+using System.Collections.Generic;
 
 namespace DexterCS
 {

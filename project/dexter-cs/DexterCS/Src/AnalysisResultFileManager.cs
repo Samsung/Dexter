@@ -2,11 +2,8 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DexterCS
 {
@@ -33,7 +30,7 @@ namespace DexterCS
 
         internal void WriteJson(List<AnalysisResult> resultList)
         {
-            if(resultList.Count == 0)
+            if (resultList.Count == 0)
             {
                 return;
             }
@@ -52,8 +49,8 @@ namespace DexterCS
         {
             DirectoryInfo di = new DirectoryInfo(resultFolderStr);
             string resultFileName = GetResultFilePrefixName(result.ModulePath, result.FileName) + "_";
-            FileInfo[] fiList = di.GetFiles(resultFileName+"*");
-            foreach(var fi in fiList)
+            FileInfo[] fiList = di.GetFiles(resultFileName + "*");
+            foreach (var fi in fiList)
             {
                 try
                 {
@@ -63,7 +60,7 @@ namespace DexterCS
                 {
                     CliLog.Error(e.StackTrace);
                 }
-                
+
             }
         }
 
@@ -77,7 +74,7 @@ namespace DexterCS
         private FileInfo GetResultFilePath(AnalysisResult result, string resultFolderStr)
         {
             string path = resultFolderStr + "/" + GetResultFilePrefixName(result.ModulePath, result.FileName) +
-                "_" + DexterUtil.GetCurrentDateTimeMillis() +ResultFileConstant.RESULT_FILE_EXTENSION;
+                "_" + DexterUtil.GetCurrentDateTimeMillis() + ResultFileConstant.RESULT_FILE_EXTENSION;
             FileInfo resultFile = DexterUtil.CreateEmptyFileIfNoyExist(path);
             return resultFile;
         }
@@ -102,9 +99,9 @@ namespace DexterCS
         {
             contents.Append(",\"").Append(ResultFileConstant.DEFECT_LIST).Append("\":[");
             int i = 0;
-            foreach(var defect in result.DefectList)
+            foreach (var defect in result.DefectList)
             {
-                if(i != 0)
+                if (i != 0)
                 {
                     contents.Append(",");
                 }

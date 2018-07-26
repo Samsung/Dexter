@@ -1,9 +1,8 @@
-﻿using System;
-using System.Linq;
-using DexterCS;
+﻿using DexterCS;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Linq;
 namespace DexterCRC
 {
     class WhileStatementsCRC : ICRCLogic
@@ -17,7 +16,7 @@ namespace DexterCRC
             {
                 return;
             }
-            foreach(var whileRaw in whileRaws)
+            foreach (var whileRaw in whileRaws)
             {
                 if (bracket.HasDefect(whileRaw.Statement.ToString()))
                 {

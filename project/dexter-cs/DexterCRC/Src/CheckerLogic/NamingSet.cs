@@ -1,8 +1,4 @@
-﻿using DexterCS;
-using Microsoft.CodeAnalysis.CSharp;
-using System;
-
-namespace DexterCRC
+﻿namespace DexterCRC
 {
     public class NamingSet
     {

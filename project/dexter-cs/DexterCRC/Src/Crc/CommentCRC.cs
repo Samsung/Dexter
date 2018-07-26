@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DexterCRC.Src.CheckerLogic;
+﻿using DexterCRC.Src.CheckerLogic;
 using DexterCS;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System;
+using System.Linq;
 
 namespace DexterCRC.Src.Crc
 {
@@ -16,7 +13,7 @@ namespace DexterCRC.Src.Crc
 
         public CommentCRC()
         {
-           commentRules = new CommentRules();
+            commentRules = new CommentRules();
         }
 
 
@@ -35,7 +32,7 @@ namespace DexterCRC.Src.Crc
                 {
                     PreOccurence preOcc = commentRules.MakeDefect(config, checker, commentRaw);
                     result.AddDefectWithPreOccurence(preOcc);
-                }       
+                }
             }
             throw new NotImplementedException();
         }

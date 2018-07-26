@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DexterCS;
-using System.Reflection;
-using System.IO;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis;
-using System.ComponentModel;
+﻿using DexterCS;
 using log4net;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Newtonsoft.Json;
+using System;
+using System.IO;
+using System.Reflection;
+using System.Text;
 
 namespace DexterCRC
 {
@@ -49,7 +43,7 @@ namespace DexterCRC
 
         public string PLUGIN_AUTHOR
         {
-            get { return "Samsung Electroincs"; }
+            get { return "Samsung Electronics"; }
         }
 
         public Version VERSION
@@ -75,13 +69,14 @@ namespace DexterCRC
                 {
                     dexterConfig = reader.ReadToEnd();
                 }
-                
+
                 baseCheckerConfig = JsonConvert.DeserializeObject<BaseCheckerConfig>(dexterConfig
                     , new JsonSerializerSettings
                     {
                         NullValueHandling = NullValueHandling.Ignore
                     });
-            } catch(Exception e)
+            }
+            catch (Exception e)
             {
                 CliLog.Error("There is no plug-in in directory.");
                 CliLog.Error(e.StackTrace);
@@ -101,7 +96,8 @@ namespace DexterCRC
 
         public bool SupportLanguage(DexterConfig.LANGUAGE language)
         {
-            if (language.Equals(DexterConfig.LANGUAGE.C_SHARP)) {
+            if (language.Equals(DexterConfig.LANGUAGE.C_SHARP))
+            {
                 return true;
             }
             else
@@ -132,12 +128,12 @@ namespace DexterCRC
 
             foreach (Checker checker in CheckerConfig.CheckerList)
             {
-                if (false.Equals(checker.IsActive))
+                if (!checker.IsActive)
                 {
                     continue;
                 }
                 ICRCLogic logic = GetCheckerLogic(checker.Code);
-               
+
                 logic.Analyze(config, result, checker, syntaxRoot);
             }
             return result;

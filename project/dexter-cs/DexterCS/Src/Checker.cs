@@ -1,10 +1,5 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static DexterCS.DexterConfig;
 
 namespace DexterCS
 {
@@ -52,7 +47,7 @@ namespace DexterCS
             IsActive = isActive;
         }
 
-        public Checker(string code, string name, string type, 
+        public Checker(string code, string name, string type,
             string version, string description, Boolean isActive, Properties properties, string cwe)
         {
             Code = code;

@@ -1,48 +1,48 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DexterCRC;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace DexterCSTest.checkerLogic
+namespace DexterCRC.Tests
 {
-    [TestClass]
-    public class NamingTest
+    [TestClass()]
+    public class PrefixNamingTests
     {
         PrefixNaming prefixNaming;
 
-        void Init() {
+        void Init()
+        {
             prefixNaming = new PrefixNaming();
         }
 
         [TestMethod]
-        public void HasDefect_Should_True_without_an_I()
+        public void HasDefectTest_WithoutAnI_ReturnsTrue()
         {
-            //given
+            // Given
             Init();
             string interfaceName = @"DexterInterfaceNameTest";
-            NamingSet namingSet = new NamingSet {
+            NamingSet namingSet = new NamingSet
+            {
                 currentName = interfaceName,
                 basicWord = "I"
             };
-            //when
+            // When
             bool result = prefixNaming.HasDefect(namingSet);
-            //then
+            // Then
             Assert.IsTrue(result);
         }
 
         [TestMethod]
-        public void HasDefect_Should_False_with_an_I()
+        public void HasDefectTest_WithAnI_ReturnsFalse()
         {
             Init();
-            //given
+            // Given
             string interfaceName = @"IDexterInterfaceNameTest";
             NamingSet namingSet = new NamingSet
             {
                 currentName = interfaceName,
                 basicWord = "I"
             };
-            //when
+            // When
             bool result = prefixNaming.HasDefect(namingSet);
-            //then
+            // Then
             Assert.IsFalse(result);
         }
     }

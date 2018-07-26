@@ -1,13 +1,7 @@
-﻿using DexterCS;
-using log4net;
+﻿using log4net;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DexterCS.Client
@@ -36,7 +30,8 @@ namespace DexterCS.Client
 
         public int ServerPort { get; set; }
 
-        public string SourceCode(string modulePath, string fileName) {
+        public string SourceCode(string modulePath, string fileName)
+        {
             return @"";
         }
 
@@ -44,7 +39,7 @@ namespace DexterCS.Client
         {
             if (string.IsNullOrEmpty(resultJson))
             {
-                throw new DexterRuntimeException("The result file has noe content to send");
+                throw new DexterRuntimeException("The result file has no content to send");
             }
 
             if (DexterConfig.Run_Mode.CLI == DexterConfig.Instance.RunMode)

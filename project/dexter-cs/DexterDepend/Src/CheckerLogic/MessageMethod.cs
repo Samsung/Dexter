@@ -1,10 +1,7 @@
-﻿using System;
+﻿using DexterCS;
+using Microsoft.CodeAnalysis.CSharp;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DexterCS;
-using Microsoft.CodeAnalysis.CSharp;
 
 namespace DexterDepend
 {

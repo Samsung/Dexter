@@ -1,78 +1,74 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DexterCRC;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace DexterCSTest.checkerLogic
+namespace DexterCRC.Tests
 {
-    [TestClass]
-    public class FieldCRCTest
+    [TestClass()]
+    public class FieldCRCTests
     {
         FieldCRC filedCRC;
 
         void Init()
         {
-            filedCRC = new FieldCRC();   
+            filedCRC = new FieldCRC();
         }
 
         [TestMethod]
-        public void HasInvalidModifier_Should_True_Has_Invalid_Protected_Modifier()
+        public void HasInvalidModifierTest_HasInvalidProtectedModifier_ReturnsTrue()
         {
             Init();
-            //given
+            // Given
             string modifier = @" protected static";
-            //when
+            // When
             bool result = filedCRC.HasInvalidModifier(modifier);
-            //then
+            // Then
             Assert.IsTrue(result);
         }
 
         [TestMethod]
-        public void HasInvalidModifier_Should_True_Has_Invalid_Static_Modifier()
+        public void HasInvalidModifierTest_HasInvalidStaticModifier_ReturnsTrue()
         {
             Init();
-            //given
+            // Given
             string modifier = @"public static";
-            //when
+            // When
             bool result = filedCRC.HasInvalidModifier(modifier);
-            //then
+            // Then
             Assert.IsTrue(result);
         }
 
         [TestMethod]
-        public void HasInvalidModifier_Should_True_Has_Invalid_Static_Modifier_withBlank()
+        public void HasInvalidModifierTest_HasInvalidStaticModifierWithBlank_ReturnsTrue()
         {
             Init();
-            //given
+            // Given
             string modifier = @" public static ";
-            //when
+            // When
             bool result = filedCRC.HasInvalidModifier(modifier);
-            //then
+            // Then
             Assert.IsTrue(result);
         }
 
         [TestMethod]
-        public void HasInvalidModifier_Should_False_Has_Valid_Public_Modifier()
+        public void HasInvalidModifierTest_HasValidPublicModifier_ReturnsFalse()
         {
             Init();
-            //given
+            // Given
             string modifier = @"public";
-            //when
+            // When
             bool result = filedCRC.HasInvalidModifier(modifier);
-            //then
+            // Then
             Assert.IsFalse(result);
         }
 
         [TestMethod]
-        public void HasInvalidModifier_Should_False_Has_Valid_Private_Modifier()
+        public void HasInvalidModifierTest_HasValidPrivateModifier_ReturnsFalse()
         {
             Init();
-            //given
+            // Given
             string modifier = @"private  ";
-            //when
+            // When
             bool result = filedCRC.HasInvalidModifier(modifier);
-            //then
+            // Then
             Assert.IsFalse(result);
         }
     }

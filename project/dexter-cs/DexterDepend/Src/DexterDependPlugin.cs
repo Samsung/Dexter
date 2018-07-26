@@ -1,12 +1,12 @@
-﻿using System;
-using System.Text;
-using DexterCS;
+﻿using DexterCS;
 using log4net;
-using System.Reflection;
-using System.IO;
-using Newtonsoft.Json;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Newtonsoft.Json;
+using System;
+using System.IO;
+using System.Reflection;
+using System.Text;
 
 namespace DexterDepend
 {
@@ -49,7 +49,7 @@ namespace DexterDepend
 
         public string PLUGIN_AUTHOR
         {
-            get { return "Samsung Electroincs"; }
+            get { return "Samsung Electronics"; }
         }
 
         public Version VERSION
@@ -84,7 +84,7 @@ namespace DexterDepend
 
             foreach (Checker checker in CheckerConfig.CheckerList)
             {
-                if (false.Equals(checker.IsActive))
+                if (!checker.IsActive)
                 {
                     continue;
                 }

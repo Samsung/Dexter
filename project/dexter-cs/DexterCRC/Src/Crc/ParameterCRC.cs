@@ -1,8 +1,7 @@
-﻿using System;
-using System.Linq;
-using DexterCS;
+﻿using DexterCS;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Linq;
 
 namespace DexterCRC
 {
@@ -17,7 +16,7 @@ namespace DexterCRC
             {
                 return;
             }
-            foreach(var parameterRaw in parameterRaws)
+            foreach (var parameterRaw in parameterRaws)
             {
                 string parameterName = parameterRaw.Identifier.ValueText;
                 if (camelCasing.HasDefect(parameterName))

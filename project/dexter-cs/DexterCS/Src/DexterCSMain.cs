@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using DexterCS.Client;
 using log4net;
-using log4net.Config;
+using System.Collections.Generic;
 using System.IO;
-using DexterCS.Client;
+using System.Text;
 
 [assembly: log4net.Config.XmlConfigurator(Watch = true)]
 namespace DexterCS
@@ -108,7 +104,7 @@ namespace DexterCS
 
             return new DexterClient(httpWrapper);
         }
-            
+
         private IDexterConfigFile CreateDexterConfigFile(IDexterCLIOption cliOption)
         {
             IDexterConfigFile configFile = new DexterConfigFile();

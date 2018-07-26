@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace DexterCS
+﻿namespace DexterCS
 {
     public class DexterServerConfig
     {

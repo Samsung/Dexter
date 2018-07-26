@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DexterCS;
+﻿using DexterCS;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Linq;
 
 namespace DexterCRC
 {
@@ -14,14 +10,15 @@ namespace DexterCRC
         PascalCasing pascalCasing;
         SuffixNaming suffixNaming;
 
-        public DelegateCRC() {
+        public DelegateCRC()
+        {
             pascalCasing = new PascalCasing();
             suffixNaming = new SuffixNaming();
         }
         public void Analyze(AnalysisConfig config, AnalysisResult result, Checker checker, SyntaxNode syntaxRoot)
         {
             var delegateRaws = syntaxRoot.DescendantNodes().OfType<DelegateDeclarationSyntax>();
-            foreach(var delegateRaw in delegateRaws)
+            foreach (var delegateRaw in delegateRaws)
             {
                 var delegateName = delegateRaw.Identifier.ToString();
 
@@ -31,7 +28,8 @@ namespace DexterCRC
                     result.AddDefectWithPreOccurence(preOcc);
                 }
 
-                if (!suffixNaming.HasDefect(new NamingSet {
+                if (!suffixNaming.HasDefect(new NamingSet
+                {
                     currentName = delegateName,
                     basicWord = DexterCRCUtil.DELEGATE_SUFFIX
                 }))

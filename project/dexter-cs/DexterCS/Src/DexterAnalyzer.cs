@@ -1,6 +1,6 @@
-﻿using System;
+﻿using DexterCS.Client;
+using System;
 using System.Collections.Generic;
-using DexterCS.Client;
 
 namespace DexterCS
 {
@@ -29,7 +29,7 @@ namespace DexterCS
 
         internal void PreSendSourceCode(AnalysisConfig config)
         {
-            foreach(var listener in listenerList)
+            foreach (var listener in listenerList)
             {
                 listener.HandlePreSendSourceCode(config);
             }
@@ -39,7 +39,7 @@ namespace DexterCS
 
         internal void PostRunStaticAnalysis(AnalysisConfig config, List<AnalysisResult> resultList)
         {
-            foreach(var listener in listenerList)
+            foreach (var listener in listenerList)
             {
                 listener.HandlePostRunStaticAnalysis(config, resultList);
             }
@@ -48,7 +48,8 @@ namespace DexterCS
         private static readonly object padlock = new object();
         public static DexterAnalyzer Instance
         {
-            get {
+            get
+            {
                 lock (padlock)
                 {
                     if (instance == null)
@@ -67,7 +68,7 @@ namespace DexterCS
 
         public void PreRunStaticAnalysis(AnalysisConfig config)
         {
-            foreach(IDexterAnalyzerListener listener in listenerList)
+            foreach (IDexterAnalyzerListener listener in listenerList)
             {
                 listener.HandlePreRunStaticAnalysis(config);
             }
@@ -81,7 +82,7 @@ namespace DexterCS
         internal static List<Defect> AllDefectList(List<AnalysisResult> resultList)
         {
             List<Defect> allDefectList = new List<Defect>();
-            foreach(AnalysisResult result in resultList)
+            foreach (AnalysisResult result in resultList)
             {
                 allDefectList.AddRange(result.DefectList);
             }
