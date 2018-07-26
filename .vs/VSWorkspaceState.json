@@ -1,0 +1,23 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\project",
+    "\\project\\dexter-cs",
+    "\\project\\dexter-cs\\DexterCRC",
+    "\\project\\dexter-cs\\DexterCRC\\Resource",
+    "\\project\\dexter-cs\\DexterCRC\\Src",
+    "\\project\\dexter-cs\\DexterCRC\\Src\\Util",
+    "\\project\\dexter-cs\\DexterCS",
+    "\\project\\dexter-cs\\DexterCSTest",
+    "\\project\\dexter-cs\\DexterCSTest\\Src",
+    "\\project\\dexter-cs\\DexterCSTest\\Src\\CheckerLogic",
+    "\\project\\dexter-cs\\DexterCS\\Src",
+    "\\project\\dexter-cs\\DexterCS\\Src\\Client",
+    "\\project\\dexter-cs\\DexterCS\\Src\\Util",
+    "\\project\\dexter-cs\\DexterDepend",
+    "\\project\\dexter-cs\\DexterDepend\\Src",
+    "\\project\\dexter-cs\\DexterDepend\\Src\\CheckerLogic"
+  ],
+  "SelectedNode": "\\project\\dexter-cs\\DexterCSTest\\Src\\CheckerLogic\\MethodSpacingTests.cs",
+  "PreviewInSolutionExplorer": false
+}

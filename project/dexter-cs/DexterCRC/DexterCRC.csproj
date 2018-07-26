@@ -127,6 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Src\CheckerLogic\CommentRules.cs" />
+    <Compile Include="Src\CheckerLogic\HeadingRule.cs" />
     <Compile Include="Src\CheckerLogic\MethodSpacing.cs" />
     <Compile Include="Src\CheckerLogic\WithBrace.cs" />
     <Compile Include="Src\CheckerLogic\CamelCasing.cs" />
@@ -141,6 +142,7 @@
     <Compile Include="Src\Crc\EventCRC.cs" />
     <Compile Include="Src\Crc\FieldCRC.cs" />
     <Compile Include="Src\Crc\ForeachStatementsCRC.cs" />
+    <Compile Include="Src\Crc\HeadingCRC.cs" />
     <Compile Include="Src\Crc\ICRCLogic.cs" />
     <Compile Include="Src\Crc\ForStatementsCRC.cs" />
     <Compile Include="Src\Crc\IfStatementsCRC.cs" />
