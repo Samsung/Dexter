@@ -84,7 +84,7 @@ namespace DexterDepend
 
             foreach (Checker checker in CheckerConfig.CheckerList)
             {
-                if (false.Equals(checker.IsActive))
+                if (!checker.IsActive)
                 {
                     continue;
                 }

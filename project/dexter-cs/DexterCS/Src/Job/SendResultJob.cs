@@ -43,7 +43,7 @@ namespace DexterCS.Job
 
         private static void SendResult(FileInfo resultFile, IDexterClient client)
         {
-            if (DexterUtil.IsDirectory(resultFile) || false.Equals(resultFile.Exists) || true.Equals(resultFile.IsReadOnly))
+            if (DexterUtil.IsDirectory(resultFile) || !resultFile.Exists || resultFile.IsReadOnly)
             {
                 throw new DexterRuntimeException("Cannot access result file (is not a directory or does not exist or is read-only: " + resultFile);
             }
