@@ -1,4 +1,5 @@
 ﻿using DexterCS;
+using log4net;
 using OpenNLP.Tools.PosTagger;
 using System;
 using System.IO;
@@ -7,6 +8,20 @@ namespace DexterCRC.Src.Util
 {
     public static class OpenNLPUtil
     {
+        private static ILog CliLog = LogManager.GetLogger(typeof(DexterUtil));
+
+        public static string ENGLISH_POS_DICTIONARY
+        {
+            get
+            {
+                return DexterConfig.Instance.DexterHome
+                     + DexterUtil.FILE_SEPARATOR + "bin"
+                     + DexterUtil.FILE_SEPARATOR + "dexterCS"
+                     + DexterUtil.FILE_SEPARATOR + "EnglishPOS.nbin";
+            }
+        }
+
+
         // Source of tags https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html
 
         public static string[] NounTags = { "NN", "NNP", "NNPS", "NNS" };
@@ -23,7 +38,17 @@ namespace DexterCRC.Src.Util
 
         private static bool DoesWordMatchAnyOfTags(string word, string[] tags)
         {
-            string wordTag = GetTagger().Tag(new string[] { word })[0];
+            string wordTag;
+            try
+            {
+                wordTag = GetTagger().Tag(new string[] { word })[0];
+
+            }
+            catch(Exception e)
+            {
+                CliLog.Error(e.Message);
+                return true;
+            }
 
             foreach (string tag in tags)
             {
@@ -57,8 +82,12 @@ namespace DexterCRC.Src.Util
         {
             if (englishMaximumEntropyPosTagger == null)
             {
-                englishMaximumEntropyPosTagger = new EnglishMaximumEntropyPosTagger(
-                     DexterConfig.Instance.DexterHome + "\\bin\\dexterCS\\EnglishPOS.nbin");
+                if(!File.Exists(ENGLISH_POS_DICTIONARY))
+                {
+                    throw new DexterRuntimeException("Cannot perform naming analysis. Dictionary not found in directory: " +
+                        ENGLISH_POS_DICTIONARY);
+                }
+                englishMaximumEntropyPosTagger = new EnglishMaximumEntropyPosTagger(ENGLISH_POS_DICTIONARY);
             }
             return englishMaximumEntropyPosTagger;
         }
