@@ -36,13 +36,11 @@ namespace DexterCS
 
         public bool IsSpecifiedCheckerOptionEnabledByCli { get; set; }
 
-
-
         public readonly String DEXTER_HOME_KEY = "dexterHome";
         private readonly string PLUGIN_FOLDER_NAME = "plugin";
 
         private static HashSet<string> supportingFileExtensions = new HashSet<string>();
-        public void AddSupprotingFileExtensions(string[] fileExtensions)
+        public void AddSupportedFileExtensions(string[] fileExtensions)
         {
             foreach (string extension in fileExtensions)
             {
@@ -90,7 +88,7 @@ namespace DexterCS
                 {
                     if (supportingFileExtensions.Contains(extension.ToLowerInvariant()) == false)
                     {
-                        supportingFileExtensions.Add(extension.ToLowerInvariant());
+                        supportingFileExtensions.Add(extension.Replace(".", "").ToLowerInvariant());
                     }
                 }
             }
@@ -138,25 +136,25 @@ namespace DexterCS
             }
             try
             {
-                DexterUtil.CreateFolderWithParents(DexterHome);
+                DexterUtil.CreateFolderIfDoesNotExist(DexterHome);
 
                 string bin = DexterHome + "/bin";
-                DexterUtil.CreateFolderWithParents(bin);
-                DexterUtil.CreateFolderWithParents(bin + "/cppcheck");
-                DexterUtil.CreateFolderWithParents(bin + "/cppcheck/cfg");
+                DexterUtil.CreateFolderIfDoesNotExist(bin);
+                DexterUtil.CreateFolderIfDoesNotExist(bin + "/cppcheck");
+                DexterUtil.CreateFolderIfDoesNotExist(bin + "/cppcheck/cfg");
 
                 string plugin = DexterHome + "/" + PLUGIN_FOLDER_NAME;
-                DexterUtil.CreateFolderWithParents(plugin);
+                DexterUtil.CreateFolderIfDoesNotExist(plugin);
 
                 string result = DexterHome + "/" + RESULT_FOLDER_NAME;
-                DexterUtil.CreateFolderWithParents(result);
-                DexterUtil.CreateFolderWithParents(result + "/" + OLD_FOLDER_NAME);
+                DexterUtil.CreateFolderIfDoesNotExist(result);
+                DexterUtil.CreateFolderIfDoesNotExist(result + "/" + OLD_FOLDER_NAME);
 
-                DexterUtil.CreateFolderWithParents(DexterHome + "/" + TEMP_FOLDER_NAME);
-                DexterUtil.CreateFolderWithParents(DexterHome + "/" + LOG_FOLDER_NAME);
+                DexterUtil.CreateFolderIfDoesNotExist(DexterHome + "/" + TEMP_FOLDER_NAME);
+                DexterUtil.CreateFolderIfDoesNotExist(DexterHome + "/" + LOG_FOLDER_NAME);
 
                 string filter = DexterHome + "/" + FILTER_FOLDER_NAME;
-                DexterUtil.CreateFolderWithParents(filter);
+                DexterUtil.CreateFolderIfDoesNotExist(filter);
             }
             catch (IOException)
             {
@@ -170,7 +168,7 @@ namespace DexterCS
             dexterHome = HomePath;
         }
 
-        public bool IsAnalysisAllowedFile(string fileName)
+        public bool IsFileSupportedForAnalysis(string fileName)
         {
             string extension = Path.GetExtension(fileName).ToLowerInvariant().Replace(".", "");
             return SupportingFileExtensions.Contains(extension);

@@ -31,7 +31,7 @@ namespace DexterCS
             DexterConfig.Instance.RemoveAllSupportingFileExtensions();
             foreach (IDexterPlugin plugin in pluginList)
             {
-                DexterConfig.Instance.AddSupprotingFileExtensions(plugin.SupportingFileExtensions);
+                DexterConfig.Instance.AddSupportedFileExtensions(plugin.SupportingFileExtensions);
             }
         }
 

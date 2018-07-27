@@ -121,7 +121,7 @@ namespace DexterCS
                 this.ConfigFilePath = "./" + DexterConfig.DEXTER_CFG_FILENAME;
             }
 
-            DexterUtil.ThrowExceptionWhenFileNotExist(ConfigFilePath);
+            DexterUtil.LogErrorAndExitIfFileDoesNotExist(ConfigFilePath);
 
             if (DexterUtil.HasOption(options.ResultFormat))
             {
