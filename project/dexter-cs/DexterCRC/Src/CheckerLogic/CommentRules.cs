@@ -18,8 +18,8 @@ namespace DexterCRC.Src.CheckerLogic
         public bool HasDefect(object value)
         {
             string statement = value.ToString();
-            return !statement.StartsWith("///", StringComparison.Ordinal)
-                    && !statement.Contains("<summary>");
+            return !(statement.Trim().StartsWith("///", StringComparison.Ordinal)
+                && statement.Contains("<summary>"));
         }
 
         public PreOccurence MakeDefect(AnalysisConfig config, Checker checker, CSharpSyntaxNode raw)
