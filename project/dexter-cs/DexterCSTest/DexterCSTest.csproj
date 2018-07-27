@@ -127,6 +127,7 @@
     <Compile Include="Src\CheckerLogic\MessageMethodTests.cs" />
     <Compile Include="Src\CheckerLogic\MethodSpacingTests.cs" />
     <Compile Include="Src\CheckerLogic\PascalCasingTests.cs" />
+    <Compile Include="Src\CheckerLogic\SuffixNamingTests.cs" />
     <Compile Include="Src\CheckerLogic\PrefixNamingTests.cs" />
     <Compile Include="Src\CheckerLogic\WithBraceTests.cs" />
     <Compile Include="Src\CheckerLogic\WithoutUnderscoreTests.cs" />
