@@ -19,7 +19,7 @@ namespace DexterCRC.Src.CheckerLogic
         {
             string statement = value.ToString();
             return !statement.StartsWith("///", StringComparison.Ordinal)
-                    && !statement.Contains("<summary>");
+                    || !statement.Contains("<summary>");
         }
 
         public PreOccurence MakeDefect(AnalysisConfig config, Checker checker, CSharpSyntaxNode raw)

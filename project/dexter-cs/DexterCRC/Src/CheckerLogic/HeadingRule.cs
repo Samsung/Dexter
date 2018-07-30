@@ -23,7 +23,7 @@ namespace DexterCRC.Src.CheckerLogic
         public bool HasDefect(object value)
         {
             SyntaxTriviaList trivia = (SyntaxTriviaList)value;
-            return !(trivia.ToList().ToString().Contains("Copyright") && trivia.ToString().Contains("Samsung Electronics Co., Ltd All Rights Reserved"));                  
+            return !(trivia.ToList().ToString().Contains("Copyright") && trivia.ToString().Contains("Samsung Electronics Co."));                  
         }
         
         public PreOccurence MakeDefect(AnalysisConfig config, Checker checker, CSharpSyntaxNode raw)
