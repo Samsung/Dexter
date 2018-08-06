@@ -1,4 +1,5 @@
-﻿using DexterCS;
+﻿using System.Linq;
+using DexterCS;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Symbols;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -11,12 +12,14 @@ namespace DexterCRC
         WithoutUnderscore underscore;
         PascalCasing pascalCasing;
         SuffixNaming suffixNaming;
+        NounNaming nounNaming;
 
         public ClassCRC()
         {
             underscore = new WithoutUnderscore();
             pascalCasing = new PascalCasing();
             suffixNaming = new SuffixNaming();
+            nounNaming = new NounNaming();
         }
 
         public void Analyze(AnalysisConfig config, AnalysisResult result, Checker checker, SyntaxNode syntaxRoot)
@@ -38,6 +41,11 @@ namespace DexterCRC
                 if (pascalCasing.HasDefect(className))
                 {
                     PreOccurence preOcc = pascalCasing.MakeDefect(config, checker, classRaw);
+                    result.AddDefectWithPreOccurence(preOcc);
+                }
+                if (nounNaming.HasDefect(className))
+                {
+                    PreOccurence preOcc = nounNaming.MakeDefect(config, checker, classRaw);
                     result.AddDefectWithPreOccurence(preOcc);
                 }
 

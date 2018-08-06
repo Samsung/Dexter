@@ -144,6 +144,7 @@ namespace DexterCS
                 DexterUtil.CreateFolderWithParents(bin);
                 DexterUtil.CreateFolderWithParents(bin + "/cppcheck");
                 DexterUtil.CreateFolderWithParents(bin + "/cppcheck/cfg");
+                DexterUtil.CreateFolderWithParents(bin + "/dexterCS");
 
                 string plugin = DexterHome + "/" + PLUGIN_FOLDER_NAME;
                 DexterUtil.CreateFolderWithParents(plugin);
