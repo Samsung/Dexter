@@ -102,12 +102,13 @@ namespace DexterCRC
         public static bool HasPrefix(string name, string prefix)
         {
             return (!string.IsNullOrEmpty(name) &&
-                !name.StartsWith(prefix, StringComparison.CurrentCulture));
+                name.StartsWith(prefix, StringComparison.CurrentCulture));
         }
 
         public static bool HasSuffix(string name, string suffix)
         {
-            return name.EndsWith(suffix, StringComparison.Ordinal);
+            return (!string.IsNullOrEmpty(name) && 
+                name.EndsWith(suffix, StringComparison.CurrentCulture));
         }
     }
 }

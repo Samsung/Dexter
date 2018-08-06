@@ -43,7 +43,7 @@ namespace DexterCRC
         public bool HasDefect(object value)
         {
             var namingSet = (NamingSet)value;
-            return DexterCRCUtil.HasPrefix(namingSet.currentName, namingSet.basicWord);
+            return !DexterCRCUtil.HasPrefix(namingSet.currentName, namingSet.basicWord);
         }
 
         public PreOccurence MakeDefect(AnalysisConfig config, Checker checker, CSharpSyntaxNode raw)
