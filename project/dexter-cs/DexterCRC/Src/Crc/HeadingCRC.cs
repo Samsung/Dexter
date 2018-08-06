@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DexterCRC.Src.Crc
+namespace DexterCRC
 {
     class HeadingCRC : ICRCLogic
     {

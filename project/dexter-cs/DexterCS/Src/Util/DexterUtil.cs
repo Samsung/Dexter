@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace DexterCS
 {
@@ -30,6 +31,14 @@ namespace DexterCS
         {
             WIN32, WIN64, WIN128, LINUX32, LINUX64, LINUX128, UNKNOWN
         };
+
+        public static string[] Split(string input)
+        {
+            input = Regex.Replace(input, "_", " ", RegexOptions.CultureInvariant);
+            input = Regex.Replace(input, "([A-Z])", " $1", RegexOptions.CultureInvariant);
+            input = Regex.Replace(input, @"\s+", " ");
+            return input.Trim().Split(' '); ;
+        }
 
         public static string FILE_SEPARATOR
         {

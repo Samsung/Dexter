@@ -142,6 +142,7 @@ namespace DexterCS
                 DexterUtil.CreateFolderIfDoesNotExist(bin);
                 DexterUtil.CreateFolderIfDoesNotExist(bin + "/cppcheck");
                 DexterUtil.CreateFolderIfDoesNotExist(bin + "/cppcheck/cfg");
+                DexterUtil.CreateFolderIfDoesNotExist(bin + "/dexterCS");
 
                 string plugin = DexterHome + "/" + PLUGIN_FOLDER_NAME;
                 DexterUtil.CreateFolderIfDoesNotExist(plugin);
