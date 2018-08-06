@@ -44,7 +44,7 @@ namespace DexterCRC.Src.Util
                 wordTag = GetTagger().Tag(new string[] { word })[0];
 
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 CliLog.Error(e.Message);
                 return true;
@@ -68,7 +68,7 @@ namespace DexterCRC.Src.Util
 
         public static bool AreNouns(string[] words)
         {
-            foreach(string word in words)
+            foreach (string word in words)
             {
                 if (!IsNoun(word))
                 {
@@ -82,7 +82,7 @@ namespace DexterCRC.Src.Util
         {
             if (englishMaximumEntropyPosTagger == null)
             {
-                if(!File.Exists(ENGLISH_POS_DICTIONARY))
+                if (!File.Exists(ENGLISH_POS_DICTIONARY))
                 {
                     throw new DexterRuntimeException("Cannot perform naming analysis. Dictionary not found in directory: " +
                         ENGLISH_POS_DICTIONARY);

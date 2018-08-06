@@ -245,7 +245,7 @@ namespace DexterCS
                 FileAttributes attr = File.GetAttributes(basePath);
                 if (attr.HasFlag(FileAttributes.Directory)) // IsDirectory
                 {
-                    foreach (string subFile in DexterUtil.DirectorySearch(basePath))
+                    foreach (string subFile in DexterUtil.GetAllFilesAndDirectoriesInDirectory(basePath))
                     {
                         if (hasValidDirectoryName(subFile))
                         {
@@ -259,7 +259,7 @@ namespace DexterCS
                 }
                 else
                 {
-                    if (DexterConfig.Instance.IsAnalysisAllowedFile(basePath) == false)
+                    if (DexterConfig.Instance.IsFileSupportedForAnalysis(basePath) == false)
                     {
                         return;
                     }

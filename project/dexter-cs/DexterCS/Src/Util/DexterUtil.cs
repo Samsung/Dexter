@@ -52,15 +52,15 @@ namespace DexterCS
         private static DateTimeFormatInfo dti = new DateTimeFormatInfo();
         public static readonly string JSON_EXTENSION = ".json";
 
-        internal static bool IsDirectory(FileInfo fi)
+        public static bool IsDirectory(FileInfo fi)
         {
             FileAttributes attr = File.GetAttributes(fi.FullName);
             return ((attr & FileAttributes.Directory) == FileAttributes.Directory);
         }
 
-        internal static string GetSourcecodeFromFile(string filePath)
+        public static string GetSourcecodeFromFile(string filePath)
         {
-            CheckFileExistence(filePath);
+            LogErrorAndExitIfFileDoesNotExist(filePath);
             try
             {
                 FileInfo fi = new FileInfo(filePath);
@@ -107,7 +107,7 @@ namespace DexterCS
             }
         }
 
-        internal static string GetBase64CharSequence(string sourcecode)
+        public static string GetBase64CharSequence(string sourcecode)
         {
             try
             {
@@ -135,21 +135,7 @@ namespace DexterCS
             }
         }
 
-        public static void CheckFileExistence(string filePath)
-        {
-            try
-            {
-                if (!File.Exists(filePath))
-                    throw new DexterRuntimeException("File does not exist: " + filePath);
-            }
-            catch (DexterRuntimeException e)
-            {
-                CliLog.Error(e.Message);
-                Environment.Exit(0);
-            }
-        }
-
-        internal static FileInfo CreateEmptyFileIfNoyExist(string path)
+        internal static FileInfo CreateEmptyFileIfDoesNotExist(string path)
         {
             FileInfo fi = new FileInfo(path);
             if (!fi.Exists)
@@ -170,7 +156,7 @@ namespace DexterCS
             return fi;
         }
 
-        internal static void ThrowExceptionWhenFileNotExist(string filePath)
+        internal static void LogErrorAndExitIfFileDoesNotExist(string filePath)
         {
             try
             {
@@ -193,7 +179,7 @@ namespace DexterCS
 
         internal static string GetContentsFromFile(string cfgFilePath)
         {
-            CheckFileExistence(cfgFilePath);
+            LogErrorAndExitIfFileDoesNotExist(cfgFilePath);
             return File.ReadAllText(cfgFilePath, Encoding.UTF8);
         }
 
@@ -245,7 +231,7 @@ namespace DexterCS
             return _path;
         }
 
-        public static void CreateFolderWithParents(string dir)
+        public static void CreateFolderIfDoesNotExist(string dir)
         {
             try
             {
@@ -275,7 +261,7 @@ namespace DexterCS
             }
             catch (Exception)
             {
-                CliLog.Error("Can get Sub File Names");
+                CliLog.Error("Cannot get file names in directory: " + baseDir);
                 return new List<string>();
             }
         }
@@ -295,7 +281,7 @@ namespace DexterCS
             }
             catch (Exception)
             {
-                CliLog.Error("Can get Sub File Names");
+                CliLog.Error("Cannot get file names in directory: " + baseDir);
             }
             return fileNames;
         }
@@ -310,7 +296,7 @@ namespace DexterCS
             return !(Object.ReferenceEquals(null, option));
         }
 
-        public static IList<string> DirectorySearch(string dir)
+        public static IList<string> GetAllFilesAndDirectoriesInDirectory(string dir)
         {
             IList<string> subDirList = new List<string>();
             try
@@ -322,7 +308,7 @@ namespace DexterCS
                 foreach (string d in Directory.GetDirectories(dir))
                 {
                     subDirList.Add(Path.GetFullPath(d));
-                    DirectorySearch(d);
+                    GetAllFilesAndDirectoriesInDirectory(d);
                 }
             }
             catch (Exception e)
@@ -331,6 +317,5 @@ namespace DexterCS
             }
             return subDirList;
         }
-
     }
 };

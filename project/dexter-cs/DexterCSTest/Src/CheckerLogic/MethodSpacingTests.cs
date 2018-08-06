@@ -1,13 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DexterCRC.Src.CheckerLogic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
 
 namespace DexterCRC.Src.CheckerLogic.Tests
 {

@@ -2,11 +2,7 @@
 using DexterCS;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DexterCRC
 {
@@ -23,12 +19,12 @@ namespace DexterCRC
         {
 
             var classRaws = syntaxRoot.DescendantNodes().OfType<UsingDirectiveSyntax>();
-                if (!classRaws.Any())
-                {
-                    return;
-                }
-                
-                foreach (var classRaw in classRaws)
+            if (!classRaws.Any())
+            {
+                return;
+            }
+
+            foreach (var classRaw in classRaws)
             {
                 SyntaxTriviaList syntaxTriviaList = classRaw.GetLeadingTrivia();
 
@@ -36,7 +32,7 @@ namespace DexterCRC
                 {
                     PreOccurence preOcc = headingRule.MakeDefect(config, checker, classRaw);
                     result.AddDefectWithPreOccurence(preOcc);
-                }                
+                }
             }
 
         }

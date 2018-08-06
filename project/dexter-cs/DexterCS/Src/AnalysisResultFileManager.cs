@@ -75,7 +75,7 @@ namespace DexterCS
         {
             string path = resultFolderStr + "/" + GetResultFilePrefixName(result.ModulePath, result.FileName) +
                 "_" + DexterUtil.GetCurrentDateTimeMillis() + ResultFileConstant.RESULT_FILE_EXTENSION;
-            FileInfo resultFile = DexterUtil.CreateEmptyFileIfNoyExist(path);
+            FileInfo resultFile = DexterUtil.CreateEmptyFileIfDoesNotExist(path);
             return resultFile;
         }
 

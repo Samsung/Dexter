@@ -1,7 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using DexterCRC;
-using DexterCRC.Src.CheckerLogic;
+﻿using DexterCRC.Src.CheckerLogic;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DexterCSTest.Src.CRCLogic
 {
