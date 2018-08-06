@@ -1,6 +1,8 @@
-﻿#region Copyright notice
+extensions: .Designer.cs
+extensions: .cs
+#region Copyright notice
 /**
- * Copyright (c) 2018 Samsung Electronics, Inc.,
+ * Copyright (c) %CurrentYear% Samsung Electronics, Inc.,
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without
@@ -25,22 +27,3 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #endregion
-using System.Collections.Generic;
-
-namespace DexterCS
-{
-    class DexterAnalyzerAdapter : IDexterAnalyzerListener
-    {
-        public void HandlePostRunStaticAnalysis(AnalysisConfig config, List<AnalysisResult> resultList)
-        {
-        }
-
-        public void HandlePreRunStaticAnalysis(AnalysisConfig config)
-        {
-        }
-
-        public void HandlePreSendSourceCode(AnalysisConfig config)
-        {
-        }
-    }
-}
