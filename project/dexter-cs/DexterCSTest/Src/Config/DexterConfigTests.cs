@@ -1,12 +1,8 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using DexterCS;
+﻿using DexterCSTest.Src;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
-using DexterCSTest.Src;
+using System.Linq;
 
 namespace DexterCS.Tests
 {

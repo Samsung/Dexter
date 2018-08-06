@@ -1,10 +1,8 @@
-﻿using DexterCS;
-using DexterCSTest.Src;
+﻿using DexterCSTest.Src;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace DexterCS.Tests
@@ -89,13 +87,6 @@ namespace DexterCS.Tests
             }
             Assert.IsTrue(splitPascalAndSnakeCasingWord.SequenceEqual(new string[] { "Pascal", "And", "Snake", "Casing", "Word" }));
         }
-
-        [TestMethod]
-        public void RefinePathTest_RefinesFilePath()
-        {
-            // Given
-            string tempPath = @":/DEV//temp\DexterCS-cli_#.#.#_64";
-            string expectedPath = @":/DEV/temp/DexterCS-cli_#.#.#_64";
 
         [TestMethod()]
         public void IsDirectoryTest_ExistingDirectory_ReturnsTrue()

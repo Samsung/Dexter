@@ -1,7 +1,6 @@
 ﻿using DexterCRC.Src.Util;
 using DexterCS;
 using Microsoft.CodeAnalysis.CSharp;
-using System.Text.RegularExpressions;
 
 namespace DexterCRC
 {
