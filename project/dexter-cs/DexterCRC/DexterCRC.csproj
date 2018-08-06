@@ -132,6 +132,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Src\CheckerLogic\VerbNaming.cs" />
     <Compile Include="Src\CheckerLogic\NounNaming.cs" />
     <Compile Include="Src\CheckerLogic\CommentRules.cs" />
     <Compile Include="Src\CheckerLogic\HeadingRule.cs" />

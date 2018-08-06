@@ -8,13 +8,16 @@ namespace DexterCRC
     class MethodCRC : ICRCLogic
     {
         PascalCasing pascalCasing;
-        WithoutUnderscore underscore;
+        WithoutUnderscore withoutUnderscore;
+        VerbNaming verbNaming;
 
         public MethodCRC()
         {
             pascalCasing = new PascalCasing();
-            underscore = new WithoutUnderscore();
+            withoutUnderscore = new WithoutUnderscore();
+            verbNaming = new VerbNaming();
         }
+
         public void Analyze(AnalysisConfig config, AnalysisResult result, Checker checker, SyntaxNode syntaxRoot)
         {
             var methodRaws = syntaxRoot.DescendantNodes().OfType<MethodDeclarationSyntax>();
@@ -27,14 +30,19 @@ namespace DexterCRC
             {
                 string methodName = methodRaw.Identifier.ToString();
 
-                if (underscore.HasDefect(methodName))
+                if (withoutUnderscore.HasDefect(methodName))
                 {
-                    PreOccurence preOcc = underscore.MakeDefect(config, checker, methodRaw);
+                    PreOccurence preOcc = withoutUnderscore.MakeDefect(config, checker, methodRaw);
                     result.AddDefectWithPreOccurence(preOcc);
                 }
                 if (pascalCasing.HasDefect(methodName))
                 {
                     PreOccurence preOcc = pascalCasing.MakeDefect(config, checker, methodRaw);
+                    result.AddDefectWithPreOccurence(preOcc);
+                }
+                if (verbNaming.HasDefect(methodName))
+                {
+                    PreOccurence preOcc = verbNaming.MakeDefect(config, checker, methodRaw);
                     result.AddDefectWithPreOccurence(preOcc);
                 }
             }
