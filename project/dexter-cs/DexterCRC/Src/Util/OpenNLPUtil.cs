@@ -48,7 +48,6 @@ namespace DexterCRC.Src.Util
             }
         }
 
-
         // Source of tags https://www.ling.upenn.edu/courses/Fall_2003/ling001/penn_treebank_pos.html
 
         public static string[] NounTags = { "NN", "NNP", "NNPS", "NNS" };
@@ -88,9 +87,14 @@ namespace DexterCRC.Src.Util
             return false;
         }
 
-        public static bool IsNoun(string word)
+        private static bool IsNoun(string word)
         {
             return DoesWordMatchAnyOfTags(word, NounTags);
+        }
+
+        private static bool IsVerb(string word)
+        {
+            return DoesWordMatchAnyOfTags(word, VerbTags);
         }
 
         public static bool AreNouns(string[] words)
@@ -103,6 +107,18 @@ namespace DexterCRC.Src.Util
                 }
             }
             return true;
+        }
+
+        public static bool IsVerbPhrase(string[] words)
+        {
+            foreach (string word in words)
+            {
+                if (IsVerb(word))
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private static EnglishMaximumEntropyPosTagger GetTagger()
