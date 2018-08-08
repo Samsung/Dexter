@@ -140,8 +140,67 @@ namespace Dexter.UI
 
             RegisterSolutionManager();
             CreateReviewCommentManager();
-                       
+
+            uint cookie;
+            var runningDocumentTable = (IVsRunningDocumentTable)GetGlobalService(typeof(SVsRunningDocumentTable));
+            runningDocumentTable.AdviseRunningDocTableEvents(new RunningDocTableEventsHandler(fileAnalysisCommand), out cookie);
+
             base.Initialize();
+        }
+
+        class RunningDocTableEventsHandler : IVsRunningDocTableEvents3
+        {
+            DexterAnalysisCommand DexterAnalysisCommand;
+
+            #region Methods
+
+            public RunningDocTableEventsHandler(DexterAnalysisCommand dexterAnalysisCommand)
+            {
+                DexterAnalysisCommand = dexterAnalysisCommand;
+            }
+
+            public int OnAfterFirstDocumentLock(uint docCookie, uint dwRDTLockType, uint dwReadLocksRemaining, uint dwEditLocksRemaining)
+            {
+                return VSConstants.S_OK;
+            }
+
+            public int OnBeforeLastDocumentUnlock(uint docCookie, uint dwRDTLockType, uint dwReadLocksRemaining, uint dwEditLocksRemaining)
+            {
+                return VSConstants.S_OK;
+            }
+
+            public int OnAfterSave(uint docCookie)
+            {
+                return VSConstants.S_OK;
+            }
+
+            public int OnAfterAttributeChange(uint docCookie, uint grfAttribs)
+            {
+                return VSConstants.S_OK;
+            }
+
+            public int OnBeforeDocumentWindowShow(uint docCookie, int fFirstShow, IVsWindowFrame pFrame)
+            {
+                return VSConstants.S_OK;
+            }
+
+            public int OnAfterDocumentWindowHide(uint docCookie, IVsWindowFrame pFrame)
+            {
+                return VSConstants.S_OK;
+            }
+
+            public int OnAfterAttributeChangeEx(uint docCookie, uint grfAttribs, IVsHierarchy pHierOld, uint itemidOld, string pszMkDocumentOld, IVsHierarchy pHierNew, uint itemidNew, string pszMkDocumentNew)
+            {
+                return VSConstants.S_OK;
+            }
+
+            public int OnBeforeSave(uint docCookie)
+            {
+                DexterAnalysisCommand.ValidateConfigurationAndAnalyse();
+                return VSConstants.S_OK;
+            }
+
+            #endregion Methods
         }
 
         private void CreateReviewCommentManager()
@@ -211,7 +270,7 @@ namespace Dexter.UI
             {
                 analysisCommand.Refresh();
             }
-        }       
+        }
 
         #endregion
     }
