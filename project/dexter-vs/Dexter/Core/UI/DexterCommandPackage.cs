@@ -93,7 +93,7 @@ namespace Dexter.UI
 
             IProjectInfoProvider solutionSnapshotInfoProvider = new SolutionInfoProvider(this, true);
             IProjectInfoProvider projectSnapshotInfoProvider = new ProjectInfoProvider(this, true);
-            
+
             IDexterInfoProvider dexterInfoProvider = new SettingsStoreDexterInfoProvider(this);
 
             ConfigurationProvider solutionConfigProvider = new ConfigurationProvider(solutionInfoProvider, dexterInfoProvider);
@@ -143,7 +143,7 @@ namespace Dexter.UI
 
             uint cookie;
             var runningDocumentTable = (IVsRunningDocumentTable)GetGlobalService(typeof(SVsRunningDocumentTable));
-            runningDocumentTable.AdviseRunningDocTableEvents(new RunningDocTableEventsHandler(fileAnalysisCommand), out cookie);
+            runningDocumentTable.AdviseRunningDocTableEvents(new RunningDocTableEventsHandler(projectAnalysisCommand), out cookie);
 
             base.Initialize();
         }
@@ -196,7 +196,11 @@ namespace Dexter.UI
 
             public int OnBeforeSave(uint docCookie)
             {
-                DexterAnalysisCommand.ValidateConfigurationAndAnalyse();
+                SettingsStoreDexterInfoProvider settingsStoreDexterInfoProvider = new SettingsStoreDexterInfoProvider(ServiceProvider.GlobalProvider);
+                if (settingsStoreDexterInfoProvider.Load().IsAnalysisOnSaveEnabled)
+                {
+                    DexterAnalysisCommand.ValidateConfigurationAndAnalyse();
+                }
                 return VSConstants.S_OK;
             }
 

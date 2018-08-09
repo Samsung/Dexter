@@ -34,14 +34,19 @@ namespace Dexter.Common.Config
         public string userPassword { get; set; }
 
         /// <summary>
-        /// Whether analysis result should be standalone or sent to a server
+        /// Indicates whether analysis result should be standalone or sent to a server
         /// </summary>
         public bool standalone { get; set; }
 
         /// <summary>
-        ///  Whether Dexter/DexterCS home is enabled (Dexter/DexterCS home is available for only c/c++ analysis)
+        /// Indicates whether Dexter/DexterCS home is enabled (Dexter/DexterCS home is available for only c/c++ analysis)
         /// </summary>
         public bool IsDexterHomeEnabled { get; set; }
+
+        /// <summary>
+        /// Indicates whether analysis on save is enabled
+        /// </summary>
+        public bool IsAnalysisOnSaveEnabled { get; set; }
 
         /// <summary>
         /// Default path to dexter-executor: dexterHome + "\bin\dexter-executor.jar"
@@ -79,6 +84,7 @@ namespace Dexter.Common.Config
             userPassword = "";
             standalone = true;
             IsDexterHomeEnabled = false;
+            IsAnalysisOnSaveEnabled = false;
         }
 
         /// <summary>
@@ -109,7 +115,8 @@ namespace Dexter.Common.Config
                 userName = configuration.userName,
                 userPassword = configuration.userPassword,
                 standalone = configuration.standalone,
-                IsDexterHomeEnabled = configuration.IsDexterHomeEnabled
+                IsDexterHomeEnabled = configuration.IsDexterHomeEnabled,
+                IsAnalysisOnSaveEnabled = configuration.IsAnalysisOnSaveEnabled
             };
         }
     }

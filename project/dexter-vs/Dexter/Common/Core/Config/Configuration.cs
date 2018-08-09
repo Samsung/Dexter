@@ -130,6 +130,12 @@ namespace Dexter.Common.Config
         public bool IsDexterHomeEnabled { get; set; }
 
         /// <summary>
+        /// Whether analysis on save is enabled
+        /// </summary>
+        [JsonIgnore]
+        public bool IsAnalysisOnSaveEnabled { get; set; }
+        
+        /// <summary>
         /// Creates new instance of Configuration with default values
         /// </summary>
         public Configuration() : this(new ProjectInfo(), new DexterInfo())
@@ -161,6 +167,7 @@ namespace Dexter.Common.Config
             userPassword = dexterInfo.userPassword;
             standalone = dexterInfo.standalone;
             IsDexterHomeEnabled = dexterInfo.IsDexterHomeEnabled;
+            IsAnalysisOnSaveEnabled = dexterInfo.IsAnalysisOnSaveEnabled;
         }
 
 
