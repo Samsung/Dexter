@@ -124,7 +124,7 @@ namespace Dexter.Common.Config
         }
 
         /// <summary>
-        /// Whether Dexter/Dexter CS home is enabled (Dexter/DexterCS home is available for only c/c++ analysis)
+        /// Whether Dexter/Dexter CS home is enabled (Dexter/DexterCS home is available for only C/C++/C# analysis)
         /// </summary>
         [JsonIgnore]
         public bool IsDexterHomeEnabled { get; set; }

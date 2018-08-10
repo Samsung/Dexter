@@ -39,7 +39,7 @@ namespace Dexter.Common.Config
         public bool standalone { get; set; }
 
         /// <summary>
-        /// Indicates whether Dexter/DexterCS home is enabled (Dexter/DexterCS home is available for only c/c++ analysis)
+        /// Indicates whether Dexter/DexterCS home is enabled (Dexter/DexterCS home is available for only C/C++/C# analysis)
         /// </summary>
         public bool IsDexterHomeEnabled { get; set; }
 
