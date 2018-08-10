@@ -143,20 +143,22 @@ namespace Dexter.UI
 
             uint cookie;
             var runningDocumentTable = (IVsRunningDocumentTable)GetGlobalService(typeof(SVsRunningDocumentTable));
-            runningDocumentTable.AdviseRunningDocTableEvents(new RunningDocTableEventsHandler(projectAnalysisCommand), out cookie);
+            runningDocumentTable.AdviseRunningDocTableEvents(new RunningDocTableEventsHandler(projectAnalysisCommand, dexterInfoProvider), out cookie);
 
             base.Initialize();
         }
 
         class RunningDocTableEventsHandler : IVsRunningDocTableEvents3
         {
-            DexterAnalysisCommand DexterAnalysisCommand;
+            DexterAnalysisCommand dexterAnalysisCommand;
+            IDexterInfoProvider dexterInfoProvider;
 
             #region Methods
 
-            public RunningDocTableEventsHandler(DexterAnalysisCommand dexterAnalysisCommand)
+            public RunningDocTableEventsHandler(DexterAnalysisCommand dexterAnalysisCommand, IDexterInfoProvider dexterInfoProvider)
             {
-                DexterAnalysisCommand = dexterAnalysisCommand;
+                this.dexterAnalysisCommand = dexterAnalysisCommand;
+                this.dexterInfoProvider = dexterInfoProvider;
             }
 
             public int OnAfterFirstDocumentLock(uint docCookie, uint dwRDTLockType, uint dwReadLocksRemaining, uint dwEditLocksRemaining)
@@ -196,10 +198,9 @@ namespace Dexter.UI
 
             public int OnBeforeSave(uint docCookie)
             {
-                SettingsStoreDexterInfoProvider settingsStoreDexterInfoProvider = new SettingsStoreDexterInfoProvider(ServiceProvider.GlobalProvider);
-                if (settingsStoreDexterInfoProvider.Load().IsAnalysisOnSaveEnabled)
+                if (dexterInfoProvider.Load().IsAnalysisOnSaveEnabled)
                 {
-                    DexterAnalysisCommand.ValidateConfigurationAndAnalyse();
+                    dexterAnalysisCommand.ValidateConfigurationAndAnalyse();
                 }
                 return VSConstants.S_OK;
             }
