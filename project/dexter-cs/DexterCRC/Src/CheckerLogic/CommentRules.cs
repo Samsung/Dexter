@@ -29,7 +29,7 @@ using DexterCS;
 using Microsoft.CodeAnalysis.CSharp;
 using System;
 
-namespace DexterCRC.Src.CheckerLogic
+namespace DexterCRC
 {
     public class CommentRules : ICheckerLogic
     {
