@@ -94,6 +94,7 @@ namespace Dexter.Analysis
             string credentialsParams = (configuration.standalone && !createUser)
                 ? " -s "
                 : " -u " + configuration.userName + " -p " + configuration.userPassword + " -h " + configuration.dexterServerIp + " -o " + configuration.dexterServerPort;
+            string resultFileFormatFlag = " -F xml";
 
             dexterProcess = new Process();
 
@@ -109,7 +110,7 @@ namespace Dexter.Analysis
                 dexterProcess.StartInfo = new ProcessStartInfo()
                 {
                     FileName = configuration.DexterCSPath,
-                    Arguments = createUserFlag + createXmlResultFlag + configFlag + credentialsParams,
+                    Arguments = createUserFlag + createXmlResultFlag + configFlag + credentialsParams + resultFileFormatFlag,
                     WorkingDirectory = Path.GetDirectoryName(configuration.DexterCSPath),
                     CreateNoWindow = true,
                     UseShellExecute = false,

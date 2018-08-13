@@ -124,11 +124,17 @@ namespace Dexter.Common.Config
         }
 
         /// <summary>
-        /// Whether Dexter/Dexter CS home is enabled (Dexter/DexterCS home is available for only c/c++ analysis)
+        /// Whether Dexter/Dexter CS home is enabled (Dexter/DexterCS home is available for only C/C++/C# analysis)
         /// </summary>
         [JsonIgnore]
         public bool IsDexterHomeEnabled { get; set; }
 
+        /// <summary>
+        /// Whether analysis on save is enabled
+        /// </summary>
+        [JsonIgnore]
+        public bool IsAnalysisOnSaveEnabled { get; set; }
+        
         /// <summary>
         /// Creates new instance of Configuration with default values
         /// </summary>
@@ -161,6 +167,7 @@ namespace Dexter.Common.Config
             userPassword = dexterInfo.userPassword;
             standalone = dexterInfo.standalone;
             IsDexterHomeEnabled = dexterInfo.IsDexterHomeEnabled;
+            IsAnalysisOnSaveEnabled = dexterInfo.IsAnalysisOnSaveEnabled;
         }
 
 
