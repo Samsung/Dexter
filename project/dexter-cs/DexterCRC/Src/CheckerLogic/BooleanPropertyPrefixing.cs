@@ -26,47 +26,32 @@
  */
 #endregion
 using DexterCS;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Linq;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace DexterCRC
 {
-    public class PropertyCRC : ICRCLogic
+    public class BooleanPropertyPrefixing : ICheckerLogic
     {
-        PascalCasing pascalCasing;
-        BooleanPropertyPrefixing booleanPropertyPrefixing;
-
-        public PropertyCRC()
+        public BooleanPropertyPrefixing()
         {
-            pascalCasing = new PascalCasing();
-            booleanPropertyPrefixing = new BooleanPropertyPrefixing();
+            CheckerName = this.GetType().Name;
+            Description = "Boolean Property Name uses the ‘Is’, ‘Has’, ‘Can’ as a prefix";
         }
-        public void Analyze(AnalysisConfig config, AnalysisResult result, Checker checker, SyntaxNode syntaxRoot)
-        {
-            var propertyRaws = syntaxRoot.DescendantNodes().OfType<PropertyDeclarationSyntax>();
-            if (!propertyRaws.Any())
-            {
-                return;
-            }
-            foreach (var propertyRaw in propertyRaws)
-            {
-                string propertyName = propertyRaw.Identifier.ToString();
-                if (pascalCasing.HasDefect(propertyName))
-                {
-                    PreOccurence preOcc = pascalCasing.MakeDefect(config, checker, propertyRaw);
-                    result.AddDefectWithPreOccurence(preOcc);
-                }
-                if (DexterUtil.IsPropertyDeclarationBoolean(propertyRaw))
-                {
-                    if (booleanPropertyPrefixing.HasDefect(propertyName))
-                    {
-                        PreOccurence preOcc = booleanPropertyPrefixing.MakeDefect(config, checker, propertyRaw);
-                        result.AddDefectWithPreOccurence(preOcc);
-                    }
-                }
-            }
 
+        public string CheckerName { get; set; }
+        public string Description { get; set; }
+
+        public bool HasDefect(object value)
+        {
+            string booleanPropertyName = ((string)value).ToLower();
+            return !(booleanPropertyName.Contains("is") || booleanPropertyName.Contains("has") || booleanPropertyName.Contains("can"));
+        }
+
+        public PreOccurence MakeDefect(AnalysisConfig config, Checker checker, CSharpSyntaxNode raw)
+        {
+            var lineSpan = raw.GetLocation().GetLineSpan();
+            PreOccurence preOcc = DexterCRCUtil.MakePreOccurence(raw, lineSpan, checker, config, CheckerName, Description);
+            return preOcc;
         }
     }
 }
