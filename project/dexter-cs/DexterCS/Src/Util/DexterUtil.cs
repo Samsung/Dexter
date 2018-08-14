@@ -26,6 +26,7 @@
  */
 #endregion
 using log4net;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -73,6 +74,11 @@ namespace DexterCS
             {
                 return Path.AltDirectorySeparatorChar.ToString();
             }
+        }
+
+        public static bool IsPropertyDeclarationBoolean(PropertyDeclarationSyntax propertyRaw)
+        {
+            return propertyRaw.Type.ToString() == "bool" || propertyRaw.Type.ToString() == "boolean";
         }
 
         private static string dateFormat = "yyyyMMddHHmmss";
