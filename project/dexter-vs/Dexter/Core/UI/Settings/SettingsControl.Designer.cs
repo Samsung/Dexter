@@ -73,10 +73,10 @@ namespace Dexter.UI.Settings
             this.serverSettingsGroupBox.Controls.Add(this.serverIndicator);
             this.serverSettingsGroupBox.Controls.Add(this.serverLabel);
             this.serverSettingsGroupBox.Controls.Add(this.serverTextBox);
-            this.serverSettingsGroupBox.Location = new System.Drawing.Point(4, 124);
-            this.serverSettingsGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.serverSettingsGroupBox.Location = new System.Drawing.Point(4, 138);
+            this.serverSettingsGroupBox.Margin = new System.Windows.Forms.Padding(4);
             this.serverSettingsGroupBox.Name = "serverSettingsGroupBox";
-            this.serverSettingsGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.serverSettingsGroupBox.Padding = new System.Windows.Forms.Padding(4);
             this.serverSettingsGroupBox.Size = new System.Drawing.Size(641, 208);
             this.serverSettingsGroupBox.TabIndex = 1;
             this.serverSettingsGroupBox.TabStop = false;
@@ -86,7 +86,7 @@ namespace Dexter.UI.Settings
             // 
             this.createUserButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.createUserButton.Location = new System.Drawing.Point(143, 140);
-            this.createUserButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.createUserButton.Margin = new System.Windows.Forms.Padding(4);
             this.createUserButton.Name = "createUserButton";
             this.createUserButton.Size = new System.Drawing.Size(124, 30);
             this.createUserButton.TabIndex = 18;
@@ -184,7 +184,7 @@ namespace Dexter.UI.Settings
             // 
             this.testConnectionButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.testConnectionButton.Location = new System.Drawing.Point(11, 140);
-            this.testConnectionButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.testConnectionButton.Margin = new System.Windows.Forms.Padding(4);
             this.testConnectionButton.Name = "testConnectionButton";
             this.testConnectionButton.Size = new System.Drawing.Size(124, 30);
             this.testConnectionButton.TabIndex = 16;
@@ -196,7 +196,7 @@ namespace Dexter.UI.Settings
             // 
             this.standaloneCheckBox.AutoSize = true;
             this.standaloneCheckBox.Location = new System.Drawing.Point(11, 177);
-            this.standaloneCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.standaloneCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.standaloneCheckBox.Name = "standaloneCheckBox";
             this.standaloneCheckBox.Size = new System.Drawing.Size(157, 21);
             this.standaloneCheckBox.TabIndex = 15;
@@ -209,7 +209,7 @@ namespace Dexter.UI.Settings
             this.userIndicator.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.userIndicator.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.userIndicator.Location = new System.Drawing.Point(600, 108);
-            this.userIndicator.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.userIndicator.Margin = new System.Windows.Forms.Padding(4);
             this.userIndicator.Name = "userIndicator";
             this.userIndicator.Size = new System.Drawing.Size(32, 22);
             this.userIndicator.TabIndex = 14;
@@ -223,7 +223,7 @@ namespace Dexter.UI.Settings
             this.serverIndicator.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.serverIndicator.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.serverIndicator.Location = new System.Drawing.Point(600, 36);
-            this.serverIndicator.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.serverIndicator.Margin = new System.Windows.Forms.Padding(4);
             this.serverIndicator.Name = "serverIndicator";
             this.serverIndicator.Size = new System.Drawing.Size(32, 30);
             this.serverIndicator.TabIndex = 9;
@@ -249,7 +249,7 @@ namespace Dexter.UI.Settings
             this.serverTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.serverTextBox.ForeColor = System.Drawing.SystemColors.InactiveCaption;
             this.serverTextBox.Location = new System.Drawing.Point(11, 42);
-            this.serverTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.serverTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.serverTextBox.Name = "serverTextBox";
             this.serverTextBox.PlaceholderColor = System.Drawing.SystemColors.InactiveCaption;
             this.serverTextBox.PlaceholderFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
@@ -264,16 +264,17 @@ namespace Dexter.UI.Settings
             // 
             this.dexterSettingsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.dexterSettingsGroupBox.Controls.Add(this.analysisOnSaveCheckBox);
             this.dexterSettingsGroupBox.Controls.Add(this.enableDexterHomeCheckBox);
             this.dexterSettingsGroupBox.Controls.Add(this.dexterPathIndicator);
             this.dexterSettingsGroupBox.Controls.Add(this.dexterPathButton);
             this.dexterSettingsGroupBox.Controls.Add(this.dexterPathLabel);
             this.dexterSettingsGroupBox.Controls.Add(this.dexterPathTextBox);
             this.dexterSettingsGroupBox.Location = new System.Drawing.Point(4, 0);
-            this.dexterSettingsGroupBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dexterSettingsGroupBox.Margin = new System.Windows.Forms.Padding(4);
             this.dexterSettingsGroupBox.Name = "dexterSettingsGroupBox";
-            this.dexterSettingsGroupBox.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.dexterSettingsGroupBox.Size = new System.Drawing.Size(641, 116);
+            this.dexterSettingsGroupBox.Padding = new System.Windows.Forms.Padding(4);
+            this.dexterSettingsGroupBox.Size = new System.Drawing.Size(641, 130);
             this.dexterSettingsGroupBox.TabIndex = 0;
             this.dexterSettingsGroupBox.TabStop = false;
             this.dexterSettingsGroupBox.Text = "Dexter Settings";
@@ -282,7 +283,7 @@ namespace Dexter.UI.Settings
             // 
             this.enableDexterHomeCheckBox.AutoSize = true;
             this.enableDexterHomeCheckBox.Location = new System.Drawing.Point(11, 27);
-            this.enableDexterHomeCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.enableDexterHomeCheckBox.Margin = new System.Windows.Forms.Padding(4);
             this.enableDexterHomeCheckBox.Name = "enableDexterHomeCheckBox";
             this.enableDexterHomeCheckBox.Size = new System.Drawing.Size(221, 21);
             this.enableDexterHomeCheckBox.TabIndex = 6;
@@ -295,7 +296,7 @@ namespace Dexter.UI.Settings
             this.dexterPathIndicator.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.dexterPathIndicator.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.dexterPathIndicator.Location = new System.Drawing.Point(601, 65);
-            this.dexterPathIndicator.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dexterPathIndicator.Margin = new System.Windows.Forms.Padding(4);
             this.dexterPathIndicator.Name = "dexterPathIndicator";
             this.dexterPathIndicator.Size = new System.Drawing.Size(32, 30);
             this.dexterPathIndicator.TabIndex = 5;
@@ -311,7 +312,7 @@ namespace Dexter.UI.Settings
             this.dexterPathButton.Enabled = false;
             this.dexterPathButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.dexterPathButton.Location = new System.Drawing.Point(548, 65);
-            this.dexterPathButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dexterPathButton.Margin = new System.Windows.Forms.Padding(4);
             this.dexterPathButton.Name = "dexterPathButton";
             this.dexterPathButton.Size = new System.Drawing.Size(45, 30);
             this.dexterPathButton.TabIndex = 4;
@@ -337,7 +338,7 @@ namespace Dexter.UI.Settings
             this.dexterPathTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.dexterPathTextBox.ForeColor = System.Drawing.SystemColors.InactiveCaption;
             this.dexterPathTextBox.Location = new System.Drawing.Point(12, 69);
-            this.dexterPathTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dexterPathTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.dexterPathTextBox.Name = "dexterPathTextBox";
             this.dexterPathTextBox.PlaceholderColor = System.Drawing.SystemColors.InactiveCaption;
             this.dexterPathTextBox.PlaceholderFont = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
@@ -352,7 +353,7 @@ namespace Dexter.UI.Settings
             // analysisOnSaveCheckBox
             // 
             this.analysisOnSaveCheckBox.AutoSize = true;
-            this.analysisOnSaveCheckBox.Location = new System.Drawing.Point(15, 339);
+            this.analysisOnSaveCheckBox.Location = new System.Drawing.Point(12, 99);
             this.analysisOnSaveCheckBox.Name = "analysisOnSaveCheckBox";
             this.analysisOnSaveCheckBox.Size = new System.Drawing.Size(136, 21);
             this.analysisOnSaveCheckBox.TabIndex = 19;
@@ -364,12 +365,11 @@ namespace Dexter.UI.Settings
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.Controls.Add(this.analysisOnSaveCheckBox);
             this.Controls.Add(this.dexterSettingsGroupBox);
             this.Controls.Add(this.serverSettingsGroupBox);
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "SettingsControl";
-            this.Size = new System.Drawing.Size(649, 380);
+            this.Size = new System.Drawing.Size(649, 350);
             this.serverSettingsGroupBox.ResumeLayout(false);
             this.serverSettingsGroupBox.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
@@ -380,7 +380,6 @@ namespace Dexter.UI.Settings
             this.dexterSettingsGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dexterPathIndicator)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
