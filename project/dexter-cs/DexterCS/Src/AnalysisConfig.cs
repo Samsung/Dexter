@@ -106,7 +106,20 @@ namespace DexterCS
 
         private void AddHeaderBaseDirList(string dir)
         {
-            //TODO
+            if (string.IsNullOrEmpty(dir) || this.headerBaseDirList.Contains(dir))
+            {
+                return;
+            }
+
+            dir = dir.Replace("\\", "/").Replace(DexterUtil.FILE_SEPARATOR, "/");
+
+            if (dir.EndsWith("\\", StringComparison.CurrentCulture)
+                || dir.EndsWith("/", StringComparison.CurrentCulture)
+                || dir.EndsWith(DexterUtil.FILE_SEPARATOR, StringComparison.CurrentCulture))
+            {
+                dir = dir.Substring(0, dir.Length - 1);
+            }
+            this.headerBaseDirList.Add(dir);
         }
 
         private void AddSourceBaseDirList(string dir)
