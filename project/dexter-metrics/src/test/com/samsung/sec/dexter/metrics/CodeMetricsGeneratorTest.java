@@ -51,10 +51,12 @@ public class CodeMetricsGeneratorTest {
 	FunctionMetrics functionMetrics = null;
 	List<String> functionList = null;
     
+
     String TestDirectoryPath = Paths.get(".", "src", "sample", "TestDirectory_For_CodeMetricsGeneratorTest").toString();    
     String EmptyJavaTestFilePath = Paths.get(".", "src", "sample", "TestJavaFile_For_CodeMetricsGeneratorTest_Empty.java").toString();
     String TooLongTestFilePath = Paths.get(".", "src", "sample", "TestFile_For_CodeMetricsGeneratorTest_TooLong.txt").toString();
     String LogPath = Paths.get(".", "log", "dexter-core.log").toString();
+
     
 	private boolean isDefault(CodeMetrics codeMetrics) {
 		if(!codeMetrics.getMetric("loc").equals(0)) {
