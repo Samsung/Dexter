@@ -1,39 +1,27 @@
 package io.jenkins.plugins.dexter;
 
-import io.jenkins.plugins.dexter.*;
-import hudson.Launcher;
-import hudson.Extension;
-import hudson.model.Action;
-import java.util.logging.ConsoleHandler;
-import hudson.tasks.*;
-import hudson.util.FormValidation;
-import hudson.model.AbstractBuild;
-import hudson.model.BuildListener;
-import hudson.model.AbstractProject;
-import net.sf.json.JSONObject;
-import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.QueryParameter;
-
-import javax.servlet.ServletException;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Scanner;
+
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.StaplerRequest;
+
+import hudson.Extension;
+import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
+import hudson.model.BuildListener;
+import hudson.tasks.*;
+import net.sf.json.JSONObject;
 
 public class DexterPublisher extends Recorder {
 
@@ -238,27 +226,38 @@ public class DexterPublisher extends Recorder {
 				} else
 					message = "Error saving logs";
 			} else {
+
 				writeToShFile();
-				Runtime runtime = Runtime.getRuntime();
-				String command = "/home/v.sanko/dexter-server/run.sh";
-				try {
-					runtime.exec(command);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
 				writeToFile();
 
-				String commandDexter = pathToBat + "/dexter.sh " + dexterUser + " " + dexterPassword + " > logs.txt \"";
 				try {
-					runtime.exec(commandDexter);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
 
-				if (readFile(pathToBat + "/logs.txt")) {
-					message = stringBufferOfData.toString();
-				} else
-					message = "Error saving logs";
+					int ch;
+
+					ProcessBuilder pb = new ProcessBuilder(dexterServerPath + "/run.sh");
+					pb.directory(new File(dexterServerPath));
+
+					Process shellProcess = pb.start();
+
+					ProcessBuilder pbClient = new ProcessBuilder(pathToBat + "/dexter.sh", dexterUser, dexterPassword);
+					pbClient.directory(new File(pathToBat));
+
+					Process shellProcessClient = pbClient.start();
+
+					InputStreamReader myIStreamReader = new InputStreamReader(shellProcessClient.getInputStream());
+
+					while ((ch = myIStreamReader.read()) != -1) {
+						System.out.print((char) ch);
+						char temp = (char) ch;
+						message = message + Character.toString(temp);
+						shellProcess.destroy();
+					}
+				} catch (IOException anIOException) {
+					System.out.println(anIOException);
+				} catch (Exception e) {
+					e.printStackTrace();
+
+				}
 			}
 		}
 
@@ -296,6 +295,7 @@ public class DexterPublisher extends Recorder {
 	}
 
 	private void writeToBatFile() {
+
 		OpenOption myOpt = StandardOpenOption.CREATE;
 		try {
 			Path fileToWrite = Paths.get(dexterServerPath + "/run.bat");
@@ -315,9 +315,11 @@ public class DexterPublisher extends Recorder {
 	}
 
 	private void writeToShFile() {
+
 		OpenOption myOpt = StandardOpenOption.CREATE;
 		try {
 			Path fileToWrite = Paths.get(dexterServerPath + "/run.sh");
+
 			BufferedWriter bufwriter = Files.newBufferedWriter(fileToWrite, Charset.forName("UTF-8"), myOpt);
 			bufwriter.write("node server.js -database.host=");
 			bufwriter.write(dexterServer);
@@ -334,6 +336,7 @@ public class DexterPublisher extends Recorder {
 	}
 
 	private void writeToFile() {
+
 		OpenOption myOpt = StandardOpenOption.CREATE;
 		try {
 			Path fileToWrite = Paths.get(pathConfig);
