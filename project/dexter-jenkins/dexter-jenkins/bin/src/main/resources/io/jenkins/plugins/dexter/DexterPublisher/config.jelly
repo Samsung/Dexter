@@ -1,0 +1,58 @@
+	<?jelly escape-by-default='true'?> 
+<j:jelly xmlns:j="jelly:core" xmlns:f="/lib/form"> 
+<f:section title="Dexter Server:">
+<f:entry title="Create Dexter server" field="createServer" description="If checked, dexter server will be created with your username and password"> 
+<f:checkbox/> 
+</f:entry> 
+<f:entry title="Dexter server folder" field="dexterServerPath"> 
+<f:textbox /> 
+</f:entry> 
+<f:entry title="Dexter server address" field="dexterServer"> 
+<f:textbox /> 
+</f:entry> 
+<f:entry title="Dexter port" field="dexterPort"> 
+<f:textbox /> 
+</f:entry> 
+<f:entry title="Dexter user" field="dexterUser"> 
+<f:textbox /> 
+</f:entry> 
+<f:entry title="Dexter password" field="dexterPassword"> 
+<f:password /> 
+</f:entry> 
+ </f:section>
+ <f:section title="Project data:">
+<f:entry title="Enter Dexter CLI location" field="pathDexter"> 
+<f:textbox /> 
+</f:entry> 
+
+<f:entry title="Project full path" field="projectFullPath"> 
+<f:textbox /> 
+</f:entry> 
+<f:entry title="Source directory" field="sourceDir"> 
+<f:textbox /> 
+</f:entry> 
+<f:entry title="Binary directory" field="binDir"> 
+<f:textbox /> 
+</f:entry> 
+<f:entry title="Header directory" field="headerDir"> 
+<f:textbox /> 
+</f:entry> 
+<f:entry title="Filename" field="analyseFileName"> 
+<f:textbox /> 
+</f:entry> 
+ </f:section>
+  <f:section title="Analyzed project type:">
+<f:entry title="File" field="file"> 
+<f:checkbox/> 
+</f:entry> 
+<f:entry title="Folder" field="folder"> 
+<f:checkbox/> 
+</f:entry> 
+<f:entry title="Project" field="project"> 
+<f:checkbox/> 
+</f:entry> 
+<f:entry title="Snapshot" field="snapshot"> 
+<f:checkbox/> 
+</f:entry> 
+ </f:section>
+</j:jelly>
