@@ -6,7 +6,7 @@ and improving code quality even before a third party review.
 In addition, Dexter allows storing the analysis results on Dexter Server 
 and using customized checkers as plugins. You can code safely now!
 
-<details>
+<details open>
 <summary>
 <b>Table of contents</b>
 </summary>
