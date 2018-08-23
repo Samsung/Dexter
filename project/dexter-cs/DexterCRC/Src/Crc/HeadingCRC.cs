@@ -50,16 +50,23 @@ namespace DexterCRC
             {
                 return;
             }
+            
+            int count = 0;
 
             foreach (var classRaw in classRaws)
             {
                 SyntaxTriviaList syntaxTriviaList = classRaw.GetLeadingTrivia();
 
-                if (headingRule.HasDefect(syntaxTriviaList))
+                if (!headingRule.HasDefect(syntaxTriviaList))
                 {
-                    PreOccurence preOcc = headingRule.MakeDefect(config, checker, classRaw);
-                    result.AddDefectWithPreOccurence(preOcc);
+                   count = count++;
                 }
+            }
+
+            if (count == 0)
+            {
+                PreOccurence preOcc = headingRule.MakeDefect(config, checker, classRaws.ToList()[0]);
+                result.AddDefectWithPreOccurence(preOcc);
             }
 
         }
