@@ -25,7 +25,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #endregion
-using DexterCRC.Src.CheckerLogic;
+using DexterCRC;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace DexterCSTest.Src.CRCLogic
@@ -50,7 +50,7 @@ namespace DexterCSTest.Src.CRCLogic
                                   using System.Text;
                                   using System.Threading.Tasks;
 
-                                            namespace DexterCRC.Src.CheckerLogic
+                                            namespace DexterCRC
                                                                             {
                                                  public class SampleClass {";
             //when
@@ -82,7 +82,7 @@ namespace DexterCSTest.Src.CRCLogic
                                   using System.Text;
                                   using System.Threading.Tasks;
 
-                                            namespace DexterCRC.Src.CheckerLogic
+                                            namespace DexterCRC
                                                                             {
                                                  public class SampleClass {";
             //when

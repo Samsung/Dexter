@@ -26,49 +26,32 @@
  */
 #endregion
 using DexterCS;
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using System.Linq;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace DexterCRC
 {
-    class HeadingCRC : ICRCLogic
+    public class BooleanPropertyPrefixing : ICheckerLogic
     {
-        HeadingRule headingRule;
-
-        public HeadingCRC()
+        public BooleanPropertyPrefixing()
         {
-            headingRule = new HeadingRule();
+            CheckerName = this.GetType().Name;
+            Description = "Boolean Property Name uses the ‘Is’, ‘Has’, ‘Can’ as a prefix";
         }
 
-        public void Analyze(AnalysisConfig config, AnalysisResult result, Checker checker, SyntaxNode syntaxRoot)
+        public string CheckerName { get; set; }
+        public string Description { get; set; }
+
+        public bool HasDefect(object value)
         {
+            string booleanPropertyName = ((string)value).ToLower();
+            return !(booleanPropertyName.Contains("is") || booleanPropertyName.Contains("has") || booleanPropertyName.Contains("can"));
+        }
 
-            var classRaws = syntaxRoot.DescendantNodes().OfType<UsingDirectiveSyntax>();
-            if (!classRaws.Any())
-            {
-                return;
-            }
-            
-            int count = 0;
-
-            foreach (var classRaw in classRaws)
-            {
-                SyntaxTriviaList syntaxTriviaList = classRaw.GetLeadingTrivia();
-
-                if (!headingRule.HasDefect(syntaxTriviaList))
-                {
-                   count = count++;
-                }
-            }
-
-            if (count == 0)
-            {
-                PreOccurence preOcc = headingRule.MakeDefect(config, checker, classRaws.ToList()[0]);
-                result.AddDefectWithPreOccurence(preOcc);
-            }
-
+        public PreOccurence MakeDefect(AnalysisConfig config, Checker checker, CSharpSyntaxNode raw)
+        {
+            var lineSpan = raw.GetLocation().GetLineSpan();
+            PreOccurence preOcc = DexterCRCUtil.MakePreOccurence(raw, lineSpan, checker, config, CheckerName, Description);
+            return preOcc;
         }
     }
 }
-

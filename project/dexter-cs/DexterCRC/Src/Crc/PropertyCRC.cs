@@ -35,7 +35,13 @@ namespace DexterCRC
     public class PropertyCRC : ICRCLogic
     {
         PascalCasing pascalCasing;
-        public PropertyCRC() { pascalCasing = new PascalCasing(); }
+        BooleanPropertyPrefixing booleanPropertyPrefixing;
+
+        public PropertyCRC()
+        {
+            pascalCasing = new PascalCasing();
+            booleanPropertyPrefixing = new BooleanPropertyPrefixing();
+        }
         public void Analyze(AnalysisConfig config, AnalysisResult result, Checker checker, SyntaxNode syntaxRoot)
         {
             var propertyRaws = syntaxRoot.DescendantNodes().OfType<PropertyDeclarationSyntax>();
@@ -50,6 +56,14 @@ namespace DexterCRC
                 {
                     PreOccurence preOcc = pascalCasing.MakeDefect(config, checker, propertyRaw);
                     result.AddDefectWithPreOccurence(preOcc);
+                }
+                if (DexterUtil.IsPropertyDeclarationBoolean(propertyRaw))
+                {
+                    if (booleanPropertyPrefixing.HasDefect(propertyName))
+                    {
+                        PreOccurence preOcc = booleanPropertyPrefixing.MakeDefect(config, checker, propertyRaw);
+                        result.AddDefectWithPreOccurence(preOcc);
+                    }
                 }
             }
 

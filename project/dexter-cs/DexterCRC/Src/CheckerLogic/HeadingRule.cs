@@ -30,7 +30,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using System.Linq;
 
-namespace DexterCRC.Src.CheckerLogic
+namespace DexterCRC
 {
     public class HeadingRule : ICheckerLogic
     {
