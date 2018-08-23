@@ -268,8 +268,8 @@ public class DexterPublisher extends Recorder {
 						System.out.print((char) ch);
 						char temp = (char) ch;
 						message = message + Character.toString(temp);
-						shellProcess.destroy();
 					}
+					shellProcess.destroy();
 				} catch (IOException anIOException) {
 					System.out.println(anIOException);
 				} catch (Exception e) {
