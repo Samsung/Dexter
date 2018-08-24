@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import org.apache.commons.io.IOUtils;
 
 import io.jenkins.plugins.dexter.*;
 import hudson.Launcher;
@@ -264,11 +265,8 @@ public class DexterPublisher extends Recorder {
 
 					InputStreamReader myIStreamReader = new InputStreamReader(shellProcessClient.getInputStream());
 					
-					while ((ch = myIStreamReader.read()) != -1) {
-						System.out.print((char) ch);
-						char temp = (char) ch;
-						message = message + Character.toString(temp);
-					}
+					String result = IOUtils.toString(shellProcessClient.getInputStream(), StandardCharsets.UTF_8);
+					message = result;
 					shellProcess.destroy();
 				} catch (IOException anIOException) {
 					System.out.println(anIOException);
