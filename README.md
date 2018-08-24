@@ -179,57 +179,57 @@ Then - if you are feeling brave and creative - just hit us with a clever GitHub 
 - Download Dexter Source Codes (https://github.com/Samsung/Dexter)
 
 ## Import Dexter Projects into Eclipse 
-- run with suffice memory (in eclipse.ini) : -Xmx1024m --launcher.XXMaxPermSize256m
-- make sure your text file encoding setting is 'UTF-8' : eclipse > Preferences > General > Workspace
+- run with sufficient memory (in eclipse.ini) : -Xmx1024m --launcher.XXMaxPermSize256m
+- make sure your text file encoding setting is 'UTF-8' : Eclipse > Preferences > General > Workspace
 - import Dexter Projects that you already downloaded except dexter-server project
 - use 'gradle build' command in a command line console : '/project' folder
-- refresh all projects in eclipse, then all errors will be gone
+- refresh all projects in eclipse, then all errors should disapear
 
 ## Build Dexter CLI
 - use ant script on build-install.xml file in dexter-executor project
 - you can see the 'dexter-cli_#.#.#_bit.zip file in dexter-executor/install folder
-- after unzip this file, you can run dexter in a command line: unzip-folder/bin/dexter.bat or dexter.sh
-- before you run dexter.bat file, you have to set dexter_cfg.json file to set the scope of analysis (refer to dexter_cfg.json.help file)
+- after unzipping this file, you can run dexter in a command line: unzip-folder/bin/dexter.bat or dexter.sh
+- before running dexter.bat file, you have to set dexter_cfg.json file to set the scope of analysis (refer to dexter_cfg.json.help file)
 
 ## Build Dexter Daemon for source insight
 - open dexter-daemon.product file in dexter-daemon project
 - click 'Eclipse Product export wizard' link on the 'Exporting' tab in a editor
-- set the fields - Root direoct:dexter-daemon  Destination/Directory: your directory
+- set the fields - Root directory:dexter-daemon  Destination/Directory: your directory
 - click "Finish" button
-- check export folder, there will be dexter-daemon folder
-- run dexter.exe file, then you can see the login dialog
-- check 'Run in Standalong mode', then you can run dexter without Dexter Server
-- run source insight, and open 'Base' project
-- add 'project/script/dexter.em' macro file into 'Base' project
+- check export folder, it should contain dexter-daemon folder
+- run dexter.exe, then you can see the login dialog
+- check 'Run in Standalone mode' (running Dexter without Dexter Server)
+- run Source Insight, and open 'Base' project
+- add 'project/script/dexter.em' macro file to 'Base' project
 - after editing and saving your source file, you will see the result of analysis in your editor and Dexter Daemon
 
 ## Build Dexter Eclipse Plugins
-- create feature project in your eclipse
-- include all of dexter projects witout dexter-daemon and dexter-cppcheck project
+- create a Feature project in Eclipse
+- include all of Dexter projects without dexter-daemon and dexter-cppcheck projects
 - create update site on the feature.xml file
 - include your feature and build all, then you will see the feature and plugins folders in you update project
-- you can make a update site or just copy plugin folder into your new eclipse
+- you can make an update site or just copy plugin folder into your new Eclipse
 - then, you can use Dexter
 
 ## Build Dexter Visual Studio Plugin
-In order to build a plugin for Visual Studio you need following prerequisites:
+In order to build a plugin for Visual Studio you need what follows:
 - Microsoft Visual Studio 2013 or newer
 - Microsoft Visual Studio SDK (2013 or newer)
 - (Optionally) NUnit3 Test Adapter (Visual Studio Extension) - for executing unit tests
 
 To build a plugin:
-- open a solution file "dexter-vs.sln" located in project/dexter-vs directory. 
-- right click on "Build/Rebuild dexter-vs". NuGet will download all required dependencies and Visual Studio will rebuild you project.
+- open a solution file "dexter-vs.sln" located in project/dexter-vs directory
+- right click on "Build/Rebuild dexter-vs". NuGet will download all required dependencies and Visual Studio will rebuild you project
 - after this, you should have a self-installing extension file "dexter.vsix" located in "dexter-vs/bin/{ConfigurationName}"
-- you can install an extension by double clicking it.  
+- you can install an extension by double clicking it
 
-The most convenient way to debug this plugin is to use an Experimental Instance of Visual Studio. 
-- go to "Project/dexter-vs Properties..." and then go to "Debug" tab. 
-- select "Start external program:" and provide path to Visual Studio executable (devenv.exe). 
-- enter in "Command line arguments" value "/RootSuffix Exp". 
+The most convenient way to debug this plugin is to use an Experimental Instance of Visual Studio
+- go to the "Project/dexter-vs Properties..." and then go to the "Debug" tab
+- select "Start external program:" and provide path to Visual Studio executable (devenv.exe)
+- enter "/RootSuffix Exp" in "Command line arguments"
 - save your changes 
-- run a project (F5). 
-- it should start Visual Studio Experimental Instance with dexter-vs installed as an extension. 
+- run a project (F5) 
+- it should start Visual Studio Experimental Instance with dexter-vs installed as an extension
 
 </details>
 
