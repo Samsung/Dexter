@@ -1,5 +1,12 @@
 package io.jenkins.plugins.dexter;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import org.apache.commons.io.IOUtils;
+
 import io.jenkins.plugins.dexter.*;
 import hudson.Launcher;
 import hudson.Extension;
@@ -238,27 +245,35 @@ public class DexterPublisher extends Recorder {
 				} else
 					message = "Error saving logs";
 			} else {
+
 				writeToShFile();
-				Runtime runtime = Runtime.getRuntime();
-				String command = "/home/v.sanko/dexter-server/run.sh";
-				try {
-					runtime.exec(command);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
 				writeToFile();
 
-				String commandDexter = pathToBat + "/dexter.sh " + dexterUser + " " + dexterPassword + " > logs.txt \"";
 				try {
-					runtime.exec(commandDexter);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+					message = "";
+					int ch;
 
-				if (readFile(pathToBat + "/logs.txt")) {
-					message = stringBufferOfData.toString();
-				} else
-					message = "Error saving logs";
+					ProcessBuilder pb = new ProcessBuilder(dexterServerPath + "/run.sh");
+					pb.directory(new File(dexterServerPath));
+
+					Process shellProcess = pb.start();
+
+					ProcessBuilder pbClient = new ProcessBuilder(pathToBat + "/dexter.sh", dexterUser, dexterPassword);
+					pbClient.directory(new File(pathToBat));
+
+					Process shellProcessClient = pbClient.start();
+
+					InputStreamReader myIStreamReader = new InputStreamReader(shellProcessClient.getInputStream());
+					
+					String result = IOUtils.toString(shellProcessClient.getInputStream(), StandardCharsets.UTF_8);
+					message = result;
+					shellProcess.destroy();
+				} catch (IOException anIOException) {
+					System.out.println(anIOException);
+				} catch (Exception e) {
+					e.printStackTrace();
+
+				}
 			}
 		}
 
@@ -296,6 +311,7 @@ public class DexterPublisher extends Recorder {
 	}
 
 	private void writeToBatFile() {
+
 		OpenOption myOpt = StandardOpenOption.CREATE;
 		try {
 			Path fileToWrite = Paths.get(dexterServerPath + "/run.bat");
@@ -315,9 +331,11 @@ public class DexterPublisher extends Recorder {
 	}
 
 	private void writeToShFile() {
+
 		OpenOption myOpt = StandardOpenOption.CREATE;
 		try {
 			Path fileToWrite = Paths.get(dexterServerPath + "/run.sh");
+
 			BufferedWriter bufwriter = Files.newBufferedWriter(fileToWrite, Charset.forName("UTF-8"), myOpt);
 			bufwriter.write("node server.js -database.host=");
 			bufwriter.write(dexterServer);
@@ -334,6 +352,7 @@ public class DexterPublisher extends Recorder {
 	}
 
 	private void writeToFile() {
+
 		OpenOption myOpt = StandardOpenOption.CREATE;
 		try {
 			Path fileToWrite = Paths.get(pathConfig);
