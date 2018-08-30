@@ -125,7 +125,8 @@ namespace Dexter.UI.Settings
                 userName = username,
                 userPassword = password,
                 standalone = standaloneCheckBox.Checked,
-                IsDexterHomeEnabled = enableDexterHomeCheckBox.Checked
+                IsDexterHomeEnabled = enableDexterHomeCheckBox.Checked,
+                IsAnalysisOnSaveEnabled = analysisOnSaveCheckBox.Checked
             };
         }
 
@@ -194,6 +195,8 @@ namespace Dexter.UI.Settings
             userNameTextBox.Text = dexterInfo.userName;
             userPasswordTextBox.Text = dexterInfo.userPassword;
             standaloneCheckBox.Checked = dexterInfo.standalone;
+            enableDexterHomeCheckBox.Checked = dexterInfo.IsDexterHomeEnabled;
+            analysisOnSaveCheckBox.Checked = dexterInfo.IsAnalysisOnSaveEnabled;
 
             return dexterInfo;
         }

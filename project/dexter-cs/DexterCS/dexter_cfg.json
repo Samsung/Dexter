@@ -1,0 +1,14 @@
+{
+    "dexterHome":"C:\plugin",
+    "dexterServerIp": "127.0.0.1",
+    "dexterServerPort": "4982",
+    "projectName":"sample",
+    "projectFullPath":"D:\tests\project\example\example",
+    "sourceDir":["D:\tests\project\example\example"],
+    "headerDir":["D:\tests\project\example\example"],
+    "sourceEncoding":"UTF-8",
+    "libDir":[],
+    "binDir":"",
+    "type":"FILE",
+    "fileName":["main.cpp"]
+}
