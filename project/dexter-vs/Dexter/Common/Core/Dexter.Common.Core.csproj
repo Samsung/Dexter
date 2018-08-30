@@ -100,6 +100,7 @@
     <Compile Include="Utils\DexterHierarchyService.cs" />
     <Compile Include="Utils\DexterSolutionManager.cs" />
     <Compile Include="Utils\EnumerableExtensions.cs" />
+    <Compile Include="Utils\LanguageDetector.cs" />
     <Compile Include="Utils\PathUtils.cs" />
     <Compile Include="Utils\DexterTextService.cs" />
   </ItemGroup>

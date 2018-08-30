@@ -16,7 +16,7 @@ namespace Dexter.Common.Config.Providers
     public class SettingsStoreDexterInfoProvider : IDexterInfoProvider
     {
         /// <summary>
-        /// Settigns store
+        /// Settings store
         /// </summary>
         private WritableSettingsStore settingsStore;
 
@@ -53,6 +53,7 @@ namespace Dexter.Common.Config.Providers
                     userPassword = settingsStore.GetString(DexterStoreName, "userPassword"),
                     standalone = settingsStore.GetBoolean(DexterStoreName, "standalone"),
                     IsDexterHomeEnabled = settingsStore.GetBoolean(DexterStoreName, "isDexterHomeEnabled"),
+                    IsAnalysisOnSaveEnabled = settingsStore.GetBoolean(DexterStoreName, "IsAnalysisOnSaveEnabled"),
                 };
             }
             
@@ -76,6 +77,7 @@ namespace Dexter.Common.Config.Providers
             settingsStore.SetString(DexterStoreName, "userPassword", dexterInfo.userPassword);
             settingsStore.SetBoolean(DexterStoreName, "standalone", dexterInfo.standalone);
             settingsStore.SetBoolean(DexterStoreName, "isDexterHomeEnabled", dexterInfo.IsDexterHomeEnabled);
+            settingsStore.SetBoolean(DexterStoreName, "IsAnalysisOnSaveEnabled", dexterInfo.IsAnalysisOnSaveEnabled);
         }
     }
 }

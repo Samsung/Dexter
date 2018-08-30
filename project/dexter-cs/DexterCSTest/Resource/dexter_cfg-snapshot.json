@@ -1,0 +1,14 @@
+{
+  "dexterHome": ":/DEV/temp/dexterCS-cli_#.#.#_64",
+  "dexterServerIp": "localhost",
+  "dexterServerPort": "4982",
+  "projectName": "epg_ug",
+  "projectFullPath": ":/TEST//TestSI",
+  "sourceDir": [ ":/TEST//TestSI/TestDir4", ":/TEST//TestSI/TestDir5" ],
+  "headerDir": [],
+  "sourceEncoding": "UTF-8",
+  "libDir": [],
+  "binDir": "",
+  "type": "PROJECT",
+  "snapshotId": "155556"
+}

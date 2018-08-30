@@ -11,7 +11,7 @@ namespace Dexter.Common.Config
     public sealed class Configuration
     {
         /// <summary>
-        /// Dexter Home path
+        /// Dexter/DexterCS Home path
         /// </summary>
         public string dexterHome { get; set; }
 
@@ -99,6 +99,13 @@ namespace Dexter.Common.Config
         public string DexterExecutorPath { get { return dexterHome + "\\bin\\dexter-executor.jar"; } }
 
         /// <summary>
+        /// Default path to DexterCS executable: dexterHome + "\bin\DexterCS.exe"
+        /// </summary>
+        [JsonIgnore]
+        public string DexterCSPath { get { return dexterHome + "\\bin\\DexterCS.exe"; } }
+
+
+        /// <summary>
         /// Default path to dexter configuration file: "\dexter-config-vsplugin.json"
         /// </summary>
         [JsonIgnore]
@@ -117,11 +124,17 @@ namespace Dexter.Common.Config
         }
 
         /// <summary>
-        /// Whether Dexter home is enabled (Dexter home is available for only c/c++ analysis)
+        /// Whether Dexter/Dexter CS home is enabled (Dexter/DexterCS home is available for only C/C++/C# analysis)
         /// </summary>
         [JsonIgnore]
         public bool IsDexterHomeEnabled { get; set; }
 
+        /// <summary>
+        /// Whether analysis on save is enabled
+        /// </summary>
+        [JsonIgnore]
+        public bool IsAnalysisOnSaveEnabled { get; set; }
+        
         /// <summary>
         /// Creates new instance of Configuration with default values
         /// </summary>
@@ -154,6 +167,7 @@ namespace Dexter.Common.Config
             userPassword = dexterInfo.userPassword;
             standalone = dexterInfo.standalone;
             IsDexterHomeEnabled = dexterInfo.IsDexterHomeEnabled;
+            IsAnalysisOnSaveEnabled = dexterInfo.IsAnalysisOnSaveEnabled;
         }
 
 
