@@ -231,6 +231,12 @@ The most convenient way to debug this plugin is to use an Experimental Instance 
 - run a project (F5) 
 - it should start Visual Studio Experimental Instance with dexter-vs installed as an extension
 
+However, if you decide to test the extension by installing it from the .vsix file (generated in the Debug folder), 
+remember to **disable the Visual Studio "automatic extension update"** 
+(Options->Environment->Extensions and Update->Automatically update extensions). 
+The automatic update will change the plugin to the most recent version on the Marketplace, 
+i.e. get rid of all the development changes. 
+
 </details>
 
 # Future plans
