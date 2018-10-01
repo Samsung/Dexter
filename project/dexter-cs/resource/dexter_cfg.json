@@ -1,0 +1,14 @@
+{
+    "dexterHome":"D:/1.DEV_CSharp/dexter-cs-cli_0.1.0",
+    "dexterServerIp": "10.89.33.162",
+    "dexterServerPort": "1301",
+    "projectName":"dotnet",
+    "projectFullPath":"D:/Perforce/DEV-DexterCS-minjung.baek/TIZEN_3.0/MAIN2017/PROD2017_Prj/INT/DOTNET/Csapi",
+    "sourceDir":["D:/Perforce/DEV-DexterCS-minjung.baek/TIZEN_3.0/MAIN2017/PROD2017_Prj/INT/DOTNET/Csapi/csapi-application"],
+    "headerDir":["D:/Perforce/DEV-DexterCS-minjung.baek/TIZEN_3.0/MAIN2017/PROD2017_Prj/INT/DOTNET/Csapi/csapi-application"],
+    "sourceEncoding":"UTF-8",
+    "libDir":[],
+    "binDir":"",
+    "type":"SNAPSHOT",
+    "snapshotId": "1555"
+}

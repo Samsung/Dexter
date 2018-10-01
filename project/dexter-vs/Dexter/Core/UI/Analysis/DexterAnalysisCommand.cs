@@ -117,6 +117,11 @@ namespace Dexter.UI.Analysis
         /// <param name="e">Event args.</param>
         protected override void CommandClicked(object sender, EventArgs e)
         {
+            ValidateConfigurationAndAnalyse();
+        }
+
+        public void ValidateConfigurationAndAnalyse()
+        {
             Configuration config = ConfigurationProvider.Load();
 
             if (!ValidateConfiguration(config))

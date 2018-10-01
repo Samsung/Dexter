@@ -93,7 +93,7 @@ namespace Dexter.UI
 
             IProjectInfoProvider solutionSnapshotInfoProvider = new SolutionInfoProvider(this, true);
             IProjectInfoProvider projectSnapshotInfoProvider = new ProjectInfoProvider(this, true);
-            
+
             IDexterInfoProvider dexterInfoProvider = new SettingsStoreDexterInfoProvider(this);
 
             ConfigurationProvider solutionConfigProvider = new ConfigurationProvider(solutionInfoProvider, dexterInfoProvider);
@@ -140,8 +140,72 @@ namespace Dexter.UI
 
             RegisterSolutionManager();
             CreateReviewCommentManager();
-                       
+
+            uint cookie;
+            var runningDocumentTable = (IVsRunningDocumentTable)GetGlobalService(typeof(SVsRunningDocumentTable));
+            runningDocumentTable.AdviseRunningDocTableEvents(new RunningDocTableEventsHandler(projectAnalysisCommand, dexterInfoProvider), out cookie);
+
             base.Initialize();
+        }
+
+        class RunningDocTableEventsHandler : IVsRunningDocTableEvents3
+        {
+            DexterAnalysisCommand dexterAnalysisCommand;
+            IDexterInfoProvider dexterInfoProvider;
+
+            #region Methods
+
+            public RunningDocTableEventsHandler(DexterAnalysisCommand dexterAnalysisCommand, IDexterInfoProvider dexterInfoProvider)
+            {
+                this.dexterAnalysisCommand = dexterAnalysisCommand;
+                this.dexterInfoProvider = dexterInfoProvider;
+            }
+
+            public int OnAfterFirstDocumentLock(uint docCookie, uint dwRDTLockType, uint dwReadLocksRemaining, uint dwEditLocksRemaining)
+            {
+                return VSConstants.S_OK;
+            }
+
+            public int OnBeforeLastDocumentUnlock(uint docCookie, uint dwRDTLockType, uint dwReadLocksRemaining, uint dwEditLocksRemaining)
+            {
+                return VSConstants.S_OK;
+            }
+
+            public int OnAfterSave(uint docCookie)
+            {
+                return VSConstants.S_OK;
+            }
+
+            public int OnAfterAttributeChange(uint docCookie, uint grfAttribs)
+            {
+                return VSConstants.S_OK;
+            }
+
+            public int OnBeforeDocumentWindowShow(uint docCookie, int fFirstShow, IVsWindowFrame pFrame)
+            {
+                return VSConstants.S_OK;
+            }
+
+            public int OnAfterDocumentWindowHide(uint docCookie, IVsWindowFrame pFrame)
+            {
+                return VSConstants.S_OK;
+            }
+
+            public int OnAfterAttributeChangeEx(uint docCookie, uint grfAttribs, IVsHierarchy pHierOld, uint itemidOld, string pszMkDocumentOld, IVsHierarchy pHierNew, uint itemidNew, string pszMkDocumentNew)
+            {
+                return VSConstants.S_OK;
+            }
+
+            public int OnBeforeSave(uint docCookie)
+            {
+                if (dexterInfoProvider.Load().IsAnalysisOnSaveEnabled)
+                {
+                    dexterAnalysisCommand.ValidateConfigurationAndAnalyse();
+                }
+                return VSConstants.S_OK;
+            }
+
+            #endregion Methods
         }
 
         private void CreateReviewCommentManager()
@@ -211,7 +275,7 @@ namespace Dexter.UI
             {
                 analysisCommand.Refresh();
             }
-        }       
+        }
 
         #endregion
     }
