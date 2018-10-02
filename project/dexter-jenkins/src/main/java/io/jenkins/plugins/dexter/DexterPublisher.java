@@ -203,7 +203,9 @@ public class DexterPublisher extends Recorder {
 		pathToBat = pathDexter + "/bin";
 		pathConfig = pathDexter + "/bin/dexter_cfg.json";
 		projectName = getProjectName();
-		serverDisc = dexterServerPath.substring(0, 2);
+		if (createServer) {
+			serverDisc = dexterServerPath.substring(0, 2);
+		}
 		dexterDisc = pathDexter.substring(0, 2);
 		if (file) {
 			projectType = "FILE";
@@ -218,10 +220,10 @@ public class DexterPublisher extends Recorder {
 			projectType = "SNAPSHOT";
 		}
 
-		if (isCreateServer()) {
-			if (isWindows()) {
+		if (isWindows()) {
+			Runtime runtime = Runtime.getRuntime();
+			if (createServer) {
 				writeToBatFile();
-				Runtime runtime = Runtime.getRuntime();
 				String command = "cmd /c start /wait cmd.exe /K " + "\"cd " + dexterServerPath + " && " + serverDisc
 						+ " && run.bat \"";
 				try {
@@ -229,51 +231,50 @@ public class DexterPublisher extends Recorder {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
+			}
+			writeToFile();
 
-				writeToFile();
+			String commandDexter = "cmd /c start cmd.exe /K " + "\"cd " + pathToBat + " && " + dexterDisc
+					+ " && dexter.bat " + dexterUser + " " + dexterPassword + " > logs.txt \"";
+			try {
+				runtime.exec(commandDexter);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
-				String commandDexter = "cmd /c start cmd.exe /K " + "\"cd " + pathToBat + " && " + dexterDisc
-						+ " && dexter.bat " + dexterUser + " " + dexterPassword + " > logs.txt \"";
-				try {
-					runtime.exec(commandDexter);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-
-				if (readFile(pathToBat + "//logs.txt")) {
-					message = stringBufferOfData.toString();
-				} else
-					message = "Error saving logs";
-			} else {
-
+			if (readFile(pathToBat + "//logs.txt")) {
+				message = stringBufferOfData.toString();
+			} else
+				message = "Error saving logs";
+		} else {
+			if (createServer) {
 				writeToShFile();
-				writeToFile();
+			}
+			writeToFile();
 
-				try {
-					message = "";
-					int ch;
-
+			try {
+				message = "";
+				int ch;
+				if (createServer) {
 					ProcessBuilder pb = new ProcessBuilder(dexterServerPath + "/run.sh");
 					pb.directory(new File(dexterServerPath));
 
 					Process shellProcess = pb.start();
-
-					ProcessBuilder pbClient = new ProcessBuilder(pathToBat + "/dexter.sh", dexterUser, dexterPassword);
-					pbClient.directory(new File(pathToBat));
-
-					Process shellProcessClient = pbClient.start();
-
-					InputStreamReader myIStreamReader = new InputStreamReader(shellProcessClient.getInputStream());
-					
-					String result = IOUtils.toString(shellProcessClient.getInputStream(), StandardCharsets.UTF_8);
-					message = result;
-					shellProcess.destroy();
-				} catch (IOException anIOException) {
-					System.out.println(anIOException);
-				} catch (Exception e) {
-					e.printStackTrace();
-
 				}
+				ProcessBuilder pbClient = new ProcessBuilder(pathToBat + "/dexter.sh", dexterUser, dexterPassword);
+				pbClient.directory(new File(pathToBat));
+
+				Process shellProcessClient = pbClient.start();
+
+				InputStreamReader myIStreamReader = new InputStreamReader(shellProcessClient.getInputStream());
+
+				String result = IOUtils.toString(shellProcessClient.getInputStream(), StandardCharsets.UTF_8);
+				message = result;
+			} catch (IOException anIOException) {
+				System.out.println(anIOException);
+			} catch (Exception e) {
+				e.printStackTrace();
+
 			}
 		}
 
