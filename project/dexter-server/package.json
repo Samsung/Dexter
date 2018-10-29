@@ -8,14 +8,18 @@
   "dependencies": {
     "angular": "^1.5.8",
     "bluebird": "^3.3.0",
+    "body-parser": "1.9.x",
     "express": "3.5.1",
     "json-bigint": "^0.1.4",
     "line-reader": "^0.2.4",
     "lodash": "^4.0.0",
+    "minimist": "*",
     "moment": "^2.5.1",
     "mysql": "^2.11.1",
+    "package.json": "^2.0.1",
     "q": "^1.4.1",
     "request": "^2.67.0",
+    "swagger-node-express": "^2.0.3",
     "underscore": "^1.8.3",
     "winston": "^0.8.3"
   },

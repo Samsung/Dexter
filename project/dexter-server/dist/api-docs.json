@@ -1,0 +1,964 @@
+{
+   "swagger":"2.0",
+   "info":{
+      "version":"1.0.0",
+      "title":"Dexter server specification",
+      "description":"Documentation of Dexter server",
+      "termsOfService":"http://swagger.io/terms/"
+   },
+   "basePath":"/",
+   "tags":[
+      {
+         "name":"Server managing v1",
+         "description":"Server managing v1"
+      },
+       {
+         "name":"Managing accounts v1",
+         "description":"Managing accounts v1"
+      },
+        {
+         "name":"Analysis Result",
+         "description":"Analysis Result"
+      },
+       {
+         "name":"Defect Filter",
+         "description":"Defect Filter"
+      },
+       {
+         "name":"Defect",
+         "description":"Defect"
+      }
+   ],
+   "schemes":[
+      "http"
+   ],
+   "consumes":[
+      "application/json"
+   ],
+   "produces":[
+      "application/json"
+   ],
+    "host":[
+        "localhost:4982"
+    ],
+   "paths":{
+      "/api/isServerAlive":{
+         "get":{
+            "tags":[
+               "Server managing v1"
+            ],
+            "description":"Is server Alive",
+            "operationId":"isServerAlive",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Request parameter",
+                  "in":"body",
+                  "description":"Sample parameter",
+                  "required":false
+               }
+            ],
+            "responses":{
+            
+            }
+         }
+      },
+      "/defect":{
+         "get":{
+            "tags":[
+               "Server managing v1"
+            ],
+            "description":"Main page connection",
+            "operationId":"checkConnecton",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Request parameter",
+                  "in":"body",
+                  "description":"Sample parameter",
+                  "required":false
+               }
+            ],
+            "responses":{
+              
+            }
+         }
+      },
+        "/api/isServerAlive2":{
+         "get":{
+            "tags":[
+               "Server managing v1"
+            ],
+            "description":"Is server alive 2",
+            "operationId":"isServerAlive2",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Request parameter",
+                  "in":"body",
+                  "description":"Sample parameter",
+                  "required":false
+               }
+            ],
+            "responses":{
+              
+            }
+         }
+      },
+          "/api/analysis/snapshot/source":{
+         "get":{
+            "tags":[
+               "Server managing v1"
+            ],
+            "description":"Snapshot source",
+            "operationId":"snapshotSource",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Request parameter",
+                  "in":"body",
+                  "description":"Sample parameter",
+                  "required":false
+               }
+            ],
+            "responses":{
+              
+            }
+         }
+      },
+       "/api/version/false-alarm":{
+         "get":{
+            "tags":[
+               "Server managing v1"
+            ],
+            "description":"False alarm",
+            "operationId":"falseAlarm",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Request parameter",
+                  "in":"body",
+                  "description":"Sample parameter",
+                  "required":false
+               }
+            ],
+            "responses":{
+             
+            }
+         }
+      },
+       "/api/v1/isServerAlive":{
+         "get":{
+            "tags":[
+               "Server managing v1"
+            ],
+            "description":"V1 is server alive",
+            "operationId":"v1IsServerAlive",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Request parameter",
+                  "in":"body",
+                  "description":"Sample parameter",
+                  "required":false
+               }
+            ],
+            "responses":{
+              
+            }
+         }
+      },
+        "/api/v2/server-status":{
+         "get":{
+            "tags":[
+               "Server managing v1"
+            ],
+            "description":"Server Status",
+            "operationId":"serverStatus",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Request parameter",
+                  "in":"body",
+                  "description":"Sample parameter",
+                  "required":false
+                  
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+        "/api/v2/server-detailed-status":{
+         "get":{
+            "tags":[
+               "Server managing v1"
+            ],
+            "description":"Detailed Server Status",
+            "operationId":"detailedServerStatus",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Request parameter",
+                  "in":"body",
+                  "description":"Sample parameter",
+                  "required":false
+                  
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+        "/api/v1/accounts/checkLogin":{
+         "get":{
+            "tags":[
+               "Server managing v1"
+            ],
+            "description":"Check Login",
+            "operationId":"checkLogin",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+        },
+            
+        "/api/v1/projectName":{
+         "get":{
+            "tags":[
+               "Server managing v1"
+            ],
+            "description":"Return project name",
+            "operationId":"projectName",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+        "/api/v1/accounts/userId":{
+         "get":{
+            "tags":[
+               "Managing accounts v1"
+            ],
+            "description":"Return Dexter userId",
+            "operationId":"getUserID",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+            {}
+            ],
+            "responses":{
+            },
+            "security":[{
+                "Secured" : []
+            }],
+             "securityDefinitions" : {
+    "basicAuth" : {
+      "type" : "basic"
+    }
+  }
+         }
+      },
+      
+       "/api/v1/accounts/checkWebLogin":{
+         "get":{
+            "tags":[
+               "Managing accounts v1"
+            ],
+            "description":"Check Web Login",
+            "operationId":"checkWebLogin",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+         },
+               "/api/v1/accounts/logout":{
+         "get":{
+            "tags":[
+               "Managing accounts v1"
+            ],
+            "description":"Logout",
+            "operationId":"logout",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+            "/api/v1/accounts/accountCount":{
+         "get":{
+            "tags":[
+               "Managing accounts v1"
+            ],
+            "description":"Account count",
+            "operationId":"accountCount",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+           "/api/v1/accounts/findAll":{
+         "get":{
+            "tags":[
+               "Managing accounts v1"
+            ],
+            "description":"Find All",
+            "operationId":"findAll",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+            "/api/v1/accounts/findById/:userId":{
+         "get":{
+            "tags":[
+               "Managing accounts v1"
+            ],
+            "description":"Find by id: User ID",
+            "operationId":"findByIdUserId",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+        "/api/v1/accounts/hasAccount/:userId":{
+         "get":{
+            "tags":[
+               "Managing accounts v1"
+            ],
+            "description":"Has account: User ID",
+            "operationId":"hasAccountUserId",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+       "/api/v1/accounts/checkAdmin":{
+         "get":{
+            "tags":[
+               "Managing accounts v1"
+            ],
+            "description":"Check admin",
+            "operationId":"checkAdmin",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      
+   },
+     "/api/v1/accounts/add":{
+         "post":{
+            "tags":[
+               "Managing accounts v1"
+            ],
+            "description":"Account add",
+            "operationId":"accountAdd",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+    "/api/v1/accounts/webAdd":{
+         "post":{
+            "tags":[
+               "Managing accounts v1"
+            ],
+            "description":"Web add",
+            "operationId":"webAdd",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+     "/api/v1/accounts/update/:userId":{
+         "post":{
+            "tags":[
+               "Managing accounts v1"
+            ],
+            "description":"Account update user ID",
+            "operationId":"accountUpdateUserId",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+        "/api/v1/accounts/webUpdate/:userId":{
+         "post":{
+            "tags":[
+               "Managing accounts v1"
+            ],
+            "description":"Account webUpdate user ID",
+            "operationId":"webUpdateUserId",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+        "/api/v1/accounts/remove/:userId":{
+         "delete":{
+            "tags":[
+               "Managing accounts v1"
+            ],
+            "description":"Remove user ID",
+            "operationId":"removeUserId",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+        "/api/v1/accounts/removeAll":{
+         "delete":{
+            "tags":[
+               "Managing accounts v1"
+            ],
+            "description":"Remove all",
+            "operationId":"removeAll",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+          "/api/v1/server":{
+         "delete":{
+            "tags":[
+               "Server managing v1"
+            ],
+            "description":"Server stop",
+            "operationId":"serverStop",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+          "/api/v1/dexter-db":{
+         "delete":{
+            "tags":[
+               "Server managing v1"
+            ],
+            "description":"dexter-db",
+            "operationId":"removeAll",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+        "/api/v1/analysis/result":{
+         "post":{
+            "tags":[
+               "Analysis Result"
+            ],
+            "description":"Analysis result",
+            "operationId":"analysisResult",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+        "/api/v1/analysis/snapshot/source":{
+         "post":{
+            "tags":[
+               "Analysis Result"
+            ],
+            "description":"Snapshot source",
+            "operationId":"snapshotSource",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+             "/api/v1/analysis/snapshot/checkSourceCode":{
+         "get":{
+            "tags":[
+               "Analysis Result"
+            ],
+            "description":"Check source code",
+            "operationId":"checkSourceCode",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+            "/api/v1/filter/false-alarm":{
+         "get":{
+            "tags":[
+               "Defect Filter"
+            ],
+            "description":"False Alarm",
+            "operationId":"falseAlarm",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+        "/api/v1/filter/false-alarm-list":{
+         "get":{
+            "tags":[
+               "Defect Filter"
+            ],
+            "description":"False Alarm List",
+            "operationId":"falseAlarmList",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+        "/api/v1/filter/false-alarm-list":{
+         "get":{
+            "tags":[
+               "Defect Filter"
+            ],
+            "description":"False Alarm List",
+            "operationId":"falseAlarmList",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+          "/api/filter/delete-false-alarm":{
+         "post":{
+            "tags":[
+               "Defect Filter"
+            ],
+            "description":"Delete false alarm",
+            "operationId":"deleteFalseAlarm",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+        "/api/defect/gid":{
+         "post":{
+            "tags":[
+               "Defect"
+            ],
+            "description":"Get global did",
+            "operationId":"deleteFalseAlarm",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+        "/api/defect/deleteAll":{
+         "delete":{
+            "tags":[
+               "Defect"
+            ],
+            "description":"Delete defect",
+            "operationId":"deleteDefect",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      }
+       
+   },
+   "definitions":{
+      "create":{
+         "properties":{
+            "userId":{
+               "required":true,
+               "type":"string"
+            },
+           "userPwd":{
+               "required":true,
+               "type":"string"
+            }
+         }
+      },
+      "response1":{
+         "properties":{
+            "jobID":{
+               "required":true,
+               "type":"string",
+               "example":"23423456543"
+            },
+            "request":{
+               "required":true,
+               "type":"schema",
+               "example":{
+                  "eventId":"mathmaticial",
+                  "numberRequired":500
+               }
+            }
+         }
+      },
+      "response":{
+         "properties":{
+            "jobID":{
+               "required":true,
+               "type":"string",
+               "example":"12321432423"
+            }
+         }
+      },
+      "delete":{
+         "properties":{
+            "jobID":{
+               "required":true,
+               "type":"string",
+               "example":"234344234234"
+            },
+            "status":{
+               "required":true,
+               "type":"string",
+               "example":"deleted"
+            }
+         }
+      },
+      "400error":{
+         "properties":{
+            "message":{
+               "type":"string",
+               "example":"400 Bad Request"
+            }
+         }
+      }
+   }
+}
