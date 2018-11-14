@@ -29,12 +29,36 @@
          "description":"Defect"
       },
        {
-         "name":"Snapshot Defect Map",
+         "name":"Snapshot Defect Map V1",
          "description":"Snapshot Defect Map"
       },
        {
          "name":"Code metrics",
          "description":"Code metrics"
+      },
+        {
+         "name":"SharedDataVersion",
+         "description":"SharedDataVersion"
+      },
+       {
+         "name":"Latest Config Json",
+         "description":"Latest Config Json"
+      },
+        {
+         "name":"Code metrics for Dexter client",
+         "description":"Code metrics for Dexter client"
+      },
+       {
+         "name":"API Version 2",
+         "description":"API Version 2"
+      },
+       {
+         "name":"Snapshot Defect Map V2",
+         "description":"Snapshot Defect Map"
+      },
+       {
+         "name":"Defect V2",
+         "description":"Defect V2"
       }
    ],
    "schemes":[
@@ -1209,7 +1233,7 @@
         "/api/v1/snapshot/snapshotList":{
          "get":{
             "tags":[
-               "Snapshot Defect Map"
+               "Snapshot Defect Map V1"
             ],
             "description":"Snapshot List",
             "operationId":"snapshotList",
@@ -1234,7 +1258,7 @@
              "/api/v1/snapshot/showSnapshotDefectPage":{
          "get":{
             "tags":[
-               "Snapshot Defect Map"
+               "Snapshot Defect Map V1"
             ],
             "description":"Show snapshot defect page",
             "operationId":"snapshotDefectPage",
@@ -1259,7 +1283,7 @@
              "/api/v1/snapshot/occurenceInFile":{
          "get":{
             "tags":[
-               "Snapshot Defect Map"
+               "Snapshot Defect Map V1"
             ],
             "description":"Occurence in file",
             "operationId":"occurenceInFile",
@@ -1388,6 +1412,907 @@
             ],
             "description":"Developer and file",
             "operationId":"devAndFile",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+        "/api/config/defect-group":{
+         "post":{
+            "tags":[
+               "SharedDataVersion"
+            ],
+            "description":"Add Defect group",
+            "operationId":"addDefectGroup",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+        "/api/config/defect-group":{
+         "post":{
+            "tags":[
+               "SharedDataVersion"
+            ],
+            "description":"Update Defect group",
+            "operationId":"updateDefectGroup",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+        "/api/config/defect-group/:groupName":{
+         "get":{
+            "tags":[
+               "SharedDataVersion"
+            ],
+            "description":"Get defect group",
+            "operationId":"getDefectGroup",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+        "/api/config/defect-group":{
+         "get":{
+            "tags":[
+               "SharedDataVersion"
+            ],
+            "description":"Get defect group",
+            "operationId":"getDefectGroup2",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+        "/api/config/defect-group-id/:groupName":{
+         "get":{
+            "tags":[
+               "SharedDataVersion"
+            ],
+            "description":"GetDefectGroupId",
+            "operationId":"devAndFile",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+        "/api/config/defect-group/:id":{
+         "delete":{
+            "tags":[
+               "SharedDataVersion"
+            ],
+            "description":"Delete defect group",
+            "operationId":"deleteDefectGroup",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+        "/api/config/code/:codeKey":{
+         "get":{
+            "tags":[
+               "SharedDataVersion"
+            ],
+            "description":"Get codes",
+            "operationId":"getCodes",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+        "/api/version/false-alarm":{
+         "get":{
+            "tags":[
+               "SharedDataVersion"
+            ],
+            "description":"Get false alarm version",
+            "operationId":"falseAlarmVersion",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+        "/api/v1/config/:pluginName":{
+         "post":{
+            "tags":[
+               "Latest Config Json"
+            ],
+            "description":"Get checker config json file",
+            "operationId":"checkerConfigJsonFile",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+        "/api/v1/codeMetrics/total":{
+         "gett":{
+            "tags":[
+               "Code metrics for Dexter client"
+            ],
+            "description":"Get total code metrics",
+            "operationId":"getTotalCodeMetrics",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+         "/api/v1/codeMetrics/":{
+         "get":{
+            "tags":[
+               "Code metrics for Dexter client"
+            ],
+            "description":"Get code metrics from the client",
+            "operationId":"getMetricsFromClient",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+         "/api/v1/codeMetrics/ccList":{
+         "get":{
+            "tags":[
+               "Code metrics for Dexter client"
+            ],
+            "description":"Get code metrics CC list",
+            "operationId":"getMetricsCCList",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+         "/api/v1/codeMetrics/sloc":{
+         "get":{
+            "tags":[
+               "Code metrics for Dexter client"
+            ],
+            "description":"Get function metric for sloc",
+            "operationId":"getFunctionMetricForSloc",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+         "/api/v1/codeMetrics/topCodeMetrics":{
+         "post":{
+            "tags":[
+               "Code metrics for Dexter client"
+            ],
+            "description":"Get toop code metrics",
+            "operationId":"getTopMetrics",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+         "/api/v1/codeMetrics/topCC":{
+         "get":{
+            "tags":[
+               "Code metrics for Dexter client"
+            ],
+            "description":"Get top CC for code metrics",
+            "operationId":"getTopCC",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+         "/api/v1/codeMetrics/topMethod":{
+         "get":{
+            "tags":[
+               "Code metrics for Dexter client"
+            ],
+            "description":"Get top method for code metrics",
+            "operationId":"getTopMethod",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+         "/api/v1/codeMetrics/topClass":{
+         "get":{
+            "tags":[
+               "Code metrics for Dexter client"
+            ],
+            "description":"Get top class for code metrics",
+            "operationId":"getTopClassForCodeMetrics",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+         "/api/v1/codeMetrics/topSloc":{
+         "get":{
+            "tags":[
+               "Code metrics for Dexter client"
+            ],
+            "description":"Get top Sloc for code metrics",
+            "operationId":"getTopSlocForCodeMetrics",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+         "/api/v1/codeMetrics/threshold":{
+         "get":{
+            "tags":[
+               "Code metrics for Dexter client"
+            ],
+            "description":"Get code metrics threshold",
+            "operationId":"getCodeMetricsThreshold",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+         "/api/v1/codeMetrics/quantity":{
+         "get":{
+            "tags":[
+               "Code metrics for Dexter client"
+            ],
+            "description":"Get code metrics quantity",
+            "operationId":"getMetricsQuantity",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+         "/api/v2/analysis/result":{
+         "post":{
+            "tags":[
+               "API Version 2"
+            ],
+            "description":"Add V2",
+            "operationId":"v2AnalysisResult",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+       
+       "/api/v2/defect":{
+         "get":{
+            "tags":[
+               "API Version 2"
+            ],
+            "description":"Get defect by module and file V2",
+            "operationId":"V2GetDefectByModuleAndFile",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+       "/api/v2/defect/:did":{
+         "get":{
+            "tags":[
+               "API Version 2"
+            ],
+            "description":"Get defect by module and file for did V2 ",
+            "operationId":"V2GetDefectByModuleAndFileForDid",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },     
+        "/api/v2/snapshot/snapshotList":{
+         "get":{
+            "tags":[
+               "Snapshot Defect Map V2"
+            ],
+            "description":"Get all snapshot V2",
+            "operationId":"getAllSnapshotV2",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      }, 
+        "/api/v2/snapshot/security":{
+         "get":{
+            "tags":[
+               "Snapshot Defect Map V2"
+            ],
+            "description":"Get snapshot defect for security ",
+            "operationId":"getSnapshotDefectForSecurity",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      }, 
+        "/api/v2/snapshot/:snapshotId":{
+         "get":{
+            "tags":[
+               "Snapshot Defect Map V2"
+            ],
+            "description":"Get defect list in snapshot V2 ",
+            "operationId":"getDefectListInSnapshotV2",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      }, 
+        "/api/v2/snapshot/:snapshotId/:did":{
+         "get":{
+            "tags":[
+               "Snapshot Defect Map V2"
+            ],
+            "description":"Get defect list in snapshot for did",
+            "operationId":"getDefectListInSnapshotForDid",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+          "/api/v2/defect/status/project":{
+         "get":{
+            "tags":[
+               "Defect V2"
+            ],
+            "description":"Get project defect status  V2",
+            "operationId":"getProjectDefectStatusV2",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+          "/api/v2/defect/status/modulePath":{
+         "get":{
+            "tags":[
+               "Defect V2"
+            ],
+            "description":"Get modul defect status V2",
+            "operationId":"getModuleDefectStatusV2",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+          "/api/v2/defect/status/fileName":{
+         "get":{
+            "tags":[
+               "Defect V2"
+            ],
+            "description":"Get file defect status V2",
+            "operationId":"getFileDefectStatusV2",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+          "/api/v2/defect/security":{
+         "get":{
+            "tags":[
+               "Defect V2"
+            ],
+            "description":"Get defect for security",
+            "operationId":"getDefectForSecurity",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+          "/api/v2/defect/deleteAll":{
+         "post":{
+            "tags":[
+               "Defect V2"
+            ],
+            "description":"Delete defect",
+            "operationId":"deleteDefect",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+          "/api/v2/functionMetrics/":{
+         "get":{
+            "tags":[
+               "Defect V2"
+            ],
+            "description":"Get total function metrics",
+            "operationId":"getTotalFunctionMetrics",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+          "/api/v2/functionMetrics/All":{
+         "get":{
+            "tags":[
+               "Defect V2"
+            ],
+            "description":"Get all function metrics",
+            "operationId":"getAllFunctionMetrics",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+          "/api/v2/functionMetrics":{
+         "post":{
+            "tags":[
+               "Defect V2"
+            ],
+            "description":"Get function metrics",
+            "operationId":"getFunctionMetrics",
+            "produces":[
+               "application/json"
+            ],
+            "parameters":[
+               {
+                  "name":"Login and Password",
+                  "in":"body",
+                  "description":"Dexter login and password",
+                  "required":true,
+                  "schema":{
+                     "$ref":"#/definitions/create"
+                  }
+               }
+            ],
+            "responses":{
+            }
+         }
+      },
+          "/api/2/codeMetrics/slocList":{
+         "get":{
+            "tags":[
+               "Defect V2"
+            ],
+            "description":"Get code metrics for sloc",
+            "operationId":"getCodeMetricsForSloc",
             "produces":[
                "application/json"
             ],
