@@ -312,15 +312,7 @@
                "application/json"
             ],
             "parameters":[
-               {
-                  "name":"Login and Password",
-                  "in":"body",
-                  "description":"Dexter login and password",
-                  "required":true,
-                  "schema":{
-                     "$ref":"#/definitions/create"
-                  }
-               }
+               
             ],
             "responses":{
             }
@@ -539,15 +531,7 @@
                "application/json"
             ],
             "parameters":[
-               {
-                  "name":"Login and Password",
-                  "in":"body",
-                  "description":"Dexter login and password",
-                  "required":true,
-                  "schema":{
-                     "$ref":"#/definitions/create"
-                  }
-               }
+        
             ],
             "responses":{
             }
@@ -1335,15 +1319,7 @@
                "application/json"
             ],
             "parameters":[
-               {
-                  "name":"Login and Password",
-                  "in":"body",
-                  "description":"Dexter login and password",
-                  "required":true,
-                  "schema":{
-                     "$ref":"#/definitions/create"
-                  }
-               }
+              
             ],
             "responses":{
             }
@@ -2711,15 +2687,7 @@
                "application/json"
             ],
             "parameters":[
-               {
-                  "name":"Login and Password",
-                  "in":"body",
-                  "description":"Dexter login and password",
-                  "required":true,
-                  "schema":{
-                     "$ref":"#/definitions/create"
-                  }
-               }
+              
             ],
             "responses":{
             }
