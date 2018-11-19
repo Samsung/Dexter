@@ -130,7 +130,6 @@ namespace DexterDepend
         {
             //TODO:
         }
-        // DPR: [MAJ] Insert review message
         public void Init()
         {
             InitCheckerConfig();
