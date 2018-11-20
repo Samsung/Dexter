@@ -16,7 +16,6 @@
     "minimist": "*",
     "moment": "^2.5.1",
     "mysql": "^2.11.1",
-    "package.json": "^2.0.1",
     "q": "^1.4.1",
     "request": "^2.67.0",
     "swagger-node-express": "^2.0.3",
