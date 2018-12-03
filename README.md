@@ -239,7 +239,7 @@ The most convenient way to debug this plugin is to use an Experimental Instance 
 You can use Swagger to know more about Dexter API
 </summary>
 Web page with Dexter API documentation in Swagger will be available during Dexter server running on the same host and post as Dexter server.
-You can find it under [host]:[port]/api/api-docs address 
+You can find it under [host]:[port]/api/api-docs address. 
 </details>
 
 # Future plans
