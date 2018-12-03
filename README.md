@@ -100,20 +100,12 @@ See which ones!
 **CLI** - yes, command-line interface is not an IDE, but you can also execute Dexter from it (Jenkins, other editors)
 </details>
 
-## Where can I find more?
-
+## Download Dexter now! 
 <details>
 <summary>
-There are two ways to find out more about Dexter...
+<b>Latest Version 0.10.6</b> (20. Oct. 2016)
 </summary>
-
-For much more detailed information and a rich Dexter resource please refer to Dexter Wiki at Atlassian:
-- [Dexter Wiki (How to install/Use)](https://dexter.atlassian.net)
-
-...and in the mean time check out the (old but gold) video about Dexter!
-- [Dexter Introduction Video (4min)](https://youtu.be/86exIHcwi6c) 
-</details>
-
+ 
 ## Download Dexter now! 
 <details>
 <summary>
@@ -152,6 +144,15 @@ For much more detailed information and a rich Dexter resource please refer to De
 
 #### Dexter Monitor
 - [Win/Linux/Mac](https://dexter.atlassian.net/wiki/download/attachments/6258746/dexter-monitor_0.10.6.zip?api=v2)
+</details>
+
+## How to open API documentation in Swagger
+<details>
+<summary>
+You can use Swagger to know more about Dexter API
+</summary>
+Web page with Dexter API documentation in Swagger will be available during Dexter server running on the same host and post as Dexter server.
+You can find it under [host]:[port]/api/api-docs address 
 </details>
 
 # Contribution
