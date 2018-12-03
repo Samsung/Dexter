@@ -26,6 +26,23 @@
 var express = require('express');
 var account = require("../routes/account");
 
-exports.getBasicAuth = express.basicAuth(function(user, pass){
-    return account.checkAccount(user, pass);
-});
+exports.getBasicAuth = function(req, res, next) {
+	var user, pass; 
+	
+	if (req.headers.authorization) {
+      var auth = new Buffer(req.headers.authorization.substring(6), 'base64').toString().split(':');
+	  
+	  if (auth) {
+		user = auth[0];
+		pass = auth[1];
+	  }
+    }
+
+    if (! account.checkAccount(user, pass)) {
+        res.statusCode = 401;
+        res.setHeader('WWW-Authenticate' , 'Basic realm="Dexter"');
+        res.end('Unauthorized');
+    } else {
+        next();
+    }
+};

@@ -23,9 +23,12 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+
 var express = require('express');
 var path = require('path');
 var http = require('http');
+var methodOverride = require('method-override');
+var errorhandler = require('errorhandler');
 
 var database = require("./util/database");
 var util = require('./util/dexter-util');
@@ -39,54 +42,11 @@ var codeMetrics = require("./routes/codeMetrics");
 var functionMetrics = require("./routes/functionMetrics");
 var monitor = require("./routes/monitor");
 var adminSE = require("./routes/adminSE");
-
+var methodOverride = require('method-override');
+var swaggerUi = require('swagger-ui-express');
+var swaggerDocument = require('./api-docs.json');
 var app = express();
 
-var argv = require('minimist')(process.argv.slice(2));
-var bodyParser = require('body-parser');
-var subpath = express();
-	app.use(bodyParser());
-	app.use("/v1", subpath);
-
-	var swagger = require('swagger-node-express').createNew(subpath);
-app.use(express.static('dist'));
-swagger.setApiInfo({
-	    title: "example API",
-	    description: "API to do something, manage something...",
-	    termsOfServiceUrl: "",
-	    contact: "yourname@something.com",
-	    license: "",
-	    licenseUrl: ""
-	});
-app.get('/', function (req, res) {
-	    res.sendFile(__dirname + '/dist/index.html');
-	});
-swagger.configureSwaggerPaths('', 'api-docs', '');
-
-	// Configure the API domain
-	var domain = 'localhost';
-	if(argv.domain !== undefined)
-	    domain = argv.domain;
-	else
-	    console.log('No --domain=xxx specified, taking default hostname "localhost".')
-
-	// Configure the API port
-	var port = 3000;
-	if(argv.port !== undefined)
-	    port = argv.port;
-	else
-	    console.log('No --port=xxx specified, taking default port ' + port + '.')
-
-	// Set and display the application URL
-	var applicationUrl = 'http://' + domain + ':' + port+ "";
-	console.log('snapJob API running on ' + applicationUrl);
-
-
-	swagger.configure(applicationUrl, '1.0.0');
-
-
-	// Start the web server
-	app.listen(port);
 global.runOptions = {
     port:4982,
     databaseHost:'localhost',
@@ -129,6 +89,7 @@ function initialize(){
     setExecutionMode();
     setAppConfigure();
     initModules();
+    initSwagger();
     initRestAPI();
     startServer();
 }
@@ -137,13 +98,13 @@ function setRunOptionsByCliOptions(){
     var cliOptions = util.getCliOptions();
 
     global.runOptions.port = cliOptions.getValue('p', 4982);
-    global.runOptions.databaseHost = cliOptions.getValue('database.host', 'localhost');
+    global.runOptions.databaseHost = cliOptions.getValue('database.host', 'dexter-test');
     global.runOptions.databasePort = cliOptions.getValue('database.port', 3306);
-    global.runOptions.databaseUser = cliOptions.getValue('database.user', '');
-    global.runOptions.databasePassword = cliOptions.getValue('database.password', '');
+    global.runOptions.databaseUser = cliOptions.getValue('database.user', 'root');
+    global.runOptions.databasePassword = cliOptions.getValue('database.password', 'gre4d');
     global.runOptions.databaseAdminUser = cliOptions.getValue('database.admin.user', '');
     global.runOptions.databaseAdminPassword = cliOptions.getValue('database.admin.password', '');
-    global.runOptions.databaseName = cliOptions.getValue('database.name', '');
+    global.runOptions.databaseName = cliOptions.getValue('database.name', 'my_dexter_db');
     global.runOptions.serverName = cliOptions.getValue('server.name', 'dexter-server-default');
     global.runOptions.serverIP = util.getLocalIPAddress();
 }
@@ -155,24 +116,22 @@ function setExecutionMode(){
 }
 
 function setAppConfigure(){
-    app.configure(function () {
-        app.set("jsonp callback", true);
-        app.set('views', path.join(__dirname, 'views'));
-        app.set('view engine', 'jade');
-        app.use(express.static(path.join(__dirname, 'public')));
-        app.use(express.json({limit:'300mb'}));
-        app.use(express.urlencoded());
-        app.use(express.methodOverride());
-    });
-
-    app.configure('development', function(){
-        app.use(express.errorHandler({ dumpExceptions: true, showStack: true}));
-    });
-
-
-    app.configure('production', function(){
-        app.use(express.errorHandler({"dumpExceptions": false, "showStack": false}));
-    });
+    
+   app.set("jsonp callback", true);
+    app.set('views', path.join(__dirname, 'views'));
+    app.set('view engine', 'jade');
+    app.use(express.static(path.join(__dirname, 'public')));
+    app.use(express.json({limit:'300mb'}));
+    app.use(express.urlencoded());
+    app.use(methodOverride());
+ 
+    if (process.env.NODE_ENV === 'development') {
+        app.use(errorhandler({ dumpExceptions: true, showStack: true}));
+    };
+ 
+    if (process.env.NODE_ENV === 'production') {
+        app.use(errorhandler({"dumpExceptions": false, "showStack": false}));
+    };
 
 
     app.all('*', function(req, res, next){
@@ -183,6 +142,7 @@ function setAppConfigure(){
         next();
     });
 }
+
 
 function initModules(){
     log.init();
@@ -209,6 +169,12 @@ function addAccessLog(req){
     };
 
     config.addAccessLog(parameter);
+}
+
+function initSwagger() {
+	log.info("Setting up Swagger");
+	app.use('/api/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 }
 
 function isNoNeedToAddAccessLog(url){
