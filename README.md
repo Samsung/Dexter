@@ -239,6 +239,15 @@ i.e. get rid of all the development changes.
 
 </details>
 
+## How to open API documentation in Swagger
+<details>
+<summary>
+You can use Swagger to know more about Dexter API
+</summary>
+Web page with Dexter API documentation in Swagger will be available during Dexter server running on the same host and post as Dexter server.
+You can find it under [host]:[port]/api/api-docs address. 
+</details>
+
 # Future plans
 <ul>
 <li>Supporting more languages

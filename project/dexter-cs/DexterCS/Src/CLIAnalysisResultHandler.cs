@@ -1,4 +1,4 @@
-﻿#region Copyright notice
+#region Copyright notice
 /**
  * Copyright (c) 2018 Samsung Electronics, Inc.,
  * All rights reserved.
@@ -26,6 +26,7 @@
  */
 #endregion
 using DexterCS.Client;
+using DexterCS.Client;
 using DexterCS.Job;
 using log4net;
 using System;
@@ -42,7 +43,6 @@ namespace DexterCS
         private string dexterWebUrl;
 
         private ICLIResultFile cliResultFile = new CLIResultFile();
-
         private int totalCnt = 0;
         private int totalOccurenceCnt = 0;
         private int criticalCnt = 0;

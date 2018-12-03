@@ -1,4 +1,4 @@
-﻿#region Copyright notice
+#region Copyright notice
 /**
  * Copyright (c) 2018 Samsung Electronics, Inc.,
  * All rights reserved.
@@ -25,6 +25,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #endregion
+
 using System.Collections.Generic;
 
 namespace DexterCS

@@ -130,7 +130,6 @@ namespace DexterDepend
         {
             //TODO:
         }
-
         public void Init()
         {
             InitCheckerConfig();
