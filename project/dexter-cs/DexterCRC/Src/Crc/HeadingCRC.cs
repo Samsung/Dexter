@@ -54,9 +54,9 @@ namespace DexterCRC
 
             foreach (var classRaw in classRaws)
             {
-                SyntaxTriviaList syntaxTriviaList = classRaw.GetLeadingTrivia();
+                string heading = classRaw.GetLeadingTrivia().ToList().ToString();
 
-                if (!headingRule.HasDefect(syntaxTriviaList))
+                if (!headingRule.HasDefect(heading))
                 {
                    count = count++;
                 }

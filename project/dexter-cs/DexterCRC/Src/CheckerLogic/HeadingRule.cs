@@ -45,8 +45,8 @@ namespace DexterCRC
 
         public bool HasDefect(object value)
         {
-            SyntaxTriviaList trivia = (SyntaxTriviaList)value;
-            return !(trivia.ToList().ToString().Contains("Copyright") && trivia.ToString().Contains("Samsung Electronics Co."));
+            string trivia = (string)value;
+            return !(trivia.Contains("Copyright") && trivia.Contains("Samsung Electronics Co."));
         }
    
 
