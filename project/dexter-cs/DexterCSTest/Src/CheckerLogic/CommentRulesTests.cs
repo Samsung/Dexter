@@ -27,7 +27,7 @@
 #endregion
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace DexterCRC.Src.CheckerLogic.Tests
+namespace DexterCRC.Tests
 {
     [TestClass()]
     public class CommentRulesTests

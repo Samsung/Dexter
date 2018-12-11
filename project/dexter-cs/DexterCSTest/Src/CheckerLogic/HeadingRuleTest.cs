@@ -28,7 +28,7 @@
 using DexterCRC;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace DexterCSTest.Src.CRCLogic
+namespace DexterCRC.Tests
 {
     [TestClass()]
     public class HeadingRuleTest

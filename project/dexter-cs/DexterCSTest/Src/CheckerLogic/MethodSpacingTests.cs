@@ -31,7 +31,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 
-namespace DexterCRC.Src.CheckerLogic.Tests
+namespace DexterCRC.Tests
 {
     [TestClass()]
     public class MethodSpacingTests
