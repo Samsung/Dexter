@@ -92,6 +92,41 @@ namespace DexterCRC.Tests
         }
 
         [TestMethod()]
+        public void HasDefectTest_CommentWithOutClosingTag_ReturnsTrue()
+        {
+            Init();
+
+            // Given
+            string comment = @"
+        // <summary>
+        // Summary content";
+
+            // When
+            bool result = commentRules.HasDefect(comment);
+
+            // Then
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod()]
+        public void HasDefectTest_CommentWithTypoInClosingSummaryTag_ReturnsTrue()
+        {
+            Init();
+
+            // Given
+            string comment = @"
+        // <sumary>
+        // Summary content
+        // <summary>";
+
+            // When
+            bool result = commentRules.HasDefect(comment);
+
+            // Then
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod()]
         public void HasDefectTest_LongCommentWithSummaryTagAndOtherTags_ReturnsFalse()
         {
             Init();
