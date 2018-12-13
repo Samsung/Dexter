@@ -32,9 +32,9 @@ namespace DexterCRC.Tests
     [TestClass()]
     public class PrefixNamingTests
     {
-        PrefixNaming prefixNaming;
+        private PrefixNaming prefixNaming;
 
-        void Init()
+        private void Init()
         {
             prefixNaming = new PrefixNaming();
         }

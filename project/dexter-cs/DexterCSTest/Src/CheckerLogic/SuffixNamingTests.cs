@@ -32,9 +32,9 @@ namespace DexterCRC.Tests
     [TestClass()]
     public class SuffixNamingTests
     {
-        SuffixNaming suffixNaming;
+        private SuffixNaming suffixNaming;
 
-        void Init()
+        private void Init()
         {
             suffixNaming = new SuffixNaming();
         }

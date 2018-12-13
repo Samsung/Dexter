@@ -32,7 +32,8 @@ namespace DexterCRC.Tests
     [TestClass()]
     public class WithBraceTests
     {
-        WithBrace brace;
+        private WithBrace brace;
+
         public void Init()
         {
             brace = new WithBrace();

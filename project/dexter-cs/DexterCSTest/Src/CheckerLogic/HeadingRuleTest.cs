@@ -33,18 +33,18 @@ namespace DexterCRC.Tests
     [TestClass()]
     public class HeadingRuleTest
     {
-        HeadingRule rules;
-        public void Init()
-        {
-            rules = new HeadingRule();
-        }
+        private HeadingRule headingRule;
 
+        private void Init()
+        {
+            headingRule = new HeadingRule();
+        }
 
         [TestMethod]
         public void HasDefect_HedingRule_WithHeading_ReturnsFalse()
         {
             Init();
-            //given
+            //Given
             string statement = @" // Copyright (c) 2016 Samsung Electronics Co., Ltd All Rights Reserved
                                     // PROPRIETARY/CONFIDENTIAL 
                                     // This software is the confidential and proprietary
@@ -66,9 +66,9 @@ namespace DexterCRC.Tests
                                             namespace DexterCRC
                                                                             {
                                                  public class SampleClass {";
-            //when
-            bool result = rules.HasDefect(statement);
-            //then
+            //When
+            bool result = headingRule.HasDefect(statement);
+            //Then
             Assert.IsFalse(result);
         }
 
@@ -77,7 +77,7 @@ namespace DexterCRC.Tests
         public void HasDefect_HeadingRule_WithoutHeading_ReturnsTrue()
         {
             Init();
-            //given
+            //Given
             string statement = @"
                                   using System.Collections.Generic;
                                   using System.Linq;
@@ -87,9 +87,9 @@ namespace DexterCRC.Tests
                                             namespace DexterCRC
                                                                             {
                                                  public class SampleClass {";
-            //when
-            bool result = rules.HasDefect(statement);
-            //then
+            //When
+            bool result = headingRule.HasDefect(statement);
+            //Then
             Assert.IsTrue(result);
         }
 
@@ -97,7 +97,7 @@ namespace DexterCRC.Tests
         public void HasDefect_HeadingRule_WithoutCopyrightInHeading_ReturnsTrue()
         {
             Init();
-            //given
+            //Given
             string statement = @" // --------- (c) 2016 Samsung Electronics Co., Ltd All Rights Reserved
                                     // PROPRIETARY/CONFIDENTIAL 
                                     // This software is the confidential and proprietary
@@ -119,9 +119,9 @@ namespace DexterCRC.Tests
                                             namespace DexterCRC
                                                                             {
                                                  public class SampleClass {";
-            //when
-            bool result = rules.HasDefect(statement);
-            //then
+            //When
+            bool result = headingRule.HasDefect(statement);
+            //Then
             Assert.IsTrue(result);
         }
 
@@ -129,7 +129,7 @@ namespace DexterCRC.Tests
         public void HasDefect_HeadingRule_WithoutSamsungInHeading_ReturnsTrue()
         {
             Init();
-            //given
+            //Given
             string statement = @" // Copyright (c) 2016 Some Company, Ltd All Rights Reserved
                                     // PROPRIETARY/CONFIDENTIAL 
                                     // This software is the confidential and proprietary
@@ -151,9 +151,9 @@ namespace DexterCRC.Tests
                                             namespace DexterCRC
                                                                             {
                                                  public class SampleClass {";
-            //when
-            bool result = rules.HasDefect(statement);
-            //then
+            //When
+            bool result = headingRule.HasDefect(statement);
+            //Then
             Assert.IsTrue(result);
         }
     }

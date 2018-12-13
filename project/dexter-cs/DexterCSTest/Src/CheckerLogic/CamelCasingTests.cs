@@ -32,8 +32,9 @@ namespace DexterCRC.Tests
     [TestClass()]
     public class CamelCasingTests
     {
-        CamelCasing camelCasing;
-        void Init()
+        private CamelCasing camelCasing;
+
+        private void Init()
         {
             camelCasing = new CamelCasing();
         }
@@ -45,7 +46,7 @@ namespace DexterCRC.Tests
             // Given
             string typeName = @"Name";
             // When
-            bool result = camelCasing.HasDefect(typeName);
+            bool result = camelCasing.HasDefect(typeName);   
             // Then
             Assert.IsTrue(result);
         }

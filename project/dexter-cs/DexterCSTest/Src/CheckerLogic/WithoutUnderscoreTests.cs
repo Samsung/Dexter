@@ -32,14 +32,22 @@ namespace DexterCRC.Tests
     [TestClass()]
     public class WithoutUnderscoreTests
     {
+        private WithoutUnderscore withoutUnderscore;
+
+        public void Init()
+        {
+            withoutUnderscore = new WithoutUnderscore();
+        }
+
         [TestMethod]
         public void HasDefectTest_WithUnderscore_ReturnsFalse()
         {
+            Init();
             // Given
             string interfaceName = @"Dexter_CS_Test";
 
             // When
-            bool result = (new WithoutUnderscore()).HasDefect(interfaceName);
+            bool result = withoutUnderscore.HasDefect(interfaceName);
 
             // Then
             Assert.IsTrue(result);
@@ -48,11 +56,12 @@ namespace DexterCRC.Tests
         [TestMethod]
         public void HasDefectTest_CorrectInterfaceName_ReturnsFalse()
         {
+            Init();
             // Given
             string interfaceName = @"IDexterCSTest";
 
             // When
-            bool result = (new WithoutUnderscore()).HasDefect(interfaceName);
+            bool result = withoutUnderscore.HasDefect(interfaceName);
 
             // Then
             Assert.IsFalse(result);

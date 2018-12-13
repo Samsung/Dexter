@@ -32,7 +32,7 @@ namespace DexterCRC.Tests
     [TestClass()]
     public class CommentRulesTests
     {
-        CommentRules commentRules;
+        private CommentRules commentRules;
 
         private void Init()
         {
