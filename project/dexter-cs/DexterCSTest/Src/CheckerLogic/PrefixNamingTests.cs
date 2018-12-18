@@ -40,7 +40,7 @@ namespace DexterCRC.Tests
         }
 
         [TestMethod]
-        public void HasDefectTest_WithoutAnI_ReturnsTrue()
+        public void HasDefectTest_WithoutPrefix_ReturnsTrue()
         {
             // Given
             Init();
@@ -57,11 +57,62 @@ namespace DexterCRC.Tests
         }
 
         [TestMethod]
-        public void HasDefectTest_WithAnI_ReturnsFalse()
+        public void HasDefectTest_WithPrefix_ReturnsFalse()
         {
             Init();
             // Given
             string interfaceName = @"IDexterInterfaceNameTest";
+            NamingSet namingSet = new NamingSet
+            {
+                currentName = interfaceName,
+                basicWord = "I"
+            };
+            // When
+            bool result = prefixNaming.HasDefect(namingSet);
+            // Then
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void HasDefectTest_EmptyPrefix_ReturnsFalse()
+        {
+            Init();
+            // Given
+            string interfaceName = @"IDexterInterfaceNameTest";
+            NamingSet namingSet = new NamingSet
+            {
+                currentName = interfaceName,
+                basicWord = ""
+            };
+            // When
+            bool result = prefixNaming.HasDefect(namingSet);
+            // Then
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void HasDefectTest_HasSuffix_ReturnsTrue()
+        {
+            Init();
+            // Given
+            string interfaceName = @"ClassFactory";
+            NamingSet namingSet = new NamingSet
+            {
+                currentName = interfaceName,
+                basicWord = "Factory"
+            };
+            // When
+            bool result = prefixNaming.HasDefect(namingSet);
+            // Then
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void HasDefectTest_HasPrefixAndSuffix_ReturnsFalse()
+        {
+            Init();
+            // Given
+            string interfaceName = @"IClassInterfaceFactory";
             NamingSet namingSet = new NamingSet
             {
                 currentName = interfaceName,

@@ -52,7 +52,7 @@ namespace DexterCRC.Tests
         }
 
         [TestMethod]
-        public void HasDefectTest_With_Brace_ReturnsFalse()
+        public void HasDefectTest_WithBrace_ReturnsFalse()
         {
             Init();
             // Given
@@ -60,6 +60,80 @@ namespace DexterCRC.Tests
                                     int a = 10; 
                                     int b = 20;
                                   }";
+            // When
+            bool result = brace.HasDefect(statement);
+            // Then
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void HasDefectTest_WithStartingBraceWithoutEndingBrace_ReturnsTrue()
+        {
+            Init();
+            // Given
+            string statement = @"{
+                                    int a = 10; 
+                                    int b = 20;
+                                  ";
+            // When
+            bool result = brace.HasDefect(statement);
+            // Then
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void HasDefectTest_WithoutStartingBraceWithEndingBrace_ReturnsTrue()
+        {
+            Init();
+            // Given
+            string statement = @"
+                                    int a = 10; 
+                                    int b = 20;
+                                  }";
+            // When
+            bool result = brace.HasDefect(statement);
+            // Then
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void HasDefectTest_WithBracesEmptyContent_ReturnsFalse()
+        {
+            Init();
+            // Given
+            string statement = @"{}";
+            // When
+            bool result = brace.HasDefect(statement);
+            // Then
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void HasDefectTest_WithParenthesis_ReturnsTrue()
+        {
+            Init();
+            // Given
+            string statement = @"(
+                                    int a = 10; 
+                                    int b = 20;
+                                  )";
+            // When
+            bool result = brace.HasDefect(statement);
+            // Then
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void HasDefectTest_NestedBrackets_ReturnsFalse()
+        {
+            Init();
+            // Given
+            string statement = @"{
+                                    {
+                                        int a = 10;
+                                        int b = 20;
+                                    }
+                                }";
             // When
             bool result = brace.HasDefect(statement);
             // Then
