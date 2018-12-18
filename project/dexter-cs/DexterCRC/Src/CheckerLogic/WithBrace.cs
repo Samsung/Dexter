@@ -45,8 +45,8 @@ namespace DexterCRC
         public bool HasDefect(object value)
         {
             string statement = value.ToString();
-            return !statement.StartsWith("{", StringComparison.Ordinal)
-                    && !statement.EndsWith("}", StringComparison.Ordinal);
+            return !(statement.StartsWith("{", StringComparison.Ordinal)
+                    && statement.EndsWith("}", StringComparison.Ordinal));
         }
 
         public PreOccurence MakeDefect(AnalysisConfig config, Checker checker, CSharpSyntaxNode raw)
