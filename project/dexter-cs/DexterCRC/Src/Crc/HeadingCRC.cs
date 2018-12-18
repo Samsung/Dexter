@@ -49,7 +49,7 @@ namespace DexterCRC
             {
                 return;
             }
-            
+
             int count = 0;
 
             foreach (var classRaw in classRaws)
@@ -58,7 +58,7 @@ namespace DexterCRC
 
                 if (!headingRule.HasDefect(heading))
                 {
-                   count = count++;
+                    count = count++;
                 }
             }
 

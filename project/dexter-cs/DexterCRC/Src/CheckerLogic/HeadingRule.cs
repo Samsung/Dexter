@@ -48,7 +48,7 @@ namespace DexterCRC
             string trivia = (string)value;
             return !(trivia.Contains("Copyright") && trivia.Contains("Samsung Electronics Co."));
         }
-   
+
 
         public PreOccurence MakeDefect(AnalysisConfig config, Checker checker, CSharpSyntaxNode raw)
         {

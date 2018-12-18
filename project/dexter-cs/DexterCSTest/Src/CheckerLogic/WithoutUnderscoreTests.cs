@@ -40,7 +40,7 @@ namespace DexterCRC.Tests
         }
 
         [TestMethod]
-        public void HasDefectTest_WithUnderscore_ReturnsFalse()
+        public void HasDefectTest_WithUnderscore_ReturnsTrue()
         {
             Init();
             // Given
@@ -59,6 +59,34 @@ namespace DexterCRC.Tests
             Init();
             // Given
             string interfaceName = @"IDexterCSTest";
+
+            // When
+            bool result = withoutUnderscore.HasDefect(interfaceName);
+
+            // Then
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void HasDefectTest_StartingWithUnderscore_ReturnsTrue()
+        {
+            Init();
+            // Given
+            string interfaceName = @"_DexterCSTest";
+
+            // When
+            bool result = withoutUnderscore.HasDefect(interfaceName);
+
+            // Then
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void HasDefectTest_WithHyphen_ReturnsFalse()
+        {
+            Init();
+            // Given
+            string interfaceName = @"Dexter-CS-Test";
 
             // When
             bool result = withoutUnderscore.HasDefect(interfaceName);

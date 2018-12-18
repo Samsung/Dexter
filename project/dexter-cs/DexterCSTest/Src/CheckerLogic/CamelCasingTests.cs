@@ -46,7 +46,7 @@ namespace DexterCRC.Tests
             // Given
             string typeName = @"Name";
             // When
-            bool result = camelCasing.HasDefect(typeName);   
+            bool result = camelCasing.HasDefect(typeName);
             // Then
             Assert.IsTrue(result);
         }
