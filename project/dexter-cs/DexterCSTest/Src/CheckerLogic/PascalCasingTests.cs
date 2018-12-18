@@ -32,9 +32,9 @@ namespace DexterCRC.Tests
     [TestClass()]
     public class PascalCasingTests
     {
-        PascalCasing pascalCasing;
+        private PascalCasing pascalCasing;
 
-        void Init()
+        private void Init()
         {
             pascalCasing = new PascalCasing();
         }

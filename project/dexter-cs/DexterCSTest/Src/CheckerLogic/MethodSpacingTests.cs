@@ -31,12 +31,12 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
 
-namespace DexterCRC.Src.CheckerLogic.Tests
+namespace DexterCRC.Tests
 {
     [TestClass()]
     public class MethodSpacingTests
     {
-        MethodSpacing methodSpacing;
+        private MethodSpacing methodSpacing;
 
         private void Init()
         {
@@ -67,9 +67,7 @@ namespace DexterCRC.Src.CheckerLogic.Tests
                 SyntaxTriviaList syntaxTriviaList = methodRaw.GetLeadingTrivia();
 
                 // When
-
                 bool result = methodSpacing.HasDefect(syntaxTriviaList);
-
                 // Then
                 Assert.IsFalse(result);
             }
@@ -96,10 +94,8 @@ namespace DexterCRC.Src.CheckerLogic.Tests
             var methodRaws = syntaxRoot.DescendantNodes().OfType<MethodDeclarationSyntax>();
 
             SyntaxTriviaList syntaxTriviaList = methodRaws.ElementAt(0).GetLeadingTrivia();
-
             // When
             bool result = methodSpacing.HasDefect(syntaxTriviaList);
-
             // Then
             Assert.IsTrue(result);
         }
@@ -125,10 +121,8 @@ namespace DexterCRC.Src.CheckerLogic.Tests
             var methodRaws = syntaxRoot.DescendantNodes().OfType<MethodDeclarationSyntax>();
 
             SyntaxTriviaList syntaxTriviaList = methodRaws.ElementAt(0).GetLeadingTrivia();
-
             // When
             bool result = methodSpacing.HasDefect(syntaxTriviaList);
-
             // Then
             Assert.IsFalse(result);
         }

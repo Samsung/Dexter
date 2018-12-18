@@ -33,8 +33,8 @@ namespace DexterDepend.Tests
     [TestClass()]
     public class MessageMehodTests
     {
-        MessageMethod messageMethod;
-        List<string> subMethodList;
+        private MessageMethod messageMethod;
+        private List<string> subMethodList;
 
         public void Init()
         {
@@ -42,16 +42,15 @@ namespace DexterDepend.Tests
             subMethodList = new List<string>();
             subMethodList.AddRange(new string[] { "new MessagePort" });
         }
+
         [TestMethod]
         public void HasMessageMethodTest_MessagePortUsage_ReturnsTrue()
         {
             // Given
             Init();
             string methodName = "new MessagePort(senderPort, false);";
-
             // When
             bool result = messageMethod.HasVconfMethod(subMethodList, methodName);
-
             // Then
             Assert.IsTrue(result);
         }
@@ -62,10 +61,8 @@ namespace DexterDepend.Tests
             // Given
             Init();
             string methodName = "MessagePort(\"weatherMsgPort\", false);";
-
             // When
             bool result = messageMethod.HasVconfMethod(subMethodList, methodName);
-
             // Then
             Assert.IsFalse(result);
         }

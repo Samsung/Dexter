@@ -27,12 +27,12 @@
 #endregion
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace DexterCRC.Src.CheckerLogic.Tests
+namespace DexterCRC.Tests
 {
     [TestClass()]
     public class CommentRulesTests
     {
-        CommentRules commentRules;
+        private CommentRules commentRules;
 
         private void Init()
         {
@@ -83,6 +83,41 @@ namespace DexterCRC.Src.CheckerLogic.Tests
         // <sumary>
         // Summary content
         // </summary>";
+
+            // When
+            bool result = commentRules.HasDefect(comment);
+
+            // Then
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod()]
+        public void HasDefectTest_CommentWithOutClosingTag_ReturnsTrue()
+        {
+            Init();
+
+            // Given
+            string comment = @"
+        // <summary>
+        // Summary content";
+
+            // When
+            bool result = commentRules.HasDefect(comment);
+
+            // Then
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod()]
+        public void HasDefectTest_CommentWithTypoInClosingSummaryTag_ReturnsTrue()
+        {
+            Init();
+
+            // Given
+            string comment = @"
+        // <sumary>
+        // Summary content
+        // <summary>";
 
             // When
             bool result = commentRules.HasDefect(comment);

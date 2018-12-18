@@ -32,8 +32,9 @@ namespace DexterCRC.Tests
     [TestClass()]
     public class CamelCasingTests
     {
-        CamelCasing camelCasing;
-        void Init()
+        private CamelCasing camelCasing;
+
+        private void Init()
         {
             camelCasing = new CamelCasing();
         }

@@ -107,7 +107,7 @@ namespace DexterCRC
 
         public static bool HasSuffix(string name, string suffix)
         {
-            return (!string.IsNullOrEmpty(name) && 
+            return (!string.IsNullOrEmpty(name) &&
                 name.EndsWith(suffix, StringComparison.CurrentCulture));
         }
     }

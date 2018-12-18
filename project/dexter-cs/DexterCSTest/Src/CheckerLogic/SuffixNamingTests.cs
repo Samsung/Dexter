@@ -32,15 +32,15 @@ namespace DexterCRC.Tests
     [TestClass()]
     public class SuffixNamingTests
     {
-        SuffixNaming suffixNaming;
+        private SuffixNaming suffixNaming;
 
-        void Init()
+        private void Init()
         {
             suffixNaming = new SuffixNaming();
         }
 
         [TestMethod]
-        public void HasDefectTest_WithoutAnI_ReturnsTrue()
+        public void HasDefectTest_WithoutSuffix_ReturnsTrue()
         {
             // Given
             Init();
@@ -57,7 +57,7 @@ namespace DexterCRC.Tests
         }
 
         [TestMethod]
-        public void HasDefectTest_WithAnI_ReturnsFalse()
+        public void HasDefectTest_WithSuffix_ReturnsFalse()
         {
             Init();
             // Given
@@ -66,6 +66,57 @@ namespace DexterCRC.Tests
             {
                 currentName = interfaceName,
                 basicWord = "er"
+            };
+            // When
+            bool result = suffixNaming.HasDefect(namingSet);
+            // Then
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void HasDefectTest_WithoutSuffixDifferentCasing_ReturnsTrue()
+        {
+            Init();
+            // Given
+            string interfaceName = @"ClassFactory";
+            NamingSet namingSet = new NamingSet
+            {
+                currentName = interfaceName,
+                basicWord = "factory"
+            };
+            // When
+            bool result = suffixNaming.HasDefect(namingSet);
+            // Then
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void HasDefectTest_HasPrefix_ReturnsTrue()
+        {
+            Init();
+            // Given
+            string interfaceName = @"IClassInterface";
+            NamingSet namingSet = new NamingSet
+            {
+                currentName = interfaceName,
+                basicWord = "I"
+            };
+            // When
+            bool result = suffixNaming.HasDefect(namingSet);
+            // Then
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        public void HasDefectTest_HasPrefixAndSuffix_ReturnsFalse()
+        {
+            Init();
+            // Given
+            string interfaceName = @"IClassInterfaceFactory";
+            NamingSet namingSet = new NamingSet
+            {
+                currentName = interfaceName,
+                basicWord = "Factory"
             };
             // When
             bool result = suffixNaming.HasDefect(namingSet);
